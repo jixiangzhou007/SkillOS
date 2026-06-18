@@ -256,7 +256,7 @@ def is_wechat_logged_in() -> bool:
                                       headers={"Content-Type": "text/plain"})
         result = json.loads(urllib.request.urlopen(req2, timeout=10).read().decode()).get("value", "no")
         try: urllib.request.urlopen(f"http://localhost:3456/close?target={tid}", timeout=3)
-        except: pass
+        except Exception: pass
         return result == "yes"
     except Exception:
         return False

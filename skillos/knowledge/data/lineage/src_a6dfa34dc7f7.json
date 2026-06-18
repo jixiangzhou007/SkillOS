@@ -4,15 +4,15 @@
   "source_title": "合同审核",
   "created_at": 1781594515.3930228,
   "summary": {
-    "total_items": 6,
+    "total_items": 7,
     "by_category": {
-      "heuristic": 6
+      "heuristic": 7
     },
     "by_epistemic_level": {
-      "knowledge": 6
+      "knowledge": 7
     },
     "confidence_distribution": {
-      "high": 6,
+      "high": 7,
       "medium": 0,
       "low": 0
     }
@@ -139,10 +139,10 @@
       "item_id": "ki_ba68c0b5",
       "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，并给出修改建议。",
       "category": "heuristic",
-      "confidence": 0.9,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.0,
+      "strength": 1.1,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -175,10 +175,10 @@
       "item_id": "ki_df1de282",
       "content": "技能「合同审核」: 确保销售合同中的关键商业和法律条款符合我方利益，识别并标记风险条款。",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 1.05,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -205,10 +205,10 @@
       "item_id": "ki_c39609d6",
       "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，确保我方权益。",
       "category": "heuristic",
-      "confidence": 0.8,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 1.0,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -230,6 +230,36 @@
       "invalid_at": 0.0,
       "superseded_by": "",
       "last_accessed": 1781799917.596097
+    },
+    {
+      "item_id": "ki_800636cb",
+      "content": "技能「合同审核」: 审核销售合同中的关键条款（价格、质保、责任、知识产权、违约金），识别风险并给出修改建议。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.9,
+      "source": {
+        "url": "session:test-meta-no-restart",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "合同审核",
+          "score_delta": 1.0,
+          "timestamp": 1781804081.7993073
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781804081.7993073,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781804081.7993073
     }
   ]
 }

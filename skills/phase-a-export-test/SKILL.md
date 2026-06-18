@@ -1,7 +1,7 @@
 ---
 name: phase-a-export-test
 created_at: '2026-06-15T07:37:16Z'
-updated_at: '2026-06-18T16:49:07Z'
+updated_at: '2026-06-18T17:38:14Z'
 draft: false
 philosophical_dna: reductionist
 philosophical_dna_label: 还原论方法
@@ -12,8 +12,8 @@ dna_lineage:
   - id: reductionist
     weight: 1.0
   domain: []
-  detected_at: '2026-06-18T16:49:07Z'
-version: 17
+  detected_at: '2026-06-18T17:38:14Z'
+version: 18
 ---
 
 # 技能名称：测试导出

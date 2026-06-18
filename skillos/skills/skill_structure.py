@@ -201,6 +201,7 @@ def extract_protected_sections(
     *,
     domain_template: str | None = None,
 ) -> list[tuple[str, str]]:
+    patterns = protected_patterns_for_domain(domain_template)
     _, sections = split_h2_sections(body)
     out: list[tuple[str, str]] = []
     for heading, text in sections:
@@ -243,6 +244,7 @@ def merge_protected_sections(
     domain_template: str | None = None,
 ) -> tuple[str, list[str]]:
     """Copy protected sections from old_body into new_body when missing."""
+    patterns = protected_patterns_for_domain(domain_template)
     protected = extract_protected_sections(old_body, domain_template=domain_template)
     if not protected:
         return new_body, []
@@ -281,6 +283,7 @@ def apply_domain_heritage_templates(
     domain_template: str | None = None,
 ) -> tuple[str, list[str]]:
     """Insert canonical domain blocks when missing (e.g. PR 审查应答速查)."""
+    patterns = protected_patterns_for_domain(domain_template)
     entry = DOMAIN_HERITAGE_TEMPLATES.get(domain_template or "")
     if not entry:
         try:
