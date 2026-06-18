@@ -207,16 +207,12 @@ def benchmark_compare(skill_name: str, llm_args: tuple | None = None) -> dict:
     if not skill_md.exists():
         return {"error": f"Skill not found: {skill_name}"}
 
-    content = skill_md.read_text(encoding="utf-8")
 
     # With-skill score
     with_score = SkillBenchScore.from_skill(skill_md, llm_args)
 
     # Without-skill baseline: score a minimal placeholder
     min_content = "# Minimal Skill\n\n## Instructions\n1. Use common sense\n"
-    min_score = SkillBenchScore.from_skill(
-        Path("/tmp/min_skill.md"), llm_args
-    )
     # Override: manually create the baseline
     from skillos.evaluation.quality import evaluate_heuristic
     h = evaluate_heuristic(min_content, "baseline")

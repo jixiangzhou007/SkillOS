@@ -259,7 +259,6 @@ def check_against_playbook(skill_content: str) -> list[dict]:
         return [{"check": "playbook_exists", "passed": False,
                  "detail": "No playbook found. Run cold-start interview first."}]
 
-    playbook = load_playbook()
     checks = []
 
     # Check 1: Terminology consistency
@@ -279,10 +278,6 @@ def check_against_playbook(skill_content: str) -> list[dict]:
     # Check 2: Document format alignment
     standards = get_document_standards()
     if standards:
-        format_mentioned = any(
-            any(keyword in skill_content.lower() for keyword in ["格式", "format", "模板", "template", "输出", "output"])
-            for _ in [1]  # just run once
-        )
         checks.append({
             "check": "document_standards",
             "passed": True,  # Can't fully auto-check, flag for human
@@ -307,7 +302,6 @@ def build_playbook_check_prompt() -> str:
     if not has_playbook():
         return ""
 
-    playbook = load_playbook()
     return f"""
 ## 🏢 团队 Playbook 合规检查
 

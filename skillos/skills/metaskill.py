@@ -214,7 +214,6 @@ def _parse_pipeline_line(line: str) -> Optional[PipelineStep]:
 
 def _topological_order(steps: list[PipelineStep]) -> list[PipelineStep]:
     """Topological sort. Raises ValueError on cycle."""
-    step_map = {s.name: s for s in steps}
     in_degree = {s.name: len(s.depends_on) for s in steps}
     for s in steps:
         for dep in s.depends_on:

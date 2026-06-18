@@ -300,7 +300,6 @@ SKILL.md 应该精简。详细内容放到 references/ 里。
     agent._draft_name = name
     agent._draft_content = final_content
 
-    log_text = "\n".join(pipeline_log)
     diff_skills = [d for d in diffusion_results if d.startswith("✅")]
 
     summary = (

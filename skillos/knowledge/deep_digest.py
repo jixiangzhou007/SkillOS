@@ -88,7 +88,6 @@ def deep_digest(
 
     t_start = time.time()
     content_preview = content[:8000] if len(content) > 8000 else content
-    skills_list = ", ".join(existing_skills[:15]) if existing_skills else "（无）"
     ingest_ctx = get_ingest_context(chat_id=chat_id, session_id=session_id)
 
     result = DigestResult(

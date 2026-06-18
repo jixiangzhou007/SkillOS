@@ -270,10 +270,7 @@ def get_available_models() -> list[tuple[str, tuple]]:
     Checks common environment configs for secondary API endpoints.
     Returns list of (model_name, llm_args).
     """
-    from skillos.config import get_config
-    cfg = get_config()
     models = []
-    primary = (cfg.api_key, cfg.base_url, cfg.model, cfg.to_llm_args()[3])
 
     # Check for Hunyuan/other providers
     key2 = os.environ.get("SECONDARY_API_KEY", "")

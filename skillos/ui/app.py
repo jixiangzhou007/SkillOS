@@ -30,10 +30,10 @@ def start_desktop(host: str = "127.0.0.1", port: int = 8765):
     import webview
 
     # Start backend
-    backend_thread = start_backend(host, port)
+    start_backend(host, port)
 
     # Create window
-    window = webview.create_window(
+    webview.create_window(
         title="SkillOS — AI Skill Operating System",
         url=f"http://{host}:{port}",
         width=1400,

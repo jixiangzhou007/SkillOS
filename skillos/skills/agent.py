@@ -819,7 +819,6 @@ class SkillExtractionAgent:
         # Long-context summarization: when context grows beyond 20 turns, compress older ones
         self._maybe_summarize_context()
 
-        finish_kw = ("生成", "就这样", "够了", "可以了", "没问题", "保存")
         if self._is_gap_question(text):
             self._phase = Phase.CONFIRMING
             self._awaiting_confirm = True
@@ -995,8 +994,6 @@ class SkillExtractionAgent:
 
     def _optimize(self, existing_skills: list[str], llm_args: tuple) -> str:
         """Run compliance checks and present optimization report."""
-        # Build a working draft for compliance checking
-        context_text = "\n".join(self._context)
 
         report_parts = ["## 🔍 技能质量预检\n"]
 
@@ -1315,24 +1312,20 @@ tool_description: <第三人称描述：做什么 + 何时触发 + 触发词，�
             self._clear_session_draft()
 
             # Feynman simplification: verify understanding depth, flag gaps
-            feynman_msg = ""
             try:
                 from skillos.evolution.learning_theory import recursive_feynman
                 simpler, deepened = recursive_feynman(content, llm_args)
                 if deepened:
-                    feynman_msg = "\n\n### 🧠 费曼简化检测\n> ⚠️ 简化版与原文差异较大——以下步骤可能需要补充说明：「[这里我需要再想想]」标记的部分建议人工复核。"
                     _log.info("Feynman deepened: %s (simpler=%d chars, original=%d)", name, len(simpler), len(content))
             except Exception:
                 _log.debug("recursive_feynman skipped", exc_info=True)
 
             # Cross-domain analogies: find structurally similar skills
-            analogy_msg = ""
             try:
                 from skillos.evolution.learning_theory import find_analogies
                 analogies = find_analogies(name, content, existing_skills, llm_args)
                 if analogies:
                     analogy_names = [a.get("skill","?") for a in analogies[:3]]
-                    analogy_msg = f"\n\n### 🔀 跨领域类比\n> 检测到与以下技能存在结构同构：{', '.join(analogy_names)}。可参考其优化经验。"
                     _log.info("Analogies found for %s: %s", name, analogy_names)
             except Exception:
                 _log.debug("find_analogies skipped", exc_info=True)

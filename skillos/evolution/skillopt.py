@@ -442,7 +442,6 @@ def run_optimization_round(
 
     # 3. Independent Auditor (SkillEvolver-inspired)
     audit_report = audit_skill(new_content, session.skill_name, llm_args)
-    audit_context = build_audit_context(audit_report)
 
     # 4. Create round record
     opt_round = OptimizationRound(

@@ -431,7 +431,6 @@ def auto_mine_if_needed(llm_args: tuple, threshold: int = 3) -> Optional[dict]:
     """
     dna = get_skill_dna()
     if dna:
-        last_gen = dna.get("generated_at", 0)
         # Count skills created after last DNA generation
         from skillos.skills import skill_store
         new_count = 0

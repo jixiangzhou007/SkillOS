@@ -318,12 +318,8 @@ def correlate_and_suggest(skill_name: str) -> list[EvolutionTrigger]:
     if len(cross) < 2:
         return []
 
-    # Group by experience type
-    from collections import Counter
-    types = Counter(e.get("experience_type", "unknown") for e in cross)
-    common_type = types.most_common(1)[0][0] if types else ""
-
     # Check for recurring patterns
+    from collections import Counter
     contents = " ".join(e.get("content", "") for e in cross)
     words = re.findall(r'[\w一-鿿]{2,4}', contents)
     recurring = [w for w, c in Counter(words).most_common(10) if c >= 2]

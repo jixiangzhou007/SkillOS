@@ -347,7 +347,6 @@ def evolve_skill(name: str, feedback: str = "") -> str:
         session = OptimizationSession(skill_name=name, original_content=body, current_content=body)
 
         from skillos.evolution.skillopt import run_optimization_round
-        t0 = time.time()
         result = run_optimization_round(session, llm_args, feedback)
 
         lines = [

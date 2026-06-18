@@ -201,7 +201,6 @@ def extract_protected_sections(
     *,
     domain_template: str | None = None,
 ) -> list[tuple[str, str]]:
-    patterns = protected_patterns_for_domain(domain_template)
     _, sections = split_h2_sections(body)
     out: list[tuple[str, str]] = []
     for heading, text in sections:
@@ -244,7 +243,6 @@ def merge_protected_sections(
     domain_template: str | None = None,
 ) -> tuple[str, list[str]]:
     """Copy protected sections from old_body into new_body when missing."""
-    patterns = protected_patterns_for_domain(domain_template)
     protected = extract_protected_sections(old_body, domain_template=domain_template)
     if not protected:
         return new_body, []
@@ -294,7 +292,6 @@ def apply_domain_heritage_templates(
     if not entry:
         return body, []
     heading, text = entry
-    patterns = protected_patterns_for_domain(domain_template)
     preamble, sections = split_h2_sections(body)
     if any(
         heading_matches_pattern(h, heading) or any(heading_matches_pattern(h, p) for p in patterns)
@@ -370,7 +367,6 @@ def sanitize_skill_body(
     if not sections:
         return body, actions
 
-    patterns = protected_patterns_for_domain(domain_template)
     kept: list[tuple[str, str]] = []
     for heading, text in sections:
         if _is_junk_section(heading, text):
