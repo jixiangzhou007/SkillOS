@@ -5,6 +5,7 @@ function showDetail(name) {
   if (!name) { showChat(); return; }
 
   _currentSkill = name;
+  try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').currentSkill = name; } catch(e) {}
 
   document.getElementById('d-name').textContent = name;
 

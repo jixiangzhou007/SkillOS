@@ -62,7 +62,7 @@
 </header>
 
 <!-- ═══ Body (sidebar + main) ═════════════════════════════════ -->
-<div id="body-wrap">
+<div id="body-wrap" x-data>
 
 <!-- ═══ Sidebar — Library ═════════════════════════════════════ -->
 <aside id="sidebar">
@@ -105,7 +105,8 @@
 <main id="main">
 
   <!-- Chat View -->
-  <div id="chat-view" class="main-view active">
+  <div id="chat-view" class="main-view active"
+       :class="{ active: $store.nav.currentView === 'chat-view' }">
     <div id="msgs">
       <div class="welcome">
         <div class="welcome-icon" id="welcome-logo">🔧</div>
@@ -122,7 +123,8 @@
   </div>
 
   <!-- Detail View (for skill inspection) -->
-  <div id="detail-view" class="main-view">
+  <div id="detail-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'detail-view' }">
     <div class="detail-header">
       <button class="nav-sm" onclick="showChat()">← 返回</button>
       <span id="d-name"></span>
@@ -147,32 +149,38 @@
   </div>
 
   <!-- Dashboard View -->
-  <div id="dashboard-view" class="main-view">
+  <div id="dashboard-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'dashboard-view' }">
     <div class="view-scroll"><div id="dash-content"></div></div>
   </div>
 
   <!-- Lineage View (data provenance) -->
-  <div id="lineage-view" class="main-view">
+  <div id="lineage-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'lineage-view' }">
     <div class="view-scroll"><div id="lineage-content"></div></div>
   </div>
 
   <!-- Graph View -->
-  <div id="graph-view" class="main-view">
+  <div id="graph-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'graph-view' }">
     <div class="view-scroll"><div id="graph-content"></div></div>
   </div>
 
   <!-- Knowledge View (global ingested knowledge browser) -->
-  <div id="knowledge-view" class="main-view">
+  <div id="knowledge-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'knowledge-view' }">
     <div class="view-scroll"><div id="knowledge-content"></div></div>
   </div>
 
   <!-- Knowledge Precipitation (async cycle) -->
-  <div id="precipitate-view" class="main-view">
+  <div id="precipitate-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'precipitate-view' }">
     <div class="view-scroll"><div id="precipitate-content"></div></div>
   </div>
 
   <!-- Knowledge Review Queue -->
-  <div id="review-view" class="main-view">
+  <div id="review-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'review-view' }">
     <div class="view-scroll"><div id="review-content"></div></div>
   </div>
 
@@ -233,12 +241,14 @@
   </div>
 
   <!-- Journal View -->
-  <div id="journal-view" class="main-view">
+  <div id="journal-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'journal-view' }">
     <div class="view-scroll"><div id="journal-content"></div></div>
   </div>
 
   <!-- Hub View (技能交易平台) -->
-  <div id="hub-view" class="main-view">
+  <div id="hub-view" class="main-view"
+       :class="{ active: $store.nav.currentView === 'hub-view' }">
     <div style="padding:20px">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
         <span style="font-size:18px;font-weight:700;color:var(--warn)">技能市场</span>
