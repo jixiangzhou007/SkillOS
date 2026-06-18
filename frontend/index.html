@@ -281,20 +281,38 @@
   </div>
 
   <!-- Docs View (Sprint 7) -->
-  <div id="docs-view" class="main-view">
+  <div id="docs-view" class="main-view"
+       x-data="docsView()"
+       :class="{ active: $store.nav.currentView === 'docs-view' }"
+       x-init="init()">
     <div class="view-scroll" style="max-width:860px;margin:0 auto;width:100%">
       <div class="view-header">
-        <button class="nav-sm" onclick="showChat()">← 返回</button>
+        <button class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
         <div>
           <div style="font-size:16px;font-weight:600">文档</div>
           <div style="font-size:12px;color:var(--text3)">快速开始与用户指南</div>
         </div>
       </div>
       <div class="tab-row" style="margin-bottom:16px">
-        <button class="tab active" data-doc="quickstart" onclick="loadDocs('quickstart')">快速开始</button>
-        <button class="tab" data-doc="guide" onclick="loadDocs('guide')">用户指南</button>
+        <button class="tab" :class="{ active: section === 'quickstart' }" @click="loadSection('quickstart')">快速开始</button>
+        <button class="tab" :class="{ active: section === 'guide' }" @click="loadSection('guide')">用户指南</button>
       </div>
-      <div id="docs-content"></div>
+      <template x-if="loading">
+        <div style="color:var(--text3);padding:20px">加载文档…</div>
+      </template>
+      <template x-if="error">
+        <div style="color:var(--err);padding:20px">
+          文档加载失败：<span x-text="error"></span>
+          <div style="margin-top:12px;font-size:12px;color:var(--text3)">请通过 SkillOS 服务访问（如 <code>http://127.0.0.1:8765</code>），不要单独打开 HTML 文件。</div>
+          <button class="nav-sm" style="margin-top:12px" @click="loadSection(section)">重试</button>
+        </div>
+      </template>
+      <template x-if="!loading && !error && content">
+        <div>
+          <article class="doc-content" x-ref="docBody" x-html="content"></article>
+          <div x-show="source === 'static'" style="font-size:11px;color:var(--text3);margin-top:12px">（离线文档副本）</div>
+        </div>
+      </template>
     </div>
   </div>
 
