@@ -9,7 +9,6 @@ Multiple skills can share the same knowledge items — "VIP customer definition"
 is one fact, used by complaint handling, email response, and order processing.
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -17,7 +16,6 @@ import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 

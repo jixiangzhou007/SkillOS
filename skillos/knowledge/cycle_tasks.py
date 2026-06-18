@@ -1,6 +1,5 @@
 """Background tasks for full knowledge cycle (POST /api/knowledge/cycle)."""
 
-from __future__ import annotations
 
 import json
 import logging

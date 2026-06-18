@@ -1,6 +1,5 @@
 """Persistent DNA stats — philosophical stability + domain template versions."""
 
-from __future__ import annotations
 
 import json
 import logging
@@ -158,7 +157,7 @@ def parse_lineage_from_meta(meta: dict[str, Any]) -> dict[str, Any] | None:
 def backfill_skill_lineage(path: Path, *, dry_run: bool = False) -> dict[str, Any]:
     """Write dna_lineage into an existing SKILL.md if missing or stale."""
     from skillos.knowledge.dna_context import build_dna_lineage
-    from skillos.skills.skill_store import _split_front_matter, _compose
+    from skillos.skills.skill_store import _compose, _split_front_matter
 
     raw = path.read_text(encoding="utf-8")
     meta, body = _split_front_matter(raw)

@@ -1,6 +1,5 @@
 """Tests for MoE soft boost and save gate."""
 
-from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 

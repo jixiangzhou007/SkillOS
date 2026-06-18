@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """SkillOpt CLI — export SkillOS skills for external Microsoft SkillOpt-style runners."""
 
-from __future__ import annotations
 
 import argparse
 import sys

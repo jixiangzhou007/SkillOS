@@ -1,6 +1,5 @@
 """Conversion funnel + error analytics (Sprint 7)."""
 
-from __future__ import annotations
 
 import time
 

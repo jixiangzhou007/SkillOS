@@ -13,14 +13,12 @@ Usage:
     python -m skillos.skills_bench --compare          # with-skill vs without-skill
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 
@@ -267,7 +265,7 @@ if __name__ == "__main__":
             "details": score.details,
         }, ensure_ascii=False, indent=2))
     else:
-        print(f"Benchmarking all skills...")
+        print("Benchmarking all skills...")
         results = benchmark_all_skills()
         print(f"\n{'='*60}")
         print(f"{'Skill':40s} {'Total':>5s} {'Grade':>5s} {'C':>3s} {'S':>3s} {'Cp':>3s} {'R':>3s}")

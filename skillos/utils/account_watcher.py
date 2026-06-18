@@ -5,7 +5,6 @@ Usage:
   account_watcher.start_scheduler()           → checks every N hours for new articles
 """
 
-import hashlib
 import json
 import logging
 import re
@@ -131,14 +130,14 @@ def add_account(account_name: str) -> dict:
         except Exception:
             # Fallback: direct processing
             try:
-                from skillos.utils.wechat_fetch import fetch as wechat_fetch
+                from skillos.config import get_config
                 from skillos.knowledge.deep_digest import deep_digest, save_digest
                 from skillos.knowledge.extractor import extract_knowledge, save_knowledge
-                from skillos.config import get_config
+                from skillos.utils.wechat_fetch import fetch as wechat_fetch
 
                 content = wechat_fetch(url)
                 if content and len(content) > 200:
-                    from skillos.knowledge.ingest_dedup import mark_ingest_complete, should_skip_ingest
+                    from skillos.knowledge.ingest_dedup import should_skip_ingest
                     if should_skip_ingest(url, content):
                         _log.debug("Account watcher skip unchanged: %s", url[:60])
                         continue

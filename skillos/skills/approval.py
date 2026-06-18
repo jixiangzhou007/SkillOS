@@ -1,6 +1,5 @@
 """Org skill approval state machine — draft → pending → published (Sprint 3)."""
 
-from __future__ import annotations
 
 import time
 from enum import Enum

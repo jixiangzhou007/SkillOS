@@ -7,9 +7,7 @@ the runtime auto-assembles the pipeline from available skills.
 Philosophy: "卷 Harness，不卷模型" — compete on orchestration, not model size.
 """
 
-from __future__ import annotations
 
-import json
 import logging
 import re
 from dataclasses import dataclass, field

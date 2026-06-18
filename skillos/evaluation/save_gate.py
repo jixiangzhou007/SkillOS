@@ -1,6 +1,5 @@
 """Post-extraction save gate — domain smoke eval before persisting skill."""
 
-from __future__ import annotations
 
 import logging
 import os
@@ -55,8 +54,8 @@ def _resolve_smoke_task_ids(
 
 
 def _first_domain_task(skill_name: str, body: str, categories: list[str]):
-    from skillos.skillsbench_tasks import SKILLSBENCH_TASKS
     from skillos.benchmark_local import _select_quick8_tasks
+    from skillos.skillsbench_tasks import SKILLSBENCH_TASKS
 
     tasks = _select_quick8_tasks(
         skill_name, body, categories, SKILLSBENCH_TASKS, domain_only=True,

@@ -1,6 +1,5 @@
 """Department-level quotas (Sprint 7)."""
 
-from __future__ import annotations
 
 import calendar
 import time

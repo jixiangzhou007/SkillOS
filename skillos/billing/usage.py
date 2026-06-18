@@ -1,6 +1,5 @@
 """Personal Free quotas and usage tracking (Sprint 5)."""
 
-from __future__ import annotations
 
 import calendar
 import sqlite3

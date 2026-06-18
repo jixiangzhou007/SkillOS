@@ -9,7 +9,6 @@ Four enhancements:
   4. State-Grounded Retrieval — dual-signal knowledge search
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -17,7 +16,6 @@ import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 
@@ -444,7 +442,7 @@ def isolated_evaluate(
     - Test tasks (with answers if available)
     - The scoring rubric
     """
-    from skillos.evolution.skillopt import run_fresh_agent_battery, audit_skill
+    from skillos.evolution.skillopt import audit_skill, run_fresh_agent_battery
 
     # Fresh-agent execution test
     exec_result = run_fresh_agent_battery(skill_content, skill_name, test_tasks, llm_args)

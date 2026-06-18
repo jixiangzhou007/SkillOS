@@ -7,7 +7,6 @@ Usage:
   python scripts/feasibility_dialogue_test.py --compare-mcp  # dialogue vs MCP single-shot
 """
 
-from __future__ import annotations
 
 import argparse
 import json

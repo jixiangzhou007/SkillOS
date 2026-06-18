@@ -6,7 +6,6 @@ Conservative matching: when unsure, route to ``chat`` (not forced extract).
 See also: ``docs/USER_GUIDE.md``, ``skillos/skills/dispatcher.py`` (skill execution layer).
 """
 
-from __future__ import annotations
 
 import re
 from enum import Enum

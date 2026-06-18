@@ -1,6 +1,5 @@
 """MCP skill extraction — 7-step pipeline with structured result + pipeline_log."""
 
-from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
@@ -90,8 +89,8 @@ def run_mcp_extract(
 
 def _extract_skill_pipeline(preview: str, source_url: str, llm_args: tuple) -> ExtractResult:
     from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
-    from skillos.skills.agent import SkillExtractionAgent
     from skillos.skills import skill_store
+    from skillos.skills.agent import SkillExtractionAgent
 
     agent = SkillExtractionAgent()
     try:

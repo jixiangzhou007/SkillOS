@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Cold-start extract 3 skills in NEW domains (generalization experiment)."""
-from __future__ import annotations
 
 import json
 import os

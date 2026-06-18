@@ -1,6 +1,5 @@
 """Public documentation API (Sprint 7)."""
 
-from __future__ import annotations
 
 import os
 from pathlib import Path

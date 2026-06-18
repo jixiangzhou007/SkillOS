@@ -12,9 +12,8 @@ Cross-domain inheritance: a skill can inherit from multiple philosophical
 patterns. When patterns conflict, the skill must choose a dominant parent.
 """
 
-from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
 
@@ -210,20 +209,20 @@ def cross_domain_conflict_check(methods: list[PhilosophicalDNA]) -> list[str]:
             # PDCA vs OODA: both are iterative, but PDCA is slow/standardized, OODA is fast/adaptive
             if {a.method_id, b.method_id} == {"pdca", "ooda"}:
                 conflicts.append(
-                    f"PDCA(标准化渐进) vs OODA(快速适应): "
-                    f"两者都是迭代循环，但节奏不同。请明确本流程偏向SOP化(PDCA)还是实时响应(OODA)。"
+                    "PDCA(标准化渐进) vs OODA(快速适应): "
+                    "两者都是迭代循环，但节奏不同。请明确本流程偏向SOP化(PDCA)还是实时响应(OODA)。"
                 )
             # Scientific vs Pragmatic: rigor vs speed
             if {a.method_id, b.method_id} == {"scientific-method", "pragmatic"}:
                 conflicts.append(
-                    f"科学方法(严谨可复现) vs 实用主义(快速迭代): "
-                    f"两者对待'实验'的标准不同。请明确本流程偏向严谨验证还是快速试错。"
+                    "科学方法(严谨可复现) vs 实用主义(快速迭代): "
+                    "两者对待'实验'的标准不同。请明确本流程偏向严谨验证还是快速试错。"
                 )
             # Reductionist vs Dialectical: decomposition vs synthesis
             if {a.method_id, b.method_id} == {"reductionist", "dialectical"}:
                 conflicts.append(
-                    f"还原论(分解分析) vs 辩证论(对立统一): "
-                    f"两者分析问题的方式相反。请明确本流程侧重逐层分解还是寻找对立观点。"
+                    "还原论(分解分析) vs 辩证论(对立统一): "
+                    "两者分析问题的方式相反。请明确本流程侧重逐层分解还是寻找对立观点。"
                 )
     return conflicts
 

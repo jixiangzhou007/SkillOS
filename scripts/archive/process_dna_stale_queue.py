@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Refresh stale dna_lineage queue and optionally re-backfill skills."""
 
-from __future__ import annotations
 
 import argparse
 import json

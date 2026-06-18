@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Local LLM agent compare — mirrors official presets using SkillOS Quick8 (Windows-safe)."""
-from __future__ import annotations
 
 import argparse
 import json

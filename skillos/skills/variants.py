@@ -11,7 +11,6 @@ When multiple people contribute solutions to the same problem:
   存异 (Divergence)  → Variants with epistemic annotations
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -223,11 +222,11 @@ def format_variant_comparison(archetype: str) -> str:
     lines.append(f"\n{result['total_variants']} 个变体，{len(result['creators'])} 位贡献者")
 
     if result["commonality"]:
-        lines.append(f"\n### 🤝 共识（求同）")
+        lines.append("\n### 🤝 共识（求同）")
         lines.append(f"所有变体共同认可的要素: {', '.join(result['commonality'][:8])}")
 
     if result["divergence"]:
-        lines.append(f"\n### 🔀 分歧（存异）")
+        lines.append("\n### 🔀 分歧（存异）")
         for d in result["divergence"][:5]:
             lines.append(f"- **{d['creator']}**: {d['step']} → {d['override'][:60]} (基础: {d['base'][:40]})")
 
@@ -360,7 +359,6 @@ def auto_detect_variants() -> list[dict]:
     Uses pattern_miner archetypes + content overlap to group skills.
     Returns list of groups that could be variant families.
     """
-    from skillos.skills import skill_store
     from skillos.skills.pattern_miner import profile_all_skills
 
     profiles = profile_all_skills()

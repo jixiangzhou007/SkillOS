@@ -9,7 +9,6 @@ Tables:
 Zero extra dependencies — sqlite3 is Python stdlib.
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -19,7 +18,6 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 

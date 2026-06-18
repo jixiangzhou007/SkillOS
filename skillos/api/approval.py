@@ -1,6 +1,5 @@
 """Skill approval API (Sprint 3)."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel

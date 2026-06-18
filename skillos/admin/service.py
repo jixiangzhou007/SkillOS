@@ -1,6 +1,5 @@
 """Org admin overview, quotas, usage (Sprint 6)."""
 
-from __future__ import annotations
 
 import time
 from dataclasses import dataclass

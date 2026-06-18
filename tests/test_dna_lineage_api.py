@@ -1,6 +1,5 @@
 """Phase 6 — DNA lineage API for frontend tab."""
 
-from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient

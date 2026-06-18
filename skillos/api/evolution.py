@@ -1,6 +1,5 @@
 """Skill evolution endpoints — optimization, MoE routing, decision history."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 

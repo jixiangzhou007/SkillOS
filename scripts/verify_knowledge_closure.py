@@ -4,7 +4,6 @@
 Runs offline checks without requiring a live API server.
 Exit 0 = all checks passed.
 """
-from __future__ import annotations
 
 import hashlib
 import subprocess

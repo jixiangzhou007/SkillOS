@@ -16,7 +16,6 @@ Pipeline (6 stages):
   6. Cross-Reference    — Link to existing skills and knowledge graph
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -24,7 +23,6 @@ import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 
@@ -666,12 +664,12 @@ def _build_manifest_md(result: DigestResult) -> str:
         "",
         "## 文件索引",
         "",
-        f"| 文件 | 内容 |",
-        f"|------|------|",
-        f"| overview.md | 核心论点与关键论证 |",
+        "| 文件 | 内容 |",
+        "|------|------|",
+        "| overview.md | 核心论点与关键论证 |",
         f"| glossary.md | {len(result.glossary)} 个术语定义 |",
         f"| patterns.md | {len(result.patterns)} 个模式与启发式 |",
-        f"| cheatsheet.md | 速查表 |",
+        "| cheatsheet.md | 速查表 |",
     ]
 
     if result.sections:

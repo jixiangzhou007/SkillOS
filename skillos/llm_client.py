@@ -60,8 +60,8 @@ def call(
     model_name = model or cfg.model
 
     try:
-        from skillos.identity.context import get_tenant_context
         from skillos.billing.usage import QuotaExceededError, check_llm_quota
+        from skillos.identity.context import get_tenant_context
         ctx = get_tenant_context()
         if ctx:
             check_llm_quota(ctx.tenant_id, ctx.user_id, ctx.dept_id)
@@ -101,8 +101,8 @@ def call(
             )
             text = (response.choices[0].message.content or "").strip()
             try:
-                from skillos.identity.context import get_tenant_context
                 from skillos.billing.usage import record_llm_usage
+                from skillos.identity.context import get_tenant_context
                 ctx = get_tenant_context()
                 if ctx:
                     record_llm_usage(ctx.tenant_id, ctx.user_id, ctx.dept_id)

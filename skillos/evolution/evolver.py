@@ -9,16 +9,13 @@ Inspired by GEPA (genetic-pareto evolution), SkillOpt (controlled text edits),
 and OpenAI's self-evolving agents cookbook.
 """
 
-from __future__ import annotations
 
 import json
 import logging
-import os
-import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 _log = logging.getLogger(__name__)
 

@@ -7,7 +7,6 @@ Labels:
   needs_corroboration  — valid only with ≥2 independent sources
 """
 
-from __future__ import annotations
 
 DOMAINS = ("code_review", "incident", "onboarding", "security", "data", "general")
 

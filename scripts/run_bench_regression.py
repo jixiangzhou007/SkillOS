@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Local benchmark regression — reference Quick8 + generalize domain Quick8 + smoke gates."""
-from __future__ import annotations
 
 import json
 import os

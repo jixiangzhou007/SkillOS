@@ -1,6 +1,5 @@
 """Ingest metrics — precipitation success rate and lineage coverage."""
 
-from __future__ import annotations
 
 import json
 import logging
@@ -106,8 +105,8 @@ def get_metrics_summary(window_hours: float = DEFAULT_WINDOW_HOURS) -> dict[str,
     recent_failures.sort(key=lambda x: x.get("timestamp") or 0, reverse=True)
 
     try:
-        from skillos.knowledge.refresher import is_periodic_refresh_running
         from skillos.config import get_config
+        from skillos.knowledge.refresher import is_periodic_refresh_running
         cfg = get_config()
         refresher_running = is_periodic_refresh_running()
         refresher_interval = cfg.refresh_interval_hours

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Backfill domain / bench_categories into existing SKILL.md files."""
 
-from __future__ import annotations
 
 import argparse
 import json

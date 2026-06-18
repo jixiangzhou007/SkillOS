@@ -1,6 +1,5 @@
 """Role-based skill & MetaSkill template recommendations (Phase 4 extension)."""
 
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 
@@ -153,7 +152,8 @@ def recommend_for_role(role_id: str, *, tenant=None, limit: int = 8) -> dict:
         raise LookupError(role_id)
 
     from skillos.marketplace.registry import list_skills as list_market
-    from skillos.skills.skill_store import list_skills as list_tenant, load_skill_raw
+    from skillos.skills.skill_store import list_skills as list_tenant
+    from skillos.skills.skill_store import load_skill_raw
 
     catalog: list[dict] = []
     for skill in list_market(status="approved", sort_by="score"):

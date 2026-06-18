@@ -1,6 +1,5 @@
 """DNA + routing golden set runner for CI (offline, no LLM)."""
 
-from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field

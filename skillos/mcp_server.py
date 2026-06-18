@@ -33,7 +33,6 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
 
@@ -66,8 +65,8 @@ def extract_skill(
     Returns:
         Summary, pipeline log, epistemic counts, paths, and SKILL.md preview
     """
-    from skillos.mcp_extract import run_mcp_extract
     from skillos.identity.mcp_context import mcp_tenant_context
+    from skillos.mcp_extract import run_mcp_extract
 
     with mcp_tenant_context():
         result = run_mcp_extract(content, source_url=source_url, mode=mode)
@@ -135,8 +134,8 @@ def list_skills(query: str = "") -> str:
         List of skill names with basic metadata
     """
     try:
-        from skillos.skills.skill_store import list_skills, load_skill, get_skill_body
         from skillos.identity.mcp_context import mcp_tenant_context
+        from skillos.skills.skill_store import get_skill_body, list_skills, load_skill
 
         with mcp_tenant_context():
             skills = list_skills()
@@ -175,8 +174,8 @@ def get_skill(name: str) -> str:
         Full skill document in Markdown
     """
     try:
-        from skillos.skills.skill_store import load_skill, load_skill_raw
         from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
+        from skillos.skills.skill_store import load_skill, load_skill_raw
         content = load_skill(name)
         raw = load_skill_raw(name)
         ep = format_epistemic_api_payload(raw.get("meta", {}))
@@ -331,10 +330,9 @@ def evolve_skill(name: str, feedback: str = "") -> str:
     import time
 
     try:
-        from skillos.skills.skill_store import load_skill, get_skill_body
         from skillos.config import get_config
         from skillos.evolution.skillopt import OptimizationSession, compute_skill_state, route
-        from skillos.evolution.skillhone import build_decision_context, isolated_evaluate
+        from skillos.skills.skill_store import get_skill_body, load_skill
 
         content = load_skill(name)
         body = get_skill_body(content)
@@ -357,7 +355,7 @@ def evolve_skill(name: str, feedback: str = "") -> str:
             f"State: {state.trace_count} traces, score={state.score_mean:.1f}±{state.score_variance:.1f}, {state.days_since_creation:.0f}d old",
             f"Router: {decision.primary.name} (confidence: {decision.confidence:.0%})",
             f"Reasoning: {decision.reasoning}",
-            f"",
+            "",
             f"Result: {'ACCEPTED' if result.get('accepted') else 'REJECTED'}",
             f"Score: {result.get('old_score', 0):.1f} → {result.get('new_score', 0):.1f}",
             f"Budget: {result.get('budget', 0)} edits",
@@ -515,8 +513,8 @@ def ingest_file(file_path: str) -> str:
         return f"File not found: {file_path}"
 
     try:
-        from skillos.utils.file_ingest import ingest_and_learn
         from skillos.config import get_config
+        from skillos.utils.file_ingest import ingest_and_learn
 
         cfg = get_config()
         result = ingest_and_learn(

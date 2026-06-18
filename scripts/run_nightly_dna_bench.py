@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Nightly DNA + SkillsBench benchmark (offline golden + optional LLM compare)."""
 
-from __future__ import annotations
 
 import json
 import os

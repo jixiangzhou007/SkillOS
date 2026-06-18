@@ -1,6 +1,5 @@
 """Platform-wide scale metrics (Sprint 9 — 200 skill goal)."""
 
-from __future__ import annotations
 
 SKILL_GOAL = 200
 ORG_GOAL = 5

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Trigger Official SkillsBench GitHub Actions workflow."""
-from __future__ import annotations
 
 import argparse
 import json

@@ -4,15 +4,15 @@
   "source_title": "合同审核",
   "created_at": 1781594515.3930228,
   "summary": {
-    "total_items": 4,
+    "total_items": 5,
     "by_category": {
-      "heuristic": 4
+      "heuristic": 5
     },
     "by_epistemic_level": {
-      "knowledge": 4
+      "knowledge": 5
     },
     "confidence_distribution": {
-      "high": 4,
+      "high": 5,
       "medium": 0,
       "low": 0
     }
@@ -56,16 +56,17 @@
       "created_at": 1781594515.3928034,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781594515.3928034
     },
     {
       "item_id": "ki_dcb66156",
       "content": "技能「合同审核」: 快速、标准化地审核销售合同，识别关键风险点并给出修改建议。",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.85,
+      "strength": 1.05,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -81,20 +82,21 @@
           "timestamp": 1781795917.4601705
         }
       ],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781795917.4601705,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781795917.4601705
     },
     {
       "item_id": "ki_2c65a1e7",
       "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，输出审核意见，降低签约风险。",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.85,
+      "strength": 1.05,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -116,20 +118,21 @@
           "timestamp": 1781796064.3067005
         }
       ],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796064.3067005,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796064.3067005
     },
     {
       "item_id": "ki_ba68c0b5",
       "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，并给出修改建议。",
       "category": "heuristic",
-      "confidence": 0.75,
+      "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.75,
+      "strength": 0.95,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -145,11 +148,42 @@
           "timestamp": 1781796409.3094237
         }
       ],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796409.3094237,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796409.3094237
+    },
+    {
+      "item_id": "ki_df1de282",
+      "content": "技能「合同审核」: 确保销售合同中的关键商业和法律条款符合我方利益，识别并标记风险条款。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.9,
+      "source": {
+        "url": "session:test-meta-no-restart",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "合同审核",
+          "score_delta": 1.0,
+          "timestamp": 1781797935.5699835
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781797935.5699835,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781797935.5699835
     }
   ]
 }

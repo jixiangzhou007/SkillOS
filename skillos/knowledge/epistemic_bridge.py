@@ -5,13 +5,11 @@ record_claim(), optionally runs Popper-style falsification, and writes
 epistemic metadata back into skill frontmatter + body annotations.
 """
 
-from __future__ import annotations
 
 import logging
 import re
 import time
 from dataclasses import dataclass, field
-from typing import Optional
 
 from skillos.knowledge.epistemology import (
     EpistemicClaim,

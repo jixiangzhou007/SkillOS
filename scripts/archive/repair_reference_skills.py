@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Repair reference skills: sanitize body, structure pipeline, bench_quality meta."""
-from __future__ import annotations
 
 import json
 import sys

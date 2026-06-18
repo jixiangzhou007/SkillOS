@@ -1,6 +1,5 @@
 """Tests for DNA lineage persistence (Phase 2)."""
 
-from __future__ import annotations
 
 from skillos.knowledge.dna_context import build_dna_lineage, build_skill_dna_meta
 from skillos.knowledge.dna_store import (

@@ -1,6 +1,5 @@
 """Official SkillsBench agent compare presets (no-skill vs with-skill)."""
 
-from __future__ import annotations
 
 # CI / local quick compare presets
 AGENT_COMPARE_PRESETS: list[dict[str, str]] = [

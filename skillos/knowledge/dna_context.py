@@ -4,7 +4,6 @@ Layer 0 (philosophical DNA) owns methodology; taxonomy supplies domain only.
 Replaces dual injection of taxonomy.methodology + philosophical_dna in agent paths.
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone

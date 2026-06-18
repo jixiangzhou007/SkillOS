@@ -20,7 +20,7 @@
 - 本地评测指南：[`docs/BENCHMARK_LOCAL.md`](docs/BENCHMARK_LOCAL.md)
 
 ### 测试
-- DNA / 路由 / 冷启动 / ablation 单测；全量 pytest 见 [`docs/AI_DEV_LOG.md`](docs/AI_DEV_LOG.md) 项目快照
+- DNA / 路由 / 冷启动 / ablation 单测；全量 501 collected，478 pass / 21 fail（`--ignore=tests/test_feasibility_eval.py`，2026-06-18）
 
 ---
 

@@ -1,8 +1,20 @@
 # SkillOS 差距分析（设计声称 vs 运行时现状）
 
-> **基线日期**：2026-06-14 · Phase 0 产出  
+> **基线日期**：2026-06-14 · **更新**：2026-06-18（Layer 1 bench 闭合）  
 > **依据**：`DESIGN.md`、`docs/PAPERS.md`、pytest、benchmark、源码 grep  
 > **优先级**：P0 阻塞产品/API · P1 Phase 1–2 核心 · P2 Phase 3+ · P3 延后
+
+---
+
+## 2026-06-18 更新摘要
+
+| 类别 | 原差距 | 现状 |
+|------|--------|------|
+| Layer 1 领域 DNA bench | 无 held-out / 无 ablation | **已闭合** — median 泛化 Δ +45；HERITAGE×pack 2×2 见 [`layer1_ablation_results.md`](../paper/experiments/layer1_ablation_results.md) |
+| Path B 冷启动 | Playbook 绑定未产品化 | **部分闭合** — `cold_start.py` + 10 pack；泛化三技能可自动 HERITAGE |
+| 本地 bench 回归 | 仅 3 用例结构 benchmark | **已扩展** — `run_bench_regression.py` + Quick8 cohort |
+| pytest 规模 | 123 collected | **501 collected**（`test_feasibility_eval.py` 仍收集失败，需 ignore） |
+| 认识论主链路 | 曾零调用 | Phase 1 已接入（见 §1 表） |
 
 ---
 
@@ -61,6 +73,8 @@
 | Pipeline vs Baseline 实验 | 3 用例，结构指标 only | P1 |
 | false claim 过滤率 | **100 条标注集 + ablation 指标**（C_full false_filter=1.0） | — | 完成 |
 | Ablation A/B/C | `benchmark_epistemic.py` 离线/LLM 可复现 | — | 完成 |
+| **Layer 1 HERITAGE×pack ablation** | **2×2 factorial，泛化 median Δ +45** | — | **2026-06-18 完成** |
+| **本地 Quick8 回归** | `run_bench_regression.py` + 参考/泛化 cohort | — | **2026-06-18 完成** |
 | 52 格级进化 benchmark | 无 | P3 Phase 7 |
 
 ### 5. 产品叙事（用户确认方向）

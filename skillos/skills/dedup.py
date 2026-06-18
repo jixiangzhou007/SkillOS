@@ -1,6 +1,5 @@
 """Similar-skill detection for org dedup hints (Sprint 4)."""
 
-from __future__ import annotations
 
 from skillos.skills.variants import _name_similarity
 
@@ -27,7 +26,7 @@ def find_similar_skills(
     limit: int = 5,
 ) -> list[dict]:
     """Return similar skills in the same tenant (name + body overlap)."""
-    from skillos.skills.skill_store import list_skills, load_skill_raw, get_skill_body
+    from skillos.skills.skill_store import get_skill_body, list_skills, load_skill_raw
 
     candidates: list[dict] = []
     for other in list_skills(tenant=tenant):

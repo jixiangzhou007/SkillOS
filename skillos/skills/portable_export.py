@@ -1,6 +1,5 @@
 """Zip bundle for one-click install (Cursor / Claude Code / Trae)."""
 
-from __future__ import annotations
 
 import io
 import zipfile

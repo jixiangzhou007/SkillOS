@@ -9,7 +9,6 @@ Usage:
 After migration, set ``SKILLOS_LEGACY_MODE=false`` and point new writes at tenants.
 """
 
-from __future__ import annotations
 
 import argparse
 import shutil

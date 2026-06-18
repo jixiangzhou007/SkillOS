@@ -1,6 +1,5 @@
 """Tenant context — thread-local workspace for skill path isolation."""
 
-from __future__ import annotations
 
 import contextvars
 import os

@@ -8,8 +8,8 @@ Use: `skillos watch` starts the watcher. Files dropped into
 """
 
 import logging
-import time
 import threading
+import time
 from pathlib import Path
 from typing import Callable
 

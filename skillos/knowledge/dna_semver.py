@@ -1,6 +1,5 @@
 """Semver helpers for domain template DNA versions."""
 
-from __future__ import annotations
 
 
 def parse_semver(version: str) -> tuple[int, int, int]:

@@ -1,6 +1,5 @@
 """Platform user id normalization."""
 
-from __future__ import annotations
 
 
 def to_platform_user_id(user_id: str) -> str:

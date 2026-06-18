@@ -1,12 +1,12 @@
 ---
 name: __legacy_other__
 created_at: '2026-06-14T04:53:05Z'
-updated_at: '2026-06-18T15:28:16Z'
+updated_at: '2026-06-18T15:59:50Z'
 dna_lineage:
   philosophical: []
   domain: []
-  detected_at: '2026-06-18T15:28:16Z'
-version: 18
+  detected_at: '2026-06-18T15:59:50Z'
+version: 21
 ---
 
 ## S_body

@@ -17,14 +17,11 @@ Review gate:
   - score < 50 → auto-rejected
 """
 
-from __future__ import annotations
 
 import json
 import logging
-import re
 import time
 from dataclasses import dataclass, field
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 

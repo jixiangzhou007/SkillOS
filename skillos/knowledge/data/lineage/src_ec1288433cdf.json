@@ -22,10 +22,10 @@
       "item_id": "ki_b70f5279",
       "content": "技能「电商客服退款处理」: 标准化处理买家发起的退款/退货请求，在风险可控的前提下自动完成退款，减少人工介入。",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.0,
+      "strength": 1.3,
       "source": {
         "url": "p0-heritage",
         "paragraph": 0
@@ -41,7 +41,7 @@
           "timestamp": 1781714097.0594323
         }
       ],
-      "access_count": 2,
+      "access_count": 4,
       "created_at": 1781714097.0594323,
       "valid_at": 0.0,
       "invalid_at": 0.0,

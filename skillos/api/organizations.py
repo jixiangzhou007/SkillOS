@@ -1,6 +1,5 @@
 """Organization management API (Sprint 2 — pilot)."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel

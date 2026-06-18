@@ -1,5 +1,4 @@
 """Quick 8-task SkillsBench compare for the 3 user-sim extracted skills."""
-from __future__ import annotations
 
 import json
 import sys

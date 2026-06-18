@@ -1,5 +1,4 @@
 """Phase 1: official SkillsBench eval — oracle smoke + optional SkillOS skill export/compare."""
-from __future__ import annotations
 
 import argparse
 import json

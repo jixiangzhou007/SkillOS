@@ -1,10 +1,9 @@
 """Intelligence API — role templates, pipeline viz helpers."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from skillos.identity.middleware import AuthContext, get_optional_auth, require_auth
+from skillos.identity.middleware import AuthContext, get_optional_auth
 
 router = APIRouter()
 

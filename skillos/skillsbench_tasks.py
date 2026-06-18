@@ -3,12 +3,11 @@
 Exceeds official SkillsBench 84-task count.
 Deterministic regex-based grading. No LLM judge needed.
 """
-from __future__ import annotations
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any
 import json
 import re
+from dataclasses import dataclass, field
+from typing import Any
+
 
 @dataclass
 class SkillBenchTask:
@@ -806,9 +805,9 @@ def run_task_evaluation(
     pack_scoped_inject: bool = True,
 ) -> dict:
     """Run a single SkillsBench task with optional skill augmentation."""
+    from skillos.config import get_config
     from skillos.knowledge.skill_routing import resolve_skill_injection
     from skillos.llm_client import call
-    from skillos.config import get_config
 
     task = next((t for t in SKILLSBENCH_TASKS if t.task_id == task_id), None)
     if not task:

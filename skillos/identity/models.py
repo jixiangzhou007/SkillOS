@@ -1,6 +1,5 @@
 """Tenant / organization persistence (SQLite via skillos.db)."""
 
-from __future__ import annotations
 
 import sqlite3
 import time

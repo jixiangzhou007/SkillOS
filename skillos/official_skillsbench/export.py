@@ -1,6 +1,5 @@
 """Export SkillOS skills to official BenchFlow --skills-dir layout."""
 
-from __future__ import annotations
 
 import re
 from pathlib import Path

@@ -1,6 +1,5 @@
 """Sprint 1 — JWT auth, workspaces, register flow."""
 
-from __future__ import annotations
 
 import uuid
 

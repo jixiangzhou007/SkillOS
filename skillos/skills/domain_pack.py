@@ -1,6 +1,5 @@
 """Dynamic domain packs — auto-generated HERITAGE, smoke tasks, routing (Path B cold start)."""
 
-from __future__ import annotations
 
 import json
 import time

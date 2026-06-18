@@ -3,7 +3,6 @@
 LLM Wiki: every ingest/query should read the team's PURPOSE and playbook.
 """
 
-from __future__ import annotations
 
 from skillos.knowledge.playbook import get_playbook_context, get_purpose_context
 

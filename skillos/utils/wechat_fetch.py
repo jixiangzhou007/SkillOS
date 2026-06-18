@@ -14,15 +14,13 @@ Fallback: if CDP proxy isn't running, tries a best-effort HTTP fetch with
 search-engine User-Agent. This is less reliable but works for some URLs.
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import re
 import time
-import urllib.request
 import urllib.error
-from typing import Optional
+import urllib.request
 
 _log = logging.getLogger(__name__)
 

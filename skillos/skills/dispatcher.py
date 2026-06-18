@@ -10,7 +10,6 @@ and documented in ``docs/USER_GUIDE.md``.  This module handles *skill execution*
 after a skill is already saved; do not duplicate trigger tables here.
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -18,9 +17,8 @@ from typing import Any, Optional
 
 from openai import OpenAI
 
-from skillos.skills import agent_factory
 from skillos.config import get_config
-from skillos.skills import skill_store
+from skillos.skills import agent_factory, skill_store
 
 logger = logging.getLogger(__name__)
 
@@ -232,8 +230,8 @@ def dispatch(
         messages.append({"role": "user", "content": user_message})
 
         # Add web search + fetch tools even when no skills
-        from skillos.utils.web_search import get_tool_definition as _ws_tool
         from skillos.utils.web_fetch import get_tool_definition as _wf_tool
+        from skillos.utils.web_search import get_tool_definition as _ws_tool
         no_skill_tools = [_ws_tool(), _wf_tool()]
 
         response = client.chat.completions.create(
@@ -288,8 +286,8 @@ def dispatch(
             tools = tools[:MAX_TOOLS_PER_REQUEST]
 
     # Always include web search + fetch tools
-    from skillos.utils.web_search import get_tool_definition as _ws_tool
     from skillos.utils.web_fetch import get_tool_definition as _wf_tool
+    from skillos.utils.web_search import get_tool_definition as _ws_tool
     tools.append(_ws_tool())
     tools.append(_wf_tool())
 
@@ -435,7 +433,7 @@ def dispatch(
                         parts = [f"## Pipeline: {ms.name}\n"]
                         for i, t in enumerate(result.trace):
                             parts.append(f"{i+1}. {t}")
-                        parts.append(f"\n## Results")
+                        parts.append("\n## Results")
                         for k, v in result.outputs.items():
                             parts.append(f"\n### {k}\n{v[:500]}")
                         skill_result = "\n".join(parts)

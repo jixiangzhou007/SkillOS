@@ -327,8 +327,8 @@ async def add_watched_account(name: str = "", interval_hours: float = 6.0):
     """Add a WeChat account to watch and optionally start scheduler."""
     if not name:
         return {"error": "name required"}
-    from skillos.utils.account_watcher import add_account, start_scheduler
     from skillos.knowledge.incremental_store import get_incremental_store
+    from skillos.utils.account_watcher import add_account, start_scheduler
     result = add_account(name)
     get_incremental_store().update_account_meta(
         name, interval_hours=interval_hours, active=True,

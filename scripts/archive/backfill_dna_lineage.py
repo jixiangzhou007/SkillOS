@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Backfill dna_lineage into existing SKILL.md frontmatter."""
 
-from __future__ import annotations
 
 import argparse
 import json

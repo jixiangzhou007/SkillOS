@@ -1,6 +1,5 @@
 """Sprint 2 — Web portal v0: register → list tenant-scoped skills."""
 
-from __future__ import annotations
 
 import uuid
 from unittest.mock import MagicMock, patch

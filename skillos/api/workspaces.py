@@ -1,6 +1,5 @@
 """Workspace switch API (Sprint 1 · F5)."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -36,9 +35,9 @@ async def list_workspaces(auth: AuthContext = Depends(require_auth)):
 
 @router.post("/switch")
 async def switch_workspace(req: SwitchWorkspaceRequest, auth: AuthContext = Depends(require_auth)):
-    from skillos.identity.workspaces import set_default_workspace
-    from skillos.identity.middleware import issue_auth_token
     from skillos.identity.audit import log_workspace_switch
+    from skillos.identity.middleware import issue_auth_token
+    from skillos.identity.workspaces import set_default_workspace
     from skillos.marketplace.auth import get_user, user_to_dict
 
     try:

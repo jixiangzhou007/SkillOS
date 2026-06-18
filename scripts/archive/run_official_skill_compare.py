@@ -1,5 +1,4 @@
 """Run official SkillsBench no-skill vs with-skill agent compare."""
-from __future__ import annotations
 
 import argparse
 import json

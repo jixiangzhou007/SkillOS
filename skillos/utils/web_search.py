@@ -1,10 +1,8 @@
 """Web search tool for LLM to look up information online."""
-from __future__ import annotations
 
-import json
 import logging
-import urllib.request
 import urllib.parse
+import urllib.request
 
 _log = logging.getLogger(__name__)
 

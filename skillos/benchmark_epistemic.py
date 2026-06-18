@@ -11,7 +11,6 @@ Usage:
     python -m skillos.benchmark_epistemic --sync-dataset
 """
 
-from __future__ import annotations
 
 import argparse
 import json
@@ -103,7 +102,7 @@ def eval_baseline(claim: dict) -> ClaimResult:
 
 
 def eval_classify(claim: dict, llm_args: tuple | None) -> ClaimResult:
-    from skillos.knowledge.epistemology import classify_claim, EpistemicLevel
+    from skillos.knowledge.epistemology import EpistemicLevel, classify_claim
 
     use_llm = bool(llm_args and llm_args[0])
     level = classify_claim(

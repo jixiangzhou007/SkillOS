@@ -1,6 +1,5 @@
 """Sprint 2 — Organization API and pilot bootstrap."""
 
-from __future__ import annotations
 
 import uuid
 

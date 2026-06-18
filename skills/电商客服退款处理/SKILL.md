@@ -23,7 +23,7 @@ dna_lineage:
     version: 1.2.0
     weight: 1.0
     primary: true
-  detected_at: '2026-06-18T15:27:07Z'
+  detected_at: '2026-06-18T15:52:33Z'
 domain_template: workflow-refund
 bench_categories:
 - documentation

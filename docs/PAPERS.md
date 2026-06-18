@@ -40,7 +40,8 @@ SkillOS 的三个核心创新可以拆成三篇独立论文，覆盖技能全生
 
 - 对比基线：无认识论层 vs 有认识论层的技能质量
 - 指标：false claim 过滤率、knowledge 晋升准确率
-- 数据：用 SkillOS 的 `benchmark.py` 自评基准
+- 数据：100 条标注集 — [`epistemic_results.md`](paper/experiments/epistemic_results.md)
+- **Layer 1 补充（2026-06-18）**：领域 HERITAGE×pack 路由 2×2 ablation — 泛化 cohort median Quick8 Δ +45 — [`layer1_ablation_results.md`](paper/experiments/layer1_ablation_results.md)
 
 ### 创新性
 

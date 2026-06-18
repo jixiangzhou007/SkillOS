@@ -1,6 +1,5 @@
 """Org governance metrics — verified rate target (Sprint 11, M9–M12)."""
 
-from __future__ import annotations
 
 from skillos.identity.context import TenantContext
 from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload

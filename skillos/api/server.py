@@ -53,7 +53,7 @@ async def _lifespan(app):
             _log.warning("File watcher failed to start: %s", exc)
     # Ingestion queue processor (serialises watcher outputs, enables gap research)
     try:
-        from skillos.knowledge.ingestion_queue import start_queue_processor, recover_pending
+        from skillos.knowledge.ingestion_queue import recover_pending, start_queue_processor
         pending = recover_pending()
         if pending:
             _log.info("Recovered %d pending ingestion tasks after restart", len(pending))
@@ -97,7 +97,26 @@ async def _http_exception_handler(request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 
-from skillos.api import skills, knowledge, evolution, marketplace, auth, workspaces, organizations, org_admin, approval, channels, usage, analytics, docs_api, billing, voice, intelligence, bench_official
+from skillos.api import (
+    analytics,
+    approval,
+    auth,
+    bench_official,
+    billing,
+    channels,
+    docs_api,
+    evolution,
+    intelligence,
+    knowledge,
+    marketplace,
+    org_admin,
+    organizations,
+    skills,
+    usage,
+    voice,
+    workspaces,
+)
+
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(workspaces.router, prefix="/api/workspaces", tags=["Workspaces"])
 app.include_router(organizations.router, prefix="/api/orgs", tags=["Organizations"])

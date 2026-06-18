@@ -1,6 +1,5 @@
 """Ablation factorial helpers."""
 
-from __future__ import annotations
 
 from skillos.evaluation.ablation import (
     ABLATION_CONDITIONS,

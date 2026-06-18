@@ -1,6 +1,5 @@
 """Local SkillsBench quick8 / workflow benchmark lookups and runner."""
 
-from __future__ import annotations
 
 import json
 import re
@@ -283,7 +282,11 @@ def _select_quick8_tasks(
     domain_only: bool,
     domain_template: str | None = None,
 ) -> list[Any]:
-    from skillos.knowledge.skill_routing import primary_bench_category, rank_bench_tasks_for_skill, resolve_skill_injection
+    from skillos.knowledge.skill_routing import (
+        primary_bench_category,
+        rank_bench_tasks_for_skill,
+        resolve_skill_injection,
+    )
     from skillos.skills.domain_pack import get_pack_task_ids
 
     pack_ids = get_pack_task_ids(domain_template)

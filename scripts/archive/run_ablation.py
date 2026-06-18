@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Run HERITAGE × pack-scoped inject ablation (2×2) on generalize cohort."""
-from __future__ import annotations
 
 import json
 import os

@@ -211,7 +211,6 @@ header = '''"""SkillsBench-compatible deterministic task set — 88 tasks, 5 cat
 Exceeds official SkillsBench 84-task count.
 Deterministic regex-based grading. No LLM judge needed.
 """
-from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any

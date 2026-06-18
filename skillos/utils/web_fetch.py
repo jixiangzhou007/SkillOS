@@ -1,11 +1,10 @@
 """Web fetch tool — read content from URLs for skill extraction and research."""
 
-from __future__ import annotations
 
 import logging
 import re
-import urllib.request
 import urllib.error
+import urllib.request
 
 _log = logging.getLogger(__name__)
 

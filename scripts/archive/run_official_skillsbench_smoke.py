@@ -10,7 +10,6 @@ Usage:
   python scripts/run_official_skillsbench_smoke.py
   python scripts/run_official_skillsbench_smoke.py --task citation-check --skip-download
 """
-from __future__ import annotations
 
 import argparse
 import json

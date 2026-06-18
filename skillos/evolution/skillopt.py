@@ -6,15 +6,12 @@ Key insight: treat skill.md as trainable external state — target model frozen,
 optimizer model proposes small, verifiable edits with a validation gate.
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import re
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Optional
 
 _log = logging.getLogger(__name__)
 
@@ -111,7 +108,7 @@ class OptimizationSession:
 def collect_traces(skill_name: str) -> list[dict]:
     """Collect recent execution traces for a skill."""
     try:
-        from skillos.evolution.evolver import record_trace, get_recent_traces
+        from skillos.evolution.evolver import get_recent_traces
         traces = get_recent_traces(skill_name, 20)
         return [t for t in traces if t.get("score", 0) > 0]
     except Exception as e:
@@ -180,7 +177,7 @@ def analyze_traces(
     if failures:
         all_fb = " ".join(t.get("feedback", "") + " " + t.get("failure_root_cause", "")
                           for t in failures)
-        lines.append(f"\n### 🔍 高频失败模式")
+        lines.append("\n### 🔍 高频失败模式")
         patterns = _extract_patterns(all_fb)
         for p in patterns[:5]:
             lines.append(f"- {p}")
@@ -225,8 +222,8 @@ def validate_skill(
     Returns:
         (main_score, {model_name: score, ...})
     """
+    from skillos.evolution.evolver import record_trace
     from skillos.skills import agent_factory
-    from skillos.evolution.evolver import record_trace, get_recent_traces
 
     test_tasks = []
     if val_traces:
@@ -903,7 +900,7 @@ def build_enhanced_optimizer_prompt(
         prompt += "\n" + elite_pool.get_elimination_feedback()
 
     # Add the "创可贴式进化" warning
-    prompt += f"""
+    prompt += """
 
 ## ⚠️ 防创可贴式进化原则
 1. **不要为个例贴创可贴** — 批量诊断中标记为"噪声"的问题，不要修改
@@ -1150,7 +1147,7 @@ def fresh_agent_deploy_test(
         invoked = _check_skill_invocation(test_task, result, skill_content)
         errors = _detect_deployment_errors(result)
 
-        from skillos.evolution.evolver import record_trace, get_recent_traces
+        from skillos.evolution.evolver import record_trace
         trace = record_trace(
             skill_name, test_task, result, 0, llm_args
         )

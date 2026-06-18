@@ -1,6 +1,5 @@
 """Official SkillsBench API — plans and results (eval runs via CLI/CI)."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
 

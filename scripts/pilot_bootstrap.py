@@ -7,7 +7,6 @@ Usage:
 Requires SKILLOS_DATA_DIR (optional) and SKILLOS_LEGACY_MODE=false for tenant paths.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

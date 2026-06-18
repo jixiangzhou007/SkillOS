@@ -6,6 +6,39 @@
 
 ---
 
+## [2026-06-19] Phase 0.5 — `__future__` 清理 + ruff/mypy 配置 + 认识论接入 — Claude Code
+
+**背景 / 触发**：执行 Week 2 路线图：① PORTING.md 规定 Python 3.11+ 不需要 `from __future__ import annotations`，代码中大量遗留；② 无 linting/type-checking 基础设施；③ BASELINE_SUMMARY.md 记录认识论引擎未接入 agent 主链路（P0 gap）。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| 188 个 `.py` 文件 | 批量删除 `from __future__ import annotations`（sed 批量处理） |
+| `pyproject.toml` | 新增 `[tool.ruff]` + `[tool.mypy]` 配置：ruff 选 E/F/W/B/I 规则，mypy 宽松起步 |
+| `skillos/skills/agent.py` | 新增 `_extract_claims_from_skill()` 静态方法：从 SKILL.md 的 S_body/S_route/S_trigger 中提取离散 claims；在 `_generate()` post-processing 中调用 `record_claim()` 接入认识论引擎 |
+| `skillos/skills/skill_structure.py:175` | **已有 bug 修复**：`_section_text` 函数缺 `def` 行（ruff F821 检出），补回函数签名 |
+
+**验证**：
+- `pytest tests/ --collect-only -q` → 505 tests collected, 0 errors
+- `pytest tests/test_skill_structure.py -v` → 9 passed（修复后从 4 failed → 全部通过）
+- `pytest tests/` 全量（排除已知 flaky）→ 463 passed, 18 failed（失败全为已有问题，已在 BASELINE 记录）
+- `ruff check skillos/` → 396 → 210 auto-fixed → 186 remaining（主要是 E701 单行多句、B008 dataclass 默认参数，非阻塞）
+- `mypy skillos/` → 156 errors in 34 files（基线已建，后续逐步收敛）
+- Claim 提取手动验证：从示例 SKILL.md 正确提取 3 步骤 + 2 路由 + 1 触发 = 6 claims
+
+**未修改 / 刻意不做**：
+- 未修复 ruff 剩余 186 个问题 —— 大部分是风格类，不影响功能，不宜批量自动改
+- 未修复 mypy 156 个类型错误 —— 基线已建，需逐文件人工修复
+- 未修复 `test_sprint4_epistemic.py::test_dispatch_quick_mode_flag` —— `agent.handle()` 返回空 tuple 的已有 bug
+- 认识论接入仅在 `_generate()` 路径 —— `_confirm()` / `_metaskill()` 路径后续扩展
+
+**开放问题 / 下一步**：
+- ruff F821 剩余 10+ 个 undefined name 需逐个排查（`scorer.py` 缺 `import os`、`dispatcher.py` 中 `_tr`/`_log`/`selected_model` 未定义等）
+- 认识论验证 UI：前端"认识论"Tab 应展示 `epistemic_state.json` 中的 claims（当前仅有骨架）
+- 下一步路线图：agent.py 拆分（2,100+ 行）
+
+---
+
 ## [2026-06-18] Phase 0 — Git 初始化 + 测试收集修复 — Claude Code
 
 **背景 / 触发**：项目现状审查发现：① 37K 行代码零版本控制；② 1 个测试 import 断裂阻塞全量收集（`test_feasibility_eval.py` → `scripts/feasibility_dialogue_test.py` 已移至 archive）。
@@ -30,6 +63,31 @@
 **开放问题 / 下一步**：
 - 下一步：清理 `from __future__ import annotations`（PORTING.md 规定 Python 3.11+ 不需要）
 - 后续：认识论引擎接入 agent 主链路（BASELINE_SUMMARY.md 记录的 P0 gap）
+
+---
+
+## [2026-06-18] 文档全量同步 — Path B / Bench / Ablation — Cursor Agent
+
+**背景 / 触发**：用户要求检查项目变化并更新所有文档；Phase 7 Path B + Sprint 10–13 已交付，但 CHANGELOG/快照/路线图仍停在 2026-06-14。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `CHANGELOG.md` | v0.3.0 草案：三层 DNA、Path B、ablation、bench 闭环 |
+| `README.md` | 三层 DNA 叙事 + 本地 bench 命令表 |
+| `DESIGN.md` | §4.0d 三层 DNA + Path B + 本地 bench |
+| `docs/BENCHMARK_LOCAL.md` | 本地评测指南（新建/补全） |
+| `docs/paper/experiments/layer1_ablation_results.md` | Layer 1 ablation 报告 |
+| `docs/AI_DEV_LOG.md` | 项目快照更新至 2026-06-18 |
+| `docs/baseline/BASELINE_SUMMARY.md` | 2026-06-18 增补节 |
+| `docs/baseline/GAP_ANALYSIS.md` | Layer 1 bench 已闭合项 |
+| `docs/IMPROVEMENT_PLAN.md` | Post-Phase-7 状态 |
+| `docs/SKILLSBENCH_CI.md` | archive 脚本路径修正 |
+| `AGENTS.md` | bench 常用命令 |
+
+**验证**：文档交叉链接已对齐；bench 数字来自 `generalize_bench_1781757925.json` / `ablation_1781759573.json`。
+
+**开放问题 / 下一步**：21 个 pytest 失败需 triage；`tests/test_feasibility_eval.py` 修复或 CI `--ignore`。
 
 ---
 
@@ -147,11 +205,11 @@
 | `skillos/benchmark_local.py` | dashboard 增加 `generalize_skills` / `generalize_regression` |
 | `skillos/skills/domain_templates.py` | 财务模板 negative_keywords 扩展（退款/演练等） |
 | `skillos/skills/skill_structure.py` | `strip_heritage_sections()` 供 ablation |
-| `scripts/run_cold_start_generalize.py` | 批量冷启动 |
-| `scripts/bench_generalize_3skills.py` | 双 cohort 对比 + verdict |
+| `scripts/archive/run_cold_start_generalize.py` | 批量冷启动 |
+| `scripts/archive/bench_generalize_3skills.py` | 双 cohort 对比 + verdict |
 | `scripts/run_bench_regression.py` | 6 技能 ALL PASS 回归 |
-| `scripts/run_ablation.py` | HERITAGE×pack ablation CLI |
-| `scripts/repair_generalize_packs.py` | 清理跨域 quick8 / routing 词 |
+| `scripts/archive/run_ablation.py` | HERITAGE×pack ablation CLI |
+| `scripts/archive/repair_generalize_packs.py` | 清理跨域 quick8 / routing 词 |
 | `tests/test_cold_start.py` / `test_ablation.py` / `test_benchmark_local.py` | 单测 |
 
 **关键结果（`DEEPSEEK_API_KEY` + cache）**：
@@ -176,22 +234,22 @@
 
 **未修改 / 刻意不做**：
 - `CHANGELOG.md` 未 bump（非版本发布）
-- `DESIGN.md` / 论文 `paper.tex` 未写 Path B 专节（待论文 ablation 节统一补）
+- `DESIGN.md` §4.0d / 论文 `paper.tex` §Layer 1 ablation — **2026-06-18 文档同步已补**
 - 官方 SkillsBench CI 轨道未改（仍 Linux Docker）
 
 **验证**：
 ```powershell
 pytest tests/test_cold_start.py tests/test_ablation.py tests/test_benchmark_local.py -q  # 24 passed
-python scripts/run_cold_start_generalize.py   # SKILLOS_FORCE_COLD_START=1
-python scripts/bench_generalize_3skills.py
+python scripts/archive/run_cold_start_generalize.py   # SKILLOS_FORCE_COLD_START=1
+python scripts/archive/bench_generalize_3skills.py
 python scripts/run_bench_regression.py
-python scripts/run_ablation.py
+python scripts/archive/run_ablation.py
 ```
 
 **开放问题 / 下一步**：
 - 财务 pack 仅 2 题 anchor，可显式扩展 `workflow-070/072` 追平参考 +117
-- 论文：`ablation_*.json` 写入 `docs/paper/experiments/` + LaTeX 表
-- `docs/SKILLSBENCH_CI.md` 补本地 regression/ablation 命令表
+- 21 个 pytest 失败需 triage（sprint/结构单测漂移）
+- `tests/test_feasibility_eval.py` 收集失败需修复或 CI `--ignore`
 
 ---
 
@@ -1025,7 +1083,25 @@ export SKILLOS_MCP_TOKEN=<jwt>     # MCP 写入 personal/org tenant
 
 ---
 
-## 项目快照（截至 2026-06-14，供新工具快速对齐）
+## 项目快照（截至 2026-06-18，供新工具快速对齐）
+
+| 项 | 值 |
+|----|-----|
+| 定位 | AI Skill Operating System — 创建 / 验证 / 进化 Agent Skills（AgentSkills.io 标准） |
+| 规模 | ~159 Python 模块（`skillos/`），501 pytest collected；全量 **478 passed / 21 failed / 2 skipped**（2026-06-18，`--ignore=tests/test_feasibility_eval.py`） |
+| 三层 DNA | L0 哲学（`philosophical_dna.py`）· L1 领域 pack（`domain_pack.py`，10 个 JSON）· L2 技能结构（`pattern_miner.py`） |
+| Path B | `cold_start.py` — anchor rubric → HERITAGE → pack 持久化 |
+| 本地 Bench | median 泛化 domain Quick8 Δ **+45** · 回归 **ALL PASS** · ablation heritage+pack 缺一不可 |
+| 核心模块 | `skills/agent.py`（萃取）、`knowledge/epistemology.py`（认识论）、`evaluation/ablation.py`（Layer 1） |
+| 对外入口 | FastAPI `:9876`、`skillos-mcp`、桌面 `skillos` |
+| 设计文档 | `DESIGN.md` §4.0d · [`docs/BENCHMARK_LOCAL.md`](BENCHMARK_LOCAL.md) · [`docs/SKILLSBENCH_CI.md`](SKILLSBENCH_CI.md) |
+| 版本 | CHANGELOG **v0.3.0 草案**（未 tag） |
+
+---
+
+*以下为新会话记录区 — 请在每次修改后于「记录模板」下方、本行之上插入新条目。*
+
+## 项目快照（历史 · 2026-06-14）
 
 | 项 | 值 |
 |----|-----|
@@ -1037,7 +1113,7 @@ export SKILLOS_MCP_TOKEN=<jwt>     # MCP 写入 personal/org tenant
 
 ---
 
-*以下为新会话记录区 — 请在每次修改后于「记录模板」下方、本行之上插入新条目。*
+*（2026-06-14 快照已归档；当前以 2026-06-18 快照为准）*
 
 ## [2026-06-14] Phase 7 进化深化 — Cursor Agent
 

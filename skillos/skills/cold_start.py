@@ -1,6 +1,5 @@
 """Auto cold-start loop: anchor rubric → HERITAGE → routing → re-bench (Path B)."""
 
-from __future__ import annotations
 
 import logging
 import os
@@ -127,8 +126,8 @@ def discover_anchor_tasks(
         return [by_id[tid] for tid in task_ids if tid in by_id]
 
     from skillos.knowledge.skill_routing import (
-        _task_domain_overlap,
         _skill_signal_terms,
+        _task_domain_overlap,
         rank_bench_tasks_for_skill,
     )
 
@@ -247,7 +246,7 @@ def llm_refine_heritage(
         prompt = (
             f"技能「{skill_name}」的应答速查需要覆盖以下评测 rubric，并在同一条回复中使用指定关键词。\n\n"
             f"Anchor rubrics:\n" + "\n".join(rubric_lines) + "\n\n"
-            f"Still missed after rule-based draft:\n" + "\n".join(missed_lines[:12]) + "\n\n"
+            "Still missed after rule-based draft:\n" + "\n".join(missed_lines[:12]) + "\n\n"
             f"Current draft:\n{heritage_text[:2000]}\n\n"
             "Rewrite ONLY the 应答速查 body (markdown, no YAML). Requirements:\n"
             "1. One actionable reply template per anchor task\n"
@@ -706,8 +705,8 @@ def run_cold_start(
 
 def repair_domain_pack(domain_template: str) -> dict[str, Any]:
     """Prune cross-domain quick8 tasks and regenerate HERITAGE from anchors + valid extras."""
-    from skillos.skillsbench_tasks import SKILLSBENCH_TASKS
     from skillos.skills.skill_store import load_skill_raw
+    from skillos.skillsbench_tasks import SKILLSBENCH_TASKS
 
     pack = load_domain_pack(domain_template)
     if not pack:

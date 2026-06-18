@@ -9,13 +9,9 @@ Inspired by Claude for Legal's cold-start-interview pattern:
 This ensures AI output sounds like YOUR team wrote it — not like a generic template.
 """
 
-from __future__ import annotations
 
 import logging
-import re
-import time
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 

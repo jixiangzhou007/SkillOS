@@ -1,6 +1,5 @@
 """Ingest deduplication — skip re-processing unchanged URL content."""
 
-from __future__ import annotations
 
 from skillos.knowledge.refresher import hash_content, mark_source_refreshed
 

@@ -1,6 +1,5 @@
 """Ablation study — HERITAGE × pack-scoped inject (2×2 factorial)."""
 
-from __future__ import annotations
 
 import time
 from dataclasses import dataclass

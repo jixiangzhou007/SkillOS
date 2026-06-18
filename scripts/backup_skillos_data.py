@@ -8,7 +8,6 @@ Usage:
 See docs/sprint11/GOVERNANCE.md for restore runbook.
 """
 
-from __future__ import annotations
 
 import argparse
 import os

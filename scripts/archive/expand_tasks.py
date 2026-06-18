@@ -121,7 +121,6 @@ header = '''"""SkillsBench-compatible deterministic task set — 100 tasks, 5 ca
 
 Deterministic regex-based grading. No LLM judge needed.
 """
-from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 import json

@@ -1,6 +1,5 @@
 """Sprint 12 / Phase 4 — MetaSkill + SkillOpt portal integration."""
 
-from __future__ import annotations
 
 import uuid
 

@@ -22,10 +22,10 @@
       "item_id": "ki_553386d8",
       "content": "技能「门诊分诊」: 将挂号后的门诊病人，通过标准化流程快速完成生命体征采集、病情评估与分级，并准确分配至对应科室，确保急危重症患者优先处理。",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.35,
       "source": {
         "url": "session:d945b1257481",
         "paragraph": 0
@@ -41,7 +41,7 @@
           "timestamp": 1781792756.2808468
         }
       ],
-      "access_count": 2,
+      "access_count": 4,
       "created_at": 1781792756.2808468,
       "valid_at": 0.0,
       "invalid_at": 0.0,

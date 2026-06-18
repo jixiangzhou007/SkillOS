@@ -1,6 +1,5 @@
 """Official SkillsBench service — plans, exports, latest results (no Docker in-process)."""
 
-from __future__ import annotations
 
 import json
 import os
@@ -11,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from skillos.benchmark_local import latest_quick8_for_skill, quick8_history_for_skill
-from skillos.official_skillsbench.export import export_skill_for_official, SKILLS_ROOT
+from skillos.official_skillsbench.export import SKILLS_ROOT, export_skill_for_official
 from skillos.official_skillsbench.presets import AGENT_COMPARE_PRESETS, DEFAULT_AGENT, DEFAULT_MODEL
 from skillos.official_skillsbench.tasks import SMOKE_TASK, suggest_tasks_for_skill
 

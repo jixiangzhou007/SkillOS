@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Benchmark cold-start generalized skills vs reference baseline."""
-from __future__ import annotations
 
 import json
 import os

@@ -10,10 +10,9 @@ threshold, re-verify against source.
 
 import hashlib
 import logging
-import time
 import threading
+import time
 from pathlib import Path
-from typing import Callable
 
 _log = logging.getLogger(__name__)
 
@@ -43,8 +42,8 @@ def refresh_if_changed(url: str, llm_args: tuple) -> dict | None:
 
     Returns digest result dict if refreshed, None if unchanged.
     """
-    from skillos.utils.web_fetch import fetch
     from skillos.knowledge.deep_digest import deep_digest, save_digest
+    from skillos.utils.web_fetch import fetch
 
     content = fetch(url)
     if not content or len(content) < 200:

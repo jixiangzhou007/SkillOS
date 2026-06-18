@@ -11,13 +11,12 @@ Philosophy: The system doesn't just store skills — it maintains a learning sta
 that evolves over time, like a human's understanding.
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 

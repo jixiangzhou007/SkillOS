@@ -1,6 +1,5 @@
 """Org admin console API (Sprint 6)."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import PlainTextResponse
@@ -9,9 +8,9 @@ from pydantic import BaseModel
 from skillos.admin.audit_export import export_org_audit_csv
 from skillos.admin.governance import build_org_governance
 from skillos.admin.service import build_admin_overview, get_org_usage_stats, set_org_quota
+from skillos.api.organizations import _normalize_org_id, _require_org_admin, _require_org_member
 from skillos.identity.departments import create_department, list_departments
 from skillos.identity.middleware import AuthContext, require_auth
-from skillos.api.organizations import _normalize_org_id, _require_org_admin, _require_org_member
 
 router = APIRouter()
 

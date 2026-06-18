@@ -1,6 +1,5 @@
 """Skill ↔ SkillsBench task routing by domain and category."""
 
-from __future__ import annotations
 
 import re
 from pathlib import Path
@@ -417,7 +416,7 @@ def rank_bench_tasks_for_skill(
 
 def backfill_skill_routing_meta(path: Path, *, dry_run: bool = False) -> dict[str, Any]:
     """Merge domain/methodology/bench_categories into an existing SKILL.md."""
-    from skillos.skills.skill_store import _split_front_matter, _compose
+    from skillos.skills.skill_store import _compose, _split_front_matter
 
     raw = path.read_text(encoding="utf-8")
     meta, body = _split_front_matter(raw)

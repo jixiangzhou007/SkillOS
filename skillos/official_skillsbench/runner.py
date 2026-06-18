@@ -1,6 +1,5 @@
 """Shared BenchFlow subprocess helpers for official SkillsBench scripts."""
 
-from __future__ import annotations
 
 import importlib.util
 import json

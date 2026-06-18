@@ -1,6 +1,5 @@
 """Build TenantContext from request/session dict."""
 
-from __future__ import annotations
 
 from skillos.identity.context import TenantContext
 

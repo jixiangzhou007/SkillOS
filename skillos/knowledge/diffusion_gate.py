@@ -4,7 +4,6 @@ Blocks or downgrades cross-skill edits when the source skill has unverified
 or erroneous claims — prevents Experience-level content from polluting other skills.
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass
 

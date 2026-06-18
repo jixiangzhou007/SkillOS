@@ -1,6 +1,5 @@
 """Tests for Path B auto cold-start."""
 
-from __future__ import annotations
 
 from skillos.skills.cold_start import (
     generate_heritage_body,

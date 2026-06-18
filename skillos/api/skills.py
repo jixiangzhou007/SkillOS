@@ -1,11 +1,11 @@
 """Skill CRUD, extraction, and execution endpoints."""
 
 import logging
-import tempfile
 import os
+import tempfile
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
 from pydantic import BaseModel
 
@@ -113,11 +113,11 @@ def _persist_created_skill(
     team_context: dict | None = None,
 ) -> dict:
     """Save skill with epistemology pipeline; return epistemic summary for API."""
-    from skillos.skills.skill_store import save_skill, load_skill_raw, _skill_path, resolve_skills_root
     from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
     from skillos.knowledge.lineage import record_skill_precipitation
-    from skillos.skills.variants import register_precipitation_variant
     from skillos.skills.portable_skill import finalize_portable_skill
+    from skillos.skills.skill_store import _skill_path, load_skill_raw, resolve_skills_root, save_skill
+    from skillos.skills.variants import register_precipitation_variant
 
     ctx = team_context or {}
     tenant = _tenant_from_context(ctx)
@@ -130,8 +130,8 @@ def _persist_created_skill(
     heritage_meta: dict = {}
     old_body = ""
     try:
+        from skillos.skills.skill_store import _skill_path, load_skill_raw, resolve_skills_root, skill_exists
         from skillos.skills.skill_structure import apply_structure_pipeline
-        from skillos.skills.skill_store import skill_exists, load_skill_raw, _skill_path, resolve_skills_root
 
         skill_path = _skill_path(finalized["name"], root=resolve_skills_root(tenant))
         if skill_exists(finalized["name"], tenant=tenant):
@@ -395,7 +395,7 @@ def _persist_created_skill(
         pass
 
     try:
-        from skillos.evaluation.quality import evaluate_heuristic, build_quality_payload
+        from skillos.evaluation.quality import build_quality_payload, evaluate_heuristic
         heuristic = evaluate_heuristic(body_out, finalized["name"])
         ep["quality"] = build_quality_payload(
             skill_name=finalized["name"],
@@ -639,9 +639,9 @@ async def get_skill_dna_lineage(name: str, auth: AuthContext | None = Depends(ge
     """Return DNA lineage (philosophical + domain inheritance) for a skill."""
     tenant = auth.tenant_context() if auth else None
     try:
-        from skillos.skills.skill_store import load_skill_raw
-        from skillos.knowledge.dna_store import parse_lineage_from_meta, load_philosophical_stats
         from skillos.knowledge.dna_context import build_dna_lineage
+        from skillos.knowledge.dna_store import load_philosophical_stats, parse_lineage_from_meta
+        from skillos.skills.skill_store import load_skill_raw
 
         raw = load_skill_raw(name, tenant=tenant)
         meta = raw.get("meta", {})
@@ -703,8 +703,8 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
     """Get a skill by name (tenant-scoped when authenticated)."""
     tenant = auth.tenant_context() if auth else None
     try:
-        from skillos.skills.skill_store import load_skill, get_skill_body, load_skill_raw
         from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
+        from skillos.skills.skill_store import get_skill_body, load_skill, load_skill_raw
         doc = load_skill(name, tenant=tenant)
         body = get_skill_body(doc)
         raw = load_skill_raw(name, tenant=tenant)
@@ -851,7 +851,7 @@ async def import_and_adapt(req: ImportAdaptRequest, auth: AuthContext = Depends(
 @router.get("/{name}/epistemic/pending")
 async def list_epistemic_pending(name: str, auth: AuthContext | None = Depends(get_optional_auth)):
     """List pending Experience/Evidence claims for a skill (Sprint 4 UI)."""
-    from skillos.knowledge.epistemic_bridge import list_pending_claims_detail, format_epistemic_api_payload
+    from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload, list_pending_claims_detail
     from skillos.skills.skill_store import load_skill_raw
 
     tenant = auth.tenant_context() if auth else None
@@ -875,9 +875,9 @@ async def confirm_epistemic_pending(
     auth: AuthContext | None = Depends(get_optional_auth),
 ):
     """Promote selected pending claims to Knowledge."""
+    from skillos.config import get_config
     from skillos.knowledge.epistemic_bridge import confirm_claims_detailed, list_pending_claims_detail
     from skillos.skills.intent_router import list_pending_for_confirm
-    from skillos.config import get_config
 
     claim_ids = req.claim_ids
     if req.confirm_all:
@@ -901,7 +901,7 @@ async def confirm_epistemic_pending(
 async def similar_skills(name: str, auth: AuthContext | None = Depends(get_optional_auth)):
     """Dedup hints — similar skills in current tenant."""
     from skillos.skills.dedup import find_similar_skills
-    from skillos.skills.skill_store import load_skill_raw, get_skill_body
+    from skillos.skills.skill_store import get_skill_body, load_skill_raw
 
     tenant = auth.tenant_context() if auth else None
     try:
@@ -1093,7 +1093,6 @@ def _finalize_extraction_response(
 
 def _run_extraction_dispatch(session, msg: str, auth, llm_args, req: DispatchRequest) -> dict:
     """SD create-mode pipeline: handle() first turn, Socratic dual-output, option buttons."""
-    from skillos.skills.agent import SkillExtractionAgent
     from skillos.skills.intent_router import is_meta_extraction_question
 
     agent = session.agent
@@ -1163,6 +1162,7 @@ async def dispatch_message(
 ):
     """Handle a chat message — route to skill extraction, URL learning, or conversation."""
     import re
+
     from skillos.config import get_config
     from skillos.skills.session_manager import get_session_manager
 
@@ -1250,7 +1250,7 @@ async def dispatch_message(
     urls = re.findall(r'https?://[^\s]+', msg)
     if urls:
         agent = session.agent
-        from skillos.skills.skill_store import list_skills, save_skill
+        from skillos.skills.skill_store import save_skill
 
         for url in urls[:2]:
             content = _fetch_url(url)
@@ -1371,7 +1371,7 @@ async def dispatch_message(
 
     # ── Cold-start interview: guided playbook creation ──
     if intent == DispatchIntent.PLAYBOOK:
-        from skillos.knowledge.playbook import has_playbook, load_playbook, save_playbook, save_purpose
+        from skillos.knowledge.playbook import has_playbook, load_playbook
 
         if "purpose" in msg.lower() or "目标" in msg.lower() or "使命" in msg.lower():
             # Guiding the purpose definition
@@ -1487,9 +1487,9 @@ async def create_skill(
     auth: AuthContext | None = Depends(get_optional_auth),
 ):
     """Create a new skill from text description."""
-    from skillos.skills.agent import SkillExtractionAgent
-    from skillos.skills.skill_store import list_skills, save_skill
     from skillos.config import get_config
+    from skillos.skills.agent import SkillExtractionAgent
+    from skillos.skills.skill_store import list_skills
     cfg = get_config()
     tenant = auth.tenant_context() if auth else None
     team_ctx = _team_context_from_auth(auth)
@@ -1531,8 +1531,8 @@ async def finalize_extraction(session_id: str = ""):
     """
     if not session_id:
         return {"reply": "请提供 session_id", "skill_active": False}
-    from skillos.skills.session_manager import get_session_manager
     from skillos.config import get_config
+    from skillos.skills.session_manager import get_session_manager
     from skillos.skills.skill_store import list_skills, save_skill
 
     mgr = get_session_manager()
@@ -1593,8 +1593,8 @@ async def resume_extraction(session_id: str = "", message: str = ""):
     """
     if not session_id:
         return {"reply": "请提供 session_id", "resumed": False}
-    from skillos.skills.session_manager import get_session_manager
     from skillos.config import get_config
+    from skillos.skills.session_manager import get_session_manager
     from skillos.skills.skill_store import list_skills
 
     mgr = get_session_manager()
@@ -1646,9 +1646,8 @@ async def ingest_file(
     - conceptual (reference/theory) → deep_digest knowledge package
     """
     from skillos.config import get_config
-    from skillos.utils.file_ingest import convert_to_markdown, get_file_category, is_supported
-    from skillos.skills.skill_store import list_skills, save_skill
     from skillos.skills.session_manager import get_session_manager
+    from skillos.utils.file_ingest import convert_to_markdown, get_file_category, is_supported
 
     cfg = get_config()
     llm_args = cfg.to_llm_args()
@@ -1757,9 +1756,9 @@ async def ingest_file(
 @router.post("/{name}/run")
 async def run_skill(name: str, task: dict):
     """Execute a skill with a given task and record the trace for evolution."""
-    from skillos.skills.skill_store import load_skill, load_skill_raw
+    from skillos.evolution.evolver import judge_execution, record_trace
     from skillos.skills.agent_factory import create_agent, run_agent
-    from skillos.evolution.evolver import record_trace, judge_execution
+    from skillos.skills.skill_store import load_skill_raw
 
     task_text = task.get("task", "")
     if not task_text:
@@ -1817,7 +1816,7 @@ async def export_skill(
     - markdown: Raw SKILL.md (AgentSkills.io compatible)
     - universal: JSON with full metadata (for import into other systems)
     """
-    from skillos.skills.skill_store import load_skill_raw, get_skill_versions
+    from skillos.skills.skill_store import get_skill_versions, load_skill_raw
 
     tenant = auth.tenant_context() if auth else None
     try:
@@ -1924,7 +1923,7 @@ async def get_decisions(name: str):
 async def view_skill_dna():
     """View the current Skill DNA — principles distilled from all skills."""
     try:
-        from skillos.skills.pattern_miner import get_skill_dna, get_skill_dna_context
+        from skillos.skills.pattern_miner import get_skill_dna
         dna = get_skill_dna()
         if not dna or not dna.get("dna"):
             return {"dna": None, "message": "尚未生成 Skill DNA。创建更多技能后会自动提炼。"}
@@ -1969,8 +1968,8 @@ async def view_dna_stability():
 async def check_skill_dna(name: str):
     """Check a skill against DNA compliance principles."""
     try:
-        from skillos.skills.skill_store import load_skill, get_skill_body
         from skillos.skills.pattern_miner import check_dna_compliance
+        from skillos.skills.skill_store import get_skill_body, load_skill
         doc = load_skill(name)
         body = get_skill_body(doc)
         result = check_dna_compliance(body)
@@ -1998,9 +1997,9 @@ async def evaluate_skill_moe(
     Example: GET /api/skills/MySkill/evaluate?cross_model=deepseek-v4-flash
     """
     try:
-        from skillos.skills.skill_store import load_skill, get_skill_body
-        from skillos.evaluation import evaluate_skill
         from skillos.config import get_config
+        from skillos.evaluation import evaluate_skill
+        from skillos.skills.skill_store import get_skill_body, load_skill
 
         doc = load_skill(name)
         body = get_skill_body(doc)
@@ -2018,7 +2017,7 @@ async def evaluate_skill_moe(
             "confidence": round(report.confidence, 2),
             "dimensions": report.dimensions,
         }
-        from skillos.evaluation.quality import evaluate_heuristic, build_quality_payload
+        from skillos.evaluation.quality import build_quality_payload, evaluate_heuristic
         report_dict["quality"] = build_quality_payload(
             skill_name=name,
             body=body,
@@ -2036,9 +2035,9 @@ async def evaluate_skill_moe(
 async def evaluate_skill_moe_markdown(name: str, cross_model: str = ""):
     """MoE evaluation report in markdown format."""
     try:
-        from skillos.skills.skill_store import load_skill, get_skill_body
-        from skillos.evaluation import evaluate_skill
         from skillos.config import get_config
+        from skillos.evaluation import evaluate_skill
+        from skillos.skills.skill_store import get_skill_body, load_skill
 
         doc = load_skill(name)
         body = get_skill_body(doc)

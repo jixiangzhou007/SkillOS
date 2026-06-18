@@ -1,6 +1,5 @@
 """Skill & workspace audit helpers (Sprint 1)."""
 
-from __future__ import annotations
 
 
 def log_skill_action(

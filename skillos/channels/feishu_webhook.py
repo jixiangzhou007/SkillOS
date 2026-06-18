@@ -1,6 +1,5 @@
 """Feishu bot α — message events → SkillOS dispatch (Sprint 3)."""
 
-from __future__ import annotations
 
 import json
 import logging
@@ -52,9 +51,9 @@ async def handle_feishu_event(body: dict, *, auth_token: str = "") -> dict:
     if "challenge" in parsed:
         return {"challenge": parsed["challenge"]}
 
+    from skillos.channels.session_ids import resolve_session_id
     from skillos.config import get_config
     from skillos.skills.session_manager import get_session_manager
-    from skillos.channels.session_ids import resolve_session_id
 
     cfg = get_config()
     tenant_id = org_id = dept_id = ""
@@ -86,8 +85,8 @@ async def handle_feishu_event(body: dict, *, auth_token: str = "") -> dict:
     )
 
     from skillos.skills.intent_router import (
-        classify_message_intent,
         DispatchIntent,
+        classify_message_intent,
         is_meta_extraction_question,
     )
 

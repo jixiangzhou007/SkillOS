@@ -112,3 +112,49 @@ python -m pytest tests/ --collect-only -q
 ```
 
 需配置 `.env` 中 `DEEPSEEK_API_KEY`（benchmark 与部分 integration 依赖 LLM）。
+
+---
+
+## 2026-06-18 增补（Post-Phase-7 · 不改写 Phase 0 冻结数字）
+
+> Phase 0 基线仍有效作为「改前数字」；本节记录 Path B / DNA bench 交付后的规模与评测。
+
+### 代码规模（2026-06-18）
+
+| 指标 | 数值 | 备注 |
+|------|------|------|
+| `skillos/` Python 模块 | **159** | 较 Phase 0 的 58 显著增长 |
+| pytest collected | **501** | `--ignore=tests/test_feasibility_eval.py` |
+| pytest 结果 | **478 pass / 21 fail / 2 skip** | 2026-06-18 全量跑；失败多为 sprint/结构单测漂移 |
+| domain pack | **10** | `data/domain_packs/*.json` |
+
+### 本地 SkillsBench（2026-06-18）
+
+**命令**：
+```bash
+python scripts/run_bench_regression.py
+python scripts/archive/run_ablation.py
+```
+
+**产物**：`data/benchmarks/generalize_bench_1781757925.json`、`bench_regression_1781758148.json`、`ablation_1781759573.json`
+
+| 指标 | 泛化 cohort | 参考 cohort |
+|------|------------|------------|
+| Median domain Quick8 Δ | **+45** | +117 |
+| 烟测 | 100% | 100% |
+| 回归 | **ALL PASS** | — |
+
+Ablation：full +45 vs baseline 0 — heritage 边际 +23.3，pack 边际 +24.7。详见 [`../paper/experiments/layer1_ablation_results.md`](../paper/experiments/layer1_ablation_results.md)
+
+### 认识论层（2026-06-18 注）
+
+Phase 1 已接入 `epistemic_bridge` + `save_skill`；上文 Phase 0 grep 结论**已过时**，以 [`GAP_ANALYSIS.md`](GAP_ANALYSIS.md) §1 为准。
+
+### 复现（2026-06-18）
+
+```bash
+cd D:\SkillOS
+python -m pytest tests/ --ignore=tests/test_feasibility_eval.py -q
+python scripts/run_bench_regression.py
+python scripts/run_dna_golden_ci.py
+```

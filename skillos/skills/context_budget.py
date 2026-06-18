@@ -7,9 +7,8 @@ Unlike a simple MAX_TOOLS_PER_REQUEST cap, this allocates tokens proportionally
 so that every category gets a fair share regardless of window size.
 """
 
-from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional
 
 

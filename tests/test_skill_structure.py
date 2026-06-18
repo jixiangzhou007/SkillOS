@@ -1,6 +1,5 @@
 """Tests for skill_structure (P0: S_body normalization + heritage merge)."""
 
-from __future__ import annotations
 
 from pathlib import Path
 

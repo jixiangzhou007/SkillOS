@@ -1,11 +1,10 @@
 """Usage and BYOK API (Sprint 5)."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from skillos.billing.usage import QuotaExceededError, get_usage_summary, set_user_byok
+from skillos.billing.usage import get_usage_summary, set_user_byok
 from skillos.identity.middleware import AuthContext, require_auth
 
 router = APIRouter()

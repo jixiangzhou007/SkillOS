@@ -11,13 +11,11 @@ analyzes ALL skills collectively to find:
 5. Skill DNA — the essence of a good skill
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import re
 import time
-from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -214,7 +212,7 @@ def mine_patterns(
     avg_steps = sum(p.step_count for p in profiles) / len(profiles)
     avg_branches = sum(p.branch_count for p in profiles) / len(profiles)
 
-    summary_lines.append(f"\n### 结构统计")
+    summary_lines.append("\n### 结构统计")
     summary_lines.append(f"- S_trigger 覆盖率: {has_trigger_count}/{len(profiles)}")
     summary_lines.append(f"- S_params 覆盖率: {has_params_count}/{len(profiles)}")
     summary_lines.append(f"- S_appendix 覆盖率: {has_appendix_count}/{len(profiles)}")
@@ -394,12 +392,12 @@ def get_skill_dna_context() -> str:
         lines.append(f"{i+1}. {principle}")
 
     if dna.get("anti_patterns"):
-        lines.append(f"\n### ⚠️ 已知反模式（避免）")
+        lines.append("\n### ⚠️ 已知反模式（避免）")
         for ap in dna["anti_patterns"][:3]:
             lines.append(f"- ❌ {ap}")
 
     if dna.get("archetypes"):
-        lines.append(f"\n### 📐 可用结构原型")
+        lines.append("\n### 📐 可用结构原型")
         for arch in dna["archetypes"][:3]:
             lines.append(f"- {arch}")
 
@@ -418,7 +416,6 @@ def inject_dna_to_prompt(base_prompt: str) -> str:
 
     # Insert DNA after the goal/context section, before the requirements
     # Find the insertion point: right before "## 要求" or "## 生成要求"
-    import re
     for anchor in ("## 硬性要求", "## 生成要求", "## 要求"):
         if anchor in base_prompt:
             return base_prompt.replace(anchor, dna_ctx + "\n" + anchor, 1)
@@ -697,8 +694,8 @@ def apply_dna_compliance_fix(
 ) -> str:
     """LLM fix loop when Skill DNA compliance checks fail (generate + save paths)."""
     try:
-        from skillos.skills.skill_structure import normalize_skill_body
         from skillos.llm_client import call
+        from skillos.skills.skill_structure import normalize_skill_body
 
         model = llm_args[2] if len(llm_args) > 2 else ""
         for _ in range(max_rounds):

@@ -12,19 +12,16 @@ Platform commission: configurable (default 20%)
 Payment providers: pluggable interface (mock by default).
 """
 
-from __future__ import annotations
 
-import json
 import logging
 import os
 import sqlite3
 import threading
 import time
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 

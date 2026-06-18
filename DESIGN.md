@@ -2,7 +2,7 @@
 
 > 写给三类读者：**AI 编程工具**（理解架构来贡献代码）、**人类开发者**（理解设计思路）、**不懂代码的创新者**（理解自己的产品）。
 >
-> 2026年6月 | 390+测试 | 0桩代码 | MoE评价 | 3层DNA(哲学→学科→技能) | 12学科+10模板 | SkillsBench 88任务(A级基线) | 35轮长对话验证 | 按钮生成
+> 2026年6月 | 500+测试 | 0桩代码 | MoE评价 | 3层DNA(哲学→学科→技能) | 10 domain pack | SkillsBench 88任务 | 本地 bench 闭环 | 35轮长对话验证
 
 ---
 
@@ -269,6 +269,38 @@ skillos/
 |------|:--:|------|------|
 | `skills_bench.py` | 270 | SkillsBench 兼容 100 分制评分 | 确定性评分（60分规则+40分MoE）。Correctness/40 + Security/20 + Completeness/20 + Robustness/20 |
 | `skillsbench_tasks.py` | 280 | 8 个领域匹配任务 + 领域匹配对比 | 代码审查/数据处理/API设计/文档/工作流。with-skill vs without-skill 领域匹配对比。GitHub PR 审查 +9%（客观验证） |
+
+### 4.0d 三层 DNA + Path B 冷启动 + 本地 Bench（2026-06-18）
+
+**三层 DNA 分工**（详见 `philosophical_dna.py` / `domain_templates.py` / `pattern_miner.py`）：
+
+| 层 | 模块 | 运行时作用 | Bench 提分 |
+|:--:|------|-----------|:----------:|
+| **L0 哲学** | `philosophical_dna.py` + `dna_context.py` | 萃取 prompt 注入方法论；写 `dna_lineage` | 不直接 |
+| **L1 领域** | `domain_templates.py` + **`domain_pack.py`** | HERITAGE 应答速查 + pack 任务强制 inject | **主因** |
+| **L2 技能** | `pattern_miner.check_dna_compliance()` | 6 条结构原则合规 | 间接 |
+
+**Path B（Auto Cold Start）**：烟测失败 → anchor rubric 反推 HERITAGE → 路由扩展 → prune/repair → 复测。入口：`skillos/skills/cold_start.py`；持久化：`data/domain_packs/*.json`（10 个 pack）。
+
+**Bench cohort**（`bench_cohorts.py`）：
+
+| Cohort | 技能 | 用途 |
+|--------|------|------|
+| 参考 | 电商退款 / 合同审核 / 安全审计 | 回归 Quick8 Δ |
+| 泛化 | 财务欺诈 / 法律 triage / 医疗分诊 | 冷启动 + ablation |
+
+**Layer 1 ablation**（`evaluation/ablation.py`）：2×2 factorial — HERITAGE on/off × pack-scoped inject on/off。报告：[`docs/paper/experiments/layer1_ablation_results.md`](docs/paper/experiments/layer1_ablation_results.md)。
+
+**本地脚本**：[`docs/BENCHMARK_LOCAL.md`](docs/BENCHMARK_LOCAL.md) · 回归：`scripts/run_bench_regression.py`
+
+| 文件 | 行数 | 一句话 | 巧思 |
+|------|:--:|------|------|
+| `skills/cold_start.py` | — | Path B 冷启动主循环 | anchor rubric → HERITAGE refine → quick8 expand → prune/repair |
+| `skills/domain_pack.py` | — | 动态领域 pack 读写 | anchor hints、expand 负向过滤、跨域题清理 |
+| `skills/bench_cohorts.py` | — | 参考/泛化 cohort 定义 | 回归与 ablation 共用 |
+| `knowledge/skill_routing.py` | — | pack 任务强制 inject | `pack_scoped_inject` ablation 开关 |
+| `evaluation/ablation.py` | — | Layer 1 2×2 评测 | heritage / pack 边际贡献量化 |
+| `benchmark_local.py` | — | dashboard API 数据层 | `generalize_skills` / regression 快照 |
 
 ### 4.1 基础设施（所有模块都依赖的）
 

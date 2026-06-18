@@ -1,6 +1,5 @@
 """Phase 4 — DNA evolution, semver bumps, stale lineage queue."""
 
-from __future__ import annotations
 
 import pytest
 

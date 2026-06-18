@@ -251,6 +251,20 @@ The full pipeline filters all 30 false claims while retaining all 30 gold-true c
 
 Dataset and reproduction instructions: \texttt{data/benchmarks/epistemic/}. Results archived in \texttt{docs/paper/experiments/epistemic\_results.md}.
 
+\subsection{Layer 1 Domain DNA Ablation}
+\label{sec:layer1-ablation}
+
+Beyond claim-level epistemology (Layer~0), SkillOS injects \emph{domain heritage} cards and pack-scoped task routing (Layer~1) at inference time. We evaluate a 2$\times$2 factorial on three \emph{generalization} skills (finance fraud audit, legal contract review, healthcare triage) using domain-only Quick8 tasks registered in each skill's domain pack:
+
+\begin{itemize}[leftmargin=*,nosep]
+    \item \textbf{Full}: heritage response card + pack-scoped inject
+    \item \textbf{$-$Heritage}: strip heritage sections; pack inject on
+    \item \textbf{$-$Pack}: heritage on; disable pack-scoped inject
+    \item \textbf{Baseline}: neither heritage nor pack routing
+\end{itemize}
+
+On the generalization cohort, median domain Quick8 $\Delta$ is \textbf{+45} for Full versus \textbf{0} for all ablated conditions. Average marginal contributions: heritage +23.3, pack routing +24.7 (interaction +23.3). A reference e-commerce refund skill shows +28 under all four conditions---rules already embedded in S\_body, so static heritage adds no bench margin. Reproduction: \texttt{python scripts/archive/run\_ablation.py}; report in \texttt{docs/paper/experiments/layer1\_ablation\_results.md}.
+
 \subsection{Limitations}
 
 The audit scoring subsystem (10-dimension independent auditor) currently defaults to a pass-through score of 60 when LLM JSON parsing fails due to response truncation. This is a known limitation of the current max\_tokens configuration, not a fundamental issue with the audit methodology itself.

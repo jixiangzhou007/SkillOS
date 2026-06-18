@@ -1,6 +1,5 @@
 """Repair skill structure and refresh bench_quality after save/extraction."""
 
-from __future__ import annotations
 
 import json
 import logging

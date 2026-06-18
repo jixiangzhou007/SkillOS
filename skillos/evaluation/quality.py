@@ -11,7 +11,6 @@ Heuristic is a fast structural proxy for regression gates.
 Draft 1–5 scores are conversational readiness hints only — never compare to MoE.
 """
 
-from __future__ import annotations
 
 import re
 from typing import Any

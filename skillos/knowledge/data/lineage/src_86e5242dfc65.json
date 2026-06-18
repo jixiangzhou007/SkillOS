@@ -4,17 +4,17 @@
   "source_title": "Phase1 Test",
   "created_at": 1781537921.2942016,
   "summary": {
-    "total_items": 108,
+    "total_items": 112,
     "by_category": {
-      "concept": 54,
-      "fact": 54
+      "concept": 56,
+      "fact": 56
     },
     "by_epistemic_level": {
-      "knowledge": 108
+      "knowledge": 112
     },
     "confidence_distribution": {
-      "high": 86,
-      "medium": 22,
+      "high": 88,
+      "medium": 24,
       "low": 0
     }
   },
@@ -298,15 +298,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 53,
+      "related_count": 55,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781537921.293934,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781537921.293934
     },
     {
       "item_id": "ki_97379071",
@@ -329,7 +340,8 @@
       "created_at": 1781537921.293934,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781537921.293934
     },
     {
       "item_id": "ki_1eddb746",
@@ -605,15 +617,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 52,
+      "related_count": 54,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781537921.6044183,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781537921.6044183
     },
     {
       "item_id": "ki_5abfe629",
@@ -636,7 +659,8 @@
       "created_at": 1781537921.6044183,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781537921.6044183
     },
     {
       "item_id": "ki_ae71b076",
@@ -907,15 +931,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 51,
+      "related_count": 53,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538111.6732705,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538111.6732705
     },
     {
       "item_id": "ki_8b9bb3c9",
@@ -938,7 +973,8 @@
       "created_at": 1781538111.6732705,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538111.6732705
     },
     {
       "item_id": "ki_948be2d9",
@@ -1204,15 +1240,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 50,
+      "related_count": 52,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538111.9031572,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538111.9031572
     },
     {
       "item_id": "ki_18ac9562",
@@ -1235,7 +1282,8 @@
       "created_at": 1781538111.9031572,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538111.9031572
     },
     {
       "item_id": "ki_aea849ee",
@@ -1496,15 +1544,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 49,
+      "related_count": 51,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538699.192507,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538699.192507
     },
     {
       "item_id": "ki_3e576cc3",
@@ -1527,7 +1586,8 @@
       "created_at": 1781538699.192507,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538699.192507
     },
     {
       "item_id": "ki_71a4a406",
@@ -1783,15 +1843,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 48,
+      "related_count": 50,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538699.503183,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538699.503183
     },
     {
       "item_id": "ki_af92ba6f",
@@ -1814,7 +1885,8 @@
       "created_at": 1781538699.503183,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538699.503183
     },
     {
       "item_id": "ki_691c1b35",
@@ -2065,15 +2137,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 47,
+      "related_count": 49,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538725.2296994,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538725.2296994
     },
     {
       "item_id": "ki_9ebd53a8",
@@ -2096,7 +2179,8 @@
       "created_at": 1781538725.2296994,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538725.2296994
     },
     {
       "item_id": "ki_b89665ae",
@@ -2342,15 +2426,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 46,
+      "related_count": 48,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538725.5502634,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538725.5502634
     },
     {
       "item_id": "ki_e12c139b",
@@ -2373,7 +2468,8 @@
       "created_at": 1781538725.5502634,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538725.5502634
     },
     {
       "item_id": "ki_805b0b73",
@@ -2614,15 +2710,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 45,
+      "related_count": 47,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538752.4500227,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538752.4500227
     },
     {
       "item_id": "ki_01ef4d9f",
@@ -2645,7 +2752,8 @@
       "created_at": 1781538752.4500227,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538752.4500227
     },
     {
       "item_id": "ki_f50d1907",
@@ -2881,15 +2989,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 44,
+      "related_count": 46,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538752.747606,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538752.747606
     },
     {
       "item_id": "ki_facdbb57",
@@ -2912,7 +3031,8 @@
       "created_at": 1781538752.747606,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538752.747606
     },
     {
       "item_id": "ki_1275ff64",
@@ -3143,15 +3263,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 43,
+      "related_count": 45,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538785.1140893,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538785.1140893
     },
     {
       "item_id": "ki_d3a133a2",
@@ -3174,7 +3305,8 @@
       "created_at": 1781538785.1140893,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538785.1140893
     },
     {
       "item_id": "ki_df6cfc55",
@@ -3400,15 +3532,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 42,
+      "related_count": 44,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538785.4265802,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538785.4265802
     },
     {
       "item_id": "ki_02cbc5ba",
@@ -3431,7 +3574,8 @@
       "created_at": 1781538785.4265802,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781538785.4265802
     },
     {
       "item_id": "ki_25165aae",
@@ -3652,15 +3796,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 41,
+      "related_count": 43,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539081.5912466,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539081.5912466
     },
     {
       "item_id": "ki_be33c1be",
@@ -3683,7 +3838,8 @@
       "created_at": 1781539081.5912466,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539081.5912466
     },
     {
       "item_id": "ki_94613845",
@@ -3899,15 +4055,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 40,
+      "related_count": 42,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539081.8902435,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539081.8902435
     },
     {
       "item_id": "ki_1fead029",
@@ -3930,7 +4097,8 @@
       "created_at": 1781539081.8902435,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539081.8902435
     },
     {
       "item_id": "ki_2b9e4c2f",
@@ -4141,15 +4309,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 39,
+      "related_count": 41,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539133.7151136,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539133.7151136
     },
     {
       "item_id": "ki_217cbc78",
@@ -4172,7 +4351,8 @@
       "created_at": 1781539133.7151136,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539133.7151136
     },
     {
       "item_id": "ki_824873fd",
@@ -4378,15 +4558,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 38,
+      "related_count": 40,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539134.0112607,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539134.0112607
     },
     {
       "item_id": "ki_74206f72",
@@ -4409,7 +4600,8 @@
       "created_at": 1781539134.0112607,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539134.0112607
     },
     {
       "item_id": "ki_b132a26a",
@@ -4610,15 +4802,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 37,
+      "related_count": 39,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539249.158543,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539249.158543
     },
     {
       "item_id": "ki_8b984353",
@@ -4641,7 +4844,8 @@
       "created_at": 1781539249.158543,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539249.158543
     },
     {
       "item_id": "ki_36abcc87",
@@ -4837,15 +5041,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 36,
+      "related_count": 38,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539249.460907,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539249.460907
     },
     {
       "item_id": "ki_017352ec",
@@ -4868,7 +5083,8 @@
       "created_at": 1781539249.460907,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539249.460907
     },
     {
       "item_id": "ki_b288b6db",
@@ -5059,15 +5275,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 35,
+      "related_count": 37,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539385.195344,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539385.195344
     },
     {
       "item_id": "ki_e375c93d",
@@ -5090,7 +5317,8 @@
       "created_at": 1781539385.195344,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539385.195344
     },
     {
       "item_id": "ki_3ef745b3",
@@ -5276,15 +5504,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 34,
+      "related_count": 36,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539385.558115,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539385.558115
     },
     {
       "item_id": "ki_53508ffc",
@@ -5307,7 +5546,8 @@
       "created_at": 1781539385.558115,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539385.558115
     },
     {
       "item_id": "ki_9a992d56",
@@ -5488,15 +5728,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 33,
+      "related_count": 35,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539798.872561,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539798.872561
     },
     {
       "item_id": "ki_5144dc41",
@@ -5519,7 +5770,8 @@
       "created_at": 1781539798.872561,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539798.872561
     },
     {
       "item_id": "ki_72bba2de",
@@ -5695,15 +5947,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 32,
+      "related_count": 34,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539799.2647772,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539799.2647772
     },
     {
       "item_id": "ki_23220513",
@@ -5726,7 +5989,8 @@
       "created_at": 1781539799.2647772,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539799.2647772
     },
     {
       "item_id": "ki_4dc31493",
@@ -5897,15 +6161,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 31,
+      "related_count": 33,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539949.54838,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539949.54838
     },
     {
       "item_id": "ki_7073a92e",
@@ -5928,7 +6203,8 @@
       "created_at": 1781539949.54838,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539949.54838
     },
     {
       "item_id": "ki_7e13ac23",
@@ -6094,15 +6370,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 30,
+      "related_count": 32,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539949.8807163,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539949.8807163
     },
     {
       "item_id": "ki_d6924c86",
@@ -6125,7 +6412,8 @@
       "created_at": 1781539949.8807163,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781539949.8807163
     },
     {
       "item_id": "ki_8491455b",
@@ -6286,15 +6574,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 29,
+      "related_count": 31,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781579778.8111775,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781579778.8111775
     },
     {
       "item_id": "ki_b2cfc25f",
@@ -6317,7 +6616,8 @@
       "created_at": 1781579778.8111775,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781579778.8111775
     },
     {
       "item_id": "ki_fb2d6888",
@@ -6473,15 +6773,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 28,
+      "related_count": 30,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781579779.1102011,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781579779.1102011
     },
     {
       "item_id": "ki_ea7a4da7",
@@ -6504,7 +6815,8 @@
       "created_at": 1781579779.1102011,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781579779.1102011
     },
     {
       "item_id": "ki_74d563b4",
@@ -6513,7 +6825,7 @@
       "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.78,
+      "strength": 0.77,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6655,15 +6967,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 27,
+      "related_count": 29,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581120.4611528,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581120.4611528
     },
     {
       "item_id": "ki_9a3ce4b9",
@@ -6672,7 +6995,7 @@
       "confidence": 0.7,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.58,
+      "strength": 0.57,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6686,7 +7009,8 @@
       "created_at": 1781581120.4611528,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581120.4611528
     },
     {
       "item_id": "ki_4963d815",
@@ -6695,7 +7019,7 @@
       "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.78,
+      "strength": 0.77,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6832,15 +7156,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 26,
+      "related_count": 28,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581120.9061265,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581120.9061265
     },
     {
       "item_id": "ki_2e357baa",
@@ -6849,7 +7184,7 @@
       "confidence": 0.7,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.58,
+      "strength": 0.57,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6863,7 +7198,8 @@
       "created_at": 1781581120.9061265,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581120.9061265
     },
     {
       "item_id": "ki_78ad8955",
@@ -6872,7 +7208,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7004,15 +7340,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 25,
+      "related_count": 27,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581756.7193167,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581756.7193167
     },
     {
       "item_id": "ki_427c634c",
@@ -7021,7 +7368,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7035,7 +7382,8 @@
       "created_at": 1781581756.7193167,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581756.7193167
     },
     {
       "item_id": "ki_43b9d4f6",
@@ -7044,7 +7392,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7171,15 +7519,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 24,
+      "related_count": 26,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581757.0641496,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581757.0641496
     },
     {
       "item_id": "ki_cc22ec0f",
@@ -7188,7 +7547,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7202,7 +7561,8 @@
       "created_at": 1781581757.0641496,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581757.0641496
     },
     {
       "item_id": "ki_d9181b92",
@@ -7211,7 +7571,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7333,15 +7693,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 23,
+      "related_count": 25,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581799.6408637,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581799.6408637
     },
     {
       "item_id": "ki_7a486d32",
@@ -7350,7 +7721,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7364,7 +7735,8 @@
       "created_at": 1781581799.6408637,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581799.6408637
     },
     {
       "item_id": "ki_c1c24584",
@@ -7373,7 +7745,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7490,15 +7862,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 22,
+      "related_count": 24,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581799.9512422,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581799.9512422
     },
     {
       "item_id": "ki_2b99676b",
@@ -7507,7 +7890,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7521,7 +7904,8 @@
       "created_at": 1781581799.9512422,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581799.9512422
     },
     {
       "item_id": "ki_3aec9c76",
@@ -7530,7 +7914,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7642,15 +8026,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 21,
+      "related_count": 23,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581823.4261968,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581823.4261968
     },
     {
       "item_id": "ki_a1f33cbb",
@@ -7659,7 +8054,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7673,7 +8068,8 @@
       "created_at": 1781581823.4261968,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581823.4261968
     },
     {
       "item_id": "ki_cd2a349d",
@@ -7682,7 +8078,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7789,15 +8185,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 20,
+      "related_count": 22,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581823.780496,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581823.780496
     },
     {
       "item_id": "ki_e492a471",
@@ -7806,7 +8213,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7820,7 +8227,8 @@
       "created_at": 1781581823.780496,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581823.780496
     },
     {
       "item_id": "ki_230841f6",
@@ -7829,7 +8237,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7931,15 +8339,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 19,
+      "related_count": 21,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581867.0452476,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581867.0452476
     },
     {
       "item_id": "ki_ba00b011",
@@ -7948,7 +8367,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7962,7 +8381,8 @@
       "created_at": 1781581867.0452476,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581867.0452476
     },
     {
       "item_id": "ki_ef106f32",
@@ -7971,7 +8391,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.72,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8068,15 +8488,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 18,
+      "related_count": 20,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581867.6399682,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581867.6399682
     },
     {
       "item_id": "ki_cd5cf17c",
@@ -8085,7 +8516,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.52,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8099,7 +8530,8 @@
       "created_at": 1781581867.6399682,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781581867.6399682
     },
     {
       "item_id": "ki_369fa07b",
@@ -8200,15 +8632,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 17,
+      "related_count": 19,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582259.902015,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582259.902015
     },
     {
       "item_id": "ki_8a9dc434",
@@ -8231,7 +8674,8 @@
       "created_at": 1781582259.902015,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582259.902015
     },
     {
       "item_id": "ki_e85b7d9e",
@@ -8327,15 +8771,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 16,
+      "related_count": 18,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582260.276329,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582260.276329
     },
     {
       "item_id": "ki_1a16937b",
@@ -8358,7 +8813,8 @@
       "created_at": 1781582260.276329,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582260.276329
     },
     {
       "item_id": "ki_8ce7aaf4",
@@ -8449,15 +8905,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 15,
+      "related_count": 17,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582340.5154524,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582340.5154524
     },
     {
       "item_id": "ki_a71c1d43",
@@ -8480,7 +8947,8 @@
       "created_at": 1781582340.5154524,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582340.5154524
     },
     {
       "item_id": "ki_a6344df7",
@@ -8566,15 +9034,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 14,
+      "related_count": 16,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582340.9438686,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582340.9438686
     },
     {
       "item_id": "ki_22f43079",
@@ -8597,7 +9076,8 @@
       "created_at": 1781582340.9438686,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582340.9438686
     },
     {
       "item_id": "ki_06f97e2e",
@@ -8678,15 +9158,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 13,
+      "related_count": 15,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582694.74914,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582694.74914
     },
     {
       "item_id": "ki_372f6b37",
@@ -8709,7 +9200,8 @@
       "created_at": 1781582694.74914,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582694.74914
     },
     {
       "item_id": "ki_d71ed951",
@@ -8785,15 +9277,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 12,
+      "related_count": 14,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582695.1356814,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582695.1356814
     },
     {
       "item_id": "ki_d3999659",
@@ -8816,7 +9319,8 @@
       "created_at": 1781582695.1356814,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582695.1356814
     },
     {
       "item_id": "ki_00593b19",
@@ -8887,15 +9391,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 11,
+      "related_count": 13,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582732.9520447,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582732.9520447
     },
     {
       "item_id": "ki_03e0a99e",
@@ -8918,7 +9433,8 @@
       "created_at": 1781582732.9520447,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582732.9520447
     },
     {
       "item_id": "ki_9b63fa7a",
@@ -8984,15 +9500,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 10,
+      "related_count": 12,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582733.3624434,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582733.3624434
     },
     {
       "item_id": "ki_86c0b2bd",
@@ -9015,7 +9542,8 @@
       "created_at": 1781582733.3624434,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582733.3624434
     },
     {
       "item_id": "ki_5c5cc0c5",
@@ -9076,15 +9604,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 9,
+      "related_count": 11,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582909.353379,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582909.353379
     },
     {
       "item_id": "ki_22a652c1",
@@ -9107,7 +9646,8 @@
       "created_at": 1781582909.353379,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582909.353379
     },
     {
       "item_id": "ki_2695d432",
@@ -9163,15 +9703,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 8,
+      "related_count": 10,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582909.703137,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582909.703137
     },
     {
       "item_id": "ki_23564256",
@@ -9194,7 +9745,8 @@
       "created_at": 1781582909.703137,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781582909.703137
     },
     {
       "item_id": "ki_8327dcf8",
@@ -9245,15 +9797,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 7,
+      "related_count": 9,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781594526.411907,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781594526.411907
     },
     {
       "item_id": "ki_b09490f4",
@@ -9276,7 +9839,8 @@
       "created_at": 1781594526.411907,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781594526.411907
     },
     {
       "item_id": "ki_8efd65e2",
@@ -9322,15 +9886,26 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 6,
+      "related_count": 8,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781594526.768241,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781594526.768241
     },
     {
       "item_id": "ki_4396aaa9",
@@ -9353,16 +9928,17 @@
       "created_at": 1781594526.768241,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781594526.768241
     },
     {
       "item_id": "ki_271668c6",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.9,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 1.1,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9394,24 +9970,35 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 5,
+      "related_count": 7,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781795963.9949105,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781795963.9949105
     },
     {
       "item_id": "ki_cddf21bf",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.7,
+      "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.7,
+      "strength": 0.9,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9421,20 +10008,21 @@
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781795963.9949105,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781795963.9949105
     },
     {
       "item_id": "ki_e121e549",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.9,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 1.1,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9461,24 +10049,35 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 4,
+      "related_count": 6,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781795964.6458476,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781795964.6458476
     },
     {
       "item_id": "ki_31aa04b4",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.7,
+      "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.7,
+      "strength": 0.9,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9488,20 +10087,21 @@
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781795964.6458476,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781795964.6458476
     },
     {
       "item_id": "ki_92456c74",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.9,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 1.1,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9523,24 +10123,35 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 3,
+      "related_count": 5,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796121.6665788,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796121.6665788
     },
     {
       "item_id": "ki_2e0dd64f",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.7,
+      "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.7,
+      "strength": 0.9,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9550,20 +10161,21 @@
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796121.6665788,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796121.6665788
     },
     {
       "item_id": "ki_f88f437e",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.9,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 1.1,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9580,24 +10192,35 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 2,
+      "related_count": 4,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796122.1603124,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796122.1603124
     },
     {
       "item_id": "ki_4667acaa",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.7,
+      "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.7,
+      "strength": 0.9,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9607,20 +10230,21 @@
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796122.1603124,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796122.1603124
     },
     {
       "item_id": "ki_bb35729b",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.8,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 1.0,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9632,24 +10256,35 @@
           "item_id": "ki_4acb5eb6",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 1,
+      "related_count": 3,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796447.7737741,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796447.7737741
     },
     {
       "item_id": "ki_2df80782",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.6,
+      "confidence": 0.7,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.8,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9659,20 +10294,134 @@
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
-      "access_count": 0,
+      "access_count": 1,
       "created_at": 1781796447.7737741,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781796447.7737741
     },
     {
       "item_id": "ki_4acb5eb6",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.8,
+      "confidence": 0.9,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 1.0,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_1605",
+      "related_items": [
+        {
+          "item_id": "ki_a6830324",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 2,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781796448.680755,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781796448.680755
+    },
+    {
+      "item_id": "ki_ed60e526",
+      "content": "h: s",
+      "category": "fact",
+      "confidence": 0.7,
       "epistemic_level": "knowledge",
       "is_valid": true,
       "strength": 0.8,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_3208",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781796448.680755,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781796448.680755
+    },
+    {
+      "item_id": "ki_a6830324",
+      "content": "Alpha: 定义Alpha",
+      "category": "concept",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.95,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_1605",
+      "related_items": [
+        {
+          "item_id": "ki_81d5fb68",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781797969.422467,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781797969.422467
+    },
+    {
+      "item_id": "ki_2613311a",
+      "content": "h: s",
+      "category": "fact",
+      "confidence": 0.65,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_3208",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781797969.422467,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781797969.422467
+    },
+    {
+      "item_id": "ki_81d5fb68",
+      "content": "Alpha: 定义Alpha",
+      "category": "concept",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.95,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9682,20 +10431,21 @@
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
-      "access_count": 0,
-      "created_at": 1781796448.680755,
+      "access_count": 1,
+      "created_at": 1781797969.8138916,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781797969.8138916
     },
     {
-      "item_id": "ki_ed60e526",
+      "item_id": "ki_0c55a285",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.6,
+      "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.75,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9705,11 +10455,12 @@
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
-      "access_count": 0,
-      "created_at": 1781796448.680755,
+      "access_count": 1,
+      "created_at": 1781797969.8138916,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": ""
+      "superseded_by": "",
+      "last_accessed": 1781797969.8138916
     }
   ]
 }

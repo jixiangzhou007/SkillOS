@@ -10,20 +10,17 @@ Private Hub mode: when SKILLHUB_PRIVATE=true, only authenticated users
 can access the Hub. Registration is invite-only (admin creates accounts).
 """
 
-from __future__ import annotations
 
 import hashlib
-import json
 import logging
 import os
 import sqlite3
 import threading
 import time
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 

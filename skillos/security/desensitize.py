@@ -1,6 +1,5 @@
 """LLM input desensitization (Sprint 7 — v1 rules)."""
 
-from __future__ import annotations
 
 import re
 

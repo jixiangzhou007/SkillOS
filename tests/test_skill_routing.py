@@ -1,6 +1,5 @@
 """Tests for SkillsBench category routing (P1)."""
 
-from __future__ import annotations
 
 from unittest.mock import patch
 

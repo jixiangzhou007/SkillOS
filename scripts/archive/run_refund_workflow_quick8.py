@@ -1,5 +1,4 @@
 """Workflow-only quick 8-task compare for 电商客服退款处理."""
-from __future__ import annotations
 
 import json
 import sys

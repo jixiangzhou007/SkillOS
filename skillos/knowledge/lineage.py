@@ -11,7 +11,6 @@ Every piece of knowledge carries its full history:
   Source → Extraction → Structuring → Integration → Verification → Impact
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -20,7 +19,6 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 
@@ -706,7 +704,7 @@ def trigger_pattern_mining(llm_args: tuple) -> dict:
     - Anti-patterns that new knowledge helps explain
     """
     try:
-        from skillos.skills.pattern_miner import profile_all_skills, SkillProfile
+        from skillos.skills.pattern_miner import profile_all_skills
         profiles = profile_all_skills()
 
         if len(profiles) < 3:
@@ -847,7 +845,7 @@ def sync_lineage_to_graph(session_id: str) -> dict:
         return {"synced": False, "reason": "Lineage session not found"}
 
     try:
-        from skillos.knowledge.graph import KnowledgeGraph, KnowledgeNode, KnowledgeEdge
+        from skillos.knowledge.graph import KnowledgeEdge, KnowledgeGraph, KnowledgeNode
         kg = KnowledgeGraph()
     except ImportError:
         # Fallback: use the get_graph singleton
@@ -949,7 +947,7 @@ def full_knowledge_cycle(
     # Phase 2–3 + 6: Lineage via unified post_ingest (4-signal + optional graph sync)
     extracted_items = []
     try:
-        from skillos.knowledge.extractor import extract_knowledge, save_knowledge, verify_knowledge, load_all_knowledge
+        from skillos.knowledge.extractor import extract_knowledge, load_all_knowledge, save_knowledge, verify_knowledge
         extracted_items = extract_knowledge(content, source_url, llm_args)
         if extracted_items:
             extracted_items = verify_knowledge(extracted_items, load_all_knowledge())

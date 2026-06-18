@@ -8,14 +8,13 @@ Ported from Skill Distiller's skill_store.py. Cleaned up for SkillOS:
   - Multi-tenant paths via ``skillos.identity`` (Sprint 0)
 """
 
-from __future__ import annotations
 
 import os
 import re
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import yaml
 
@@ -228,7 +227,7 @@ def save_skill(
 
     # Auto-detect variant archetype and register
     try:
-        from skillos.skills.variants import auto_detect_variants, VariantRegistry
+        from skillos.skills.variants import VariantRegistry, auto_detect_variants
         groups = auto_detect_variants()
         reg = VariantRegistry()
         for group in groups:
@@ -267,8 +266,8 @@ def save_skill(
 
     if is_new and ctx is not None:
         try:
-            from skillos.billing.usage import count_skills
             from skillos.analytics.funnel import track_funnel
+            from skillos.billing.usage import count_skills
             if count_skills(ctx) == 1:
                 track_funnel(
                     "first_skill",

@@ -52,7 +52,8 @@ LOCK_PATH = Path(__file__).parent.parent / "data" / ".hermes_compat_lock"
 def _parse_hermes_version() -> tuple[int, int, int] | None:
     """Get installed Hermes version as (major, minor, patch)."""
     try:
-        import subprocess, re
+        import re
+        import subprocess
         out = subprocess.run(
             ["hermes", "version"], capture_output=True, text=True, timeout=10,
             encoding="utf-8", errors="replace"
@@ -226,7 +227,7 @@ def skillos_to_hermes(skill_name: str, skill_content: str) -> str:
     # Build Hermes-compatible frontmatter
     lines = ["---", f"name: {skill_name}"]
     if description:
-        lines.append(f"description: |")
+        lines.append("description: |")
         for desc_line in description.split("\n")[:5]:
             lines.append(f"  {desc_line.strip()}")
     lines.extend(["---", "", f"# {skill_name}", ""])

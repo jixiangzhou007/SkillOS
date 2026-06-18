@@ -18,8 +18,9 @@ def create_agent(skill_doc: str, task: str = "") -> dict[str, Any]:
 
     Returns a dict with system_prompt, model, and metadata ready for execution.
     """
-    from skillos.skills.skill_store import get_skill_body
     import re
+
+    from skillos.skills.skill_store import get_skill_body
 
     body = get_skill_body(skill_doc)
     m = re.search(r"^#\s*(.+?)\s*$", skill_doc, re.MULTILINE)

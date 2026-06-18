@@ -7,7 +7,6 @@ and abort-safe. Prevents concurrent write conflicts when multiple watchers
 Also triggers knowledge gap research when surprise detection finds sparse communities.
 """
 
-from __future__ import annotations
 
 import json
 import logging

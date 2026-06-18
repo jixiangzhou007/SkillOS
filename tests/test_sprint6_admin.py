@@ -1,6 +1,5 @@
 """Sprint 6 — org admin console, departments, skill copy, search."""
 
-from __future__ import annotations
 
 import uuid
 

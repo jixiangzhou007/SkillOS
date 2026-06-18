@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Run DNA golden set — CI entry (offline, no LLM)."""
 
-from __future__ import annotations
 
 import json
 import sys

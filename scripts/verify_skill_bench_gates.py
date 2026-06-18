@@ -3,7 +3,6 @@
 
 No live LLM required. Exit 0 = all gates passed.
 """
-from __future__ import annotations
 
 import re
 import subprocess

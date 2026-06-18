@@ -6,15 +6,13 @@ Three capabilities closing the P2 gap:
 3. Cross-Experience Correlation — feedback from one conversation upgrades multiple skills
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 
@@ -164,8 +162,9 @@ def detect_evolution_triggers(llm_args: tuple | None = None) -> list[EvolutionTr
     2. Staleness: hasn't been used in 14+ days and confidence < 0.6
     3. DNA fail: compliance score < 3/6
     """
+    from skillos.evolution import evolver as skill_evolver
+    from skillos.evolution import learning_theory as lt
     from skillos.skills import skill_store
-    from skillos.evolution import evolver as skill_evolver, learning_theory as lt
     from skillos.skills.pattern_miner import check_dna_compliance
 
     triggers = []

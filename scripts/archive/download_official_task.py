@@ -1,5 +1,4 @@
 """Download one official SkillsBench task via GitHub API (git-clone fallback for GFW)."""
-from __future__ import annotations
 
 import argparse
 import base64

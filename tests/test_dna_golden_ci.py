@@ -1,6 +1,5 @@
 """Phase 5 — DNA golden set CI (offline)."""
 
-from __future__ import annotations
 
 import json
 from pathlib import Path

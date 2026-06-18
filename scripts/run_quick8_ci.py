@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """CI/nightly Quick8 benchmark for reference skills (LLM + cache)."""
 
-from __future__ import annotations
 
 import json
 import os

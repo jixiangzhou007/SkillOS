@@ -1,6 +1,5 @@
 """Sprint 5 — quotas, cross-tenant security, usage API."""
 
-from __future__ import annotations
 
 import uuid
 

@@ -1,6 +1,5 @@
 """Sprint 13 — DAG viz, role templates, SkillOpt CLI."""
 
-from __future__ import annotations
 
 import uuid
 

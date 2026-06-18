@@ -1,6 +1,5 @@
 """Sprint 7–8 — desensitize, dept quota, funnel, stability."""
 
-from __future__ import annotations
 
 import uuid
 

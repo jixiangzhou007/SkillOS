@@ -1,5 +1,4 @@
 """Simulate a normal user creating 3 skills via chat, then run SkillsBench."""
-from __future__ import annotations
 
 import json
 import sys

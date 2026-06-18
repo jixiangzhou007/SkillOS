@@ -1,6 +1,5 @@
 """Bench quality snapshot for skill frontmatter (save gate, DNA compliance, smoke)."""
 
-from __future__ import annotations
 
 import time
 from typing import Any

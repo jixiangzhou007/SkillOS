@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Re-extract 3 benchmark skills with full DNA pipeline (no HTTP server)."""
-from __future__ import annotations
 
 import json
 import os

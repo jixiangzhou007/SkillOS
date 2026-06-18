@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Prune cross-domain quick8 tasks from generalize domain packs."""
-from __future__ import annotations
 
 import json
 import sys

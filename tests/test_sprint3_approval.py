@@ -1,6 +1,5 @@
 """Sprint 3 — approval flow, Feishu webhook, MCP tenant."""
 
-from __future__ import annotations
 
 import uuid
 from unittest.mock import MagicMock, patch

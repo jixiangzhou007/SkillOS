@@ -8,7 +8,6 @@ Skills are operation manuals. Tools are the actual instruments.
 A skill says "step 3: search for papers" — but it needs a tool to do it.
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -270,7 +269,7 @@ class ToolRegistry:
 
     def _call_api(self, tool: Tool, params: dict) -> dict:
         """Execute an API-based tool."""
-        import urllib.request, json as _json
+        import urllib.request
         url = tool.endpoint
         if not url:
             return {"success": False, "result": "", "error": "No endpoint configured"}

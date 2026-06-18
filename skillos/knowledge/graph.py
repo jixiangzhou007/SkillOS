@@ -19,7 +19,6 @@ Relationship types (8, like human knowledge):
   evolved_to  — versioning: X was replaced by Y
 """
 
-from __future__ import annotations
 
 import json
 import logging
@@ -62,7 +61,7 @@ class KnowledgeEdge:
 
     EvoRAG-inspired: contribution scoring tracks how much this edge
     helps answer real user questions."""
-    
+
     source_id: str
     target_id: str
     relation_type: str

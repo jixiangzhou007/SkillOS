@@ -27,11 +27,11 @@ import json
 import logging
 import re
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Optional
-from contextlib import contextmanager
 
 _log = logging.getLogger(__name__)
 

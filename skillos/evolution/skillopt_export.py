@@ -5,7 +5,6 @@ produces a portable directory that external SkillOpt tooling (or manual review)
 can consume as a ``best_skill.md`` + traces entry point.
 """
 
-from __future__ import annotations
 
 import json
 import re
@@ -58,8 +57,8 @@ def export_for_skillopt(
     Returns:
         SkillOptExportResult with paths to generated files.
     """
-    from skillos.skills.skill_store import load_skill, load_skill_raw
     from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
+    from skillos.skills.skill_store import load_skill, load_skill_raw
 
     raw = load_skill_raw(skill_name, tenant=tenant)
     full_doc = load_skill(skill_name, tenant=tenant)

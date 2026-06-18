@@ -1,11 +1,10 @@
 """Auth endpoints — login, register, JWT, GitHub (Sprint 1)."""
 
-from __future__ import annotations
 
 import os
 
-from fastapi import APIRouter, HTTPException, Header
-from pydantic import BaseModel, EmailStr
+from fastapi import APIRouter, Header, HTTPException
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -52,9 +51,9 @@ async def register(req: RegisterRequest):
     if len(req.password) < 4:
         raise HTTPException(status_code=400, detail="Password must be at least 4 characters")
 
-    from skillos.marketplace.auth import create_user, user_to_dict
-    from skillos.identity.workspaces import ensure_personal_workspace
     from skillos.identity.middleware import issue_auth_token
+    from skillos.identity.workspaces import ensure_personal_workspace
+    from skillos.marketplace.auth import create_user, user_to_dict
 
     user = create_user(req.username, req.password, "member", req.email)
     if not user:
@@ -83,10 +82,10 @@ async def register(req: RegisterRequest):
 @router.post("/login")
 async def login(req: LoginRequest):
     """Authenticate and return JWT (+ workspace)."""
-    from skillos.marketplace.auth import authenticate_password, user_to_dict
-    from skillos.identity.workspaces import ensure_personal_workspace
-    from skillos.identity.middleware import issue_auth_token
     from skillos.identity.audit import log_skill_action
+    from skillos.identity.middleware import issue_auth_token
+    from skillos.identity.workspaces import ensure_personal_workspace
+    from skillos.marketplace.auth import authenticate_password, user_to_dict
 
     user = authenticate_password(req.username, req.password)
     if not user:
@@ -110,8 +109,8 @@ async def login(req: LoginRequest):
 @router.get("/me")
 async def me(authorization: str = Header(None)):
     """Current user + active workspace from JWT or legacy token."""
-    from skillos.marketplace.auth import user_to_dict, get_user
     from skillos.identity.middleware import auth_from_token, parse_bearer
+    from skillos.marketplace.auth import get_user, user_to_dict
 
     token = parse_bearer(authorization)
     if not token:
@@ -148,8 +147,8 @@ async def github_login(req: GitHubAuthRequest):
             detail="GitHub OAuth not configured (set GITHUB_CLIENT_ID/SECRET)",
         )
 
-    import urllib.request
     import json
+    import urllib.request
 
     body = json.dumps({
         "client_id": client_id,
@@ -185,9 +184,9 @@ async def github_login(req: GitHubAuthRequest):
     username = f"gh_{gh_login}"[:32]
     email = gh_user.get("email") or ""
 
-    from skillos.marketplace.auth import create_user, get_user, user_to_dict, _get_conn, _hash_pw
-    import time
     import uuid
+
+    from skillos.marketplace.auth import _get_conn, create_user, get_user, user_to_dict
 
     conn = _get_conn()
     row = conn.execute("SELECT user_id FROM users WHERE username = ?", (username,)).fetchone()
@@ -199,8 +198,8 @@ async def github_login(req: GitHubAuthRequest):
         if not user:
             raise HTTPException(status_code=500, detail="Failed to provision GitHub user")
 
-    from skillos.identity.workspaces import ensure_personal_workspace
     from skillos.identity.middleware import issue_auth_token
+    from skillos.identity.workspaces import ensure_personal_workspace
 
     ws = ensure_personal_workspace(user.user_id, display_name=gh_login)
     token = issue_auth_token(user, tenant_id=ws.tenant_id)
@@ -320,7 +319,7 @@ async def feishu_login(req: FeishuAuthRequest):
     open_id = info.get("open_id") or info.get("user_id") or ""
     username = f"fs_{open_id[-12:]}" if open_id else f"fs_{feishu_name[:20]}"
 
-    from skillos.marketplace.auth import create_user, get_user, user_to_dict, _get_conn
+    from skillos.marketplace.auth import _get_conn, create_user, get_user, user_to_dict
 
     conn = _get_conn()
     row = conn.execute("SELECT user_id FROM users WHERE username = ?", (username,)).fetchone()
@@ -330,8 +329,8 @@ async def feishu_login(req: FeishuAuthRequest):
         import uuid
         user = create_user(username, uuid.uuid4().hex, "member", email="")
 
-    from skillos.identity.workspaces import ensure_personal_workspace
     from skillos.identity.middleware import issue_auth_token
+    from skillos.identity.workspaces import ensure_personal_workspace
 
     ws = ensure_personal_workspace(user.user_id, display_name=feishu_name)
     token = issue_auth_token(user, tenant_id=ws.tenant_id)

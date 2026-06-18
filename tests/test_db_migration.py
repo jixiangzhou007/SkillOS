@@ -1,6 +1,5 @@
 """Database migration idempotency tests."""
 
-from __future__ import annotations
 
 import sqlite3
 

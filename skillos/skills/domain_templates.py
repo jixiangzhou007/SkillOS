@@ -4,7 +4,6 @@ Pre-built S_trigger / S_body / S_route scaffolds for high-frequency domains.
 Matched from user goal keywords; injected into SkillExtractionAgent generation.
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass, field
 

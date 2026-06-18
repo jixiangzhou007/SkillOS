@@ -1,6 +1,5 @@
 """Disk cache for SkillsBench LLM responses (reduces benchmark variance & cost)."""
 
-from __future__ import annotations
 
 import hashlib
 import os

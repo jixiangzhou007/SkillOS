@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Run Path B cold-start on generalized skills and re-benchmark."""
-from __future__ import annotations
 
 import json
 import os

@@ -109,7 +109,7 @@ class Session:
         if len(self.history) < 3:
             return 0
         try:
-            import sys, os
+            import sys
             sys.path.insert(0, str(Path(__file__).parent.parent.parent))
             # Dynamic import to avoid circular deps
             from skillos.knowledge.memory import ConversationMemory
@@ -132,8 +132,8 @@ class Session:
         if len(self._agent._context) < 3:
             return None  # Not enough info to auto-generate
         try:
-            from skillos.skills.skill_store import list_skills, save_skill
             from skillos.config import get_config
+            from skillos.skills.skill_store import list_skills, save_skill
             cfg = get_config()
             # Auto-generate the skill from accumulated context
             reply, doc = self._agent._generate(list_skills(), cfg.to_llm_args())

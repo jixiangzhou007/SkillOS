@@ -1,6 +1,5 @@
 """Channel session ID helpers — map IM platforms to SkillOS sessions."""
 
-from __future__ import annotations
 
 import re
 

@@ -1,5 +1,4 @@
 """Run full official SkillsBench suite: oracle smoke + optional agent compares."""
-from __future__ import annotations
 
 import argparse
 import json

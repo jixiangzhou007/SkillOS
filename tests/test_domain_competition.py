@@ -1,6 +1,5 @@
 """Phase 3 — multi-domain template competition and keyword governance."""
 
-from __future__ import annotations
 
 from skillos.knowledge.dna_context import build_dna_lineage, build_domain_template_context
 from skillos.skills.domain_templates import (

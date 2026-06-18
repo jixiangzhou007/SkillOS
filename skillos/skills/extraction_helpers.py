@@ -1,6 +1,5 @@
 """Helpers for skill extraction dispatch — option buttons, response enrichment."""
 
-from __future__ import annotations
 
 import re
 

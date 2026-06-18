@@ -1,6 +1,5 @@
 """Skill body structure helpers — S_body normalization and heritage section merge."""
 
-from __future__ import annotations
 
 import re
 from pathlib import Path
@@ -173,6 +172,7 @@ def compose_skill_markdown(meta: dict[str, Any], body: str) -> str:
     from skillos.skills.skill_store import _compose
     return _compose(meta, body)
 
+def _section_text(content: str, names: list[str]) -> str:
     """Extract first matching ## section by exact heading name."""
     for name in names:
         pattern = rf"##\s*{re.escape(name)}\s*\n(.*?)(?=\n##\s+|\Z)"

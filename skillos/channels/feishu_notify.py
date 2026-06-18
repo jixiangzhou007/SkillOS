@@ -1,6 +1,5 @@
 """Feishu notification helpers (Sprint 3 — approval cards)."""
 
-from __future__ import annotations
 
 import json
 import urllib.request

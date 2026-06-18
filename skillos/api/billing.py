@@ -1,6 +1,5 @@
 """Billing & plan API (Sprint 9)."""
 
-from __future__ import annotations
 
 import os
 

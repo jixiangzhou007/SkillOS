@@ -8,9 +8,8 @@ different (cheaper) model. If both models agree within a threshold, confidence
 increases. If they disagree, the score is flagged for human review.
 """
 
-from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass

@@ -1,6 +1,5 @@
 """Sprint 4 — epistemic UI API, dedup, quick mode."""
 
-from __future__ import annotations
 
 import uuid
 

@@ -1,6 +1,5 @@
 """Sprint 9–12 — Pro plan, audit export, catalog, SLA."""
 
-from __future__ import annotations
 
 import uuid
 

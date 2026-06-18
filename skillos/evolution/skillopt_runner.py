@@ -1,6 +1,5 @@
 """SkillOpt export validation and external runner helpers."""
 
-from __future__ import annotations
 
 import os
 import shlex

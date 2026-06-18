@@ -3,10 +3,10 @@
 Wired to real marketplace modules from Phase 3.
 """
 
-from fastapi import APIRouter, HTTPException, Header, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from skillos.identity.middleware import AuthContext, get_optional_auth, require_auth
+from skillos.identity.middleware import AuthContext, get_optional_auth
 
 router = APIRouter()
 
@@ -36,6 +36,7 @@ async def marketplace_stats():
 async def public_catalog(q: str = "", category: str = "", sort: str = "score", limit: int = 50):
     """Read-only public skill catalog (no UGC publish in Sprint 9)."""
     from collections import Counter
+
     from skillos.marketplace.registry import list_skills
 
     readonly = _marketplace_readonly()
@@ -143,6 +144,7 @@ async def review_skill(skill_id: str, approved: bool, notes: str = ""):
 async def check_updates(skills: str = "[]"):
     """Check which subscribed skills have newer versions."""
     import json
+
     from skillos.marketplace.registry import get_skill
     try:
         client_skills = json.loads(skills)
@@ -167,7 +169,7 @@ async def author_revenue(author_id: str):
 @router.get("/pricing/get")
 async def pricing_get(skill_id: str):
     """Get pricing tier for a marketplace skill."""
-    from skillos.marketplace.payments import get_price, format_price
+    from skillos.marketplace.payments import format_price, get_price
     tier = get_price(skill_id)
     return {
         "skill_id": skill_id,
@@ -193,7 +195,7 @@ async def pricing_set(req: PricingSetRequest, auth: AuthContext | None = Depends
             status_code=403,
             detail="只读市场暂不支持修改定价",
         )
-    from skillos.marketplace.payments import set_price, format_price
+    from skillos.marketplace.payments import format_price, set_price
     tier = set_price(req.skill_id, req.model, req.price, req.trial_days)
     return {
         "pricing": {

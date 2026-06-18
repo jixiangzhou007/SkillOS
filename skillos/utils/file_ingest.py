@@ -8,15 +8,11 @@ Supports 30+ formats via Microsoft's MarkItDown (optional dependency).
 Falls back gracefully to plain text reading for .txt/.md/.csv/.json.
 """
 
-from __future__ import annotations
 
 import hashlib
-import json
 import logging
 import os
-import tempfile
 from pathlib import Path
-from typing import Optional
 
 _log = logging.getLogger(__name__)
 

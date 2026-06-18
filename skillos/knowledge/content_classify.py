@@ -1,6 +1,5 @@
 """Classify ingested content as actionable (how-to) vs conceptual (reference)."""
 
-from __future__ import annotations
 
 
 def classify_content(text: str) -> str:

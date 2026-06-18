@@ -54,10 +54,20 @@ docs/AI_DEV_LOG.md
 
 ```bash
 pip install -e .
-python -m pytest tests/ -v
+python -m pytest tests/ --ignore=tests/test_feasibility_eval.py -v
 skillos --server-only          # API http://127.0.0.1:9876
 python -m skillos.mcp_server   # MCP
 ```
+
+### 本地 SkillsBench（需 `DEEPSEEK_API_KEY`）
+
+```bash
+python scripts/run_bench_regression.py              # 参考 + 泛化 Quick8 + 烟测
+python scripts/archive/run_ablation.py              # Layer 1 HERITAGE×pack 2×2
+python scripts/archive/run_cold_start_generalize.py # Path B 冷启动（SKILLOS_FORCE_COLD_START=1）
+```
+
+详见 [`docs/BENCHMARK_LOCAL.md`](docs/BENCHMARK_LOCAL.md) · 官方 CI：[`docs/SKILLSBENCH_CI.md`](docs/SKILLSBENCH_CI.md)
 
 ## 工具专属入口（内容一致，任选其一即可）
 
@@ -69,4 +79,4 @@ python -m skillos.mcp_server   # MCP
 
 若规则冲突，**以本文件 + `docs/AI_DEV_LOG.md` 最新记录为准**。
 
-执行功能改进前，阅读分阶段路线图 [`docs/IMPROVEMENT_PLAN.md`](docs/IMPROVEMENT_PLAN.md)；按 Phase 顺序推进，勿跳过 Phase 1–2。
+执行功能改进前，阅读分阶段路线图 [`docs/IMPROVEMENT_PLAN.md`](docs/IMPROVEMENT_PLAN.md)；Phase 0–7 已交付，后续以 bench 回归与产品化为主。

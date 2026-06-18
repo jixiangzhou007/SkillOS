@@ -1,6 +1,5 @@
 """Official SkillsBench task ↔ SkillOS skill mapping."""
 
-from __future__ import annotations
 
 # Curated pairs for Phase 1 eval (official task id → SkillOS skill folder name)
 CORE_TASK_MAP: dict[str, str] = {

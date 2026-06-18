@@ -1,6 +1,5 @@
 """System skills used by Create vs Agent dispatch modes (SD-compatible)."""
 
-from __future__ import annotations
 
 SYSTEM_SKILL_NAMES = frozenset({
     "brainstorming",

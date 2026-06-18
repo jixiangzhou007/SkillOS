@@ -1,6 +1,5 @@
 """Subscription plans (Sprint 9 — Personal Pro beta)."""
 
-from __future__ import annotations
 
 import time
 

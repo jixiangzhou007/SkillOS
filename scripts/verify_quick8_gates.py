@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Offline verify latest Quick8 CI artifact (no LLM)."""
 
-from __future__ import annotations
 
 import json
 import sys

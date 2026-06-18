@@ -1,6 +1,5 @@
 """Analytics API — funnel + stability (Sprint 7)."""
 
-from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 

@@ -1,6 +1,5 @@
 """SLA monitoring (Sprint 9)."""
 
-from __future__ import annotations
 
 import time
 

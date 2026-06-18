@@ -902,7 +902,7 @@ SKILL.md 应该精简。详细内容放到 references/ 里。
             from skillos.skills.pattern_miner import inject_dna_to_prompt
             dna_prompt = inject_dna_to_prompt("请确保技能文档遵循Skill DNA设计原则。")
             if dna_prompt and "DNA" in dna_prompt:
-                final_content += f"\n\n<!-- Skill DNA principles considered in generation -->"
+                final_content += "\n\n<!-- Skill DNA principles considered in generation -->"
         except Exception:
             _log.debug("Non-critical operation skipped", exc_info=True)
 
@@ -1644,6 +1644,22 @@ tool_description: <第三人称描述：做什么 + 何时触发 + 触发词，�
             except Exception:
                 _log.debug("Non-critical operation skipped", exc_info=True)
 
+            # Epistemic claim recording: extract claims from generated skill,
+            # classify and cross-reference for Plato/Popper verification
+            try:
+                from skillos.knowledge.epistemology import record_claim
+                for claim_text in self._extract_claims_from_skill(content):
+                    record_claim(
+                        content=claim_text,
+                        source=f"skill_extraction:{name}",
+                        source_type="llm_generated",
+                        skill_name=name,
+                    )
+                _log.info("Recorded %d claims from skill '%s'",
+                          sum(1 for _ in self._extract_claims_from_skill(content)), name)
+            except Exception:
+                _log.debug("Epistemic claim recording skipped", exc_info=True)
+
             self._phase = Phase.DONE
             self._finalized_name = name
             self._awaiting_confirm = False
@@ -1976,7 +1992,7 @@ tool_description: <第三人称描述：做什么 + 何时触发 + 触发词，�
 
     def _generate_metaskill(self, existing_skills: list[str], llm_args: tuple) -> tuple[str, dict | None]:
         """Generate the MetaSkill pipeline document."""
-        from skillos.skills.metaskill import parse_metaskill, run_pipeline
+        from skillos.skills.metaskill import parse_metaskill
         from skillos.skills.skill_store import save_skill
 
         model = llm_args[2] if len(llm_args) > 2 else ""
@@ -2102,3 +2118,76 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
                     break
             name = name[:cut]
         return name.strip() if name else "未命名技能"
+
+    @staticmethod
+    def _extract_claims_from_skill(content: str) -> list[str]:
+        """Extract individual knowledge claims from a generated SKILL.md body.
+
+        Parses S_body numbered steps and S_route table rows into discrete
+        claim strings suitable for epistemic recording and verification.
+
+        Returns:
+            List of claim strings (one per step/row).
+        """
+        claims: list[str] = []
+        # 1. Extract from S_body numbered steps
+        body_match = re.search(
+            r'##\s*S_body\s*\n(.*?)(?=\n##\s|\Z)',
+            content, re.DOTALL | re.IGNORECASE,
+        )
+        if body_match:
+            body_text = body_match.group(1)
+            # Split on numbered steps: "1. ", "2. ", "1) " etc.
+            step_lines = re.split(r'\n\s*\d+[.)]\s*', body_text)
+            for step in step_lines:
+                clean = step.strip()
+                # Skip empty, short fragments, and table/markdown artifacts
+                if not clean or len(clean) < 12:
+                    continue
+                if clean.startswith('|') or clean.startswith('#'):
+                    continue
+                # Strip leading number prefix if the first line starts with one
+                clean = re.sub(r'^\d+[.)]\s*', '', clean)
+                # Strip leading "* " markers
+                clean = re.sub(r'^[\*\-]\s+', '', clean)
+                claims.append(clean)
+
+        # 2. Extract from S_route table rows
+        route_match = re.search(
+            r'##\s*S_route\s*\n(.*?)(?=\n##\s|\Z)',
+            content, re.DOTALL | re.IGNORECASE,
+        )
+        if route_match:
+            route_text = route_match.group(1)
+            header_seen = False
+            for line in route_text.split('\n'):
+                line = line.strip()
+                if not line.startswith('|') or '---' in line:
+                    continue
+                cells = [c.strip() for c in line.split('|')[1:-1]]
+                cells = [c for c in cells if c]
+                if not cells:
+                    continue
+                # Skip header row
+                if not header_seen and any(
+                    h in ''.join(cells).lower()
+                    for h in ['用户意图', '条件', 'intent', 'condition', '执行动作', 'action']
+                ):
+                    header_seen = True
+                    continue
+                header_seen = True
+                claims.append(' | '.join(cells))
+
+        # 3. Extract trigger terms as a claim
+        trigger_match = re.search(
+            r'##\s*S_trigger\s*\n(.*?)(?=\n##\s|\Z)',
+            content, re.DOTALL | re.IGNORECASE,
+        )
+        if trigger_match:
+            trigger_text = trigger_match.group(1).strip()
+            if trigger_text and len(trigger_text) > 5:
+                kw_match = re.search(r'keywords?\s*:\s*(.+)', trigger_text, re.IGNORECASE)
+                if kw_match:
+                    claims.append(f"触发条件: {kw_match.group(1).strip()}")
+
+        return claims

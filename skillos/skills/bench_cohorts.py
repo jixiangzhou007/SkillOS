@@ -1,6 +1,5 @@
 """Shared benchmark cohort definitions — reference + generalization."""
 
-from __future__ import annotations
 
 from typing import Any
 

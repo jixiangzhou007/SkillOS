@@ -1,6 +1,5 @@
 """Channel webhooks — Feishu bot α (Sprint 3)."""
 
-from __future__ import annotations
 
 import os
 

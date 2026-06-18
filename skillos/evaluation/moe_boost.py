@@ -1,13 +1,12 @@
 """MoE-driven single-dimension skill boost when overall score < threshold (P2)."""
 
-from __future__ import annotations
 
 import logging
 import re
 from typing import Any
 
 from skillos.evaluation.experts import EXPERTS, ExpertDefinition
-from skillos.evaluation.moe import evaluate_skill, MoEReport, ExpertResult
+from skillos.evaluation.moe import ExpertResult, MoEReport, evaluate_skill
 
 _log = logging.getLogger(__name__)
 

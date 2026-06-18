@@ -1,7 +1,7 @@
 ---
 name: ep-ui-test
 created_at: '2026-06-14T04:57:19Z'
-updated_at: '2026-06-14T04:57:40Z'
+updated_at: '2026-06-18T15:48:28Z'
 epistemic:
   source: test
   source_type: test_result
@@ -11,12 +11,22 @@ epistemic:
   preferences: 0
   errors: 0
   claim_ids:
-  - ec_1781413057_9e0f63
-  - ec_1781413057_25bdf4
+  - ec_1781797704_cfd4be
+  - ec_1781797704_a10b31
   pending_ids:
-  - ec_1781413057_25bdf4
-  processed_at: 1781413060.0879197
-version: 4
+  - ec_1781797704_a10b31
+  processed_at: 1781797708.694839
+philosophical_dna: pdca
+philosophical_dna_label: PDCA 循环
+methodology: business-process
+methodology_label: PDCA 循环
+dna_lineage:
+  philosophical:
+  - id: pdca
+    weight: 1.0
+  domain: []
+  detected_at: '2026-06-18T15:48:24Z'
+version: 6
 ---
 
 ## S_body
@@ -30,4 +40,4 @@ version: 4
 - ✅ 退款前必须核对订单号与支付渠道是否一致
 
 ### 待确认
-- 📋 [evidence] 超过七天的退款需要主管审批 (`ec_1781413057_25bdf4`)
+- 📋 [evidence] 超过七天的退款需要主管审批 (`ec_1781797704_a10b31`)

@@ -1,6 +1,5 @@
 """Domain DNA evolution + stale lineage queue (Phase 4)."""
 
-from __future__ import annotations
 
 import logging
 import re
@@ -8,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from skillos.knowledge.dna_semver import bump_semver, compare_semver, is_stale_version
+from skillos.knowledge.dna_semver import bump_semver, is_stale_version
 from skillos.knowledge.dna_store import (
     DEFAULT_TEMPLATE_VERSION,
     DNA_DIR,

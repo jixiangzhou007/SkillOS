@@ -1,6 +1,5 @@
 """MCP runtime auth — resolve personal/org tenant from env token (Sprint 3)."""
 
-from __future__ import annotations
 
 import os
 from contextlib import contextmanager

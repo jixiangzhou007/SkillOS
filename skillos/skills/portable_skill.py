@@ -1,6 +1,5 @@
 """Normalize extracted skill_doc into installable SKILL.md for Cursor / Claude Code / Trae."""
 
-from __future__ import annotations
 
 import hashlib
 import re

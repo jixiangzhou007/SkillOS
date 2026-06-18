@@ -1,6 +1,5 @@
 """Minimal HS256 JWT (stdlib only) for Sprint 1."""
 
-from __future__ import annotations
 
 import base64
 import hashlib

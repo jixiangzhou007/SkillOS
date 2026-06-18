@@ -7,6 +7,7 @@
 1. **改代码前** → 读 `docs/AI_DEV_LOG.md` 最新一条
 2. **改代码后** → 按模板在 `docs/AI_DEV_LOG.md` 顶部追加记录
 3. **架构** → 遵守 `DESIGN.md` §6
-4. **测试** → `python -m pytest tests/ -v`
+4. **测试** → `python -m pytest tests/ --ignore=tests/test_feasibility_eval.py -v`
+5. **Bench** → `python scripts/run_bench_regression.py`（需 `DEEPSEEK_API_KEY`）
 
 完整说明、约束与命令见 [`AGENTS.md`](AGENTS.md)。

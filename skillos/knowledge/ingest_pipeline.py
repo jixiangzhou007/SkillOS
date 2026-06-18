@@ -1,6 +1,5 @@
 """Unified post-ingest hook — digest / extract / skill → lineage 4-signal graph."""
 
-from __future__ import annotations
 
 import logging
 import re

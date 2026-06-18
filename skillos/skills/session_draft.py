@@ -1,6 +1,5 @@
 """Session-scoped extraction drafts — never written to the public skills/ tree."""
 
-from __future__ import annotations
 
 import json
 import logging

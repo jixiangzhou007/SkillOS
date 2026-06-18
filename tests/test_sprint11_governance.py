@@ -1,6 +1,5 @@
 """Sprint 11 — governance verified rate, creator summary, backup."""
 
-from __future__ import annotations
 
 import uuid
 import zipfile

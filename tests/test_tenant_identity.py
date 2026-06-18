@@ -1,6 +1,5 @@
 """Sprint 0 — tenant identity and skill path isolation."""
 
-from __future__ import annotations
 
 import os
 from pathlib import Path

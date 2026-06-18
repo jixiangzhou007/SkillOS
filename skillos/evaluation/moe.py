@@ -7,14 +7,12 @@ Architecture:
   4. Output structured MoEReport with per-dimension breakdown
 """
 
-from __future__ import annotations
 
 import json
 import logging
 import re
 import time
-from dataclasses import dataclass, field, asdict
-from typing import Optional
+from dataclasses import dataclass, field
 
 from skillos.evaluation.experts import EXPERTS, ExpertDefinition, build_expert_prompt
 
@@ -78,11 +76,11 @@ class MoEReport:
         """Human-readable markdown report."""
         lines = [
             f"## MoE 技能评价报告: {self.skill_name}",
-            f"",
+            "",
             f"**总分**: {self.overall_score}/100 | **置信度**: {self.confidence:.0%} | **结果**: {'✅ 通过' if self.passed else '❌ 未通过'}",
-            f"",
-            f"| 维度 | 评委 | 得分 | 通过 | 交叉验证 |",
-            f"|------|------|:--:|:--:|:--:|",
+            "",
+            "| 维度 | 评委 | 得分 | 通过 | 交叉验证 |",
+            "|------|------|:--:|:--:|:--:|",
         ]
         for e in self.experts:
             cm = ""
@@ -92,7 +90,7 @@ class MoEReport:
             lines.append(f"| {e.expert_key} | {e.expert_name} | {e.score} | {'✅' if e.passed else '❌'} | {cm} |")
 
         if self.warnings:
-            lines.append(f"\n### ⚠️ 警告")
+            lines.append("\n### ⚠️ 警告")
             for w in self.warnings:
                 lines.append(f"- {w}")
 

@@ -102,7 +102,7 @@ skillos/
 
 ```bash
 pip install -e ".[dev]"
-pytest tests/ --ignore=tests/test_feasibility_eval.py -v   # 全量单测
+pytest tests/ --ignore=tests/test_feasibility_eval.py -v   # 501 collected；478 pass / 21 fail（2026-06-18）
 python scripts/run_bench_regression.py          # 本地回归（需 DEEPSEEK_API_KEY）
 python -m skillos.api.server                  # 启动 API
 open http://127.0.0.1:9876/docs               # OpenAPI 文档

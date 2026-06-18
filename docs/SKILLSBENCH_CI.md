@@ -53,20 +53,20 @@ python scripts/trigger_official_bench_ci.py --skill 电商客服退款处理
 
 ## 本地 Quick8 vs 官方
 
-| 轨道 | 用途 |
-|------|------|
-| 自建 Quick8 | 日常快检、域内 Δ、CI 门禁 |
-| 官方 BenchFlow | 权威 pass rate，需 Linux CI |
+| 轨道 | 用途 | 文档 |
+|------|------|------|
+| 自建 Quick8 | 日常快检、域内 Δ、CI 门禁、ablation | [`BENCHMARK_LOCAL.md`](BENCHMARK_LOCAL.md) |
+| 官方 BenchFlow | 权威 pass rate，需 Linux CI | 本文 |
 
 ## 本地回归 / 泛化 / Ablation（2026-06-18 起）
 
 | 脚本 | 用途 | 需 `DEEPSEEK_API_KEY` |
 |------|------|:---------------------:|
 | `python scripts/run_bench_regression.py` | 参考 Quick8 + 泛化域 Quick8 + 6 技能烟测 | ✓ |
-| `python scripts/bench_generalize_3skills.py` | 泛化 vs 参考 cohort 对比 + verdict | ✓ |
-| `python scripts/run_cold_start_generalize.py` | Path B 冷启动三技能（`SKILLOS_FORCE_COLD_START=1` 强制重跑） | ✓ |
-| `python scripts/run_ablation.py` | HERITAGE×pack 2×2 ablation | ✓ |
-| `python scripts/repair_generalize_packs.py` | 清理跨域 quick8 / routing 词 | — |
+| `python scripts/archive/bench_generalize_3skills.py` | 泛化 vs 参考 cohort 对比 + verdict | ✓ |
+| `python scripts/archive/run_cold_start_generalize.py` | Path B 冷启动三技能（`SKILLOS_FORCE_COLD_START=1` 强制重跑） | ✓ |
+| `python scripts/archive/run_ablation.py` | HERITAGE×pack 2×2 ablation | ✓ |
+| `python scripts/archive/repair_generalize_packs.py` | 清理跨域 quick8 / routing 词 | — |
 
 产物目录：`data/benchmarks/`（`bench_regression_*`、`generalize_bench_*`、`ablation_*`、`cold_start_*`）。
 
