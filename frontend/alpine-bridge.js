@@ -88,12 +88,98 @@ document.addEventListener('alpine:init', () => {
       return this.token ? { Authorization: 'Bearer ' + this.token } : {};
     },
 
+    get avatarLetter() {
+      return (this.user || '?').charAt(0).toUpperCase();
+    },
+
+    get workspaceLabel() {
+      if (!this.workspace) return '';
+      return this.workspace.label || this.workspace.tenant_type || '';
+    },
+
     saveSession(data) {
-      this.user = data.user || data.username || '';
-      this.token = data.token || '';
-      this.workspace = data.workspace || null;
-      if (data.token) localStorage.setItem('sd_auth_token', data.token);
-      if (data.user || data.username) localStorage.setItem('sd_user', data.user || data.username);
+      if (data.token) { this.token = data.token; localStorage.setItem('sd_auth_token', data.token); }
+      if (data.user) {
+        const name = data.user.username || data.user;
+        this.user = typeof name === 'string' ? name : (data.user.username || '');
+        localStorage.setItem('sd_user', this.user);
+      }
+      if (data.workspace) {
+        this.workspace = data.workspace;
+        localStorage.setItem('sd_workspace', JSON.stringify(data.workspace));
+      }
+    },
+
+    async init() {
+      if (window.location.pathname.indexOf('login') >= 0) return;
+      if (!this.token) { window.location.href = '/login.html'; return; }
+      try {
+        const r = await fetch((window.API || '') + '/api/auth/me', {
+          headers: { Authorization: 'Bearer ' + this.token }
+        });
+        const d = await r.json();
+        if (!d.user || d.user.error || d.user.username === 'anonymous') {
+          this._clearAndRedirect();
+          return;
+        }
+        this.user = d.user.username;
+        if (d.workspace) this.workspace = d.workspace;
+        this.initialized = true;
+        // Legacy UI update
+        if (typeof loadWorkspaces === 'function') loadWorkspaces();
+        if (typeof refreshSkillList === 'function') refreshSkillList();
+        if (typeof updateAdminNavVisibility === 'function') updateAdminNavVisibility();
+        if (typeof setDot === 'function') setDot('on');
+      } catch (e) {
+        console.warn('initAuth failed', e);
+        if (typeof setDot === 'function') setDot('');
+      }
+    },
+
+    async switchWorkspace(tenantId) {
+      if (!tenantId) return;
+      try {
+        const r = await fetch((window.API || '') + '/api/workspaces/switch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + this.token },
+          body: JSON.stringify({ tenant_id: tenantId }),
+        });
+        if (!r.ok) { toast('切换工作区失败', 'err'); return; }
+        const d = await r.json();
+        this.saveSession(d);
+        // Reset session
+        const chatStore = Alpine.store('chat');
+        chatStore.sessionId = '';
+        localStorage.removeItem('sd_session');
+        localStorage.removeItem('skillos_session_id');
+        if (typeof refreshSkillList === 'function') refreshSkillList();
+        toast('已切换至 ' + (d.workspace.label || d.workspace.tenant_type), 'success');
+      } catch (e) {
+        toast('切换工作区失败: ' + e.message, 'err');
+      }
+    },
+
+    async createTeam(displayName) {
+      if (!displayName) {
+        displayName = prompt('团队名称', '我的团队');
+        if (!displayName || !displayName.trim()) return;
+        displayName = displayName.trim();
+      }
+      try {
+        const r = await fetch((window.API || '') + '/api/orgs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + this.token },
+          body: JSON.stringify({ display_name: displayName }),
+        });
+        if (!r.ok) { const err = await r.json().catch(() => ({})); toast(err.detail || '创建失败', 'error'); return; }
+        const d = await r.json();
+        this.saveSession(d);
+        if (typeof loadWorkspaces === 'function') loadWorkspaces();
+        if (typeof updateAdminNavVisibility === 'function') updateAdminNavVisibility();
+        toast('团队「' + displayName + '」已创建', 'success');
+      } catch (e) {
+        toast('创建团队失败: ' + e.message, 'error');
+      }
     },
 
     logout() {
@@ -101,6 +187,13 @@ document.addEventListener('alpine:init', () => {
       this.token = '';
       this.workspace = null;
       ['sd_auth_token', 'sd_token', 'sd_user', 'sd_workspace', 'sd_session'].forEach(k => localStorage.removeItem(k));
+      window.location.href = '/login.html';
+    },
+
+    _clearAndRedirect() {
+      localStorage.removeItem('sd_auth_token');
+      localStorage.removeItem('sd_workspace');
+      window.location.href = '/login.html';
     }
   });
 

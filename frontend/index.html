@@ -42,16 +42,16 @@
     <div id="global-search-panel" class="global-search-panel" style="display:none"></div>
   </div>
   <span style="flex:1"></span>
-  <div class="user-menu">
-    <button class="user-menu-btn" onclick="document.getElementById('user-drop').classList.toggle('open')">
-      <span class="user-avatar" id="user-avatar">?</span>
-      <span id="user-name">用户</span>
+  <div class="user-menu" x-data>
+    <button class="user-menu-btn" @click="document.getElementById('user-drop').classList.toggle('open')">
+      <span class="user-avatar" x-text="$store.auth.avatarLetter">?</span>
+      <span x-text="$store.auth.user || '用户'">用户</span>
       <span class="user-arrow">▾</span>
     </button>
     <div class="user-dropdown" id="user-drop">
       <div class="user-drop-info">
-        <span id="user-drop-name">用户</span>
-        <span id="user-drop-role">成员</span>
+        <span x-text="$store.auth.user || '用户'">用户</span>
+        <span x-text="$store.auth.workspaceLabel || '成员'">成员</span>
       </div>
       <hr>
       <button onclick="showSettings()">设置</button>
