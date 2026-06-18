@@ -6,6 +6,27 @@
 
 ---
 
+## [2026-06-19] Phase 1.6 — agent.py 继续拆分 + audit 修复 — Claude Code
+
+**背景 / 触发**：继续 Week 3-4 路线图（agent.py 拆分）+ Week 5（benchmark audit 评分修复）。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/agent_learning.py` | `_diffuse_knowledge` (89L) 提取为 `diffuse_knowledge()`, `_extract_claims_from_skill` (71L) 提取为 `extract_claims_from_skill()`；更新 `run_learning_pipeline` 直接调用 |
+| `skillos/skills/agent.py` | 2,120 → **1,754 行（-17.3%）**；两方法改为委托调用 |
+| `skillos/evolution/skillopt.py:1063-1102` | `audit_skill()` JSON 解析从单策略改为 4 策略 fallback：code block → raw JSON → brace extraction → trailing comma fix |
+
+**验证**：
+- `pytest tests/test_skills.py` → 11 passed
+- 全量：505 collected, 0 errors
+
+**开放问题 / 下一步**：
+- agent.py 仍可进一步拆分（`_generate` 234L 最大）
+- audit 修复需实机跑 benchmark 验证（需 LLM API key）
+
+---
+
 ## [2026-06-19] Phase 1.5 — api/skills.py 拆分 — Claude Code
 
 **背景 / 触发**：api/skills.py 2,098 行，萃取管线（dispatch/finalize/status/resume/ingest）~700 行可独立拆分。
