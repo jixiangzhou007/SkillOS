@@ -6,6 +6,33 @@
 
 ---
 
+## [2026-06-18] Phase 0 — Git 初始化 + 测试收集修复 — Claude Code
+
+**背景 / 触发**：项目现状审查发现：① 37K 行代码零版本控制；② 1 个测试 import 断裂阻塞全量收集（`test_feasibility_eval.py` → `scripts/feasibility_dialogue_test.py` 已移至 archive）。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `.gitignore` | 新建：Python/IDE/OS + runtime data（conversations.db, epistemic_state.json 等）+ .env |
+| `tests/test_feasibility_eval.py:11` | 修复：`scripts/` → `scripts/archive/` |
+| `.git/config` | `git init` + 配置 user.email/user.name |
+| Initial commit `d1843bc` | 1,495 files / 175,147 insertions |
+
+**验证**：
+- `pytest tests/ --collect-only -q` → **505 tests collected, 0 errors**（修复前 1 error 阻塞收集）
+- `pytest tests/test_feasibility_eval.py -v` → 4 passed
+
+**未修改 / 刻意不做**：
+- 未清理 skills/ 中的测试桩数据（test-skill/kb/, test-agent-factory/ 等）——属于 P2 清理，不影响核心功能
+- 未配置 pre-commit hooks —— CI 搭建时统一处理
+- `from __future__ import annotations` 遗留 —— 下一步清理
+
+**开放问题 / 下一步**：
+- 下一步：清理 `from __future__ import annotations`（PORTING.md 规定 Python 3.11+ 不需要）
+- 后续：认识论引擎接入 agent 主链路（BASELINE_SUMMARY.md 记录的 P0 gap）
+
+---
+
 ## [2026-06-18] Sprint 13 — 持续精炼：长对话+混合内容+断开续传 — Claude Code
 
 **背景 / 触发**：用户指出业务专家可能进行50轮对话，过程中可能发公众号/PDF/论文；关闭窗口后萃取应后台继续。
