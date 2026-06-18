@@ -1060,12 +1060,49 @@ def audit_skill(
                                    "severity": "WARN", "detail": str(e)}],
                           summary="审计器调用失败，放行")
 
-    # Parse
-    try:
-        m = re.search(r'```(?:json)?\s*\n?(.*?)\n?```', raw, re.DOTALL)
-        data = json.loads(m.group(1) if m else raw)
-    except Exception:
-        _log.warning("Auditor JSON parse failed: %s", raw[:200])
+    # Parse — multiple fallback strategies for robustness
+    data = None
+    # Strategy 1: JSON in markdown code block
+    m = re.search(r'```(?:json)?\s*\n(.*?)\n\s*```', raw, re.DOTALL)
+    json_candidate = m.group(1).strip() if m else ""
+    if json_candidate:
+        try:
+            data = json.loads(json_candidate)
+        except json.JSONDecodeError:
+            pass
+    # Strategy 2: Raw text is pure JSON
+    if data is None and raw.strip().startswith('{'):
+        try:
+            data = json.loads(raw.strip())
+        except json.JSONDecodeError:
+            pass
+    # Strategy 3: Find JSON object in raw text via brace matching
+    if data is None:
+        brace_start = raw.find('{')
+        brace_end = raw.rfind('}')
+        if brace_start >= 0 and brace_end > brace_start:
+            try:
+                data = json.loads(raw[brace_start:brace_end + 1])
+            except json.JSONDecodeError:
+                pass
+    # Strategy 4: Fix common LLM JSON errors (trailing commas, unquoted keys)
+    if data is None:
+        cleaned = raw.strip()
+        # Remove text before first { and after last }
+        brace_start = cleaned.find('{')
+        brace_end = cleaned.rfind('}')
+        if brace_start >= 0 and brace_end > brace_start:
+            cleaned = cleaned[brace_start:brace_end + 1]
+        # Fix trailing commas before closing } or ]
+        cleaned = re.sub(r',\s*}', '}', cleaned)
+        cleaned = re.sub(r',\s*]', ']', cleaned)
+        try:
+            data = json.loads(cleaned)
+        except json.JSONDecodeError:
+            pass
+
+    if data is None:
+        _log.warning("Auditor JSON parse failed — raw[:300]: %s", raw[:300])
         return AuditReport(passed=True, score=60,
                           checks=[{"check": "parse_error", "passed": True,
                                    "severity": "WARN", "detail": "审计结果解析失败"}],

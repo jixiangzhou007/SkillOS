@@ -295,7 +295,7 @@ SKILL.md 应该精简。详细内容放到 references/ 里。
         pass
 
     # ── Step 8: 扩散 (Diffusion) ─────────────────
-    diffusion_results = agent._diffuse_knowledge(name, final_content, existing_skills, llm_args)
+    diffusion_results = diffuse_knowledge(name, final_content, existing_skills, llm_args)
 
     agent._draft_name = name
     agent._draft_content = final_content
@@ -318,3 +318,169 @@ SKILL.md 应该精简。详细内容放到 references/ 里。
         "diffusion": diffusion_results,
         "pipeline_log": pipeline_log,
     })
+
+
+# ── Knowledge diffusion ──────────────────────────────────────
+
+def diffuse_knowledge(new_skill_name: str, new_content: str,
+    existing_skills: list[str], llm_args: tuple,
+) -> list[str]:
+    """Step 8: Cross-pollinate learned knowledge to existing skills."""
+    from skillos.knowledge.diffusion_gate import check_diffusion_gate
+
+    gate = check_diffusion_gate(new_skill_name, new_content)
+    if not gate.allowed:
+        return [f"🛡️ 认识论门控：跳过知识扩散 — {gate.reason}"]
+
+    if not existing_skills:
+        return []
+    SYSTEM = {'brainstorming', 'skill-creator'}
+    candidates = [s for s in existing_skills[:15] if s not in SYSTEM and s != new_skill_name]
+    if not candidates:
+        return []
+    results = []
+    new_summary = new_content[:600]
+    for skill_name in candidates[:5]:
+        try:
+            from skillos.skills import skill_store
+            old_body = skill_store.get_skill_body(skill_store.load_skill(skill_name))
+            old_summary = old_body[:400]
+        except Exception as e:
+            _log.debug("Diffusion check skipped: %s", e); continue
+
+        diffuse_prompt = f"""你是知识工程师。一份新的知识被学习了，现在检查它能否改进已有技能。
+
+## 新学习的知识（来源）
+{new_summary}
+
+## 已有技能
+**{skill_name}**:
+{old_summary}
+
+## 判断标准
+1. 新知识中有没有这个已有技能**缺失的步骤或分支**？
+2. 新知识中有没有可以**替换这个技能中某个不准确描述**的内容？
+3. 新知识中有没有**更好的触发条件或关键词**可以补充？
+
+## 输出
+```
+相关度: <高/中/低/无>
+可改进: <是/否>
+如果可改进，具体改什么: <一句话描述改进点>
+```"""
+        try:
+            from skillos.llm_client import call
+            model = llm_args[2] if len(llm_args) > 2 else ""
+            diffuse_raw = call(diffuse_prompt, model=model, max_tokens=200, temperature=0.3)
+        except Exception as e:
+            _log.debug("Diffusion inner skipped: %s", e); continue
+
+        if "可改进: 是" in diffuse_raw and "相关度: 无" not in diffuse_raw:
+            improvement = ""
+            m = re.search(r'具体改什么:\s*(.+?)$', diffuse_raw, re.MULTILINE)
+            if m:
+                improvement = m.group(1).strip()
+            if improvement:
+                if not gate.auto_apply:
+                    results.append(
+                        f"💡 建议改进「{skill_name}」（未自动应用）: {improvement[:60]}"
+                        + (f" — {gate.reason}" if gate.reason else "")
+                    )
+                    continue
+                try:
+                    from skillos.skills import skill_store
+                    apply_prompt = f"""对已有技能做**一处精准改进**。
+
+## 当前技能文档
+{old_body[:800]}
+
+## 改进建议
+{improvement}
+
+## 输出
+输出改进后的完整技能文档。只改与改进点直接相关的部分，其他保持原样。"""
+                    new_raw = call(apply_prompt, model=model, max_tokens=800, temperature=0.2)
+                    dm2 = re.search(r"```skill_doc\s*\n(.*?)```", new_raw, re.DOTALL | re.IGNORECASE)
+                    improved = dm2.group(1).strip() if dm2 else new_raw
+                    skill_store.save_skill(skill_name, improved, meta={"diffused_from": new_skill_name})
+                    results.append(f"✅ 扩散到「{skill_name}」: {improvement[:60]}")
+                    _log.info("Knowledge diffused: %s → %s", new_skill_name, skill_name)
+                except Exception as e:
+                    _log.warning("Diffusion apply failed: %s", e); results.append(f"💡 建议改进「{skill_name}」: {improvement[:60]}")
+        else:
+            results.append(f"⏭️ 与「{skill_name}」无关")
+    return results
+
+# ── Claim extraction ────────────────────────────────────────
+
+def _extract_claims_from_skill(content: str) -> list[str]:
+    """Extract individual knowledge claims from a generated SKILL.md body.
+
+    Parses S_body numbered steps and S_route table rows into discrete
+    claim strings suitable for epistemic recording and verification.
+
+    Returns:
+        List of claim strings (one per step/row).
+    """
+    claims: list[str] = []
+    # 1. Extract from S_body numbered steps
+    body_match = re.search(
+        r'##\s*S_body\s*\n(.*?)(?=\n##\s|\Z)',
+        content, re.DOTALL | re.IGNORECASE,
+    )
+    if body_match:
+        body_text = body_match.group(1)
+        # Split on numbered steps: "1. ", "2. ", "1) " etc.
+        step_lines = re.split(r'\n\s*\d+[.)]\s*', body_text)
+        for step in step_lines:
+            clean = step.strip()
+            # Skip empty, short fragments, and table/markdown artifacts
+            if not clean or len(clean) < 12:
+                continue
+            if clean.startswith('|') or clean.startswith('#'):
+                continue
+            # Strip leading number prefix if the first line starts with one
+            clean = re.sub(r'^\d+[.)]\s*', '', clean)
+            # Strip leading "* " markers
+            clean = re.sub(r'^[\*\-]\s+', '', clean)
+            claims.append(clean)
+
+    # 2. Extract from S_route table rows
+    route_match = re.search(
+        r'##\s*S_route\s*\n(.*?)(?=\n##\s|\Z)',
+        content, re.DOTALL | re.IGNORECASE,
+    )
+    if route_match:
+        route_text = route_match.group(1)
+        header_seen = False
+        for line in route_text.split('\n'):
+            line = line.strip()
+            if not line.startswith('|') or '---' in line:
+                continue
+            cells = [c.strip() for c in line.split('|')[1:-1]]
+            cells = [c for c in cells if c]
+            if not cells:
+                continue
+            # Skip header row
+            if not header_seen and any(
+                h in ''.join(cells).lower()
+                for h in ['用户意图', '条件', 'intent', 'condition', '执行动作', 'action']
+            ):
+                header_seen = True
+                continue
+            header_seen = True
+            claims.append(' | '.join(cells))
+
+    # 3. Extract trigger terms as a claim
+    trigger_match = re.search(
+        r'##\s*S_trigger\s*\n(.*?)(?=\n##\s|\Z)',
+        content, re.DOTALL | re.IGNORECASE,
+    )
+    if trigger_match:
+        trigger_text = trigger_match.group(1).strip()
+        if trigger_text and len(trigger_text) > 5:
+            kw_match = re.search(r'keywords?\s*:\s*(.+)', trigger_text, re.IGNORECASE)
+            if kw_match:
+                claims.append(f"触发条件: {kw_match.group(1).strip()}")
+
+    return claims
