@@ -328,15 +328,199 @@
   </div>
 
   <!-- 设置 View -->
-  <div id="settings-view" class="main-view">
+  <div id="settings-view" class="main-view"
+       x-data="settingsView()"
+       :class="{ active: $store.nav.currentView === 'settings-view' }"
+       x-init="init()">
     <div style="padding:20px">
       <div class="tab-row" style="margin-bottom:16px">
-        <button class="tab active" data-tab="model" onclick="switchSettings('model')">模型</button>
-        <button class="tab" data-tab="usage" onclick="switchSettings('usage')">用量</button>
-        <button class="tab" data-tab="skills" onclick="switchSettings('skills')">技能</button>
-        <button class="tab" data-tab="voice" onclick="switchSettings('voice')">语音</button>
+        <button class="tab" :class="{ active: tab === 'model' }" @click="switchTab('model')">模型</button>
+        <button class="tab" :class="{ active: tab === 'usage' }" @click="switchTab('usage')">用量</button>
+        <button class="tab" :class="{ active: tab === 'skills' }" @click="switchTab('skills')">技能</button>
+        <button class="tab" :class="{ active: tab === 'voice' }" @click="switchTab('voice')">语音</button>
       </div>
-      <div id="s-content"></div>
+
+      <!-- Model tab -->
+      <template x-if="tab === 'model'">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:12px">已配置模型</div>
+          <template x-for="(m, i) in models" :key="m.id">
+            <div style="background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:8px"
+                 :style="'border:1px solid ' + (m.id === activeModelId ? 'var(--accent)' : 'var(--border)')">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                <span style="font-weight:600;color:var(--text);flex:1" x-text="m.label"></span>
+                <span style="font-size:10px;color:var(--text3)" x-text="m.id"></span>
+                <span x-show="m.id === activeModelId" style="font-size:10px;background:var(--accent);color:#fff;padding:2px 7px;border-radius:8px">当前</span>
+              </div>
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px" x-text="m.base_url"></div>
+              <div style="display:flex;gap:6px">
+                <button class="nav-sm" style="font-size:10px" @click="openModelModal(i)">编辑</button>
+                <button x-show="m.id !== activeModelId" class="nav-sm" style="font-size:10px;border-color:var(--accent);color:var(--accent)" @click="activateModel(i)">启用</button>
+                <button class="nav-sm" style="font-size:10px;color:var(--err)" @click="openDeleteModal(i)">删除</button>
+              </div>
+            </div>
+          </template>
+          <button class="btn a" style="font-size:12px;padding:6px 14px;margin-top:8px" @click="openModelModal(-1)">+ 添加模型</button>
+          <div style="margin-top:12px;color:var(--text3);font-size:11px">当前模型用于对话与技能萃取。API Key 请在 .env 中配置（DEEPSEEK_API_KEY、HUOSHAN_API_KEY）。</div>
+        </div>
+      </template>
+
+      <!-- Usage tab -->
+      <template x-if="tab === 'usage'">
+        <div>
+          <template x-if="usageError">
+            <div style="color:var(--err)" x-text="usageError"></div>
+          </template>
+          <template x-if="!usage && !usageError">
+            <div style="color:var(--text3);font-size:13px">加载用量…</div>
+          </template>
+          <template x-if="usage">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:12px">Personal Free 用量</div>
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+                <div style="font-size:12px;color:var(--text3);margin-bottom:4px">技能</div>
+                <div style="font-size:18px;font-weight:600" x-text="usage.skills.used + ' / ' + usage.skills.limit"></div>
+                <div style="height:6px;background:#222;border-radius:3px;margin-top:8px">
+                  <div style="height:100%;background:var(--accent);border-radius:3px" :style="'width:' + skillPct + '%'"></div>
+                </div>
+              </div>
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+                <div style="font-size:12px;color:var(--text3);margin-bottom:4px">本月 AI 萃取（<span x-text="usage.llm_calls.period || ''"></span>）</div>
+                <div style="font-size:18px;font-weight:600" x-text="usage.llm_calls.used + ' / ' + usage.llm_calls.limit"></div>
+                <div style="height:6px;background:#222;border-radius:3px;margin-top:8px">
+                  <div style="height:100%;background:var(--accent);border-radius:3px" :style="'width:' + llmPct + '%'"></div>
+                </div>
+              </div>
+              <div style="font-size:12px;color:var(--text3);margin-bottom:10px" x-text="usage.byok ? 'BYOK：已启用（自带 Key 不计入额度）' : 'BYOK：未启用'"></div>
+              <div style="font-size:13px;font-weight:600;color:var(--accent);margin:16px 0 8px">自带 API Key（BYOK）</div>
+              <input type="password" placeholder="sk-..." x-model="byokKey"
+                style="width:100%;background:var(--srf);border:1px solid #333;border-radius:6px;padding:10px;color:var(--text);font-size:13px;margin-bottom:8px">
+              <div style="display:flex;gap:8px">
+                <button class="btn a" style="font-size:12px;padding:6px 14px" @click="saveByok(true)">启用 BYOK</button>
+                <button class="btn" style="font-size:12px;padding:6px 14px" @click="saveByok(false)">关闭 BYOK</button>
+              </div>
+              <div style="margin-top:12px;color:var(--text3);font-size:11px">配置后平台 LLM 额度不再扣减；Key 仅存于本地数据库。</div>
+              <template x-if="usage.plan === 'personal_free'">
+                <div style="margin-top:16px;padding:12px;background:#1a1a2a;border:1px solid var(--border);border-radius:8px">
+                  <div style="font-size:13px;font-weight:600;margin-bottom:8px">Personal Pro 内测</div>
+                  <div style="font-size:12px;color:var(--text3);margin-bottom:8px">无限技能 · 500 次/月 LLM</div>
+                  <input id="pro-beta-code" placeholder="内测邀请码" style="width:100%;padding:8px;margin-bottom:8px;background:var(--srf);border:1px solid #333;border-radius:6px;color:var(--text)">
+                  <button class="btn a" style="font-size:12px" @click="enableProPlan()">启用 Pro</button>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <!-- Skills tab -->
+      <template x-if="tab === 'skills'">
+        <div>
+          <div style="margin:10px 0;color:var(--dim);font-size:14px">技能列表</div>
+          <template x-if="!skills.length">
+            <div style="color:var(--dim);font-size:14px">暂无技能</div>
+          </template>
+          <template x-for="s in skills" :key="s.name">
+            <div style="padding:12px;margin:6px 0;background:var(--srf);border-radius:6px;display:flex;align-items:center">
+              <span style="flex:1;font-size:14px">
+                <span x-text="s.name"></span>
+                <span style="color:var(--dim);font-size:12px" x-text="' v' + s.version + ' · ' + s.runs + ' 次运行'"></span>
+              </span>
+              <button style="font-size:11px;padding:4px 14px;margin-left:6px;border-radius:12px;cursor:pointer"
+                :style="'border:1px solid ' + (isSkillEnabled(s.name) ? 'var(--accent)' : '#444') + ';background:' + (isSkillEnabled(s.name) ? 'var(--accent)' : 'transparent') + ';color:' + (isSkillEnabled(s.name) ? '#fff' : 'var(--dim)')"
+                @click="toggleSkill(s.name)"
+                x-text="isSkillEnabled(s.name) ? '开' : '关'"></button>
+              <button class="btn r" style="font-size:10px;padding:3px 8px;margin-left:4px" @click="deleteSkill(s.name)">✕</button>
+            </div>
+          </template>
+          <div style="margin-top:16px;color:var(--dim);font-size:13px">Create 模式：全部启用技能；Agent 模式：仅 brainstorming。</div>
+        </div>
+      </template>
+
+      <!-- Voice tab -->
+      <template x-if="tab === 'voice'">
+        <div>
+          <h3 style="color:var(--accent);font-size:14px;margin-bottom:12px">🎙️ 语音识别 (ASR)</h3>
+          <div style="margin:8px 0">
+            <label style="color:var(--dim);font-size:12px">识别引擎</label>
+            <select x-model="asrEngine" @change="saveVoiceSetting('asr_engine', asrEngine)"
+              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
+              <option value="whisper">Whisper（本地，CPU/GPU）</option>
+              <option value="funasr">FunASR SenseVoice（GPU，含情感/说话人）</option>
+              <option value="hybrid">混合（本地 + 云端回退）</option>
+            </select>
+          </div>
+
+          <h3 style="color:var(--accent);font-size:14px;margin:20px 0 12px">🔊 语音合成 (TTS)</h3>
+          <div style="margin:8px 0">
+            <label style="color:var(--dim);font-size:12px">合成后端</label>
+            <select x-model="ttsBackend" @change="onTTSBackendChange()"
+              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
+              <option value="edge">Edge TTS（云端免费，无需 GPU）</option>
+              <option value="omnivoice">OmniVoice（本地，646 语言，建议 GPU）</option>
+            </select>
+          </div>
+          <div style="margin:8px 0">
+            <label style="color:var(--dim);font-size:12px">音色</label>
+            <select x-model="ttsVoice" @change="saveVoiceSetting('tts_voice', ttsVoice)"
+              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
+              <template x-for="v in voiceList" :key="v">
+                <option :value="v" x-text="v" :selected="v === ttsVoice"></option>
+              </template>
+            </select>
+          </div>
+          <div style="margin:8px 0">
+            <label style="color:var(--dim);font-size:12px">语速: <span x-text="ttsSpeed + 'x'"></span></label>
+            <input type="range" min="0.7" max="1.5" step="0.05" x-model="ttsSpeed"
+              @input="saveVoiceSetting('tts_speed', ttsSpeed)"
+              style="width:100%;margin-top:4px;accent-color:var(--accent)">
+          </div>
+          <div style="margin:8px 0">
+            <label style="color:var(--dim);font-size:12px">情感预设</label>
+            <select x-model="ttsEmotion" @change="saveVoiceSetting('tts_emotion', ttsEmotion)"
+              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
+              <option value="neutral">😐 中性</option>
+              <option value="happy">😊 愉快</option>
+              <option value="gentle">🌸 温柔</option>
+              <option value="excited">🎉 兴奋</option>
+              <option value="sad">😢 柔和</option>
+            </select>
+          </div>
+          <div style="margin:16px 0;padding:10px;background:#0a1a10;border-radius:6px;font-size:12px;color:var(--accent)">
+            💡 TTS 后端、语速与情感立即生效；ASR 引擎变更需重启服务。
+          </div>
+        </div>
+      </template>
+
+      <!-- Model Edit Modal -->
+      <div class="modal-overlay" x-show="modelModalOpen" @click.self="closeModelModal()" @keydown.escape.window="closeModelModal()">
+        <div class="modal-box">
+          <h3 x-text="editingIndex < 0 ? '添加模型' : '编辑模型'"></h3>
+          <label>显示名称</label>
+          <input x-ref="modalLabel" x-model="editLabel" placeholder="例如：DeepSeek V4 Flash">
+          <label>模型 ID</label>
+          <input x-model="editId" placeholder="例如：deepseek-v4-flash">
+          <label>API 地址</label>
+          <input x-model="editUrl" placeholder="https://api.deepseek.com">
+          <div class="modal-actions">
+            <button class="modal-btn-cancel" @click="closeModelModal()">取消</button>
+            <button class="modal-btn-primary" @click="saveModel()" x-text="editingIndex < 0 ? '添加' : '保存'"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Confirm Modal -->
+      <div class="modal-overlay" x-show="deleteModalOpen" @click.self="closeDeleteModal()" @keydown.escape.window="closeDeleteModal()">
+        <div class="modal-box">
+          <h3>删除模型</h3>
+          <p style="color:var(--text2);font-size:14px;margin-bottom:4px">移除 <strong style="color:var(--err)" x-text="deleteTargetIndex >= 0 && models[deleteTargetIndex] ? models[deleteTargetIndex].label + ' (' + models[deleteTargetIndex].id + ')' : ''"></strong>？</p>
+          <p style="color:var(--text3);font-size:12px">此操作不可撤销，模型将从选择器中移除。</p>
+          <div class="modal-actions">
+            <button class="modal-btn-cancel" @click="closeDeleteModal()">取消</button>
+            <button class="modal-btn-danger" @click="confirmDelete()">删除</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -360,35 +544,7 @@
 
 </div><!-- /body-wrap -->
 
-<!-- ═══ 模型 Edit Modal ═══════════════════════════════════════ -->
-<div class="modal-overlay" id="model-modal">
-  <div class="modal-box">
-    <h3 id="modal-title">添加模型</h3>
-    <label>显示名称</label>
-    <input id="modal-label" placeholder="例如：DeepSeek V4 Flash">
-    <label>模型 ID</label>
-    <input id="modal-id" placeholder="例如：deepseek-v4-flash">
-    <label>API 地址</label>
-    <input id="modal-url" placeholder="https://api.deepseek.com">
-    <div class="modal-actions">
-      <button class="modal-btn-cancel" onclick="closeModelModal()">取消</button>
-      <button class="modal-btn-primary" id="modal-save-btn" onclick="saveModelFromModal()">保存</button>
-    </div>
-  </div>
-</div>
 
-<!-- ═══ Delete Confirm Modal ═══════════════════════════════════ -->
-<div class="modal-overlay" id="delete-modal">
-  <div class="modal-box">
-    <h3>删除模型</h3>
-    <p style="color:var(--text2);font-size:14px;margin-bottom:4px">移除 <strong id="delete-model-name" style="color:var(--err)"></strong>？</p>
-    <p style="color:var(--text3);font-size:12px">此操作不可撤销，模型将从选择器中移除。</p>
-    <div class="modal-actions">
-      <button class="modal-btn-cancel" onclick="closeDeleteModal()">取消</button>
-      <button class="modal-btn-danger" id="modal-delete-btn">删除</button>
-    </div>
-  </div>
-</div>
 
 <script src="/audio.js"></script>
 <script src="/voice.js"></script>
