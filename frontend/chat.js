@@ -510,6 +510,9 @@ function switchMainView(id) {
 
   if (el) el.classList.add('active');
 
+  // Sync with Alpine store for reactive views
+  try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').currentView = id; } catch(e) {}
+
 }
 
 function showChat() {
@@ -517,6 +520,7 @@ function showChat() {
   switchMainView('chat-view');
   document.getElementById('bar').style.display = 'flex';
   _currentSkill = null;
+  try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').currentSkill = null; } catch(e) {}
 
 }
 
