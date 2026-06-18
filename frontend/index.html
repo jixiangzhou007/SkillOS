@@ -317,13 +317,114 @@
   </div>
 
   <!-- Admin View (Sprint 6) -->
-  <div id="admin-view" class="main-view">
+  <div id="admin-view" class="main-view"
+       x-data="adminView()" x-init="init()"
+       :class="{ active: $store.nav.currentView === 'admin-view' }">
     <div style="padding:20px;max-width:900px;margin:0 auto">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-        <button class="nav-sm" onclick="showChat()">← 返回</button>
+        <button class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
         <span style="font-size:16px;font-weight:600">组织管理</span>
       </div>
-      <div id="admin-content"></div>
+
+      <template x-if="loading">
+        <div style="color:var(--text3);padding:20px">加载管理控制台…</div>
+      </template>
+
+      <template x-if="!loading && error === 'no_org'">
+        <div>
+          <div style="padding:20px;color:var(--warn)">请先创建或切换至组织工作区。</div>
+          <button class="btn a" onclick="createTeam()">创建团队</button>
+        </div>
+      </template>
+
+      <template x-if="!loading && error && error !== 'no_org'">
+        <div style="color:var(--err);padding:20px" x-text="'加载失败: ' + error"></div>
+      </template>
+
+      <template x-if="!loading && hasOrg && overview">
+        <div>
+          <!-- Header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <div>
+              <div style="font-size:18px;font-weight:600" x-text="overview.org.display_name"></div>
+              <div style="font-size:12px;color:var(--text3)" x-text="overview.org.tenant_id"></div>
+            </div>
+            <div>
+              <button class="btn a" style="font-size:12px" @click="loadAll()">刷新</button>
+              <button class="btn" style="font-size:12px;margin-left:8px" @click="exportAuditCsv()">导出审计 CSV</button>
+            </div>
+          </div>
+
+          <!-- KPIs -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
+            <div class="dash-card"><div class="value" x-text="overview.members_count"></div><div class="label">成员</div></div>
+            <div class="dash-card"><div class="value" x-text="overview.departments_count"></div><div class="label">部门</div></div>
+            <div class="dash-card"><div class="value" x-text="overview.skills_count"></div><div class="label">技能</div></div>
+            <div class="dash-card"><div class="value" x-text="(overview.usage.llm_calls.used || 0) + '/' + (overview.usage.llm_calls.limit || '∞')"></div><div class="label">LLM 本月</div></div>
+          </div>
+
+          <!-- Governance compliance -->
+          <template x-if="governance">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+              <div style="font-size:14px;font-weight:600;margin-bottom:12px">治理合规</div>
+              <template x-for="c in complianceRates" :key="c.label">
+                <div style="margin-bottom:8px">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px">
+                    <span x-text="c.label"></span><span x-text="c.pct + '%'"></span>
+                  </div>
+                  <div style="height:4px;background:#222;border-radius:2px">
+                    <div style="height:100%;background:var(--accent);border-radius:2px" :style="'width:' + c.pct + '%'"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <!-- Quota -->
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+            <div style="font-size:14px;font-weight:600;margin-bottom:8px">部门配额</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <select x-model="quotaDept" style="background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
+                <option value="">全部</option>
+                <template x-for="d in departments" :key="d.id">
+                  <option :value="d.id" x-text="d.name"></option>
+                </template>
+              </select>
+              <input x-model="quotaSkills" type="number" placeholder="技能上限" style="width:100px;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
+              <input x-model="quotaLLM" type="number" placeholder="LLM 上限" style="width:100px;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
+              <button class="btn a" style="font-size:12px" @click="saveQuota()">保存配额</button>
+            </div>
+          </div>
+
+          <!-- Departments -->
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+            <div style="font-size:14px;font-weight:600;margin-bottom:8px">部门</div>
+            <template x-for="d in departments" :key="d.id">
+              <div style="padding:4px 0;font-size:12px;color:var(--text2)" x-text="d.name + (d.quota ? ' (配额: ' + d.quota.skills + '技能 / ' + d.quota.llm_calls + 'LLM)' : '')"></div>
+            </template>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <input x-model="newDeptName" placeholder="新部门名称" style="flex:1;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
+              <button class="btn a" style="font-size:12px" @click="addDepartment()">添加部门</button>
+            </div>
+          </div>
+
+          <!-- Skill Search -->
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:14px;font-weight:600;margin-bottom:8px">技能搜索 & 导入</div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <input x-model="skillSearch" placeholder="搜索技能名称" @keydown.enter="searchOrgSkills()"
+                style="flex:1;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
+              <button class="btn a" style="font-size:12px" @click="searchOrgSkills()">搜索</button>
+            </div>
+            <template x-for="s in skillResults" :key="s.name">
+              <div style="padding:4px 0;display:flex;align-items:center;justify-content:space-between">
+                <span style="font-size:12px;cursor:pointer;color:var(--accent)" @click="showSkill(s.name)" x-text="s.name"></span>
+                <button class="nav-sm" style="font-size:10px" @click="copyToOrg(s.name)">复制到组织</button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 
