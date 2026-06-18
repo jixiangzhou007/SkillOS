@@ -1,0 +1,17 @@
+{
+  "id": "concept_1781321256_8996",
+  "content": "国家数据产权登记服务平台: 国家建立的统一数据产权登记平台，用于公示拟登记信息、提供社会查询、存证登记结果，并作为登记凭证效力的权威依据。",
+  "type": "concept",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "数据产权登记凭证",
+    "公示",
+    "存证"
+  ],
+  "created_at": 1781321256.9616058,
+  "updated_at": 1781321256.9618835
+}

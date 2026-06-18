@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321257_2129",
+  "content": "权利限制不可忽视: 有期限、有条件、涉保全措施或授权链条约束的数据，对外合同时务必把凭证记载的限制写进交易条款，避免持证但超范围提供。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1781321257.1455748,
+  "updated_at": 1781321257.1459503
+}

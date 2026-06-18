@@ -1,0 +1,52 @@
+{
+  "session_id": "src_ddc9d74b58db",
+  "source_url": "session:df1d49521e3e",
+  "source_title": "营销内容合规审查流水线",
+  "created_at": 1781616846.5622501,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_4125d51d",
+      "content": "技能「营销内容合规审查流水线」: 确保市场部提交的营销文案在发布前完成广告法合规审查、虚假宣传审查及特殊行业（医疗/金融/教育）外部复审，通过后归档，不通过则标注违规条款退回。",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.65,
+      "source": {
+        "url": "session:df1d49521e3e",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "营销内容合规审查流水线",
+          "score_delta": 1.0,
+          "timestamp": 1781616846.5620599
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781616846.5620599,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781616846.5620599
+    }
+  ]
+}

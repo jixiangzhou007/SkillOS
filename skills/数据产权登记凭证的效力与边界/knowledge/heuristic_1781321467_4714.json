@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321467_4714",
+  "content": "凭证不是一发永逸: 登记凭证有有效期，需与内部数据治理节奏绑定，数据源更新、授权到期、合同变更等应触发变更或补正。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1781321467.9936104,
+  "updated_at": 1781321467.993954
+}

@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321467_6419",
+  "content": "期限与可维护性机制: 设置有效期（如不超过五年），配套续期、变更、注销机制，周期性复核刷新信息。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321467.947947,
+  "updated_at": 1781321467.9482796
+}

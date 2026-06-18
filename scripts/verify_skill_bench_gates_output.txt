@@ -1,0 +1,40 @@
+SkillOS skill bench gates (offline)
+
+== Routing YAML (reference skills) ==
+  [OK] 电商客服退款处理: bench_categories + routing metadata
+  [OK] 运营级CSV清洗工坊: bench_categories + routing metadata
+  [OK] GitHub PR: bench_categories + routing metadata
+
+== Offline structure scores ==
+  [OK] 电商客服退款处理: offline 79/100 (C=18 S=20 R=15)
+  [OK] 运营级CSV清洗工坊: offline 76/100 (C=18 S=20 R=15)
+  [OK] GitHub PR: offline 74/100 (C=18 S=20 R=15)
+
+== Domain templates ==
+  [OK] template match workflow-refund
+  [OK] template match code-review-pr
+  [OK] template match data-csv-clean
+  [OK] template match finance-expense-audit
+  [OK] template match law-contract-review
+  [OK] template match design-ui-review
+  [OK] template match science-experiment-design
+  [OK] template match edu-course-design
+  [OK] template match security-audit
+  [OK] template match healthcare-triage
+  [OK] template match social-survey
+  [OK] template match media-publish
+  [OK] security audit disambiguation (no finance false match)
+
+== DNA evolution semver ==
+  [OK] domain evolution semver → 1.1.0
+
+== DNA golden set ==
+  [OK] DNA golden set 13/13 passed
+
+== Routing unit tests ==
+  [OK] test_skill_routing.py
+
+== Harm / lift mock gate ==
+  [OK] routed compare mock: matched_delta=480, harm_score=588, cross_domain=49
+
+7/7 gate groups passed

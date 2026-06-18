@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321051_0999",
+  "content": "一次性告知补正: 当申请材料不全时，登记机构应在3个工作日内一次性告知需要补正的全部内容，避免反复退回增加申请人成本。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1781321051.147134,
+  "updated_at": 1781321051.1474342
+}

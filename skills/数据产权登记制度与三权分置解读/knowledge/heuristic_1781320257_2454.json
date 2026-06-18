@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781320257_2454",
+  "content": "权属不清时优先关注用途: 当数据权属存在争议时，优先将讨论焦点从“数据是谁的”转移到“数据怎么用”，以推动开发利用而非陷入所有权争论。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/VaBndfcPMPTfM8p_BOpxOA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1781320257.5609877,
+  "updated_at": 1781320257.561407
+}

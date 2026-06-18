@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkillOS</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:false,theme:'dark',securityLevel:'loose',themeVariables:{lineColor:'#5a5a6e',textColor:'#c8c8d8',primaryColor:'#1a3a2a',primaryBorderColor:'#10b981',primaryTextColor:'#a7f3d0',edgeLabelBackground:'#1c1c22'}});</script>
+</head>
+<body>
+
+<!-- ═══ Header ════════════════════════════════════════════════ -->
+<header id="header">
+  <div class="logo-area">
+    <div class="logo">SkillOS</div>
+    <div class="dot" id="conn-dot"></div>
+  </div>
+  <div class="nav-sep"></div>
+  <nav id="primary-nav">
+    <button class="nav-mode active" onclick="showChat(); setMode('chat')">💬 对话</button>
+  </nav>
+  <div class="nav-sep"></div>
+  <button class="nav-btn" onclick="showHub()" style="border-color:var(--warn);color:var(--warn);position:relative">技能市场<span id="hub-badge" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--err);color:#fff;font-size:9px;line-height:16px;text-align:center;font-weight:700"></span></button>
+  <button class="nav-btn" onclick="showDocs()">文档</button>
+  <button class="nav-btn" onclick="showDashboard()">工作台</button>
+  <button class="nav-btn" id="admin-nav-btn" onclick="showAdmin()" style="display:none">管理</button>
+  <button class="nav-btn" onclick="showSettings()">设置</button>
+  <div class="nav-sep"></div>
+  <select id="workspace-select" onchange="switchWorkspace(this.value)" title="工作区"
+    style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--text2);font-size:11px;max-width:140px;outline:none;cursor:pointer">
+    <option value="">工作区</option>
+  </select>
+  <span id="workspace-label" style="font-size:11px;color:var(--text3);display:none"></span>
+  <div class="nav-sep"></div>
+  <div id="global-search-wrap">
+    <input id="global-search" placeholder="搜索技能、知识、市场… (Ctrl+K)" autocomplete="off"
+      onfocus="onGlobalSearchFocus()" oninput="doGlobalSearch()"
+      onkeydown="if(event.key==='Escape'){event.preventDefault();clearGlobalSearch()}">
+    <div id="global-search-panel" class="global-search-panel" style="display:none"></div>
+  </div>
+  <span style="flex:1"></span>
+  <div class="user-menu">
+    <button class="user-menu-btn" onclick="document.getElementById('user-drop').classList.toggle('open')">
+      <span class="user-avatar" id="user-avatar">?</span>
+      <span id="user-name">用户</span>
+      <span class="user-arrow">▾</span>
+    </button>
+    <div class="user-dropdown" id="user-drop">
+      <div class="user-drop-info">
+        <span id="user-drop-name">用户</span>
+        <span id="user-drop-role">成员</span>
+      </div>
+      <hr>
+      <button onclick="showSettings()">设置</button>
+      <button onclick="createTeam()">创建团队</button>
+      <button onclick="doLogout()">退出</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ Body (sidebar + main) ═════════════════════════════════ -->
+<div id="body-wrap">
+
+<!-- ═══ Sidebar — Library ═════════════════════════════════════ -->
+<aside id="sidebar">
+
+  <div class="sb-section">
+    <div class="sb-section-header" onclick="toggleSection(this)">
+      <span>📁 技能</span>
+      <span class="sb-count" id="skill-count">0</span>
+      <span class="sb-toggle">▾</span>
+    </div>
+    <div class="sb-section-body open">
+      <div id="sb-search"><input id="skill-search" placeholder="搜索技能..." oninput="filterSkillList()"></div>
+      <div id="sb-tabs">
+        <button class="sb-tab active" data-tab="mine" onclick="switchSkillTab('mine')">我的</button>
+        <button class="sb-tab" data-tab="system" onclick="switchSkillTab('system')">系统</button>
+      </div>
+      <div id="bench-dashboard" style="padding:8px 10px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border)">评测加载中…</div>
+      <div id="skill-list"></div>
+      <button class="sb-action" onclick="importSkill()">📥 导入</button>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-header" onclick="focusKnowledgeSection(this)">
+      <span>🧠 知识</span>
+      <span class="sb-count" id="kp-count">0</span>
+      <span class="sb-toggle">▾</span>
+    </div>
+    <div class="sb-section-body open">
+      <button class="sb-nav-item" onclick="showKnowledgeView()"><span class="nav-icon">📚</span>知识库</button>
+      <button class="sb-nav-item" onclick="showGraphView()"><span class="nav-icon">🧠</span>知识图谱</button>
+      <button class="sb-nav-item" onclick="showLineageView()"><span class="nav-icon">🔗</span>数据血缘</button>
+      <button class="sb-nav-item" onclick="showAccountWatcher()"><span class="nav-icon">📡</span>公众号监控</button>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ═══ Main ══════════════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- Chat View -->
+  <div id="chat-view" class="main-view active">
+    <div id="msgs">
+      <div class="welcome">
+        <div class="welcome-icon" id="welcome-logo">🔧</div>
+        <div class="welcome-title">今天想做什么？</div>
+        <div class="welcome-hint">描述你的工作流程，或者粘贴链接、拖拽文件</div>
+        <div class="welcome-chips">
+          <span onclick="document.getElementById('input').value='帮我创建一个合同审核的技能';sendText()">📝 沉淀新技能</span>
+          <span onclick="document.getElementById('input').value='帮我创建一个处理客户投诉的技能';sendText()">💬 客户投诉流程</span>
+          <span onclick="document.getElementById('input').value='帮我用多个技能串一条工作流';sendText()">🔗 编排流水线</span>
+        </div>
+      </div>
+    </div>
+    <div id="status-bar"><span id="status">就绪</span><span id="extract-banner" style="display:none;margin-left:12px;font-size:11px;color:var(--accent)">● 技能萃取进行中</span><div id="vol-bar"></div></div>
+  </div>
+
+  <!-- Detail View (for skill inspection) -->
+  <div id="detail-view" class="main-view">
+    <div class="detail-header">
+      <button class="nav-sm" onclick="showChat()">← 返回</button>
+      <span id="d-name"></span>
+      <div class="detail-tabs" id="detail-tabs">
+        <button class="dt active" data-tab="overview" onclick="switchTab('overview')">概览</button>
+        <button class="dt" data-tab="doc" onclick="switchTab('doc')">文档</button>
+        <button class="dt" data-tab="kb" onclick="switchTab('kb')">知识库</button>
+        <button class="dt" data-tab="verify" onclick="switchTab('verify')">验证</button>
+        <button class="dt" data-tab="epistemic" onclick="switchTab('epistemic')">认识论</button>
+        <button class="dt" data-tab="dna" onclick="switchTab('dna')">DNA 血缘</button>
+        <button class="dt" data-tab="official" onclick="switchTab('official')">官方评测</button>
+        <button class="dt" id="d-tab-meta" data-tab="meta" onclick="switchTab('meta')" style="display:none">流水线</button>
+        <button class="dt" data-tab="evo" onclick="switchTab('evo')">进化</button>
+        <button class="dt" data-tab="decisions" onclick="switchTab('decisions')">溯源</button>
+      </div>
+      <button class="nav-sm" onclick="optimizeSkill(_currentSkill)">优化</button>
+      <button class="nav-sm" id="detail-publish-btn" onclick="showPublishForm(_currentSkill)" style="border-color:var(--warn);color:var(--warn)">发布</button>
+      <button class="nav-sm" onclick="exportSkill()">导出</button>
+      <button class="nav-sm" onclick="exportUniversal()">通用</button>
+    </div>
+    <div class="detail-body" id="d-content"></div>
+  </div>
+
+  <!-- Dashboard View -->
+  <div id="dashboard-view" class="main-view">
+    <div class="view-scroll"><div id="dash-content"></div></div>
+  </div>
+
+  <!-- Lineage View (data provenance) -->
+  <div id="lineage-view" class="main-view">
+    <div class="view-scroll"><div id="lineage-content"></div></div>
+  </div>
+
+  <!-- Graph View -->
+  <div id="graph-view" class="main-view">
+    <div class="view-scroll"><div id="graph-content"></div></div>
+  </div>
+
+  <!-- Knowledge View (global ingested knowledge browser) -->
+  <div id="knowledge-view" class="main-view">
+    <div class="view-scroll"><div id="knowledge-content"></div></div>
+  </div>
+
+  <!-- Knowledge Precipitation (async cycle) -->
+  <div id="precipitate-view" class="main-view">
+    <div class="view-scroll"><div id="precipitate-content"></div></div>
+  </div>
+
+  <!-- Knowledge Review Queue -->
+  <div id="review-view" class="main-view">
+    <div class="view-scroll"><div id="review-content"></div></div>
+  </div>
+
+  <!-- Account Watcher View -->
+  <div id="account-watcher-view" class="main-view">
+    <div style="padding:20px"><div id="aw-content"></div></div>
+  </div>
+
+  <!-- Journal View -->
+  <div id="journal-view" class="main-view">
+    <div class="view-scroll"><div id="journal-content"></div></div>
+  </div>
+
+  <!-- Hub View (技能交易平台) -->
+  <div id="hub-view" class="main-view">
+    <div style="padding:20px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <span style="font-size:18px;font-weight:700;color:var(--warn)">技能市场</span>
+        <span style="font-size:12px;color:var(--text3)">技能交易平台</span>
+        <span style="flex:1"></span>
+        <input id="hub-search" placeholder="搜索技能..." style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);font-size:12px;width:200px;outline:none" oninput="searchHub()">
+        <select id="hub-category" onchange="searchHub()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;outline:none"></select>
+        <button class="nav-sm" id="hub-review-btn" onclick="showReviewQueue()" style="border-color:var(--warn);color:var(--warn)">审核</button>
+        <button class="nav-sm" id="hub-admin-btn" onclick="showAdminPanel()" style="border-color:var(--info);color:var(--info)">管理</button>
+        <button class="nav-sm" id="hub-revenue-btn" onclick="showRevenueDashboard()" style="border-color:var(--accent);color:var(--accent)">收益</button>
+        <button class="nav-sm" id="hub-publish-btn" onclick="showPublishForm()">+ 发布</button>
+      </div>
+      <div id="hub-content"></div>
+    </div>
+  </div>
+
+  <!-- 发布 Form Modal -->
+  <div class="modal-overlay" id="publish-modal">
+    <div class="modal-box" style="max-width:520px">
+      <h3>发布到技能市场</h3>
+      <label>技能名称</label>
+      <input id="pub-name" placeholder="例如：合同审核专家">
+      <label>描述</label>
+      <input id="pub-desc" placeholder="功能描述和触发条件">
+      <label>分类</label>
+      <select id="pub-cat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;margin-top:4px">
+        <option value="automation">自动化</option><option value="development">开发</option>
+        <option value="data-science">Data Science</option><option value="writing">Writing</option>
+        <option value="design">Design</option><option value="legal">Legal</option>
+        <option value="finance">Finance</option><option value="devops">DevOps</option>
+        <option value="security">Security</option><option value="other">Other</option>
+      </select>
+      <label>技能内容 (SKILL.md)</label>
+      <textarea id="pub-content" rows="10" placeholder="粘贴 SKILL.md 内容..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:12px;outline:none;resize:vertical;font-family:var(--mono);margin-top:4px"></textarea>
+      <div class="modal-actions">
+        <button class="modal-btn-cancel" onclick="closePublishModal()">取消</button>
+        <button class="modal-btn-primary" onclick="publishSkill()">发布并评分</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Docs View (Sprint 7) -->
+  <div id="docs-view" class="main-view">
+    <div class="view-scroll" style="max-width:860px;margin:0 auto;width:100%">
+      <div class="view-header">
+        <button class="nav-sm" onclick="showChat()">← 返回</button>
+        <div>
+          <div style="font-size:16px;font-weight:600">文档</div>
+          <div style="font-size:12px;color:var(--text3)">快速开始与用户指南</div>
+        </div>
+      </div>
+      <div class="tab-row" style="margin-bottom:16px">
+        <button class="tab active" data-doc="quickstart" onclick="loadDocs('quickstart')">快速开始</button>
+        <button class="tab" data-doc="guide" onclick="loadDocs('guide')">用户指南</button>
+      </div>
+      <div id="docs-content"></div>
+    </div>
+  </div>
+
+  <!-- Admin View (Sprint 6) -->
+  <div id="admin-view" class="main-view">
+    <div style="padding:20px;max-width:900px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <button class="nav-sm" onclick="showChat()">← 返回</button>
+        <span style="font-size:16px;font-weight:600">组织管理</span>
+      </div>
+      <div id="admin-content"></div>
+    </div>
+  </div>
+
+  <!-- 设置 View -->
+  <div id="settings-view" class="main-view">
+    <div style="padding:20px">
+      <div class="tab-row" style="margin-bottom:16px">
+        <button class="tab active" data-tab="model" onclick="switchSettings('model')">模型</button>
+        <button class="tab" data-tab="usage" onclick="switchSettings('usage')">用量</button>
+        <button class="tab" data-tab="skills" onclick="switchSettings('skills')">技能</button>
+        <button class="tab" data-tab="voice" onclick="switchSettings('voice')">语音</button>
+      </div>
+      <div id="s-content"></div>
+    </div>
+  </div>
+
+  <!-- Input Bar -->
+  <div id="bar">
+    <div id="bar-row">
+      <select id="model-select" onchange="onModelChange()"></select>
+      <button id="auto-btn" class="bar-chip" onclick="toggleAuto()">自动</button>
+      <textarea id="input" placeholder="描述工作流程、粘贴链接、或拖拽文件到窗口..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendText()}" rows="1"></textarea>
+      <input type="file" id="file-input" style="display:none" accept=".pdf,.docx,.doc,.pptx,.ppt,.xlsx,.xls,.html,.htm,.epub,.rtf,.txt,.md,.csv,.json,.png,.jpg,.jpeg,.wav,.mp3" onchange="uploadFile(this.files[0])">
+      <button class="bar-action" onclick="document.getElementById('file-input').click()" title="上传文件">📎</button>
+      <button class="bar-action" id="finalize-btn" onclick="finalizeSkill()" title="对话聊够了，生成技能文档" style="background:var(--accent);color:var(--on-primary);font-weight:700;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;display:none">⚡ 生成技能</button>
+      <button class="bar-action" id="tts-btn" onclick="toggleTTS()" title="语音播报">🔊</button>
+      <button class="bar-action" id="mic-btn" onclick="toggleMic()" title="语音输入">🎤</button>
+      <button id="send-btn" onclick="sendText()">发送</button>
+    </div>
+  </div>
+
+</main>
+
+</div><!-- /body-wrap -->
+
+<!-- ═══ 模型 Edit Modal ═══════════════════════════════════════ -->
+<div class="modal-overlay" id="model-modal">
+  <div class="modal-box">
+    <h3 id="modal-title">添加模型</h3>
+    <label>显示名称</label>
+    <input id="modal-label" placeholder="例如：DeepSeek V4 Flash">
+    <label>模型 ID</label>
+    <input id="modal-id" placeholder="例如：deepseek-v4-flash">
+    <label>API 地址</label>
+    <input id="modal-url" placeholder="https://api.deepseek.com">
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeModelModal()">取消</button>
+      <button class="modal-btn-primary" id="modal-save-btn" onclick="saveModelFromModal()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Delete Confirm Modal ═══════════════════════════════════ -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-box">
+    <h3>删除模型</h3>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:4px">移除 <strong id="delete-model-name" style="color:var(--err)"></strong>？</p>
+    <p style="color:var(--text3);font-size:12px">此操作不可撤销，模型将从选择器中移除。</p>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeDeleteModal()">取消</button>
+      <button class="modal-btn-danger" id="modal-delete-btn">删除</button>
+    </div>
+  </div>
+</div>
+
+<script src="/audio.js"></script>
+<script src="/voice.js"></script>
+<script src="/auth.js"></script>
+<script src="/chat.js"></script>
+<script src="/skills.js"></script>
+<script src="/knowledge.js"></script>
+<script src="/account_watcher.js"></script>
+<script src="/intelligence.js"></script>
+<script src="/hub.js"></script>
+<script src="/settings.js"></script>
+<script src="/admin.js"></script>
+<script src="/docs.js"></script>
+<script>console.log('HTML script loaded');window._testMode='create';</script>
+<script src="/app.js?v=4"></script>
+</body>
+</html>

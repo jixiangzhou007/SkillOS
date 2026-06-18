@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321467_9619",
+  "content": "合理审慎审查: 登记机构对申请进行有限但关键的审查，聚焦准确性、合规性、产权明确性，而非全面背书。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321467.9120312,
+  "updated_at": 1781321467.9124672
+}

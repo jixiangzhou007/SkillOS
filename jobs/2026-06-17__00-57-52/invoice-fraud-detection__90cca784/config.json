@@ -1,0 +1,70 @@
+{
+  "task_path": "D:\\SkillOS\\vendor\\skillsbench\\tasks\\invoice-fraud-detection",
+  "agent": "deepagents",
+  "model": "deepseek/deepseek-chat",
+  "reasoning_effort": null,
+  "environment": "docker",
+  "environment_manifest": null,
+  "skill_mode": "with-skill",
+  "skill_source": "custom_runtime",
+  "requested_skills_dir": "C:\\Users\\54560\\AppData\\Local\\Temp\\skillos-compare-8juskz3k\\skills",
+  "effective_skills_dir": "C:\\Users\\54560\\AppData\\Local\\Temp\\skillos-compare-8juskz3k\\skills",
+  "skills_sandbox_dir": "/skills",
+  "include_task_skills": false,
+  "sandbox_user": "agent",
+  "sandbox_locked_paths": [
+    "/oracle",
+    "/solution",
+    "/verifier",
+    "/tests",
+    "/testbed_verify"
+  ],
+  "sandbox_setup_timeout": 120,
+  "agent_install_timeout": 900,
+  "context_root": null,
+  "timeout_sec": 900,
+  "concurrency": 4,
+  "agent_idle_timeout_sec": 600,
+  "started_at": "2026-06-17 08:07:59.337562",
+  "agent_env": {
+    "DEEPSEEK_BASE_URL": "https://api.deepseek.com",
+    "OPENAI_BASE_URL": "https://api.deepseek.com",
+    "BENCHFLOW_PROVIDER_MODEL": "deepseek-chat",
+    "BENCHFLOW_PROVIDER_NAME": "deepseek",
+    "BENCHFLOW_PROVIDER_BASE_URL": "https://api.deepseek.com",
+    "BENCHFLOW_PROVIDER_PROTOCOL": "openai-completions",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "scenes": [
+    {
+      "name": "default",
+      "skills_dir": null,
+      "roles": [
+        {
+          "name": "agent",
+          "agent": "deepagents",
+          "model": "deepseek/deepseek-chat",
+          "reasoning_effort": null,
+          "timeout_sec": null,
+          "idle_timeout_sec": null,
+          "skills_dir": null,
+          "capabilities": null,
+          "env_keys": []
+        }
+      ],
+      "turns": [
+        {
+          "role": "agent",
+          "has_prompt": false
+        }
+      ]
+    }
+  ],
+  "loop": {
+    "strategy": "single-shot"
+  },
+  "usage_tracking": {
+    "requested": "auto"
+  },
+  "task_digest": "sha256:7355f35c7a0bd44ad9f4dd933a357c49d1b4906679ccd7e822e98c8909d237ec"
+}

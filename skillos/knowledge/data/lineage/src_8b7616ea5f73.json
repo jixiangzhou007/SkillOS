@@ -1,0 +1,52 @@
+{
+  "session_id": "src_8b7616ea5f73",
+  "source_url": "session:bbc576603c4d",
+  "source_title": "供应商评估",
+  "created_at": 1781584401.536837,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_4cb7505d",
+      "content": "技能「供应商评估」: 标准化供应商评估流程，确保从资质审查到合同归档的每个环节可追溯、可量化，避免主观判断和流程遗漏。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.78,
+      "source": {
+        "url": "session:bbc576603c4d",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "供应商评估",
+          "score_delta": 1.0,
+          "timestamp": 1781584401.536622
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781584401.536622,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781584401.536622
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fact_1781321257_7208",
+  "content": "凭证上记载的权利限制（如期限、条件）必须在对外合同中明确体现。",
+  "type": "fact",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "登记凭证的使用边界与注意事项"
+  ],
+  "created_at": 1781321257.2579074,
+  "updated_at": 1781321257.2583327
+}

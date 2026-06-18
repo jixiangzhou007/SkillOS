@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321257_6738",
+  "content": "凭证不是免责金牌: 登记凭证不等于国家为所有用途背书，来源违法、侵权、隐私违规等仍可能穿透审查，不能因持有凭证而忽视合规义务。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1781321257.1208465,
+  "updated_at": 1781321257.1211927
+}

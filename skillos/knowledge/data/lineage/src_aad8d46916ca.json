@@ -1,0 +1,52 @@
+{
+  "session_id": "src_aad8d46916ca",
+  "source_url": "p1-csv-heritage",
+  "source_title": "CSV数据清洗助手",
+  "created_at": 1781741464.0775282,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_d06e64fd",
+      "content": "技能「CSV数据清洗助手」: 解决运营同学从销售系统导出的CSV文件中常见的重复行、空邮箱、金额格式错误、日期格式不统一等问题，输出干净可用的数据表和异常记录表。",
+      "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 1.02,
+      "source": {
+        "url": "p1-csv-heritage",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "CSV数据清洗助手",
+          "score_delta": 1.0,
+          "timestamp": 1781741464.0772836
+        }
+      ],
+      "access_count": 2,
+      "created_at": 1781741464.0772836,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781741464.0772836
+    }
+  ]
+}

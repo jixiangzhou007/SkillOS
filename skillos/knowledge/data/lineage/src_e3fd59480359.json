@@ -1,0 +1,52 @@
+{
+  "session_id": "src_e3fd59480359",
+  "source_url": "session:3626af9f4b87",
+  "source_title": "门诊分诊",
+  "created_at": 1781788657.5799308,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_1df94ffd",
+      "content": "技能「门诊分诊」: 患者挂号后，如何通过标准化流程（一测二问三判断四安排）快速、准确地进行分级并引导至正确科室，同时确保孕妇等特殊人群优先处理。",
+      "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 1.05,
+      "source": {
+        "url": "session:3626af9f4b87",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "门诊分诊",
+          "score_delta": 1.0,
+          "timestamp": 1781788657.5797324
+        }
+      ],
+      "access_count": 2,
+      "created_at": 1781788657.5797324,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781788657.5797324
+    }
+  ]
+}

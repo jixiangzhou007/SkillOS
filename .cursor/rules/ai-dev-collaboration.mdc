@@ -1,0 +1,31 @@
+---
+description: SkillOS 跨工具 AI 协作协议 — 改代码前后必须读写 AI_DEV_LOG
+alwaysApply: true
+---
+
+# AI 协作协议（强制）
+
+完整规则见项目根目录 `AGENTS.md`。本节为 Cursor 会话内的硬性要求。
+
+## 改代码之前
+
+1. 阅读 `docs/AI_DEV_LOG.md` **最新一条**记录
+2. 确认「开放问题 / 下一步」与「未修改 / 刻意不做」
+
+## 改代码之后
+
+在 `docs/AI_DEV_LOG.md` 顶部（「新会话记录区」）追加一条，使用文件内模板，包含：
+
+- 背景 / 触发、修改思路、文件变更表
+- 未修改 / 刻意不做、验证结果、开放问题 / 下一步
+
+**禁止**只改代码不写日志。
+
+## 架构
+
+遵守 `DESIGN.md` §6：AgentSkills.io 格式、认识论层、真实 API、包路径 import。
+
+## 日志分工
+
+- 协作过程 → `docs/AI_DEV_LOG.md`（每次改代码）
+- 版本发布 → `CHANGELOG.md`（仅用户要求发版时）

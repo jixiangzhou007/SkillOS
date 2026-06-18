@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321051_1463",
+  "content": "全流程闭环程序: 设计从申请、受理、审查、公示、异议处理、信息存证到凭证核发的七步闭环程序，确保流程规范、透明、可追溯。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321051.0949106,
+  "updated_at": 1781321051.0952253
+}

@@ -1,0 +1,199 @@
+name: Official SkillsBench
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'scripts/run_official_skillsbench*.py'
+      - 'scripts/download_official_task.py'
+      - 'scripts/trigger_official_bench_ci.py'
+      - 'skillos/official_skillsbench/**'
+      - 'skills/**/SKILL.md'
+      - '.github/workflows/official-skillsbench.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'scripts/run_official_skillsbench*.py'
+      - 'scripts/download_official_task.py'
+      - 'scripts/trigger_official_bench_ci.py'
+      - 'skillos/official_skillsbench/**'
+      - 'skills/**/SKILL.md'
+      - '.github/workflows/official-skillsbench.yml'
+  repository_dispatch:
+    types: [skill-official-bench]
+  workflow_dispatch:
+    inputs:
+      run_agent_compare:
+        description: Run no-skill vs with-skill agent compare (needs DEEPSEEK_API_KEY secret)
+        type: boolean
+        default: false
+      compare_preset:
+        description: Preset id (citation-curated, csv-sales-pivot, pr-dependency-audit, refund-invoice-fraud, or all)
+        type: string
+        default: citation-curated
+
+jobs:
+  oracle-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Install BenchFlow CLI
+        run: uv tool install "benchflow>=0.6.2,<0.7"
+
+      - name: Install SkillOS (export module deps)
+        run: pip install pyyaml
+
+      - name: Add bench to PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Verify Docker
+        run: docker info
+
+      - name: Download official smoke task
+        env:
+          PYTHONUTF8: "1"
+        run: python scripts/download_official_task.py citation-check
+
+      - name: Run oracle smoke (Phase 0/1)
+        env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: utf-8
+        run: python scripts/run_official_skillsbench_eval.py --task citation-check --oracle-only
+
+      - name: Export SkillOS skill layout test
+        env:
+          PYTHONUTF8: "1"
+        run: |
+          python -c "
+          from pathlib import Path
+          from skillos.official_skillsbench.export import export_skill_for_official
+          import tempfile
+          with tempfile.TemporaryDirectory() as d:
+              p = export_skill_for_official('CSV数据清洗助手', Path(d))
+              assert (p / 'SKILL.md').exists()
+              print('export OK:', p)
+          "
+
+      - name: Upload benchmark artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-skillsbench-smoke
+          path: |
+            data/benchmarks/official_eval_*.json
+            jobs/**/summary.json
+            jobs/**/result.json
+          if-no-files-found: ignore
+
+  agent-compare:
+    runs-on: ubuntu-latest
+    needs: oracle-smoke
+    timeout-minutes: 90
+    if: >-
+      ${{
+        secrets.DEEPSEEK_API_KEY != '' &&
+        (
+          github.event_name == 'repository_dispatch' ||
+          github.event_name != 'workflow_dispatch' ||
+          inputs.run_agent_compare == true
+        )
+      }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install BenchFlow CLI
+        run: uv tool install "benchflow>=0.6.2,<0.7"
+
+      - name: Install deps
+        run: pip install pyyaml
+
+      - name: Add bench to PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Agent compare
+        env:
+          PYTHONUTF8: "1"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_BASE_URL: https://api.deepseek.com/v1
+          SKILLSBENCH_AGENT: deepagents
+          SKILLSBENCH_MODEL: deepseek/deepseek-chat
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            PRESET="${{ github.event.client_payload.preset }}"
+            if [ -z "$PRESET" ]; then
+              PRESET="citation-curated"
+            fi
+          else
+            PRESET="${{ github.event.inputs.compare_preset || 'citation-curated' }}"
+          fi
+          if [ "$PRESET" = "all" ]; then
+            python scripts/run_official_skillsbench_suite.py --skip-oracle --presets all
+          else
+            python scripts/run_official_skill_compare.py --preset "$PRESET"
+          fi
+
+      - name: Upload compare artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-skillsbench-compare
+          path: |
+            data/benchmarks/official_compare_*.json
+            jobs/**/summary.json
+            jobs/**/result.json
+          if-no-files-found: ignore
+
+  local-quick8-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: secrets.DEEPSEEK_API_KEY != ''
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install pyyaml
+
+      - name: Local Quick8 + domain smoke regression
+        env:
+          PYTHONUTF8: "1"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_BASE_URL: https://api.deepseek.com/v1
+        run: python scripts/run_bench_regression.py
+
+      - name: Upload regression artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-quick8-regression
+          path: |
+            data/benchmarks/bench_regression_*.json
+            data/benchmarks/local_compare_*.json
+          if-no-files-found: ignore

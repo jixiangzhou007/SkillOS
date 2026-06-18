@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321468_2099",
+  "content": "以平台可查为准则: 对外出示凭证时，尽量附上国家平台可查的状态说明；纸面与平台不一致时以平台存证为准。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1781321468.0052545,
+  "updated_at": 1781321468.0055783
+}

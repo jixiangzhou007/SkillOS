@@ -1,0 +1,113 @@
+name: SkillOS Nightly E2E
+
+on:
+  schedule:
+    - cron: "0 17 * * *"  # 01:00 CST daily
+  workflow_dispatch:
+
+jobs:
+  extraction-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[all]"
+          pip install pytest
+
+      - name: Production extraction unit tests
+        run: python -m pytest tests/test_production_extraction.py tests/test_portable_skill.py -v --tb=short
+
+      - name: MoE API smoke (mock LLM, no API key)
+        run: python -m pytest tests/test_moe_evaluation.py -v --tb=short
+
+      - name: DNA golden set (offline)
+        run: python scripts/run_dna_golden_ci.py
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Official SkillsBench oracle smoke
+        run: |
+          pip install pyyaml
+          uv tool install "benchflow>=0.6.2,<0.7"
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.local/bin:$PATH"
+          export PYTHONUTF8=1
+          python scripts/download_official_task.py citation-check
+          python scripts/run_official_skillsbench_eval.py --task citation-check --oracle-only
+
+      - name: Upload official oracle artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-oracle-nightly
+          path: data/benchmarks/official_eval_*.json
+          if-no-files-found: ignore
+
+      - name: DNA + SkillsBench nightly benchmark
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: python scripts/run_nightly_dna_bench.py
+
+      - name: Cache SkillsBench LLM responses
+        uses: actions/cache@v4
+        with:
+          path: data/benchmarks/llm_cache
+          key: skillsbench-llm-${{ hashFiles('skillos/skillsbench_tasks.py', 'skillos/skillsbench_cache.py') }}
+          restore-keys: |
+            skillsbench-llm-
+
+      - name: Quick8 reference skills (nightly)
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          SKILLSBENCH_LLM_CACHE: "1"
+          QUICK8_MIN_IMPROVEMENT_PCT: "-25"
+        run: |
+          if [ -z "$DEEPSEEK_API_KEY" ]; then
+            echo "DEEPSEEK_API_KEY not set — skipping Quick8"
+            exit 0
+          fi
+          python scripts/run_quick8_ci.py
+
+      - name: Upload Quick8 nightly artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quick8-nightly
+          path: |
+            data/benchmarks/quick8_ci_*.json
+            data/benchmarks/skill_quick8_*.json
+          if-no-files-found: ignore
+
+      - name: Upload nightly DNA benchmark
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dna-nightly-benchmark
+          path: data/benchmarks/dna/nightly/latest.json
+          if-no-files-found: warn
+
+      - name: Live LLM extraction regression
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          if [ -z "$DEEPSEEK_API_KEY" ]; then
+            echo "DEEPSEEK_API_KEY not set — skipping live e2e"
+            exit 0
+          fi
+          nohup python -m skillos.api.server > /tmp/skillos-server.log 2>&1 &
+          echo $! > /tmp/skillos-server.pid
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8765/health && break
+            sleep 2
+          done
+          curl -sf http://127.0.0.1:8765/health || (cat /tmp/skillos-server.log && exit 1)
+          python scripts/verify_contract_flow_complete.py
+          if [ -f /tmp/skillos-server.pid ]; then kill "$(cat /tmp/skillos-server.pid)" || true; fi

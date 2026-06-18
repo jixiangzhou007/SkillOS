@@ -1,0 +1,52 @@
+{
+  "session_id": "src_2086cb3ed3ca",
+  "source_url": "session:dna-reextract-pr-1781659619",
+  "source_title": "GitHub Pull",
+  "created_at": 1781659945.914991,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_d531fc04",
+      "content": "技能「GitHub Pull」: 确保 Pull Request 的代码变更安全、正确、风格良好，且变更规模可控，最终合并前所有阻塞性问题已解决。",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.67,
+      "source": {
+        "url": "session:dna-reextract-pr-1781659619",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "GitHub Pull",
+          "score_delta": 1.0,
+          "timestamp": 1781659945.9147763
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781659945.9147763,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781659945.9147763
+    }
+  ]
+}

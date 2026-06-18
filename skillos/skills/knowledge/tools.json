@@ -1,0 +1,74 @@
+{
+  "tools": [
+    {
+      "name": "web_search",
+      "description": "搜索互联网获取信息",
+      "type": "builtin",
+      "endpoint": "web_search.search",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "搜索关键词"
+        }
+      },
+      "validated": true,
+      "validation_result": "",
+      "used_by": [],
+      "created_at": 1781311123.9028487,
+      "last_validated": 0.0
+    },
+    {
+      "name": "web_fetch",
+      "description": "抓取网页内容",
+      "type": "builtin",
+      "endpoint": "web_fetch.fetch",
+      "parameters": {
+        "url": {
+          "type": "string",
+          "description": "网页URL"
+        }
+      },
+      "validated": true,
+      "validation_result": "",
+      "used_by": [],
+      "created_at": 1781311123.902854,
+      "last_validated": 0.0
+    },
+    {
+      "name": "read_file",
+      "description": "读取本地文件内容",
+      "type": "builtin",
+      "endpoint": "builtins.read_file",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "文件路径"
+        }
+      },
+      "validated": true,
+      "validation_result": "",
+      "used_by": [],
+      "created_at": 1781311123.9028566,
+      "last_validated": 0.0
+    },
+    {
+      "name": "skill_executor",
+      "description": "执行一个已注册的技能",
+      "type": "builtin",
+      "endpoint": "agent_factory.run_agent",
+      "parameters": {
+        "skill_name": {
+          "type": "string"
+        },
+        "task": {
+          "type": "string"
+        }
+      },
+      "validated": true,
+      "validation_result": "",
+      "used_by": [],
+      "created_at": 1781311123.9028583,
+      "last_validated": 0.0
+    }
+  ]
+}

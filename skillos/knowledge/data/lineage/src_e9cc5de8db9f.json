@@ -1,0 +1,276 @@
+{
+  "session_id": "src_e9cc5de8db9f",
+  "source_url": "skill://演示",
+  "source_title": "演示",
+  "created_at": 1781579821.4222603,
+  "summary": {
+    "total_items": 6,
+    "by_category": {
+      "heuristic": 6
+    },
+    "by_epistemic_level": {
+      "knowledge": 6
+    },
+    "confidence_distribution": {
+      "high": 6,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_174263b4",
+      "content": "技能「演示」: # 演示  ## When to use - keywords: demo  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step",
+      "category": "heuristic",
+      "confidence": 0.9,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.77,
+      "source": {
+        "url": "skill://演示",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_4143d259",
+          "relation_type": "same_source",
+          "weight": 1.0
+        },
+        {
+          "item_id": "ki_a2c4fb16",
+          "relation_type": "same_source",
+          "weight": 0.92
+        },
+        {
+          "item_id": "ki_e3242113",
+          "relation_type": "same_source",
+          "weight": 0.92
+        },
+        {
+          "item_id": "ki_8ef99c68",
+          "relation_type": "same_source",
+          "weight": 0.92
+        },
+        {
+          "item_id": "ki_f358278a",
+          "relation_type": "same_source",
+          "weight": 0.92
+        }
+      ],
+      "related_count": 5,
+      "affected_skills": [
+        {
+          "skill_name": "演示",
+          "score_delta": 1.0,
+          "timestamp": 1781579821.4220297
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781579821.4220297,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_4143d259",
+      "content": "技能「演示」: # 演示  ## When to use - keywords: demo  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step",
+      "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.73,
+      "source": {
+        "url": "skill://演示",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_a2c4fb16",
+          "relation_type": "same_source",
+          "weight": 0.92
+        },
+        {
+          "item_id": "ki_e3242113",
+          "relation_type": "same_source",
+          "weight": 0.92
+        },
+        {
+          "item_id": "ki_8ef99c68",
+          "relation_type": "same_source",
+          "weight": 0.92
+        },
+        {
+          "item_id": "ki_f358278a",
+          "relation_type": "same_source",
+          "weight": 0.92
+        }
+      ],
+      "related_count": 4,
+      "affected_skills": [
+        {
+          "skill_name": "演示",
+          "score_delta": 1.0,
+          "timestamp": 1781581166.5299916
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781581166.5299916,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_a2c4fb16",
+      "content": "技能「演示」: # 演示  ## When to use - keywords: demo  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请求或对话上下文  ## Outputs - stat",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.68,
+      "source": {
+        "url": "skill://演示",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_e3242113",
+          "relation_type": "same_source",
+          "weight": 1.0
+        },
+        {
+          "item_id": "ki_8ef99c68",
+          "relation_type": "same_source",
+          "weight": 1.0
+        },
+        {
+          "item_id": "ki_f358278a",
+          "relation_type": "same_source",
+          "weight": 1.0
+        }
+      ],
+      "related_count": 3,
+      "affected_skills": [
+        {
+          "skill_name": "演示",
+          "score_delta": 1.0,
+          "timestamp": 1781594624.1383631
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781594624.1383631,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_e3242113",
+      "content": "技能「演示」: # 演示  ## When to use - keywords: demo  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请求或对话上下文  ## Outputs - stat",
+      "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.85,
+      "source": {
+        "url": "skill://演示",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_8ef99c68",
+          "relation_type": "same_source",
+          "weight": 1.0
+        },
+        {
+          "item_id": "ki_f358278a",
+          "relation_type": "same_source",
+          "weight": 1.0
+        }
+      ],
+      "related_count": 2,
+      "affected_skills": [
+        {
+          "skill_name": "演示",
+          "score_delta": 1.0,
+          "timestamp": 1781796021.1620247
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781796021.1620247,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_8ef99c68",
+      "content": "技能「演示」: # 演示  ## When to use - keywords: demo  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请求或对话上下文  ## Outputs - stat",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.8,
+      "source": {
+        "url": "skill://演示",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_f358278a",
+          "relation_type": "same_source",
+          "weight": 1.0
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [
+        {
+          "skill_name": "演示",
+          "score_delta": 1.0,
+          "timestamp": 1781796198.3025875
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781796198.3025875,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_f358278a",
+      "content": "技能「演示」: # 演示  ## When to use - keywords: demo  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请求或对话上下文  ## Outputs - stat",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "skill://演示",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "演示",
+          "score_delta": 1.0,
+          "timestamp": 1781796528.9745176
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781796528.9745176,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    }
+  ]
+}

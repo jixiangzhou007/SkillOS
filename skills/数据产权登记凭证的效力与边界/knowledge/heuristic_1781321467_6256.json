@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321467_6256",
+  "content": "凭证作为初步证据（权利主张）: 经正式程序获取的凭证可作为司法或仲裁中的初步证据，帮助权利人完成初步举证责任。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321467.9702423,
+  "updated_at": 1781321467.9706023
+}

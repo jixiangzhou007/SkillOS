@@ -1,0 +1,52 @@
+{
+  "session_id": "src_46ac24320ce5",
+  "source_url": "session:user-sim-dataclean-1781583088",
+  "source_title": "运营级CSV清洗工坊",
+  "created_at": 1781583497.3611622,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_8126da8c",
+      "content": "技能「运营级CSV清洗工坊」: 销售导出的CSV文件存在重复行、空邮箱、金额格式混乱、日期格式不统一等问题，运营同学需要一键清洗为干净数据并附带清洗报告。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.78,
+      "source": {
+        "url": "session:user-sim-dataclean-1781583088",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "运营级CSV清洗工坊",
+          "score_delta": 1.0,
+          "timestamp": 1781583497.3608613
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781583497.3608613,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781583497.3608613
+    }
+  ]
+}

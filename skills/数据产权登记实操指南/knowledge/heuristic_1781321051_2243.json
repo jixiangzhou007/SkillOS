@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321051_2243",
+  "content": "公示与异议处理机制: 审查通过后设置公示期，允许任何单位或个人提出异议，并由登记机构调查处理，以社会监督增强登记结果的公正性。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321051.1158998,
+  "updated_at": 1781321051.1162124
+}

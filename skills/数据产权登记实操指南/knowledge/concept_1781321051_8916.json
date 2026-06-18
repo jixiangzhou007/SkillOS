@@ -1,0 +1,16 @@
+{
+  "id": "concept_1781321051_8916",
+  "content": "注销登记: 当数据灭失、权利期限届满、权利人主动放弃或经司法裁判权利终止等情形发生时，需办理的登记类型，以清除失效的数据产权记录，维护登记信息的准确性。",
+  "type": "concept",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "数据产权登记的类型",
+    "初次登记"
+  ],
+  "created_at": 1781321051.0609117,
+  "updated_at": 1781321051.0612128
+}

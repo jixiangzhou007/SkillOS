@@ -1,0 +1,52 @@
+{
+  "session_id": "src_c78590395361",
+  "source_url": "session:9fe356b434ae",
+  "source_title": "运维事故响应技能",
+  "created_at": 1781584237.9935615,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_029ccbfa",
+      "content": "技能「运维事故响应技能」: 标准化处理线上告警事故，确保定级准确、响应及时、根因可追溯、改进可落地。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.78,
+      "source": {
+        "url": "session:9fe356b434ae",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "运维事故响应技能",
+          "score_delta": 1.0,
+          "timestamp": 1781584237.9930158
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781584237.9930158,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781584237.9930158
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+name: SkillOS CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[all]"
+          pip install pytest
+
+      - name: Phase A — core loop (system skills, zip, dispatch, quality)
+        run: python -m pytest tests/test_phase_a.py tests/test_production_extraction.py tests/test_moe_evaluation.py tests/test_skill_routing.py tests/test_domain_templates.py -v --tb=short
+
+      - name: SD knowledge closure verification
+        run: python scripts/verify_knowledge_closure.py
+
+      - name: Skill bench gates (offline routing + structure)
+        run: python scripts/verify_skill_bench_gates.py
+
+      - name: DNA golden set (offline routing + DNA detection)
+        run: python scripts/run_dna_golden_ci.py
+
+      - name: Official SkillsBench unit tests (offline)
+        run: python -m pytest tests/test_official_skillsbench.py tests/test_official_bench_api.py tests/test_benchmark_local.py tests/test_skillsbench_cache.py tests/test_workflow064_grader.py tests/test_task_skill_injection.py -v --tb=short
+
+      - name: Run tests
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          python -m pytest tests/ -v --tb=short
+
+      - name: Verify imports
+        run: |
+          python -c "
+          from skillos.skills.agent import SkillExtractionAgent
+          from skillos.knowledge.epistemology import get_store
+          from skillos.knowledge.graph import KnowledgeGraph
+          from skillos.evolution.engine import run_evolution_check
+          from skillos.skills.dispatcher import dispatch
+          from skillos.config import get_config
+          print('All critical imports OK')
+          "
+
+  benchmark:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: pip install -e ".[all]"
+      - name: Cache SkillsBench LLM responses
+        uses: actions/cache@v4
+        with:
+          path: data/benchmarks/llm_cache
+          key: skillsbench-llm-${{ hashFiles('skillos/skillsbench_tasks.py', 'skillos/skillsbench_cache.py') }}
+          restore-keys: |
+            skillsbench-llm-
+      - name: Quick benchmark
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: python -m skillos.benchmark
+      - name: Quick8 reference skills
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          SKILLSBENCH_LLM_CACHE: "1"
+          QUICK8_MIN_IMPROVEMENT_PCT: "-25"
+        run: |
+          if [ -z "$DEEPSEEK_API_KEY" ]; then
+            echo "DEEPSEEK_API_KEY not set — skipping Quick8"
+            exit 0
+          fi
+          python scripts/run_quick8_ci.py
+      - name: Verify Quick8 gates (offline)
+        if: always()
+        env:
+          QUICK8_MIN_IMPROVEMENT_PCT: "-25"
+        run: python scripts/verify_quick8_gates.py
+      - name: Upload Quick8 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quick8-ci
+          path: |
+            data/benchmarks/quick8_ci_*.json
+            data/benchmarks/skill_quick8_*.json
+            data/benchmarks/new3skills_quick8_*.json
+          if-no-files-found: ignore

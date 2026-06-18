@@ -1,0 +1,546 @@
+{
+  "session_id": "src_5df7c2f1252a",
+  "source_url": "api/create",
+  "source_title": "created_a15155",
+  "created_at": 1781579895.92915,
+  "summary": {
+    "total_items": 10,
+    "by_category": {
+      "heuristic": 10
+    },
+    "by_epistemic_level": {
+      "knowledge": 10
+    },
+    "confidence_distribution": {
+      "high": 10,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_3d4076b9",
+      "content": "技能「created_a15155」: # created_a15155  ## When to use - keywords: t name: created_a15155  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step",
+      "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.72,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_d05dd78e",
+          "relation_type": "same_source",
+          "weight": 0.79
+        },
+        {
+          "item_id": "ki_c826ed38",
+          "relation_type": "same_source",
+          "weight": 0.79
+        },
+        {
+          "item_id": "ki_fc63b3c8",
+          "relation_type": "same_source",
+          "weight": 0.79
+        },
+        {
+          "item_id": "ki_731fec9b",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a61e82e",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_714ead6c",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_4147e6be",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.74
+        }
+      ],
+      "related_count": 9,
+      "affected_skills": [
+        {
+          "skill_name": "created_a15155",
+          "score_delta": 1.0,
+          "timestamp": 1781579895.9289057
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781579895.9289057,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_d05dd78e",
+      "content": "技能「skill_3f8233」: # skill_3f8233  ## When to use - keywords: t name: skill_3f8233  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step",
+      "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.72,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_c826ed38",
+          "relation_type": "same_source",
+          "weight": 0.79
+        },
+        {
+          "item_id": "ki_fc63b3c8",
+          "relation_type": "same_source",
+          "weight": 0.79
+        },
+        {
+          "item_id": "ki_731fec9b",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a61e82e",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_714ead6c",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_4147e6be",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.74
+        }
+      ],
+      "related_count": 8,
+      "affected_skills": [
+        {
+          "skill_name": "skill_3f8233",
+          "score_delta": 1.0,
+          "timestamp": 1781579928.988701
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781579928.988701,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_c826ed38",
+      "content": "技能「created_0ef965」: # created_0ef965  ## When to use - keywords: t name: created_0ef965  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.68,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_fc63b3c8",
+          "relation_type": "same_source",
+          "weight": 0.79
+        },
+        {
+          "item_id": "ki_731fec9b",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a61e82e",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_714ead6c",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_4147e6be",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.74
+        }
+      ],
+      "related_count": 7,
+      "affected_skills": [
+        {
+          "skill_name": "created_0ef965",
+          "score_delta": 1.0,
+          "timestamp": 1781581254.2176216
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781581254.2176216,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_fc63b3c8",
+      "content": "技能「skill_4162fc」: # skill_4162fc  ## When to use - keywords: t name: skill_4162fc  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.68,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_731fec9b",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a61e82e",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_714ead6c",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_4147e6be",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.74
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.74
+        }
+      ],
+      "related_count": 6,
+      "affected_skills": [
+        {
+          "skill_name": "skill_4162fc",
+          "score_delta": 1.0,
+          "timestamp": 1781581292.483541
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781581292.483541,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_731fec9b",
+      "content": "技能「created_4b8492」: # created_4b8492  ## When to use - keywords: t name: created_4b8492  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.63,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_2a61e82e",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_714ead6c",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_4147e6be",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.78
+        }
+      ],
+      "related_count": 5,
+      "affected_skills": [
+        {
+          "skill_name": "created_4b8492",
+          "score_delta": 1.0,
+          "timestamp": 1781594770.7945926
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781594770.7945926,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_2a61e82e",
+      "content": "技能「skill_ab063a」: # skill_ab063a  ## When to use - keywords: t name: skill_ab063a  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.63,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_714ead6c",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_4147e6be",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.8
+        }
+      ],
+      "related_count": 4,
+      "affected_skills": [
+        {
+          "skill_name": "skill_ab063a",
+          "score_delta": 1.0,
+          "timestamp": 1781594872.8959444
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781594872.8959444,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_714ead6c",
+      "content": "技能「created_6dd64f」: # created_6dd64f  ## When to use - keywords: t name: created_6dd64f  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.8,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_4147e6be",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.78
+        }
+      ],
+      "related_count": 3,
+      "affected_skills": [
+        {
+          "skill_name": "created_6dd64f",
+          "score_delta": 1.0,
+          "timestamp": 1781796242.2621899
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781796242.2621899,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_4147e6be",
+      "content": "技能「created_c9f16f」: # created_c9f16f  ## When to use - keywords: t name: created_c9f16f  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_2a207d04",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.78
+        }
+      ],
+      "related_count": 2,
+      "affected_skills": [
+        {
+          "skill_name": "created_c9f16f",
+          "score_delta": 1.0,
+          "timestamp": 1781796352.677063
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781796352.677063,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_2a207d04",
+      "content": "技能「skill_2ff92a」: # skill_2ff92a  ## When to use - keywords: t name: skill_2ff92a  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_91a11493",
+          "relation_type": "same_source",
+          "weight": 0.8
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [
+        {
+          "skill_name": "skill_2ff92a",
+          "score_delta": 1.0,
+          "timestamp": 1781796361.0614479
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781796361.0614479,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_91a11493",
+      "content": "技能「skill_212dd5」: # skill_212dd5  ## When to use - keywords: t name: skill_212dd5  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "skill_212dd5",
+          "score_delta": 1.0,
+          "timestamp": 1781796479.7208312
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781796479.7208312,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    }
+  ]
+}

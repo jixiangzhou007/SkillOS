@@ -1,0 +1,14 @@
+{
+  "id": "fact_1781321051_0990",
+  "content": "流程包括：申请、受理、审查、公示、异议处理、信息存证和凭证核发。",
+  "type": "fact",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "数据产权登记程序"
+  ],
+  "created_at": 1781321051.253783,
+  "updated_at": 1781321051.2541025
+}

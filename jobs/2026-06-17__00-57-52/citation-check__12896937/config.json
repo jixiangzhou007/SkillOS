@@ -1,0 +1,65 @@
+{
+  "task_path": "D:\\SkillOS\\vendor\\skillsbench\\tasks\\citation-check",
+  "agent": "oracle",
+  "model": null,
+  "reasoning_effort": null,
+  "environment": "docker",
+  "environment_manifest": null,
+  "skill_mode": "no-skill",
+  "skill_source": "none",
+  "requested_skills_dir": null,
+  "effective_skills_dir": null,
+  "skills_sandbox_dir": null,
+  "include_task_skills": false,
+  "sandbox_user": "agent",
+  "sandbox_locked_paths": [
+    "/oracle",
+    "/solution",
+    "/verifier",
+    "/tests",
+    "/testbed_verify"
+  ],
+  "sandbox_setup_timeout": 120,
+  "agent_install_timeout": null,
+  "context_root": null,
+  "timeout_sec": 900,
+  "concurrency": 4,
+  "agent_idle_timeout_sec": 600,
+  "started_at": "2026-06-17 07:55:52.683410",
+  "agent_env": {
+    "DEEPSEEK_BASE_URL": "https://api.deepseek.com",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "scenes": [
+    {
+      "name": "default",
+      "skills_dir": null,
+      "roles": [
+        {
+          "name": "agent",
+          "agent": "oracle",
+          "model": null,
+          "reasoning_effort": null,
+          "timeout_sec": null,
+          "idle_timeout_sec": null,
+          "skills_dir": null,
+          "capabilities": null,
+          "env_keys": []
+        }
+      ],
+      "turns": [
+        {
+          "role": "agent",
+          "has_prompt": false
+        }
+      ]
+    }
+  ],
+  "loop": {
+    "strategy": "single-shot"
+  },
+  "usage_tracking": {
+    "requested": "auto"
+  },
+  "task_digest": "sha256:d78c412f8d9f42b282c12fa009f76b0cda6d9da782ade315946dda747b71f252"
+}

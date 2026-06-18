@@ -1,0 +1,16 @@
+{
+  "id": "concept_1781321256_4625",
+  "content": "存证: 将登记事项与结果同步存储于国家平台，并按照全国统一样式和统一编码规则核发凭证，确保平台存证信息为“唯一真相源”。",
+  "type": "concept",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "数据产权登记凭证",
+    "国家数据产权登记服务平台"
+  ],
+  "created_at": 1781321256.9511466,
+  "updated_at": 1781321256.9514384
+}

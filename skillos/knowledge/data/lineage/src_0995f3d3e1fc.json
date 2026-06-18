@@ -1,0 +1,52 @@
+{
+  "session_id": "src_0995f3d3e1fc",
+  "source_url": "session:user-sim-prreview-1781624495",
+  "source_title": "GitHub Pull",
+  "created_at": 1781624819.7528808,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_64380ff9",
+      "content": "技能「GitHub Pull」: 规范团队 Pull Request 的创建、审查与合并流程，确保代码质量与安全。",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.65,
+      "source": {
+        "url": "session:user-sim-prreview-1781624495",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "GitHub Pull",
+          "score_delta": 1.0,
+          "timestamp": 1781624819.7525876
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781624819.7525876,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781624819.7525876
+    }
+  ]
+}

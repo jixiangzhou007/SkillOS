@@ -1,0 +1,52 @@
+{
+  "session_id": "src_df964857d72d",
+  "source_url": "session:2669794a1a22",
+  "source_title": "采购审批",
+  "created_at": 1781593667.5109427,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_781615bd",
+      "content": "技能「采购审批」: 标准化采购审批流程，确保预算可控、供应商合规、审批分级、验收闭环。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.78,
+      "source": {
+        "url": "session:2669794a1a22",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "采购审批",
+          "score_delta": 1.0,
+          "timestamp": 1781593667.510719
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781593667.510719,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781593667.510719
+    }
+  ]
+}

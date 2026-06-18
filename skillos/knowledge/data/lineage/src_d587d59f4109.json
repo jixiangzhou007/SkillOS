@@ -1,0 +1,52 @@
+{
+  "session_id": "src_d587d59f4109",
+  "source_url": "session:dna-reextract-refund-1781659619",
+  "source_title": "我想做一个电商客服退款处",
+  "created_at": 1781659765.5306249,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_c5264c6a",
+      "content": "技能「我想做一个电商客服退款处」: 标准化处理买家发起的退款/退货请求，在风险可控的前提下自动完成退款，减少人工介入。",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.67,
+      "source": {
+        "url": "session:dna-reextract-refund-1781659619",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "我想做一个电商客服退款处",
+          "score_delta": 1.0,
+          "timestamp": 1781659765.530445
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781659765.530445,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781659765.530445
+    }
+  ]
+}

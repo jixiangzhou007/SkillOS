@@ -1,0 +1,96 @@
+{
+  "nodes": [
+    {
+      "id": "n_1781311122_2504",
+      "name": "TestNode",
+      "type": "concept",
+      "description": "A test concept",
+      "source": "",
+      "confidence": 0.5,
+      "created_at": 1781311122.102889,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781311122_7181",
+      "name": "NodeA",
+      "type": "concept",
+      "description": "",
+      "source": "",
+      "confidence": 0.5,
+      "created_at": 1781311122.115342,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781311122_6163",
+      "name": "NodeB",
+      "type": "concept",
+      "description": "",
+      "source": "",
+      "confidence": 0.5,
+      "created_at": 1781311122.1264346,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781311228_5396",
+      "name": "NodeA-unique",
+      "type": "concept",
+      "description": "",
+      "source": "",
+      "confidence": 0.5,
+      "created_at": 1781311228.4180794,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781311228_1516",
+      "name": "NodeB-unique",
+      "type": "concept",
+      "description": "",
+      "source": "",
+      "confidence": 0.5,
+      "created_at": 1781311228.4330657,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781317962_6697",
+      "name": "evo-node-a",
+      "type": "concept",
+      "description": "",
+      "source": "",
+      "confidence": 0.5,
+      "created_at": 1781317962.7827916,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781317962_4884",
+      "name": "evo-node-b",
+      "type": "concept",
+      "description": "",
+      "source": "",
+      "confidence": 0.5,
+      "created_at": 1781317962.7969592,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781537921_1605",
+      "name": "Alpha: 定义Alpha",
+      "type": "concept",
+      "description": "Alpha: 定义Alpha",
+      "source": "file://phase1-test.txt",
+      "confidence": 0.8,
+      "created_at": 1781537921.3267312,
+      "cluster_id": ""
+    },
+    {
+      "id": "n_1781537921_3208",
+      "name": "h: s",
+      "type": "fact",
+      "description": "h: s",
+      "source": "file://phase1-test.txt",
+      "confidence": 0.6,
+      "created_at": 1781537921.3560243,
+      "cluster_id": ""
+    }
+  ],
+  "edges": [],
+  "clusters": []
+}

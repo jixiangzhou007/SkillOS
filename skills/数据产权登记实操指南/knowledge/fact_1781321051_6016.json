@@ -1,0 +1,14 @@
+{
+  "id": "fact_1781321051_6016",
+  "content": "登记对象为境内合法流通的各类形态数据（资源或产品，结构化或非结构化）。",
+  "type": "fact",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "数据产权登记对象"
+  ],
+  "created_at": 1781321051.1865418,
+  "updated_at": 1781321051.1869202
+}

@@ -1,0 +1,52 @@
+{
+  "session_id": "src_88f1bb91c1b2",
+  "source_url": "session:user-sim-dataclean-1781624495",
+  "source_title": "CSV数据清洗助手",
+  "created_at": 1781624964.1967735,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_7e6df138",
+      "content": "技能「CSV数据清洗助手」: 运营同学拿到销售导出的CSV后，手动清洗重复行、空邮箱、金额格式和日期格式太耗时，需要一键自动化处理。",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.65,
+      "source": {
+        "url": "session:user-sim-dataclean-1781624495",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "CSV数据清洗助手",
+          "score_delta": 1.0,
+          "timestamp": 1781624964.196219
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781624964.196219,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781624964.196219
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Environment & secrets
+.env
+*.env.local
+*.env.production
+
+# Runtime data (large / auto-generated)
+data/conversations.db
+data/conversations.db-shm
+data/conversations.db-wal
+data/skillhub.db
+data/skillhub.db-shm
+data/skillhub.db-wal
+data/epistemic_state.json
+data/philosophical_dna_state.json
+data/playbook_bindings.json
+data/source_cache/
+data/benchmarks/
+data/cycle_tasks/
+data/dna/
+data/domain_packs/
+data/feasibility/
+data/incremental/
+data/ingestion_queue/
+data/knowledge/
+data/playbooks/
+data/session_drafts/
+data/tenants/
+data/watched_accounts/
+
+# Test / pytest
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Mypy / type checking
+.mypy_cache/
+
+# Tools
+.tools/
+
+# User-generated skill content (keep system skills in git)
+# skills/ is version-controlled for built-in system skills and test fixtures

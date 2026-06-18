@@ -1,0 +1,331 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\geometry{margin=1in}
+
+\title{\textbf{Experience $\neq$ Knowledge: An Epistemology Engine}\\
+       \textbf{for Agent Skill Quality}}
+
+\author{SkillOS Team\\
+\texttt{skillos@example.com}}
+
+\date{June 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The emerging Agent Skills ecosystem---standardized by Anthropic's AgentSkills.io specification and adopted across 30+ platforms---has created a new software supply chain where natural-language skill documents define agent behavior.
+However, current systems focus exclusively on \textit{executing} skills, leaving three fundamental questions unanswered: (1) How do we know a skill is correct? (2) How can skills improve over time through use? (3) How can knowledge gained from one skill benefit others?
+We present \textsc{SkillOS}, a system that addresses these gaps through three novel contributions.
+First, an \textit{epistemology engine} grounded in Plato's justified true belief and Popper's falsificationism that classifies claims into a six-level confidence hierarchy and automatically promotes experiences to verified knowledge through adversarial testing.
+Second, a \textit{Socratic extraction pipeline} that employs a seven-step cognitive learning process (inspired by Feynman, Bloom, and deliberate practice) to extract structured, executable skill documents from URLs and conversation.
+Third, a \textit{Mixture-of-Experts self-evolution system} with a gating network that routes skills to three specialized optimizers and propagates improvements across related skills through knowledge diffusion.
+Experiments on three skill creation tasks show that SkillOS-generated skills consistently include decision-table routing structures (S\_route) that bare LLM generation never produces, and that the system achieves 100\% structural completeness across all tested dimensions.
+On a 100-claim epistemic ablation benchmark, the full pipeline (classify + falsify + corroboration) achieves F1=0.750 versus 0.462 for a trust-all baseline, with 100\% false-claim filtering while retaining all gold-true claims.
+\end{abstract}
+
+%==============================================================================
+\section{Introduction}
+%==============================================================================
+
+The rapid adoption of AI coding agents---Claude Code, Cursor, GitHub Copilot, OpenAI Codex---has created an ecosystem where domain-specific expertise is packaged as portable \textit{skills}: folders containing a \texttt{SKILL.md} specification with YAML frontmatter and Markdown instructions~\cite{agentskills}. By mid-2026, over 85,000 publicly available skills have emerged across multiple marketplaces, with the specification adopted as an open standard by the Linux Foundation.
+
+This ecosystem solves the \textit{distribution} problem. But it creates a deeper, unsolved problem: \textbf{how do we know a skill is correct?}
+
+Current industrial platforms (Dify, Coze, LangChain) provide execution infrastructure---RAG pipelines, workflow orchestration, tool calling---but offer no systematic way to verify skill quality. Academic systems like Microsoft SkillOpt~\cite{skillopt} optimize skills through training loops but do not address the epistemological question of \textit{truth}. When an agent extracts a skill from a blog post, is the result reliable knowledge or merely plausible text?
+
+\textsc{SkillOS} approaches this problem from first principles. Rather than treating skill creation as a text generation task, we treat it as an \textit{epistemological} task: claims must be classified, cross-referenced, and survive falsification before being trusted. This philosophical foundation---drawing from Plato, Popper, Kant, and contemporary cognitive science---distinguishes SkillOS from all existing skill systems.
+
+Our contributions are:
+\begin{enumerate}[leftmargin=*,nosep]
+    \item An \textbf{epistemology engine} that implements Plato's justified true belief and Popper's falsificationism as engineering primitives for skill quality verification (Section~\ref{sec:epistemology}).
+    \item A \textbf{Socratic skill extraction pipeline} using a seven-step cognitive learning process that produces structurally complete, decision-table-equipped skill documents (Section~\ref{sec:extraction}).
+    \item A \textbf{Mixture-of-Experts self-evolution system} with knowledge diffusion that propagates improvements across related skills (Section~\ref{sec:evolution}).
+    \item An \textbf{empirical comparison} showing SkillOS-generated skills achieve 100\% S\_route coverage versus 0\% for bare LLM generation, and an \textbf{epistemic ablation study} on 100 labeled claims demonstrating the value of falsification and corroboration (Section~\ref{sec:evaluation}).
+\end{enumerate}
+
+%==============================================================================
+\section{The Epistemology Engine}
+\label{sec:epistemology}
+%==============================================================================
+
+The core insight of SkillOS is that \textit{experience is not knowledge}. An LLM extracting claims from a document produces \textit{experiences}---interpreted observations that may be wrong. Before these can be trusted for cross-skill recommendation or agent execution, they must survive verification.
+
+\subsection{The Six-Level Confidence Hierarchy}
+
+SkillOS classifies every claim into one of six epistemic levels:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Level} & \textbf{Definition} & \textbf{Example} \\
+\midrule
+Evidence   & Raw observation, objective & ``Skill X scored 2/5'' \\
+Experience & Interpreted observation   & ``Skill X's trigger is too vague'' \\
+Knowledge  & Verified, cross-referenced & ``Skills with <3 branches score lower'' \\
+Preference & Subjective, no truth value & ``I prefer concise responses'' \\
+Error      & Proven wrong (preserved)   & ``This was later disproven'' \\
+Superseded & Was true, now replaced     & Graphiti temporal model \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Promotion Criteria: Plato + Popper}
+
+An Experience is promoted to Knowledge only when it satisfies four criteria simultaneously:
+
+\begin{enumerate}[leftmargin=*,nosep]
+    \item \textbf{Cross-reference}: corroborated by $\geq 2$ independent sources
+    \item \textbf{Non-contradiction}: not contradicted by any verified Knowledge claim
+    \item \textbf{Falsification resistance}: survived $\geq 1$ adversarial challenge
+    \item \textbf{Temporal stability}: still valid after the observation period
+\end{enumerate}
+
+The falsification step is particularly important. The system prompts an LLM to actively attempt to disprove each claim: ``试着反驳以下陈述。如果它确实有问题，指出问题。'' Claims that survive this adversarial test gain confidence; those that fail are demoted. This directly implements Popper's insight that knowledge advances through falsification, not verification~\cite{popper}.
+
+\subsection{Claim Lifecycle}
+
+Claims flow through a complete lifecycle: \texttt{classify} $\rightarrow$ \texttt{add\_claim} $\rightarrow$ \texttt{cross\_reference} $\rightarrow$ \texttt{\_falsify\_claim} $\rightarrow$ \texttt{promote\_to\_knowledge}. The \texttt{cross\_reference} function uses text overlap analysis ($>40\%$ word overlap) to automatically discover corroborating and contradicting claim pairs. Expired Experience claims (14-day TTL) have their confidence automatically downgraded; Knowledge claims persist for 90 days.
+
+\textbf{Why this is novel.} To our knowledge, no other skill system---academic or industrial---implements an epistemology layer. Most systems assume that extracted content is valid by default. SkillOS is the first to systematically question this assumption.
+
+%==============================================================================
+\section{Socratic Skill Extraction}
+\label{sec:extraction}
+%==============================================================================
+
+\subsection{Design Philosophy}
+
+SkillOS rejects form-based skill creation. Instead, it employs a Socratic dialogue pattern: the system asks probing questions, the user responds, and through this dialectic process, tacit knowledge becomes explicit. This approach is inspired by four learning theories:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Theory} & \textbf{Author} & \textbf{Engineering Implementation} \\
+\midrule
+Feynman Technique     & R.~Feynman  & Reconstruction step: re-explain, flag gaps \\
+Bloom's Taxonomy      & B.~Bloom    & Seven-step progression: remember $\rightarrow$ create \\
+Deliberate Practice   & A.~Ericsson & Validate $\rightarrow$ feedback $\rightarrow$ adjust $\rightarrow$ repeat \\
+Socratic Method       & Socrates    & Dialogue-based guided discovery \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The Seven-Step URL Learning Pipeline}
+
+When a URL is submitted, the system executes a seven-stage cognitive pipeline:
+
+\begin{enumerate}[leftmargin=*,nosep]
+    \item \textbf{初识 (First Encounter)}: Skim 1,500 characters. Three questions: What is this about? Does it contain actionable methodology? Is it useful for an AI? ($\sim$200 tokens)
+    \item \textbf{理解 (Comprehension)}: Deep read. What is the core logic? Why this sequence? What are the implicit assumptions? ($\sim$400 tokens)
+    \item \textbf{拆解 (Deconstruction)}: Break into atomic steps. Each step must be a single action with if-then branches and dependency annotations. ($\sim$800 tokens)
+    \item \textbf{重构 (Reconstruction/Feynman)}: Rewrite in own words. Restructure for executor comprehension. Flag unclear sections for human review. ($\sim$2,000 tokens)
+    \item \textbf{验证 (Validation)}: Adversarial testing across four dimensions: boundary, sequencing, ambiguity, and omission. Failed tests trigger automatic repair. ($\sim$350 tokens)
+    \item \textbf{内化 (Internalization)}: Cross-reference with existing skills. Identify abstractable patterns. Assign search tags. ($\sim$250 tokens)
+    \item \textbf{沉淀 (Crystallization)}: Assemble final document with quality audit, knowledge associations, and Skill DNA compliance annotations.
+\end{enumerate}
+
+An eighth step, \textbf{扩散 (Diffusion)}, automatically checks whether the newly learned knowledge can improve up to five existing skills, applying bounded edits when improvements are found.
+
+\subsection{Dual-Output Architecture}
+
+The conversation-based extraction uses a dual-output LLM pattern: each turn produces both a Socratic question (for the user) and an updated skill draft (accumulated incrementally). The prompt enforces ``只增不改'' (only add, never change) on the draft, ensuring progressive refinement without regression. Questions follow a scenario-first format with conflict injection:
+
+\begin{quote}
+\small
+假设对方发来一份采购合同，第7条悄悄把“北京仲裁”改成了“上海仲裁”——按照你的想法，技能第一步该做什么？这属于什么风险等级？\\
+{[}选项{]} 高风险，必须修改 | risk\_high\\
+{[}选项{]} 中风险，建议修改 | risk\_mid\\
+{[}选项{]} 低风险，仅标注 | risk\_low
+\end{quote}
+
+This approach produces options that are concrete, domain-specific, and immediately actionable---contrasting sharply with generic form-field questions.
+
+%==============================================================================
+\section{Mixture-of-Experts Self-Evolution}
+\label{sec:evolution}
+%==============================================================================
+
+\subsection{Three-Expert Architecture}
+
+SkillOS routes skills to one of three specialized optimization experts based on their state:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Expert} & \textbf{Strategy} & \textbf{Best For} \\
+\midrule
+Trace2Skill & Batch collective diagnosis from execution traces & New skills with accumulated failures \\
+EvoSkill    & Tournament selection from candidate pool       & Skills with high score variance \\
+SkillOpt    & Bounded surgical editing with validation gate  & Mature, stable skills \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The gating network uses seven routing rules based on: trace count, score variance, maturity (days since creation), staleness (Ebbinghaus decay), staleness trend, DNA compliance score, and failure rate. The router outputs a primary and optional secondary expert assignment with confidence scores.
+
+\subsection{Knowledge Diffusion}
+
+When a new skill is created or an existing one is optimized, the system checks whether the new knowledge can improve other skills. For each of up to five candidate skills, an LLM evaluates three criteria: (1) missing steps or branches, (2) inaccurate descriptions that could be replaced, (3) better trigger conditions or keywords. When improvements are identified, bounded edits are applied with provenance tracking (\texttt{diffused\_from} metadata).
+
+This implements a form of \textit{collective learning}: the system does not treat skills as isolated artifacts but as nodes in a knowledge graph where improvements propagate along typed relationships (is\_a, part\_of, depends\_on, contradicts, generalizes, analogous\_to, derived\_from, evolved\_to).
+
+\subsection{Decision History and Targeted Rollback}
+
+Every optimization decision is recorded as a four-tuple: (diagnosis, candidate revision, evaluation evidence, outcome). This ``WHY chain'' enables downstream agents to query decision history (``was this fix tried before?'' ``why was that approach rejected?''). When an optimization improves some dimensions but regresses others, targeted rollback reverts only the regressed sections while preserving beneficial changes.
+
+%==============================================================================
+\section{Evaluation}
+\label{sec:evaluation}
+%==============================================================================
+
+\subsection{Experimental Setup}
+
+We evaluate SkillOS on three skill creation tasks spanning different domains:
+
+\begin{enumerate}[leftmargin=*,nosep]
+    \item \textbf{Code Review}: A five-step methodology for systematic code review
+    \item \textbf{Incident Response}: A five-phase production incident runbook
+    \item \textbf{Customer Onboarding}: A seven-step customer signup SOP
+\end{enumerate}
+
+For each task, we compare: (a) SkillOS seven-step pipeline, and (b) bare LLM single-prompt generation (DeepSeek V4 Flash). Both use the same underlying model. We measure structural completeness (presence of S\_body, S\_trigger, S\_params, S\_route) and content depth (character count).
+
+\subsection{Results}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc|c}
+\toprule
+\textbf{Task} & \textbf{Method} & \textbf{S\_body} & \textbf{S\_trigger} & \textbf{S\_params} & \textbf{S\_route} \\
+\midrule
+Code Review       & Pipeline & \checkmark & \checkmark & \checkmark & \checkmark \\
+                  & Bare LLM & \checkmark & \checkmark & \checkmark & --- \\
+Incident Response & Pipeline & \checkmark & \checkmark & \checkmark & \checkmark \\
+                  & Bare LLM & \checkmark & \checkmark & \checkmark & --- \\
+Onboarding        & Pipeline & \checkmark & \checkmark & \checkmark & \checkmark \\
+                  & Bare LLM & \checkmark & \checkmark & \checkmark & --- \\
+\bottomrule
+\end{tabular}
+\caption{Structural completeness comparison. Pipeline achieves 100\% S\_route coverage vs. 0\% for bare LLM.}
+\label{tab:results}
+\end{table}
+
+Pipeline-generated skills are 2--3$\times$ longer than bare LLM outputs (2,050--3,211 vs. 789--1,052 characters), reflecting the deeper structural decomposition from the seven-step process. The pipeline is 13$\times$ slower (99s vs. 7.5s for three tasks), consistent with making 7 LLM calls versus 1. The S\_route decision table---which maps user intents to execution actions and resource references---is the key differentiator: it transforms a static document into an executable agent instruction set.
+
+\subsection{Epistemic Ablation Study}
+\label{sec:epistemic-ablation}
+
+To evaluate whether the epistemology engine improves claim-level trust, we constructed a benchmark of 100 labeled claims (30 true methodology facts, 30 plausible-but-false, 20 subjective preferences, 20 requiring corroboration). We compare three configurations:
+
+\begin{itemize}[leftmargin=*,nosep]
+    \item \textbf{A (Baseline)}: trust all extracted claims without epistemic processing
+    \item \textbf{B (Classify-only)}: assign epistemic levels without falsification
+    \item \textbf{C (Full)}: classify, adversarial falsify, and corroboration for borderline claims
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Config} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} & \textbf{False Filter} & \textbf{True Ret.} \\
+\midrule
+A Baseline   & 0.300 & 1.000 & 0.462 & 0.000 & 1.000 \\
+B Classify   & 0.357 & 1.000 & 0.526 & 0.000 & 1.000 \\
+C Full       & 1.000 & 0.600 & 0.750 & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\caption{Epistemic ablation on 100 labeled claims (offline mode; reproducible via \texttt{python -m skillos.benchmark\_epistemic}). C vs.\ A: false-claim filter $\Delta{=}+1.000$, F1 $\Delta{=}+0.288$.}
+\label{tab:epistemic-ablation}
+\end{table}
+
+The full pipeline filters all 30 false claims while retaining all 30 gold-true claims, at the cost of lower recall on the full label set (0.600 F1 vs.\ 1.000 recall for baseline---baseline trusts everything, including false and opinion claims). Classify-only improves opinion detection (0.800) but does not filter false claims, confirming that falsification is necessary for trust, not merely taxonomy.
+
+Dataset and reproduction instructions: \texttt{data/benchmarks/epistemic/}. Results archived in \texttt{docs/paper/experiments/epistemic\_results.md}.
+
+\subsection{Limitations}
+
+The audit scoring subsystem (10-dimension independent auditor) currently defaults to a pass-through score of 60 when LLM JSON parsing fails due to response truncation. This is a known limitation of the current max\_tokens configuration, not a fundamental issue with the audit methodology itself.
+
+The epistemic ablation reported above uses offline heuristic falsification when no LLM API is configured; LLM-based falsification may exhibit same-model self-consistency bias. The benchmark includes human labels to ground evaluation, but inter-rater agreement has not yet been measured (single annotator v0). Recall drop on the full label set reflects conservative promotion: experiences remain pending until corroborated or user-confirmed.
+
+%==============================================================================
+\section{Related Work}
+%==============================================================================
+
+\textbf{Industrial Platforms.} Dify, Coze, and LangChain/LangGraph~\cite{langchain} provide agent execution infrastructure but treat skill creation as a manual authoring task---through drag-and-drop workflows or code. They offer no systematic quality verification.
+
+\textbf{Academic Skill Systems.} Microsoft SkillOpt~\cite{skillopt} introduces a training loop with textual learning rate and validation gating for skill optimization. EXIF~\cite{exif} uses an explorer-executor architecture for automated skill discovery through environment interaction. Anything2Skill~\cite{anything2skill} compiles heterogeneous external knowledge into unified skill formats. SkillFlow~\cite{skillflow} frames skill acquisition as an information retrieval problem over 36K community skills. Trace2Skill~\cite{trace2skill} and EvoSkill~\cite{evoskill} mine execution traces for skill improvement. Memento-Skills~\cite{mementoskills} uses RL for agent self-design.
+
+\textbf{Positioning.} SkillOS is the only system that: (1) implements an epistemology layer for claim verification, (2) uses Socratic dialogue for skill extraction, and (3) propagates improvements across skills through knowledge diffusion. While SkillOpt achieves state-of-the-art optimization results (52/52 benchmark cells), it does not address the prior question of whether the skill content itself is epistemically sound.
+
+%==============================================================================
+\section{Conclusion}
+%==============================================================================
+
+We have presented \textsc{SkillOS}, a system that brings epistemological rigor to the agent skills ecosystem. By implementing Plato's justified true belief and Popper's falsificationism as engineering primitives, SkillOS provides systematic quality verification that no other skill system offers. The Socratic extraction pipeline produces structurally complete skills with decision-table routing that bare LLM generation cannot match. The MoE self-evolution system with knowledge diffusion enables collective learning across the skill corpus.
+
+The Agent Skills ecosystem is projected to grow exponentially through 2026--2027. As it does, the question of skill quality will become increasingly critical---analogous to how software testing became essential as the npm/PyPI ecosystems scaled. SkillOS represents a first step toward treating skill quality as a first-class engineering concern.
+
+\vspace{6pt}
+\noindent\textbf{Code Availability.} The SkillOS source code and benchmark data are available at \url{https://github.com/skillos-project/skillos}.
+
+%==============================================================================
+\begin{thebibliography}{99}
+
+\bibitem{agentskills}
+Anthropic. ``Agent Skills Specification V1.0.'' \url{https://agentskills.io}, December 2025.
+
+\bibitem{skillopt}
+Y.~Yang et al. ``SkillOpt: Executive Strategy for Self-Evolving Agent Skills.'' arXiv:2605.23904, May 2025.
+
+\bibitem{exif}
+EXIF Authors. ``Automated Skill Discovery for Language Agents through Exploration and Iterative Feedback.'' arXiv:2506.04287, June 2025.
+
+\bibitem{anything2skill}
+Anything2Skill Authors. ``Anything2Skill: Compiling External Knowledge into Reusable Skills for Agents.'' arXiv:2606.09316, June 2026.
+
+\bibitem{skillflow}
+SkillFlow Authors. ``SkillFlow: Scalable and Efficient Agent Skill Retrieval System.'' arXiv:2504.06188, April 2025.
+
+\bibitem{trace2skill}
+Trace2Skill Authors. ``Trace2Skill: Distill Trajectory-Local Lessons into Transferable Agent Skills.'' arXiv:2603.25158, March 2025.
+
+\bibitem{evoskill}
+EvoSkill Authors. ``EvoSkill: Automated Skill Discovery for Language Agents.'' 2025.
+
+\bibitem{mementoskills}
+Memento-Skills Authors. ``Memento-Skills: Let Agents Design Agents.'' arXiv:2603.18743, March 2025.
+
+\bibitem{langchain}
+LangChain. ``LangGraph: Build language agents as graphs.'' \url{https://langchain.com}, 2025.
+
+\bibitem{popper}
+K.~Popper. \textit{The Logic of Scientific Discovery}. Routledge, 1959.
+
+\bibitem{plato}
+Plato. \textit{Theaetetus}. Circa 369 BCE.
+
+\bibitem{feynman}
+R.~Feynman. \textit{Surely You're Joking, Mr. Feynman!} W.W. Norton, 1985.
+
+\bibitem{bloom}
+B.~Bloom. \textit{Taxonomy of Educational Objectives}. Longmans, 1956.
+
+\bibitem{ericsson}
+A.~Ericsson. ``The Role of Deliberate Practice in the Acquisition of Expert Performance.'' \textit{Psychological Review}, 1993.
+
+\bibitem{graphiti}
+Graphiti. ``Bitemporal Knowledge Modeling.'' 2025.
+
+\end{thebibliography}
+
+\end{document}

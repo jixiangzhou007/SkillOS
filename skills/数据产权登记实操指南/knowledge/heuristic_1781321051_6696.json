@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321051_6696",
+  "content": "禁止登记情形清单: 明确列出不得作为登记对象的情形：涉及国家秘密、危害国家安全和社会公共利益、侵犯他人合法权益、法律法规禁止流通的数据。避免因登记范围模糊导致法律风险或公共利益受损。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1781321051.1586204,
+  "updated_at": 1781321051.1589758
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fact_1781321257_2181",
+  "content": "凭证按全国统一标准核发，登记事项同步存证于国家平台，平台信息为最终依据。",
+  "type": "fact",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "登记凭证效力的制度基础"
+  ],
+  "created_at": 1781321257.1903706,
+  "updated_at": 1781321257.1907043
+}

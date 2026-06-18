@@ -1,0 +1,52 @@
+{
+  "session_id": "src_e0e9c13142d1",
+  "source_url": "session:d945b1257481",
+  "source_title": "门诊分诊",
+  "created_at": 1781792756.281094,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_553386d8",
+      "content": "技能「门诊分诊」: 将挂号后的门诊病人，通过标准化流程快速完成生命体征采集、病情评估与分级，并准确分配至对应科室，确保急危重症患者优先处理。",
+      "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 1.05,
+      "source": {
+        "url": "session:d945b1257481",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "门诊分诊",
+          "score_delta": 1.0,
+          "timestamp": 1781792756.2808468
+        }
+      ],
+      "access_count": 2,
+      "created_at": 1781792756.2808468,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781792756.2808468
+    }
+  ]
+}

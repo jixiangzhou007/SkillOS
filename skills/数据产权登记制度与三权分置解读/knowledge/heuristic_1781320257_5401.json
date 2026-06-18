@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781320257_5401",
+  "content": "三权分置: 将数据产权拆分为持有权、使用权、经营权三个独立维度，允许同一数据的不同权利由不同主体同时享有，以清晰界定权利边界并适应数据多方共创的特性。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/VaBndfcPMPTfM8p_BOpxOA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781320257.492814,
+  "updated_at": 1781320257.4931467
+}

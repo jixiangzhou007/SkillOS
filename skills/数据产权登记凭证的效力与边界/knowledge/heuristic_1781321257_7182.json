@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321257_7182",
+  "content": "周期性复核刷新机制: 登记凭证设置有效期（通常不超过五年），并配套续期、变更、注销机制，使登记信息能被周期性复核刷新，避免信息过时或僵化。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321257.0766723,
+  "updated_at": 1781321257.0769932
+}

@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321257_6618",
+  "content": "唯一真相源原则: 所有登记事项与结果同步存证于国家平台，凭证记载事项与平台信息不一致时以平台为准，保证信息的一致性和权威性。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321257.0660152,
+  "updated_at": 1781321257.0663548
+}

@@ -1,0 +1,52 @@
+{
+  "session_id": "src_d8bd2de4b819",
+  "source_url": "session:f941375f1c2b",
+  "source_title": "培训课程设计",
+  "created_at": 1781584529.5118878,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_54ceac89",
+      "content": "技能「培训课程设计」: 如何从零开始系统化设计一门培训课程，确保课程内容贴合学员需求、目标明确、效果可评估。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.78,
+      "source": {
+        "url": "session:f941375f1c2b",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "培训课程设计",
+          "score_delta": 1.0,
+          "timestamp": 1781584529.5111635
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781584529.5111635,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781584529.5111635
+    }
+  ]
+}

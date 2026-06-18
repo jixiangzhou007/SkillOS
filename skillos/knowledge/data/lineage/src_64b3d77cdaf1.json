@@ -1,0 +1,52 @@
+{
+  "session_id": "src_64b3d77cdaf1",
+  "source_url": "session:user-sim-refund-1781624495",
+  "source_title": "电商客服退款处理",
+  "created_at": 1781624670.6994898,
+  "summary": {
+    "total_items": 1,
+    "by_category": {
+      "heuristic": 1
+    },
+    "by_epistemic_level": {
+      "knowledge": 1
+    },
+    "confidence_distribution": {
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_06ad8e76",
+      "content": "技能「电商客服退款处理」: 当客户发起退款请求时，如何自动完成身份核实、订单状态判断、退款方案匹配与执行，并在超限或异常时转人工处理。",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.65,
+      "source": {
+        "url": "session:user-sim-refund-1781624495",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "电商客服退款处理",
+          "score_delta": 1.0,
+          "timestamp": 1781624670.6992774
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781624670.6992774,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781624670.6992774
+    }
+  ]
+}

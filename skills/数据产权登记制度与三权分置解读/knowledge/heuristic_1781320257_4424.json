@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781320257_4424",
+  "content": "登记凭证信任机制: 通过统一的登记体系对数据来源和权属进行审查，出具权威权利证明，以此构建市场信任、降低交易中的权属核实成本。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/VaBndfcPMPTfM8p_BOpxOA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781320257.5247858,
+  "updated_at": 1781320257.525128
+}

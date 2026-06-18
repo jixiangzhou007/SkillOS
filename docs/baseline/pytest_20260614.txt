@@ -1,0 +1,246 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.0.3, pluggy-1.6.0
+rootdir: D:\SkillOS
+configfile: pyproject.toml
+plugins: anyio-4.13.0, hydra-core-1.3.2, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 123 items
+
+tests\test_api_integration.py .Fs........F...                            [ 12%]
+tests\test_config.py ...                                                 [ 14%]
+tests\test_e2e.py .F........                                             [ 22%]
+tests\test_evolution.py ..............                                   [ 34%]
+tests\test_integration.py ................................               [ 60%]
+tests\test_knowledge.py ...............                                  [ 72%]
+tests\test_marketplace.py ..s....                                        [ 78%]
+tests\test_mcp_protocol.py ........                                      [ 84%]
+tests\test_skill_store.py ..                                             [ 86%]
+tests\test_skills.py ...........                                         [ 95%]
+tests\test_utils.py ......                                               [100%]
+
+================================== FAILURES ===================================
+_______________________ TestSkillsAPI.test_list_skills ________________________
+tests\test_api_integration.py:43: in test_list_skills
+    r = _get("/api/skills/")
+        ^^^^^^^^^^^^^^^^^^^^
+tests\test_api_integration.py:23: in _get
+    with urllib.request.urlopen(f"{BASE}{path}", timeout=10) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:187: in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:493: in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:602: in http_response
+    response = self.parent.error(
+D:\Python\Python314\Lib\urllib\request.py:531: in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:464: in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:611: in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+E   urllib.error.HTTPError: HTTP Error 500: Internal Server Error
+---------------------------- Captured stdout call -----------------------------
+INFO:     127.0.0.1:11030 - "GET /api/skills/ HTTP/1.1" 500 Internal Server Error
+-------------------------- Captured stderr teardown ---------------------------
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "D:\Python\Python314\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 421, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\Python\Python314\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python\Python314\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\SkillOS\skillos\api\skills.py", line 38, in list_skills
+    return _list_skills_impl()
+           ^^^^^^^^^^^^^^^^^
+NameError: name '_list_skills_impl' is not defined
+______________________ TestEvolutionAPI.test_consolidate ______________________
+tests\test_api_integration.py:101: in test_consolidate
+    r = _post("/api/evolution/consolidate", {})
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_api_integration.py:31: in _post
+    with urllib.request.urlopen(req, timeout=10) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:187: in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:487: in open
+    response = self._open(req, data)
+               ^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:504: in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+D:\Python\Python314\Lib\urllib\request.py:464: in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:1350: in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:1325: in do_open
+    r = h.getresponse()
+        ^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\http\client.py:1430: in getresponse
+    response.begin()
+D:\Python\Python314\Lib\http\client.py:331: in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\http\client.py:292: in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\socket.py:725: in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+E   TimeoutError: timed out
+_____________________ TestE2EPipeline.test_02_list_skills _____________________
+tests\test_e2e.py:45: in test_02_list_skills
+    r = _get("/api/skills/")
+        ^^^^^^^^^^^^^^^^^^^^
+tests\test_e2e.py:25: in _get
+    with urllib.request.urlopen(f"{BASE}{path}", timeout=10) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:187: in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:493: in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:602: in http_response
+    response = self.parent.error(
+D:\Python\Python314\Lib\urllib\request.py:531: in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:464: in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+D:\Python\Python314\Lib\urllib\request.py:611: in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+E   urllib.error.HTTPError: HTTP Error 500: Internal Server Error
+---------------------------- Captured stdout call -----------------------------
+INFO:     127.0.0.1:11053 - "GET /api/skills/ HTTP/1.1" 500 Internal Server Error
+-------------------------- Captured stderr teardown ---------------------------
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "D:\Python\Python314\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 421, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\Python\Python314\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python\Python314\Lib\site-packages\fastapi\applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\Python\Python314\Lib\site-packages\fastapi\routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\SkillOS\skillos\api\skills.py", line 38, in list_skills
+    return _list_skills_impl()
+           ^^^^^^^^^^^^^^^^^
+NameError: name '_list_skills_impl' is not defined
+============================== warnings summary ===============================
+tests/test_api_integration.py::TestHealth::test_health
+  D:\Python\Python314\Lib\site-packages\websockets\legacy\__init__.py:6: DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+
+tests/test_api_integration.py::TestHealth::test_health
+  D:\Python\Python314\Lib\site-packages\uvicorn\protocols\websockets\websockets_impl.py:17: DeprecationWarning: websockets.server.WebSocketServerProtocol is deprecated
+    from websockets.server import WebSocketServerProtocol
+
+tests/test_integration.py::TestFileIngest::test_is_supported_formats
+  D:\Python\Python314\Lib\site-packages\speech_recognition\__init__.py:7: DeprecationWarning: aifc was removed in Python 3.13. Please be aware that you are currently NOT using standard 'aifc', but instead a separately installed 'standard-aifc'.
+    import aifc
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_api_integration.py::TestSkillsAPI::test_list_skills - urlli...
+FAILED tests/test_api_integration.py::TestEvolutionAPI::test_consolidate - Ti...
+FAILED tests/test_e2e.py::TestE2EPipeline::test_02_list_skills - urllib.error...
+====== 3 failed, 118 passed, 2 skipped, 3 warnings in 103.38s (0:01:43) =======

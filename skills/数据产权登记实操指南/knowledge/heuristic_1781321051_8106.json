@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321051_8106",
+  "content": "公共数据与运营数据分离登记: 党政机关履职产生的原始数据不进行产权登记；但经授权运营后形成的公共数据产品和服务，在完成公共资源登记后，可依法申请数据产权登记。实现公共属性与市场属性的隔离与衔接。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/bG-bsJwHgMaQ58fGO2VzvA",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321051.1716712,
+  "updated_at": 1781321051.1720383
+}

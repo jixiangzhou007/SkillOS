@@ -1,0 +1,196 @@
+{
+  "session_id": "src_91e2c3db1f8c",
+  "source_url": "https://api-cycle.test/doc",
+  "source_title": "https://api-cycle.test/doc",
+  "created_at": 1781579890.1756413,
+  "summary": {
+    "total_items": 5,
+    "by_category": {
+      "concept": 5
+    },
+    "by_epistemic_level": {
+      "experience": 5
+    },
+    "confidence_distribution": {
+      "high": 0,
+      "medium": 0,
+      "low": 5
+    }
+  },
+  "items": [
+    {
+      "item_id": "ki_1781579889_4840",
+      "content": "TermX is defined as 'definition here'.",
+      "category": "concept",
+      "confidence": 0.31,
+      "epistemic_level": "experience",
+      "is_valid": true,
+      "strength": 0.18,
+      "source": {
+        "url": "https://api-cycle.test/doc",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781796278_8643",
+      "related_items": [
+        {
+          "item_id": "ki_1781581247_1617",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_1781594685_7733",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_1781796121_9744",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_1781796278_6819",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 4,
+      "affected_skills": [],
+      "access_count": 0,
+      "created_at": 1781579889.9732876,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781579889.9732876
+    },
+    {
+      "item_id": "ki_1781581247_1617",
+      "content": "TermX is defined as 'definition here'.",
+      "category": "concept",
+      "confidence": 0.26,
+      "epistemic_level": "experience",
+      "is_valid": true,
+      "strength": 0.14,
+      "source": {
+        "url": "https://api-cycle.test/doc",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781796278_8643",
+      "related_items": [
+        {
+          "item_id": "ki_1781594685_7733",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_1781796121_9744",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_1781796278_6819",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 3,
+      "affected_skills": [],
+      "access_count": 0,
+      "created_at": 1781581247.246024,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781581247.246024
+    },
+    {
+      "item_id": "ki_1781594685_7733",
+      "content": "TermX is defined as 'definition here'",
+      "category": "concept",
+      "confidence": 0.21,
+      "epistemic_level": "experience",
+      "is_valid": true,
+      "strength": 0.1,
+      "source": {
+        "url": "https://api-cycle.test/doc",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781796278_6819",
+      "related_items": [
+        {
+          "item_id": "ki_1781796121_9744",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_1781796278_6819",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 2,
+      "affected_skills": [],
+      "access_count": 0,
+      "created_at": 1781594685.0827463,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781594685.0827463
+    },
+    {
+      "item_id": "ki_1781796121_9744",
+      "content": "TermX is defined as 'definition here'",
+      "category": "concept",
+      "confidence": 0.26,
+      "epistemic_level": "experience",
+      "is_valid": true,
+      "strength": 0.36,
+      "source": {
+        "url": "https://api-cycle.test/doc",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781796278_6819",
+      "related_items": [
+        {
+          "item_id": "ki_1781796278_6819",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781796121.7081218,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781796121.7081218
+    },
+    {
+      "item_id": "ki_1781796278_6819",
+      "content": "TermX is defined as 'definition here'",
+      "category": "concept",
+      "confidence": 0.21,
+      "epistemic_level": "experience",
+      "is_valid": true,
+      "strength": 0.31,
+      "source": {
+        "url": "https://api-cycle.test/doc",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781796278_6819",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781796278.4592776,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781796278.4592776
+    }
+  ]
+}

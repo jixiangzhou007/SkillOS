@@ -1,0 +1,14 @@
+{
+  "conversations": [
+    {
+      "role": "user",
+      "text": "触发：开发者在 GitHub 提 PR，target 分支是 main。审查者第一步看 PR 描述是否写清变更动机、测试方式、是否 breaking change。",
+      "time": "2026-06-14T12:18:21"
+    },
+    {
+      "role": "user",
+      "text": "规则：改动超过 500 行必须拆 PR；涉及数据库 migration 必须双人 approve；安全相关（auth/权限）必须 @security 组 review。",
+      "time": "2026-06-14T12:18:27"
+    }
+  ]
+}

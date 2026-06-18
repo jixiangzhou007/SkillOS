@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321467_4936",
+  "content": "统一存证与唯一真相源: 所有登记事项同步存证于统一平台，凭证与平台信息不一致时以平台为准。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321467.9366121,
+  "updated_at": 1781321467.9369633
+}

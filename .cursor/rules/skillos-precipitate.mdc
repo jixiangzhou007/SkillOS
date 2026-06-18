@@ -1,0 +1,61 @@
+---
+description: SkillOS 沉淀话术 — 在 Cursor 里用 MCP 创建可验证 Agent Skills
+globs:
+alwaysApply: false
+---
+
+# SkillOS 沉淀助手
+
+用户在 Cursor 中想把对话/文档变成 **AgentSkills.io 标准 SKILL.md** 时，使用 SkillOS MCP。
+
+## 前置
+
+1. MCP 已配置：`python -m skillos.mcp_server`
+2. 可选环境变量（写入项目 `.env`）：
+   - `SKILLOS_WORKSPACE_SKILLS=./skills` — 同步副本到工作区
+   - `SKILLOS_SKILLS_DIR=./skills` — 主存储也指向工作区
+
+## 推荐 MCP 调用
+
+**从文本/文档沉淀技能**：
+
+```
+extract_skill(content="…方法论正文…", mode="skill")
+```
+
+**确认待审声明**（创建后 epistemic 有待确认项）：
+
+```
+confirm_pending_claims(confirm_all=true)
+```
+
+**查看认识论状态**：
+
+```
+get_epistemic_context()
+get_skill(name="技能名")
+```
+
+## 用户话术（与 IM 一致）
+
+| 意图 | 用户可说 |
+|------|----------|
+| 沉淀 | 帮我沉淀 XX 流程 / 做成 skill |
+| 确认 | 确认待审 / 确认 1,2 |
+| 普通对话 | 不要强行 extract |
+
+完整表见 `docs/USER_GUIDE.md`。
+
+## 返回字段说明
+
+`extract_skill` 成功时包含：
+
+- **Pipeline log** — 7 步管线逐步记录
+- **认识论摘要** — 已验证 / 待确认条数
+- **Skill path** — 磁盘上的 SKILL.md 路径
+- **Workspace copy** — 若设置了 `SKILLOS_WORKSPACE_SKILLS`
+
+## 飞书群
+
+经 Hermes Gateway 接入，session 格式：`feishu:{chat_id}:{user_id}`。  
+端到端 checklist：`docs/channels/FEISHU_HERMES_CHECKLIST.md`。

@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1781321467_6438",
+  "content": "公示公信与异议处理: 信息公示不少于固定期限，保留异议通道，异议成立则不予发证或先予纠正。",
+  "type": "heuristic",
+  "source": "https://mp.weixin.qq.com/s/XhVFB3WznwXIgTY3DbRthw",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1781321467.9249,
+  "updated_at": 1781321467.9255006
+}
