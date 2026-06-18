@@ -22,10 +22,10 @@
       "item_id": "ki_a41aefbb",
       "content": "技能「GitHub Pull」: 确保 Pull Request 的代码变更安全、正确、风格良好，且变更规模可控，最终合并前所有阻塞性问题已解决。",
       "category": "heuristic",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.32,
+      "strength": 1.47,
       "source": {
         "url": "p1-pr-heritage",
         "paragraph": 0
@@ -41,7 +41,7 @@
           "timestamp": 1781740766.5710766
         }
       ],
-      "access_count": 4,
+      "access_count": 5,
       "created_at": 1781740766.5710766,
       "valid_at": 0.0,
       "invalid_at": 0.0,

@@ -22,10 +22,10 @@
       "item_id": "ki_32d356ed",
       "content": "技能「安全合规审计助手」: 这个流程解决如何系统化执行等保/内部基线安全审计，从范围确定到整改闭环的全过程管理。",
       "category": "heuristic",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.32,
+      "strength": 1.47,
       "source": {
         "url": "session:generalize_1781744395-security",
         "paragraph": 0
@@ -41,7 +41,7 @@
           "timestamp": 1781744888.3181732
         }
       ],
-      "access_count": 4,
+      "access_count": 5,
       "created_at": 1781744888.3181732,
       "valid_at": 0.0,
       "invalid_at": 0.0,

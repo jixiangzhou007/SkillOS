@@ -6,6 +6,29 @@
 
 ---
 
+## [2026-06-19] Phase 1.5 — api/skills.py 拆分 — Claude Code
+
+**背景 / 触发**：api/skills.py 2,098 行，萃取管线（dispatch/finalize/status/resume/ingest）~700 行可独立拆分。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `skillos/api/_skills_shared.py` | 新建：4 个共享 helper + 2 个 Pydantic 模型（DispatchRequest, CreateSkillRequest），避免循环 import |
+| `skillos/api/skills_extract.py` | 新建：萃取管线 6 端点 + 10 个专属 helper（~1,200 行），独立 APIRouter |
+| `skillos/api/skills.py` | 2,098 → 923 行（**-56%**）：删除已移动代码，include_router + re-export 保持向后兼容 |
+
+**验证**：
+- `pytest tests/ --collect-only` → 505 collected, 0 errors
+- `pytest tests/test_phase_a.py tests/test_production_extraction.py` → 修复 re-export 后全部通过
+- 全量测试：470 passed, 15 failed（全为已有问题，无新增回归）
+- Router 验证：skills.py 37 routes + skills_extract.py 6 routes
+
+**开放问题 / 下一步**：
+- agent.py 仍可进一步拆分（_diffuse_knowledge 89L, _generate 234L）
+- 前端 vanilla JS 渐进框架化（路线图 Week 6+）
+
+---
+
 ## [2026-06-19] Phase 1 — agent.py 拆分 (1/2) — Claude Code
 
 **背景 / 触发**：agent.py 的 `learn_from_url()` 方法 303 行，是最大的单体方法。按 Week 3-4 路线图拆分大文件。

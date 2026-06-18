@@ -1,7 +1,7 @@
 ---
 name: integration-test-save-load
 created_at: '2026-06-14T01:45:42Z'
-updated_at: '2026-06-18T15:54:30Z'
+updated_at: '2026-06-18T16:34:45Z'
 philosophical_dna: pragmatic
 philosophical_dna_label: 实用主义方法
 methodology: design-thinking
@@ -11,7 +11,7 @@ dna_lineage:
   - id: pragmatic
     weight: 1.0
   domain: []
-  detected_at: '2026-06-18T15:54:30Z'
+  detected_at: '2026-06-18T16:34:45Z'
 epistemic:
   source: integration-test-save-load
   source_type: llm_generated
@@ -22,8 +22,8 @@ epistemic:
   errors: 0
   claim_ids: []
   pending_ids: []
-  processed_at: 1781798070.1811304
-version: 34
+  processed_at: 1781800485.426212
+version: 36
 ---
 
 # Integration Test

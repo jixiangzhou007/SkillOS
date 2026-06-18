@@ -22,10 +22,10 @@
       "item_id": "ki_09d84563",
       "content": "技能「合同法务审核助手」: 标准化、高效地完成合同审核流程，确保识别并处理关键法律风险，避免公司利益受损。",
       "category": "heuristic",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.32,
+      "strength": 1.47,
       "source": {
         "url": "session:generalize_1781744395-law",
         "paragraph": 0
@@ -41,7 +41,7 @@
           "timestamp": 1781744692.2551847
         }
       ],
-      "access_count": 4,
+      "access_count": 5,
       "created_at": 1781744692.2551847,
       "valid_at": 0.0,
       "invalid_at": 0.0,

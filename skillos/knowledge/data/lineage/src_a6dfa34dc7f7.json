@@ -4,15 +4,15 @@
   "source_title": "合同审核",
   "created_at": 1781594515.3930228,
   "summary": {
-    "total_items": 5,
+    "total_items": 6,
     "by_category": {
-      "heuristic": 5
+      "heuristic": 6
     },
     "by_epistemic_level": {
-      "knowledge": 5
+      "knowledge": 6
     },
     "confidence_distribution": {
-      "high": 5,
+      "high": 6,
       "medium": 0,
       "low": 0
     }
@@ -42,9 +42,14 @@
           "item_id": "ki_ba68c0b5",
           "relation_type": "same_source",
           "weight": 0.9
+        },
+        {
+          "item_id": "ki_c39609d6",
+          "relation_type": "same_source",
+          "weight": 0.9
         }
       ],
-      "related_count": 2,
+      "related_count": 3,
       "affected_skills": [
         {
           "skill_name": "合同审核",
@@ -63,10 +68,10 @@
       "item_id": "ki_dcb66156",
       "content": "技能「合同审核」: 快速、标准化地审核销售合同，识别关键风险点并给出修改建议。",
       "category": "heuristic",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.1,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -93,10 +98,10 @@
       "item_id": "ki_2c65a1e7",
       "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，输出审核意见，降低签约风险。",
       "category": "heuristic",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.1,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -108,9 +113,14 @@
           "item_id": "ki_ba68c0b5",
           "relation_type": "same_source",
           "weight": 0.86
+        },
+        {
+          "item_id": "ki_c39609d6",
+          "relation_type": "same_source",
+          "weight": 0.86
         }
       ],
-      "related_count": 1,
+      "related_count": 2,
       "affected_skills": [
         {
           "skill_name": "合同审核",
@@ -129,18 +139,24 @@
       "item_id": "ki_ba68c0b5",
       "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，并给出修改建议。",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 1.0,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
       },
       "pipeline_steps": 0,
       "graph_node": "",
-      "related_items": [],
-      "related_count": 0,
+      "related_items": [
+        {
+          "item_id": "ki_c39609d6",
+          "relation_type": "same_source",
+          "weight": 0.9
+        }
+      ],
+      "related_count": 1,
       "affected_skills": [
         {
           "skill_name": "合同审核",
@@ -159,10 +175,10 @@
       "item_id": "ki_df1de282",
       "content": "技能「合同审核」: 确保销售合同中的关键商业和法律条款符合我方利益，识别并标记风险条款。",
       "category": "heuristic",
-      "confidence": 0.8,
+      "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 0.95,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -184,6 +200,36 @@
       "invalid_at": 0.0,
       "superseded_by": "",
       "last_accessed": 1781797935.5699835
+    },
+    {
+      "item_id": "ki_c39609d6",
+      "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，确保我方权益。",
+      "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.9,
+      "source": {
+        "url": "session:test-meta-no-restart",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [
+        {
+          "skill_name": "合同审核",
+          "score_delta": 1.0,
+          "timestamp": 1781799917.596097
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781799917.596097,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781799917.596097
     }
   ]
 }
