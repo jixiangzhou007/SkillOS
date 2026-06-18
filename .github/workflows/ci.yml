@@ -25,7 +25,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[all]"
-          pip install pytest
+          pip install pytest ruff
+
+      - name: Lint (ruff)
+        run: python -m ruff check skillos/ --select E,F --exit-zero
 
       - name: Phase A — core loop (system skills, zip, dispatch, quality)
         run: python -m pytest tests/test_phase_a.py tests/test_production_extraction.py tests/test_moe_evaluation.py tests/test_skill_routing.py tests/test_domain_templates.py -v --tb=short
@@ -52,10 +55,14 @@ jobs:
         run: |
           python -c "
           from skillos.skills.agent import SkillExtractionAgent
+          from skillos.skills.agent_learning import run_learning_pipeline, diffuse_knowledge, extract_claims_from_skill
           from skillos.knowledge.epistemology import get_store
           from skillos.knowledge.graph import KnowledgeGraph
           from skillos.evolution.engine import run_evolution_check
           from skillos.skills.dispatcher import dispatch
+          from skillos.api.skills import router
+          from skillos.api.skills_extract import router as extract_router
+          from skillos.api._skills_shared import DispatchRequest, CreateSkillRequest
           from skillos.config import get_config
           print('All critical imports OK')
           "

@@ -263,7 +263,7 @@ def mine_patterns(
     try:
         raw = call(prompt, model=llm_args[2] if len(llm_args) > 2 else "",
                    max_tokens=2000, temperature=0.3)
-    except Exception:
+    except Exception as e:
         _log.warning("Pattern mining failed: %s", e)
         return [], SkillDNA()
 
@@ -303,7 +303,7 @@ def mine_patterns(
         dna.dna = data.get("dna", [])
         dna.templates = data.get("templates", [])
 
-    except Exception:
+    except Exception as e:
         _log.warning("Failed to parse pattern mining result: %s", e)
 
     # Save DNA

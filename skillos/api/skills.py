@@ -581,6 +581,8 @@ async def copy_skill_to_org_api(
     return {"ok": True, "skill_saved": saved, "org_id": oid, "approval_status": "draft"}
 
 
+@router.post("/{name}/run")
+async def run_skill(name: str, task: dict):
     """Execute a skill with a given task and record the trace for evolution."""
     from skillos.evolution.evolver import judge_execution, record_trace
     from skillos.skills.agent_factory import create_agent, run_agent

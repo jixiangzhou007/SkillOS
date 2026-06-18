@@ -397,5 +397,3 @@ def compare_against_templates(skill_name: str, input_doc: str, llm_args: tuple) 
         except Exception as e:
             results.append({"error": str(e)})
     return {"has_templates": True, "compared": len(results), "results": results}
-
-    return result

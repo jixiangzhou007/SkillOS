@@ -395,7 +395,7 @@ def dispatch(
                 missing_tools = ", ".join(readiness["missing"])
                 skill_result = (
                     f"⚠️ 技能「{skill['name']}」无法执行：缺少工具 {missing_tools}。\n"
-                    f"可用工具: {', '.join(t.name for t in _tr.get_registry().list_tools())}\n"
+                    f"可用工具: {', '.join(t.name for t in get_registry().list_tools())}\n"
                     f"请先注册并验证所需工具。"
                 )
                 # Compose final reply with the error
@@ -415,7 +415,7 @@ def dispatch(
                     skill_used=skill["name"], tool_called=True,
                 )
         except Exception as e:
-            _log.warning("Non-critical in dispatcher.py: %s", e)
+            logger.warning("Non-critical in dispatcher.py: %s", e)
             pass  # Tool registry unavailable — skip validation
 
         try:
@@ -536,7 +536,7 @@ def _handle_web_tool(
     )
 
     final_response = client.chat.completions.create(
-        model=selected_model,
+        model=model,
         messages=[{"role": "system", "content": compose_system}] + messages[1:],
         temperature=0.7,
         **get_config().to_llm_args()[3],
