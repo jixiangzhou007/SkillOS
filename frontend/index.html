@@ -350,7 +350,8 @@
       <button class="bar-action" onclick="document.getElementById('file-input').click()" title="上传文件">📎</button>
       <button class="bar-action" id="finalize-btn" onclick="finalizeSkill()" title="对话聊够了，生成技能文档" style="background:var(--accent);color:var(--on-primary);font-weight:700;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;display:none">⚡ 生成技能</button>
       <button class="bar-action" id="tts-btn" onclick="toggleTTS()" title="语音播报">🔊</button>
-      <button class="bar-action" id="mic-btn" onclick="toggleMic()" title="语音输入">🎤</button>
+      <button class="bar-action" id="mic-btn" x-data="voiceControl()"
+        @click="toggleMic()" :style="micStyle" x-text="micText" title="语音输入"></button>
       <button id="send-btn" onclick="sendText()">发送</button>
     </div>
   </div>
