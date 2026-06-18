@@ -6,6 +6,25 @@
 
 ---
 
+## [2026-06-19] Phase 1 — agent.py 拆分 (1/2) — Claude Code
+
+**背景 / 触发**：agent.py 的 `learn_from_url()` 方法 303 行，是最大的单体方法。按 Week 3-4 路线图拆分大文件。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/agent_learning.py` | 新建：`run_learning_pipeline()` 独立函数（303 行），7 步认知学习管线（初识→理解→拆解→重构→验证→内化→沉淀→扩散） |
+| `skillos/skills/agent.py:649-653` | `learn_from_url()` 方法体缩减为 5 行委托调用 |
+
+**验证**：
+- `pytest tests/test_skills.py tests/test_api_integration.py` → 29 passed, 2 failed（已有问题）
+
+**开放问题 / 下一步**：
+- api/skills.py（2,098 行）拆分 → 萃取管线端点提取到 skills_extract.py
+- agent.py 仍可进一步拆分（_diffuse_knowledge 89L, _generate 234L, _extract_claims_from_skill 71L）
+
+---
+
 ## [2026-06-19] Phase 0.5 — `__future__` 清理 + ruff/mypy 配置 + 认识论接入 — Claude Code
 
 **背景 / 触发**：执行 Week 2 路线图：① PORTING.md 规定 Python 3.11+ 不需要 `from __future__ import annotations`，代码中大量遗留；② 无 linting/type-checking 基础设施；③ BASELINE_SUMMARY.md 记录认识论引擎未接入 agent 主链路（P0 gap）。
