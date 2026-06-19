@@ -311,11 +311,28 @@
               </div>
             </div>
           </template>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-            <template x-for="cat in categories" :key="cat">
-              <span class="kb-filter" :class="{'active-kb-filter': selectedCategory===cat}"
-                @click="filterCat(cat)" x-text="cat"></span>
-            </template>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;flex:1">
+              <template x-for="cat in categories" :key="cat">
+                <span class="kb-filter" :class="{'active-kb-filter': selectedCategory===cat}"
+                  @click="filterCat(cat)" x-text="cat"></span>
+              </template>
+            </div>
+            <div style="display:flex;gap:4px">
+              <span style="font-size:10px;color:var(--text3);padding:4px 0">排序:</span>
+              <button class="nav-sm" style="font-size:10px;padding:2px 8px"
+                :style="sortBy==='score'?'border-color:var(--accent);color:var(--accent)':''"
+                @click="setSort('score')">评分</button>
+              <button class="nav-sm" style="font-size:10px;padding:2px 8px"
+                :style="sortBy==='name'?'border-color:var(--accent);color:var(--accent)':''"
+                @click="setSort('name')">名称</button>
+              <button class="nav-sm" style="font-size:10px;padding:2px 8px"
+                :style="sortBy==='recent'?'border-color:var(--accent);color:var(--accent)':''"
+                @click="setSort('recent')">最新</button>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:8px" x-show="totalCount > 0">
+            共 <span x-text="totalCount"></span> 个技能 · 显示 <span x-text="skills.length"></span> 个
           </div>
           <template x-if="!skills.length">
             <div style="color:var(--text3);padding:40px;text-align:center">暂无技能</div>
@@ -330,6 +347,10 @@
               <div class="meta" x-text="(s.description||'').substring(0,120)"></div>
             </div>
           </template>
+          <div style="text-align:center;padding:16px" x-show="hasMore">
+            <button class="btn" style="font-size:13px;padding:8px 32px" @click="loadMore()"
+              x-text="loading ? '加载中…' : '加载更多'"></button>
+          </div>
         </div>
       </template>
 

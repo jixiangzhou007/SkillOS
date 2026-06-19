@@ -14,11 +14,17 @@ function hubView() {
     categories: [],
     searchQuery: '',
     selectedCategory: '',
+    sortBy: 'score',        // score | name | recent
+    page: 0,
+    pageSize: 20,
+    hasMore: false,
+    totalCount: 0,
     stats: null,
     recommendations: [],
     detailSkill: null,
     detailScore: null,
     loading: false,
+    publishing: false,
     publishFormOpen: false,
     publishName: '',
     publishDesc: '',
@@ -27,32 +33,50 @@ function hubView() {
 
     async init() {
       this.loading = true;
-      await this.loadCatalog();
+      await this.loadCatalog(true);
       this.loading = false;
     },
 
-    async loadCatalog() {
+    async loadCatalog(reset) {
+      if (reset) { this.page = 0; this.skills = []; }
       this.mode = 'catalog';
+      this.loading = true;
       try {
         var q = encodeURIComponent(this.searchQuery || '');
         var cat = encodeURIComponent(this.selectedCategory || '');
-        var url = '/api/marketplace/catalog?q=' + q + '&category=' + cat;
+        var url = '/api/marketplace/catalog?q=' + q + '&category=' + cat +
+          '&sort=' + this.sortBy + '&offset=' + (this.page * this.pageSize) + '&limit=' + this.pageSize;
         var r = await api(url);
-        if (!r.ok) return;
+        if (!r.ok) { this.loading = false; return; }
         var d = await r.json();
-        this.skills = d.skills || [];
+        var newSkills = d.skills || [];
+        if (this.page === 0) {
+          this.skills = newSkills;
+        } else {
+          this.skills = this.skills.concat(newSkills);
+        }
         this.categories = d.categories || [];
         this.stats = d.stats || null;
-        this.recommendations = d.recommendations || [];
+        this.recommendations = this.page === 0 ? (d.recommendations || []) : [];
+        this.hasMore = newSkills.length >= this.pageSize;
+        this.totalCount = d.total || this.skills.length;
         applyMarketplaceMode(d);
         this.readOnly = _hubReadOnly;
       } catch (e) { this.skills = []; }
+      this.loading = false;
     },
 
-    search() { this.loadCatalog(); },
+    loadMore() {
+      if (!this.hasMore || this.loading) return;
+      this.page++;
+      this.loadCatalog(false);
+    },
+
+    search() { this.loadCatalog(true); },
+    setSort(sort) { this.sortBy = sort; this.loadCatalog(true); },
     filterCat(cat) {
       this.selectedCategory = (this.selectedCategory === cat) ? '' : cat;
-      this.loadCatalog();
+      this.loadCatalog(true);
     },
 
     async showDetail(skillId) {
