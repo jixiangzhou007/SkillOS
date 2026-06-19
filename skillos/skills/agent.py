@@ -666,6 +666,22 @@ class SkillExtractionAgent:
         """Deep-dive into user's need. Research + Socratic question + progressive draft."""
         self._context.append(f"用户说：{message[:200]}")
 
+        # Epistemic recording: substantive user statements become experience claims
+        _SKIP_MSG = {"是", "否", "对", "好", "可以", "行", "嗯", "继续", "是的", "对的",
+                     "好的", "可以的", "还行", "没错", "ok", "yes", "no", "y", "n"}
+        if len(message.strip()) > 30 and message.strip().lower() not in _SKIP_MSG:
+            try:
+                from skillos.knowledge.epistemology import record_claim
+                name = self._draft_name or self._goal or "未命名"
+                record_claim(
+                    content=message.strip()[:500],
+                    source=f"dialogue_explore:{name}",
+                    source_type="user_feedback",
+                    skill_name=name,
+                )
+            except Exception:
+                _log.debug("Epistemic recording skipped in _explore", exc_info=True)
+
         if self._name:
             try:
                 from skillos.knowledge.memory import record_conversation
@@ -816,6 +832,23 @@ class SkillExtractionAgent:
         Only transitions forward when user explicitly requests generation.
         """
         self._context.append(f"用户说：{text[:200]}")
+
+        # Epistemic recording: user refinements contain valuable domain knowledge
+        _SKIP_MSG = {"是", "否", "对", "好", "可以", "行", "嗯", "继续", "是的", "对的",
+                     "好的", "可以的", "还行", "没错", "ok", "yes", "no", "y", "n"}
+        if len(text.strip()) > 30 and text.strip().lower() not in _SKIP_MSG:
+            try:
+                from skillos.knowledge.epistemology import record_claim
+                name = self._draft_name or self._goal or "未命名"
+                record_claim(
+                    content=text.strip()[:500],
+                    source=f"dialogue_refine:{name}",
+                    source_type="user_feedback",
+                    skill_name=name,
+                )
+            except Exception:
+                _log.debug("Epistemic recording skipped in _refine", exc_info=True)
+
         # Long-context summarization: when context grows beyond 20 turns, compress older ones
         self._maybe_summarize_context()
 
