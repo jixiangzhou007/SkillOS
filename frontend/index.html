@@ -420,30 +420,30 @@
       <template x-if="loading">
         <div style="color:var(--text3);padding:40px;text-align:center">加载中…</div>
       </template>
-    </div>
-  </div>
 
-  <!-- 发布 Form Modal -->
-  <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" x-transition @click.self="closePublish()" @keydown.escape.window="closePublish()">
-    <div class="modal-box" style="max-width:520px">
-      <h3>发布到技能市场</h3>
-      <label>技能名称</label>
-      <input x-model="publishName" placeholder="例如：合同审核专家">
-      <label>描述</label>
-      <input x-model="publishDesc" placeholder="功能描述和触发条件">
-      <label>分类</label>
-      <select x-model="publishCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;margin-top:4px">
-        <option value="automation">自动化</option><option value="development">开发</option>
-        <option value="data-science">Data Science</option><option value="writing">Writing</option>
-        <option value="design">Design</option><option value="legal">Legal</option>
-        <option value="finance">Finance</option><option value="devops">DevOps</option>
-        <option value="security">Security</option><option value="other">Other</option>
-      </select>
-      <label>技能内容 (SKILL.md)</label>
-      <textarea x-model="publishContent" rows="10" placeholder="粘贴 SKILL.md 内容..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:12px;outline:none;resize:vertical;font-family:var(--mono);margin-top:4px"></textarea>
-      <div class="modal-actions">
-        <button class="modal-btn-cancel" @click="closePublish()">取消</button>
-        <button class="modal-btn-primary" @click="publish()">发布并评分</button>
+      <!-- 发布 Form Modal (inside hub-view x-data scope) -->
+      <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" x-transition @click.self="closePublish()" @keydown.escape.window="closePublish()">
+        <div class="modal-box" style="max-width:520px">
+          <h3>发布到技能市场</h3>
+          <label>技能名称</label>
+          <input x-model="publishName" placeholder="例如：合同审核专家">
+          <label>描述</label>
+          <input x-model="publishDesc" placeholder="功能描述和触发条件">
+          <label>分类</label>
+          <select x-model="publishCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;margin-top:4px">
+            <option value="automation">自动化</option><option value="development">开发</option>
+            <option value="data-science">Data Science</option><option value="writing">Writing</option>
+            <option value="design">Design</option><option value="legal">Legal</option>
+            <option value="finance">Finance</option><option value="devops">DevOps</option>
+            <option value="security">Security</option><option value="other">Other</option>
+          </select>
+          <label>技能内容 (SKILL.md)</label>
+          <textarea x-model="publishContent" rows="10" placeholder="粘贴 SKILL.md 内容..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:12px;outline:none;resize:vertical;font-family:var(--mono);margin-top:4px"></textarea>
+          <div class="modal-actions">
+            <button class="modal-btn-cancel" @click="closePublish()">取消</button>
+            <button class="modal-btn-primary" @click="publish()">发布并评分</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

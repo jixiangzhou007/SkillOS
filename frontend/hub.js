@@ -584,14 +584,17 @@ function _showHubSkill_legacy(skillId) {
 }
 
 function showPublishForm(skillName) {
-  var el = document.querySelector('[x-data="hubView()"]');
-  if (el && el.__x) { el.__x.$data.openPublish(skillName); return; }
   if (_hubReadOnly) { toast('只读目录暂不支持发布', 'warn'); return; }
-  document.getElementById('publish-modal').classList.add('open');
+  // Navigate to hub-view first to ensure Alpine component is initialized
+  showHub();
+  setTimeout(function() {
+    var el = document.querySelector('[x-data=\"hubView()\"]');
+    if (el && el.__x) { el.__x.$data.openPublish(skillName); }
+  }, 150);
 }
 
 function closePublishModal() {
-  var el = document.querySelector('[x-data="hubView()"]');
+  var el = document.querySelector('[x-data=\"hubView()\"]');
   if (el && el.__x) { el.__x.$data.closePublish(); return; }
   document.getElementById('publish-modal').classList.remove('open');
 }
