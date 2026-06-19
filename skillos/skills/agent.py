@@ -2082,5 +2082,5 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
 
         Delegates to agent_learning.extract_claims_from_skill().
         """
-        from skillos.skills.agent_learning import extract_claims_from_skill
+        from skillos.skills.agent_learning import _extract_claims_from_skill as extract_claims_from_skill
         return extract_claims_from_skill(content)
