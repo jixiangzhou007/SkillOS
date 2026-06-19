@@ -1,7 +1,7 @@
 ---
 name: test-agent-factory
 created_at: '2026-06-13T00:38:42Z'
-updated_at: '2026-06-19T18:36:33Z'
+updated_at: '2026-06-19T18:42:40Z'
 philosophical_dna: pdca
 philosophical_dna_label: PDCA 循环
 methodology: business-process
@@ -11,7 +11,7 @@ dna_lineage:
   - id: pdca
     weight: 1.0
   domain: []
-  detected_at: '2026-06-19T18:36:33Z'
+  detected_at: '2026-06-19T18:42:40Z'
 epistemic:
   source: test-agent-factory
   source_type: llm_generated
@@ -22,8 +22,8 @@ epistemic:
   errors: 0
   claim_ids: []
   pending_ids: []
-  processed_at: 1781894193.3774843
-version: 129
+  processed_at: 1781894560.2741296
+version: 130
 ---
 
 ---
