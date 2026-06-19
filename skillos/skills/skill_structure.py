@@ -491,5 +491,71 @@ def apply_structure_pipeline(
     if params_added:
         meta["heritage_merged"].append("S_params")
     body = normalize_skill_body(body)
+    # Gate semantics: ensure [门禁] steps appear in S_route
+    body = ensure_gate_steps_in_route(body)
     meta["normalized"] = True
     return body, meta
+
+
+def extract_gate_steps(body: str) -> list[str]:
+    """Extract [门禁] (gate) steps from S_body.
+
+    Returns list of gate descriptions suitable for S_route rows.
+    """
+    s_body = _section_text(body, BODY_SECTION_ALIASES)
+    if not s_body:
+        return []
+
+    gates = []
+    for line in s_body.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        # Match: "1. [门禁] 条件 → 失败动作" or "1. [门禁] 条件说明"
+        if re.search(r"\[门禁\]|\[gate\]|\[check\]", line, re.IGNORECASE):
+            # Strip number prefix
+            clean = re.sub(r"^\d+[.)]\s*", "", line)
+            # Strip the [门禁] tag for the route description
+            clean = re.sub(r"\[门禁\]\s*", "", clean, flags=re.IGNORECASE)
+            clean = re.sub(r"\[gate\]\s*", "", clean, flags=re.IGNORECASE)
+            if len(clean) > 5:
+                gates.append(clean)
+    return gates
+
+
+def ensure_gate_steps_in_route(body: str) -> str:
+    """Ensure [门禁] steps from S_body have corresponding rows in S_route.
+
+    If a gate step doesn't have a matching S_route row, add one
+    with the action '中止/升级' to signal the consequence of failure.
+    """
+    gates = extract_gate_steps(body)
+    if not gates:
+        return body
+
+    s_route = _section_text(body, ROUTE_ALIASES)
+    if not s_route:
+        return body
+
+    # Check which gates are already in S_route
+    existing = s_route.lower()
+    new_rows = []
+    for gate in gates:
+        # Check if gate's essence is already covered
+        gate_key = gate.split("→")[0].split("：")[0].strip().lower()[:30]
+        if gate_key and gate_key not in existing:
+            action = "中止或升级" if "→" not in gate else gate.split("→")[-1].strip()
+            new_rows.append(f"| {gate[:60]} | {action} | [门禁] |")
+
+    if not new_rows:
+        return body
+
+    # Append new gate rows to S_route
+    new_block = "\n".join(new_rows)
+    if s_route.rstrip().endswith("|"):
+        updated_route = s_route.rstrip() + "\n" + new_block
+    else:
+        updated_route = s_route.rstrip() + "\n" + new_block
+
+    body = body.replace(s_route, updated_route, 1)
+    return body

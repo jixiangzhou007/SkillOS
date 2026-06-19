@@ -1166,9 +1166,14 @@ class SkillExtractionAgent:
 <一句话描述：这个技能解决什么问题？>
 
 ## S_body
-1. <步骤一>（如果XX则YY）
-2. <步骤二>
-...
+步骤前标注类型：
+- [动作] 可执行的操作步骤
+- [门禁] 必须满足的条件，不满足则中止或升级
+示例：
+1. [动作] 核对订单号和实付金额
+2. [门禁] 订单状态必须已确认 → 未确认则中止，提示用户先确认订单
+3. [动作] 根据金额分支处理
+4. [门禁] 金额>500必须主管审批 → 自动升级，不继续执行
 
 ## S_route
 | 用户意图/条件 | 执行动作 | 备注 |
@@ -1185,7 +1190,8 @@ class SkillExtractionAgent:
 ```
 
 ## 要求
-1. 只提炼对话中明确提到的内容，不要编造
+1. **区分 [动作] 和 [门禁]**：每个步骤必须标注类型。门禁步骤失败必须中止或升级，不能静默跳过
+2. 只提炼对话中明确提到的内容，不要编造
 2. 如果某个部分信息不足，标注「[待补充]」
 3. 名称简明扼要
 4. 核心问题一句话说清
@@ -1229,7 +1235,11 @@ class SkillExtractionAgent:
     # ── GENERATING phase ──
 
     def _ensure_s_route(self, content: str, llm_args: tuple) -> str:
-        """Inject S_route decision table when the LLM omitted it."""
+        """Inject S_route decision table when the LLM omitted it.
+
+        Also extracts [门禁] steps from S_body and ensures they
+        appear as decision rows in S_route.
+        """
         if "S_route" in content:
             return content
         model = llm_args[2] if len(llm_args) > 2 else ""
