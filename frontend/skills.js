@@ -1,20 +1,97 @@
-/* skills.js — extracted from app.js */
+/* skills.js — Skill Detail View (Alpine.js)
+ * Route B.2: Alpine-reactive detail tabs replacing innerHTML loading.
+ */
+
+// ── Alpine component ──────────────────────────────────
+
+function skillView() {
+  return {
+    skillName: '',
+    tab: 'overview',
+    loading: false,
+    tabContent: '',
+    metaVisible: false,
+
+    async showDetail(name) {
+      if (!name) { this.skillName = ''; return; }
+      this.skillName = name;
+      this.tab = 'overview';
+      this.loading = true;
+      Alpine.store('nav').currentSkill = name;
+      Alpine.store('nav').navigate('detail-view');
+      document.getElementById('bar').style.display = 'none';
+
+      // Check if MetaSkill
+      try {
+        var r = await api('/api/skills/' + encodeURIComponent(name) + '/metaskill');
+        if (r.ok) { var d = await r.json(); this.metaVisible = !!(d && d.steps); }
+      } catch(e) { this.metaVisible = false; }
+      var metaTab = document.getElementById('d-tab-meta');
+      if (metaTab) metaTab.style.display = this.metaVisible ? '' : 'none';
+
+      await this.loadTabContent('overview');
+      this.loading = false;
+    },
+
+    switchTab(t) {
+      this.tab = t;
+      Alpine.store('nav').currentTab = t;
+      this.loadTabContent(t);
+    },
+
+    async loadTabContent(t) {
+      this.loading = true;
+      try {
+        if (t === 'overview') this.tabContent = await loadOverviewContent(this.skillName);
+        else if (t === 'doc') this.tabContent = await loadDocContent(this.skillName);
+        else if (t === 'kb') this.tabContent = await loadKBContent(this.skillName);
+        else if (t === 'verify') this.tabContent = await loadVerifyContent(this.skillName);
+        else if (t === 'epistemic') this.tabContent = await loadEpistemicContent(this.skillName);
+        else if (t === 'dna') this.tabContent = await loadDnaContent(this.skillName);
+        else if (t === 'official') this.tabContent = await loadOfficialContent(this.skillName);
+        else if (t === 'meta') this.tabContent = await loadMetaContent(this.skillName);
+        else if (t === 'evo') this.tabContent = await loadEvoContent(this.skillName);
+        else if (t === 'decisions') this.tabContent = await loadDecisionsContent(this.skillName);
+      } catch(e) { this.tabContent = '<div style="color:var(--err)">加载失败: ' + escHtml(e.message) + '</div>'; }
+      this.loading = false;
+    }
+  };
+}
+
+// ── Content loaders (return HTML for Alpine x-html) ──
+
+async function loadOverviewContent(name) { loadOverview(); return _getDContent(); }
+async function loadDocContent(name) { loadDoc(); return _getDContent(); }
+async function loadKBContent(name) { loadKB(); return _getDContent(); }
+async function loadVerifyContent(name) { loadVerify(); return _getDContent(); }
+async function loadEpistemicContent(name) { loadEpistemic(); return _getDContent(); }
+async function loadDnaContent(name) { loadDnaLineage(); return _getDContent(); }
+async function loadOfficialContent(name) { loadOfficialBench(); return _getDContent(); }
+async function loadMetaContent(name) { loadMeta(); return _getDContent(); }
+async function loadEvoContent(name) { loadEvo(); return _getDContent(); }
+async function loadDecisionsContent(name) { loadDecisions(); return _getDContent(); }
+
+function _getDContent() {
+  var el = document.getElementById('d-content');
+  return el ? el.innerHTML : '';
+}
+
+// ── Legacy wrappers (delegate to Alpine component) ───
 
 function showDetail(name) {
+  // Delegate to Alpine component
+  var el = document.querySelector('[x-data="skillView()"]');
+  if (el && el.__x) { el.__x.$data.showDetail(name); return; }
 
+  // Legacy fallback
   if (!name) { showChat(); return; }
-
   _currentSkill = name;
   try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').currentSkill = name; } catch(e) {}
-
   document.getElementById('d-name').textContent = name;
-
   switchMainView('detail-view');
   document.getElementById('bar').style.display = 'none';
-
   updateMetaTabVisibility(name);
   switchTab('overview');
-
 }
 
 async function updateMetaTabVisibility(name) {

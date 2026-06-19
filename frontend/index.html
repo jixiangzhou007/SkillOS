@@ -130,28 +130,47 @@
 
   <!-- Detail View (for skill inspection) -->
   <div id="detail-view" class="main-view"
+       x-data="skillView()"
        :class="{ active: $store.nav.currentView === 'detail-view' }">
     <div class="detail-header">
-      <button class="nav-sm" onclick="showChat()">← 返回</button>
-      <span id="d-name"></span>
+      <button class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
+      <span x-text="skillName || ''" id="d-name"></span>
       <div class="detail-tabs" id="detail-tabs">
-        <button class="dt active" data-tab="overview" onclick="switchTab('overview')">概览</button>
-        <button class="dt" data-tab="doc" onclick="switchTab('doc')">文档</button>
-        <button class="dt" data-tab="kb" onclick="switchTab('kb')">知识库</button>
-        <button class="dt" data-tab="verify" onclick="switchTab('verify')">验证</button>
-        <button class="dt" data-tab="epistemic" onclick="switchTab('epistemic')">认识论</button>
-        <button class="dt" data-tab="dna" onclick="switchTab('dna')">DNA 血缘</button>
-        <button class="dt" data-tab="official" onclick="switchTab('official')">官方评测</button>
-        <button class="dt" id="d-tab-meta" data-tab="meta" onclick="switchTab('meta')" style="display:none">流水线</button>
-        <button class="dt" data-tab="evo" onclick="switchTab('evo')">进化</button>
-        <button class="dt" data-tab="decisions" onclick="switchTab('decisions')">溯源</button>
+        <button class="dt" :class="{ active: tab === 'overview' }" @click="switchTab('overview')">概览</button>
+        <button class="dt" :class="{ active: tab === 'doc' }" @click="switchTab('doc')">文档</button>
+        <button class="dt" :class="{ active: tab === 'kb' }" @click="switchTab('kb')">知识库</button>
+        <button class="dt" :class="{ active: tab === 'verify' }" @click="switchTab('verify')">验证</button>
+        <button class="dt" :class="{ active: tab === 'epistemic' }" @click="switchTab('epistemic')">认识论</button>
+        <button class="dt" :class="{ active: tab === 'dna' }" @click="switchTab('dna')">DNA 血缘</button>
+        <button class="dt" :class="{ active: tab === 'official' }" @click="switchTab('official')">官方评测</button>
+        <button class="dt" :class="{ active: tab === 'meta' }" id="d-tab-meta" @click="switchTab('meta')" style="display:none">流水线</button>
+        <button class="dt" :class="{ active: tab === 'evo' }" @click="switchTab('evo')">进化</button>
+        <button class="dt" :class="{ active: tab === 'decisions' }" @click="switchTab('decisions')">溯源</button>
       </div>
       <button class="nav-sm" onclick="optimizeSkill(_currentSkill)">优化</button>
       <button class="nav-sm" id="detail-publish-btn" onclick="showPublishForm(_currentSkill)" style="border-color:var(--warn);color:var(--warn)">发布</button>
       <button class="nav-sm" onclick="exportSkill()">导出</button>
       <button class="nav-sm" onclick="exportUniversal()">通用</button>
     </div>
-    <div class="detail-body" id="d-content"></div>
+    <div class="detail-body" id="d-content">
+      <template x-if="loading"><div style="color:var(--text3);padding:20px">加载中…</div></template>
+      <template x-if="!loading && !skillName"><div style="color:var(--text3);padding:40px;text-align:center">选择一个技能查看详情</div></template>
+      <template x-if="!loading && skillName">
+        <div>
+          <!-- overview / doc / kb / verify / epistemic / dna / official / meta / evo / decisions -->
+          <template x-if="tab === 'overview'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'doc'"><pre style="white-space:pre-wrap;font-family:var(--mono);font-size:12px;color:var(--text);background:var(--surface2);padding:16px;border-radius:8px" x-text="tabContent"></pre></template>
+          <template x-if="tab === 'kb'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'verify'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'epistemic'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'dna'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'official'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'meta'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'evo'"><div x-html="tabContent"></div></template>
+          <template x-if="tab === 'decisions'"><div x-html="tabContent"></div></template>
+        </div>
+      </template>
+    </div>
   </div>
 
   <!-- Dashboard View -->
