@@ -107,8 +107,8 @@
   <!-- Chat View -->
   <div id="chat-view" class="main-view active"
        :class="{ active: $store.nav.currentView === 'chat-view' }">
-    <div id="msgs">
-      <div class="welcome">
+    <div id="msgs" x-data>
+      <div class="welcome" x-show="$store.chat.messages.length === 0">
         <div class="welcome-icon" id="welcome-logo">🔧</div>
         <div class="welcome-title">今天想做什么？</div>
         <div class="welcome-hint">描述你的工作流程，或者粘贴链接、拖拽文件</div>
@@ -118,6 +118,12 @@
           <span onclick="document.getElementById('input').value='帮我用多个技能串一条工作流';sendText()">🔗 编排流水线</span>
         </div>
       </div>
+      <template x-for="msg in $store.chat.messages" :key="msg.id">
+        <div :class="'msg ' + msg.role">
+          <span class="msg-time" x-text="msg.time || ''"></span>
+          <div x-html="msg.text"></div>
+        </div>
+      </template>
     </div>
     <div id="status-bar"><span id="status">就绪</span><span id="extract-banner" style="display:none;margin-left:12px;font-size:11px;color:var(--accent)">● 技能萃取进行中</span><div id="vol-bar"></div></div>
   </div>

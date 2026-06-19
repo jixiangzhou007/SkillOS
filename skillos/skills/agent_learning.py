@@ -303,7 +303,7 @@ SKILL.md 应该精简。详细内容放到 references/ 里。
     # Epistemic claim recording: extract and classify claims from URL-learned skill
     try:
         from skillos.knowledge.epistemology import record_claim
-        claims = extract_claims_from_skill(final_content)
+        claims = _extract_claims_from_skill(final_content)
         for claim_text in claims:
             record_claim(
                 content=claim_text,

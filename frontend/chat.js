@@ -389,27 +389,46 @@ function setMode(m) {
 function addMsg(role, text) {
   var now = new Date();
   var time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  // Add timestamp to system messages
-  if (role === 'sys') text = text + ' <span style="font-size:10px;opacity:.5">' + time + '</span>';
+  if (role === 'sys') text += ' <span style="font-size:10px;opacity:.5">' + time + '</span>';
 
-  let el = document.createElement('div');
+  // Push to Alpine store for reactive rendering
+  var msg = {
+    id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    role: role,
+    text: text,
+    time: time,
+    opacity: 1
+  };
 
+  try {
+    if (Alpine && Alpine.store('chat')) {
+      Alpine.store('chat').messages.push(msg);
+      setTimeout(function(){ scrollMsgs(); }, 20);
+      // Return proxy for backward compat (style.opacity manipulation)
+      return {
+        get style() { return { set opacity(v) {
+          msg.opacity = v;
+          try { Alpine.store('chat').messages = Alpine.store('chat').messages.map(function(m) { return m; }); } catch(e) {}
+        }}; },
+        set textContent(v) { msg.text = v; },
+        set onclick(v) {}
+      };
+    }
+  } catch(e) {}
+
+  // Legacy fallback
+  var el = document.createElement('div');
   el.className = 'msg ' + role;
   if (role === 'user' || role === 'ai') {
-    var timeSpan = document.createElement('span');
-    timeSpan.style.cssText = 'font-size:9px;color:var(--text3);display:block;margin-top:4px;text-align:' + (role==='user'?'right':'left');
-    timeSpan.textContent = time;
-    el.appendChild(timeSpan);
+    var ts = document.createElement('span');
+    ts.style.cssText = 'font-size:9px;color:var(--text3);display:block;margin-top:4px;text-align:' + (role==='user'?'right':'left');
+    ts.textContent = time;
+    el.appendChild(ts);
   }
-
   el.textContent = text;
-
   document.getElementById('msgs').appendChild(el);
-
   scrollMsgs();
-
   return el;
-
 }
 
 function scrollMsgs() {

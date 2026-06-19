@@ -1081,6 +1081,22 @@ class SkillExtractionAgent:
         try:
             from skillos.llm_client import call
             raw = call(prompt, model=model, max_tokens=900, temperature=0.3)
+
+            # Epistemic recording: extract claims from confirmation draft
+            try:
+                from skillos.knowledge.epistemology import record_claim
+                name = self._draft_name or self._goal
+                for claim_text in self._extract_claims_from_skill(raw):
+                    record_claim(
+                        content=claim_text,
+                        source=f"dialogue_confirm:{name}",
+                        source_type="conversation",
+                        skill_name=name,
+                    )
+                _log.info("Recorded claims from _confirm() for '%s'", name)
+            except Exception:
+                _log.debug("Epistemic recording skipped in _confirm", exc_info=True)
+
             return raw
         except Exception as e:
             _log.warning("LLM confirm failed, using fallback: %s", e)
