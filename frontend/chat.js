@@ -24,25 +24,14 @@ function finalizeSkill() {
     .catch(function(e) { addMsg('sys', '生成失败: ' + e.message); setStatus('error'); setDot(''); });
 }
 
+var _useStreaming = true;  // Enable SSE streaming by default
+
 function sendText() {
-  // Auto-resize textarea
-  var ta = document.getElementById('input');
-  ta.style.height = 'auto';
-  ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
-  var origInput = document.getElementById('input');
+  if (_useStreaming) { sendTextStream(); return; }
+  _sendTextLegacy();
+}
 
-  let inp = document.getElementById('input'),
-
-      text = inp.value.trim();
-
-  if (!text) return;
-
-  inp.value = '';
-
-  // Show input bar and hide welcome screen on first message
-  document.getElementById('bar').style.display = 'flex';
-
-  let welcome = document.querySelector('.welcome');
+function _sendTextLegacy() {
 
   if (welcome) welcome.style.display = 'none';
 
@@ -634,6 +623,85 @@ function toggleSidebar() {
   var sb = document.getElementById('sidebar');
   if (!sb) return;
   sb.classList.toggle('open');
+}
+
+// ── SSE Streaming ──────────────────────────────────────
+
+async function sendTextStream() {
+  var ta = document.getElementById('input');
+  ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+  var inp = document.getElementById('input'), text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  document.getElementById('bar').style.display = 'flex';
+  var welcome = document.querySelector('.welcome');
+  if (welcome) welcome.style.display = 'none';
+
+  addMsg('user', text);
+  var msgEl = addMsg('ai', '<span class=\"typing-dots\"><span></span><span></span><span></span></span>');
+  setStatus('streaming'); setDot('blue');
+
+  // Build history from DOM
+  var history = [];
+  document.querySelectorAll('#msgs .msg.user, #msgs .msg.ai').forEach(function(el) {
+    var role = el.classList.contains('user') ? 'user' : 'assistant';
+    var txt = el.textContent.trim();
+    if (txt && txt !== '...') history.push({ role: role, content: txt });
+  });
+
+  var body = JSON.stringify({
+    message: text, history: history.slice(-12), mode: _mode,
+    model: _selectedModel, auto: _autoMode, session_id: _sessionId,
+    tts_backend: localStorage.getItem('sd_tts_backend') || 'edge',
+    tts_voice: localStorage.getItem('sd_tts_voice') || 'Xiaoxiao (Natural)',
+  });
+
+  try {
+    var resp = await fetch(API + '/api/skills/dispatch/stream', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body,
+    });
+    if (!resp.ok) { msgEl.textContent = 'HTTP ' + resp.status; setStatus('error'); setDot(''); return; }
+
+    var reader = resp.body.getReader(), decoder = new TextDecoder(), buffer = '';
+    var fullReply = '';
+
+    while (true) {
+      var { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      var lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line.startsWith('data: ')) continue;
+        var data = line.substring(6);
+        // Find event type from previous line
+        var eventType = 'token';
+        if (i > 0 && lines[i-1].startsWith('event: ')) eventType = lines[i-1].substring(7).trim();
+
+        if (eventType === 'token') {
+          fullReply += data;
+          msgEl.innerHTML = '<span>' + fullReply.replace(/\n/g, '<br>') + '</span>';
+        } else if (eventType === 'done') {
+          try { var meta = JSON.parse(data); _sessionId = meta.session_id || _sessionId;
+            if (_sessionId) localStorage.setItem('sd_session', _sessionId);
+            if (meta.skill_saved) refreshSkillList();
+          } catch(e) {}
+        } else if (eventType === 'error') {
+          msgEl.innerHTML = '<span>' + data + '</span> <button class=\"nav-sm\" style=\"font-size:11px;border-color:var(--warn);color:var(--warn)\" onclick=\"sendText()\">重试</button>';
+        }
+      }
+    }
+    msgEl.style.opacity = '1';
+    scrollMsgs();
+    setStatus('idle'); setDot('on');
+    try { if (Alpine && Alpine.store('chat')) Alpine.store('chat').addMessage('ai', fullReply); } catch(e) {}
+  } catch(e) {
+    msgEl.textContent = e.message || '流式请求失败';
+    toast(e.message, 'error');
+    setStatus('error'); setDot('');
+  }
 }
 
 var _ttsEnabled = true;

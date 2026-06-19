@@ -9,6 +9,7 @@ import tempfile
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
 
 from skillos.api._skills_shared import (
     CreateSkillRequest,
@@ -922,6 +923,75 @@ PURPOSE.md 定义了这个知识体系要解决什么核心问题、为谁服务
         return {"reply": reply or "收到，请继续。", "session_id": session.id}
     except Exception as e:
         return {"reply": f"回复生成失败: {e}", "session_id": session.id}
+
+
+@router.post("/dispatch/stream")
+async def dispatch_message_stream(
+    req: DispatchRequest,
+    auth: AuthContext | None = Depends(get_optional_auth),
+):
+    """Streaming variant: same as /dispatch but returns SSE token-by-token."""
+    import asyncio
+    import json as _json
+
+    from skillos.config import get_config
+    from skillos.skills.session_manager import get_session_manager
+
+    msg = req.message.strip()
+    if not msg:
+        return StreamingResponse(
+            _sse_event("error", "请输入消息"),
+            media_type="text/event-stream",
+        )
+
+    tenant_id, org_id, user_id, dept_id = _dispatch_identity(req, auth)
+    _tenant_context_from_auth(auth)
+
+    cfg = get_config()
+    llm_args = cfg.to_llm_args()
+
+    sm = get_session_manager()
+    session = sm.get_or_create(req.session_id, tenant_id=tenant_id, org_id=org_id,
+                               user_id=user_id, dept_id=dept_id, channel=req.channel,
+                               chat_id=req.chat_id)
+
+    async def generate():
+        try:
+            # Run the same dispatch logic but capture the reply
+            if not session.agent.is_active:
+                if not session.agent.should_start(msg):
+                    yield _sse_event("reply", "请描述你想沉淀的流程，比如「合同审核」或「退款处理」。")
+                    yield _sse_event("done", "{}")
+                    return
+                session.agent.start(msg)
+
+            reply, doc = session.agent.handle(msg, _create_mode_skills_list(auth), llm_args)
+            session.add_turn("user", msg)
+            session.add_turn("assistant", reply)
+
+            # Stream the reply character by character for typewriter effect
+            for char in reply:
+                yield _sse_event("token", char)
+                await asyncio.sleep(0.015)  # ~60 chars/sec, natural reading speed
+
+            meta = {"session_id": session.id}
+            if doc:
+                meta["skill_saved"] = doc.get("name", "")
+                meta["slug"] = doc.get("slug", "")
+            yield _sse_event("done", _json.dumps(meta, ensure_ascii=False))
+        except Exception as e:
+            yield _sse_event("error", str(e))
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+def _sse_event(event: str, data: str) -> str:
+    """Format a Server-Sent Events message."""
+    return f"event: {event}\ndata: {data}\n\n"
 
 
 @router.post("/create")
