@@ -258,29 +258,46 @@ def normalize_body(display_name: str, body: str) -> str:
 
 
 def install_paths(slug: str) -> dict[str, str]:
+    """AgentSkills.io standard install paths for 30+ platforms."""
     return {
-        "cursor": f"~/.cursor/skills/{slug}/SKILL.md",
-        "claude_code": f"~/.claude/skills/{slug}/SKILL.md",
-        "trae": f"~/.trae/skills/{slug}/SKILL.md",
+        "claude_code": f"~/.claude/skills/{slug}/",
+        "cursor": f"~/.cursor/skills/{slug}/",
+        "codex": f"~/.codex/skills/{slug}/",
+        "gemini_cli": f"~/.gemini/skills/{slug}/",
+        "trae": f"~/.trae/skills/{slug}/",
+        "copilot": f"~/.github/copilot/skills/{slug}/",
     }
 
 
 def format_install_guide(display_name: str, slug: str, saved_path: str = "") -> str:
+    """AgentSkills.io standard install guide for end users."""
     paths = install_paths(slug)
     lines = [
         "\n\n---\n",
-        "### 安装到 Cursor / Claude Code / Trae",
-        "把下面文件夹里的 `SKILL.md` 复制到对应路径即可使用（无需懂什么是 Skill）：",
+        "### 安装技能",
+        f"技能包 `{slug}/` 是 **AgentSkills.io 标准格式**，兼容 30+ AI 编程平台。",
         "",
-        f"1. **Cursor**：`{paths['cursor']}`",
-        f"2. **Claude Code**：`{paths['claude_code']}`",
-        f"3. **Trae**：`{paths['trae']}`",
+        "**安装方法**：将整个文件夹复制到对应路径：",
+        f"- Claude Code：`{paths['claude_code']}`",
+        f"- Cursor：`{paths['cursor']}`",
+        f"- Codex CLI：`{paths['codex']}`",
+        f"- Gemini CLI：`{paths['gemini_cli']}`",
+        f"- GitHub Copilot：`{paths['copilot']}`",
         "",
-        f"工具内标识名（name）：`{slug}`",
+        "**目录结构**：",
+        f"```",
+        f"{slug}/",
+        f"├── SKILL.md          ← 技能文档（YAML 头 + Markdown 正文）",
+        f"├── scripts/          ← 可执行脚本",
+        f"├── references/       ← 参考文档（按需加载）",
+        f"└── assets/           ← 模板、配置、资源",
+        f"```",
+        "",
+        f"技能标识名（name）：`{slug}`",
     ]
     if saved_path:
-        lines.append(f"\nSkillOS 已保存：`{saved_path}`")
-    lines.append("\n在 SkillOS 技能详情页可点「导出 Zip」一键下载。")
+        lines.append(f"\nSkillOS 已保存至：`{saved_path}`")
+    lines.append("\n在 SkillOS 技能详情页可点「导出 Zip」一键下载安装包。")
     return "\n".join(lines)
 
 

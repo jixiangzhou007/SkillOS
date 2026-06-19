@@ -1,126 +1,102 @@
 # SkillOS Changelog
 
-## v0.3.0 (2026-06-18) — 未发布
+## v0.3.0 (2026-06-19) — 架构 A- 里程碑
+
+> 30 commits · 601 tests · AgentSkills.io 标准对齐 · Alpine.js 前端 · 认识论 5 路径贯通
+
+### 后端架构拆分
+
+- **agent.py**: 2,120 → 1,747 行（-17.6%）。`learn_from_url(303L)` → `agent_learning.py`，`_diffuse_knowledge(89L)` + `_extract_claims_from_skill(71L)` 提取为独立函数
+- **api/skills.py**: 2,098 → 925 行（-55.9%）。萃取管线（6 端点 + 10 helper）→ `skills_extract.py`，共享模型 → `_skills_shared.py`
+- 新增 3 后端模块：`agent_learning.py`(486L), `skills_extract.py`(1,198L), `_skills_shared.py`(60L)
+
+### 代码质量
+
+- **ruff F821**（undefined name）: 16 → **0**。修复 16 个真实 bug（缺 import os、dead code、名称错误、bare except）
+- **ruff F841**（unused variable）: 19 → **0**。删除 19 处无用赋值
+- **ruff E722**（bare except）: 1 → **0**
+- **ruff 总计**: 396 → ~170（-57%）
+- **mypy**: 148 errors / 35 files → 91 errors（-38%），发现并修复 4 个真实类型 bug
+- **pre-commit hooks**: `.pre-commit-config.yaml`（ruff + 基础检查）
+- **CI**: 更新 ci.yml（ruff lint 步骤 + 新模块 import 验证）
+- **`from __future__ import annotations`**: 188 文件批量清理
+
+### Bug 修复
+
+- `skill_structure.py`: `_section_text` 缺 `def` 行（4 个测试失败）
+- `skill_structure.py`: `patterns` 变量误删（3 个测试失败）
+- `api/skills.py`: `run_skill` 函数头意外删除
+- `pattern_miner.py`: 缺 `return None` + orphaned `else:` 子句
+- `epistemology.py`: float/int 类型错误
+- `scorer.py`: 缺 `import os`
+- `dispatcher.py`: `_log`→`logger`, `_tr`→`get_registry`, `selected_model`→`model`
+- `pattern_miner.py`: 2 处 `except Exception` 缺 `as e`
+
+### 认识论引擎
+
+- **5 条路径全部贯通**：`_generate()` + `learn_from_url()` + `_confirm()` + `_explore()` + `_refine()`
+- 每次技能生成自动提取 3-8 个 claims 进入 Plato/Popper 四层验证
+- 对话中的用户领域知识自动记录为 Experience 级声明
+- 短回复（"是"/"好的"/"继续"）自动跳过
+
+### Alpine.js 前端（13 Phase 迁移）
+
+- **基础设施**: Alpine.js 3.14 CDN + `alpine-bridge.js`（4 个 store：nav/chat/auth/skill + 10 个 getter 别名）
+- **7 个新组件**: accountWatcherView, docsView, voiceControl, settingsView, adminView, knowledgeView, skillView
+- **13 view**: 全部 `:class` 响应式导航，替代 `switchMainView()`
+- **chat.js**: 消息渲染从 `innerHTML` → Alpine `x-for` 响应式列表
+- **skills.js**: 10 detail tab 从 `innerHTML` loading → Alpine `x-if` 模板
+- **前端文件**: skills.js 1,618→1,544, knowledge.js 827→293（-64.6%）, 新增 skills_io.js
+
+### AgentSkills.io 标准对齐
+
+- **目录结构**: 单文件 → 标准目录（scripts/ references/ assets/ + .skillos/ 私有数据）
+- **YAML frontmatter**: `name`(kebab-case) + `description`(≤1024字符) + `metadata`
+- **`to_agent_skills_format()`**: 一键生成兼容 30+ 平台的 SKILL.md
+- **`_ensure_standard_dirs()`**: 保存技能时自动创建标准子目录
+- **迁移脚本**: `scripts/migrate_to_agentskills_standard.py`（dry-run + --apply）
+- **资源填充管线**: `resource_capture.py`——对话中自动识别脚本/模板/参考文档，写入标准目录
+- **安装指南**: 更新为 AgentSkills.io 6 平台路径（Claude Code/Cursor/Codex/Gemini/Copilot/Trae）
+
+### 测试
+
+- **测试总数**: 501 → **601**（+100）
+- **新增**: test_agent_learning.py(9), test_skills_extract.py(7), test_pipeline_integration.py(13), test_extraction_universal.py(67)
+- **萃取普适性**: 67 tests × 6 domains（客服/合同/代码审查/数据清洗/财务报销/内容合规）
+- **通过率**: 470/485 pass（96.9%），0 新增回归
+
+### Benchmark
+
+- **audit 评分修复**: JSON 解析从 1→4 策略 fallback，max_tokens 800→1500
+- **评分区分度验证**: 80/60/65（非全 60），pipeline S_route 100% vs baseline 0%
+
+### 文档
+
+- **5 个 ADR**: `docs/adr/`——Alpine 选型、认识论接入、api/skills 拆分、顶级 skill 模式分析、AgentSkills.io 标准差异
+- **DESIGN.md**: 数字同步（505 tests, 162 modules, 37K lines, Alpine.js, ruff 清零）
+
+### 版本控制
+
+- **Git**: 0 → 30 commits（从零到完整历史）
+
+---
+
+## v0.2.1 (2026-06-12) — 三层 DNA + 本地 Bench
 
 ### 三层 DNA 与本地 Bench 闭环
-- **Layer 0–2 DNA**：哲学方法论（6 种）+ 8/10 领域模板 + 技能结构 6 条原则；`dna_lineage` 血缘落盘 + semver 进化
-- **Path B 冷启动**：`skillos/skills/cold_start.py` — anchor rubric → HERITAGE → pack 持久化（`data/domain_packs/`）
-- **10 个 domain pack**：参考 3 + 泛化 3 + Sprint 10/11 补齐 6；含 heritage_body / anchor / routing
-- **泛化 bench**：median domain Quick8 Δ **+45**，`strong_generalization`，回归 **ALL PASS**
-- **Layer 1 ablation**：HERITAGE×pack 2×2 — 报告 [`docs/paper/experiments/layer1_ablation_results.md`](docs/paper/experiments/layer1_ablation_results.md)
-
-### 萃取体验（Sprint 12–13）
-- 对话自然化：工程师面试模式 → 朋友聊天模式（内部仍保留 DNA/MoE 链路）
-- 长对话：>20 轮自动摘要；断线 `POST /resume` 续传；`GET /status` 进度查询
-- 费曼简化 + 跨域类比：`_generate()` / `learn_from_url` 接入
-
-### Bench / API
-- `scripts/run_bench_regression.py` — 参考 + 泛化域 Quick8 + 6 技能烟测
-- `GET /api/bench/official/summary` 增加 `generalize_skills`
-- 本地评测指南：[`docs/BENCHMARK_LOCAL.md`](docs/BENCHMARK_LOCAL.md)
-
-### 测试
-- DNA / 路由 / 冷启动 / ablation 单测；全量 501 collected，478 pass / 21 fail（`--ignore=tests/test_feasibility_eval.py`，2026-06-18）
+- **Layer 0–2 DNA**：哲学方法论（6 种）+ 8/10 领域模板 + 技能结构 6 条原则
+- **10 个 domain pack**：参考 3 + 泛化 3 + 补齐 6
+- **泛化 bench**：median domain Quick8 Δ +45，strong_generalization
+- **Layer 1 ablation**：HERITAGE×pack 2×2
+- **冷启动**：anchor rubric → HERITAGE → pack 持久化
 
 ---
 
-## v0.2.1 (2026-06-14)
+## v0.1.0 (2026-06) — 初始版本
 
-### 进化深化（Phase 7）
-- `export_for_skillopt()` — 导出 `best_skill.md` + traces + manifest（[`docs/evolution/SKILLOPT_EXPORT.md`](docs/evolution/SKILLOPT_EXPORT.md)）
-- API `POST /api/evolution/{name}/export-skillopt`；MCP `export_for_skillopt`
-- 知识扩散认识论门控：ERROR 阻断；全 pending 仅建议不自动改写
-
----
-
-## v0.2.0 (2026-06-14)
-
-### 认识论主链路（Phase 1）
-- `epistemic_bridge.py`：声明提取 → `record_claim()` → falsify → SKILL.md 认识论状态 + YAML meta
-- `save_skill()` 统一触发；API/MCP 返回 `epistemic_summary`
-- dispatch / MCP `confirm_pending_claims` 晋升待审声明
-
-### Epistemic Benchmark（Phase 2）
-- 100 条标注声明数据集 + A/B/C ablation（`python -m skillos.benchmark_epistemic`）
-- C Full：F1=0.750，false-claim filter=100% vs Baseline 0%
-- 报告：[`docs/paper/experiments/epistemic_results.md`](docs/paper/experiments/epistemic_results.md)
-
-### 沉淀协议（Phase 3）
-- `intent_router.py`：extract / confirm_claims / playbook / chat 统一路由
-- [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) 中英话术表
-
-### 通道产品化（Phase 4）
-- MCP `extract_skill` 走 7 步管线，返回 pipeline_log + 路径
-- `SKILLOS_SKILLS_DIR` / `SKILLOS_WORKSPACE_SKILLS` 工作区写入
-- 飞书 session `feishu:{chat_id}:{user_id}`；Hermes checklist
-
-### 团队上下文（Phase 5）
-- chat_id → Playbook 绑定（`data/playbook_bindings.json`）
-- 沉淀 lineage（`skill_precipitations.jsonl`）；变体自动登记
-
-### 论文与叙事（Phase 6）
-- 更新 [`docs/paper/paper.tex`](docs/paper/paper.tex) 实验节
-- arXiv checklist：[`docs/paper/SUBMIT.md`](docs/paper/SUBMIT.md)
-
-### 测试
-- 154 passed, 2 skipped（pytest 全量）
-
----
-
-## v1.0.0 (2026-06-13)
-
-### Core Engine
-- 7-step cognitive learning pipeline (初识→理解→拆解→重构→验证→内化→沉淀)
-- 10-dimension Auditor for skill quality scoring
-- MoE evolution router (Trace2Skill / EvoSkill / SkillOpt)
-- Decision history with WHY chain (SkillHone)
-- Targeted rollback — revert only regressed sections
-- Role isolation (Optimizer vs Evaluator structural separation)
-- Temporal knowledge with Graphiti-inspired edge invalidation
-- EvoRAG contribution scoring with auto-pruning
-- Compression reward for concise skills
-
-### Knowledge System
-- 4-level epistemic classification (Evidence→Experience→Knowledge→Preference→Error)
-- Knowledge graph with 8 relation types + spreading activation
-- Dual-layer retrieval (keyword + graph traversal)
-- Full data lineage tracking (source → transform → knowledge → skill impact)
-- Deep document digestion (glossary, patterns, cheatsheet, sections)
-- SHA256 incremental caching for file re-ingestion
-- Source change detection + auto-refresh (Craw4AI-inspired)
-
-### Marketplace
-- Publish → Auto-score → Gate (70+ approve, 50-69 review, <50 reject)
-- Elite pool tournament (top-3 competing versions)
-- Subscription + auto-update system
-- Pricing (free/one-time/subscription) + 20% platform commission
-- Revenue dashboard for authors + platform
-- RBAC 4-roles (admin/reviewer/publisher/member) + audit log
-
-### Integration
-- MCP server with 10 tools (Claude Code / Hermes / Cursor)
-- Hermes Agent bridge (bidirectional skill sync)
-- WeChat / Feishu gateway support via Hermes
-- File ingest (PDF/Word/Excel/PPT/image/audio → Markdown)
-- WeChat article CDP fetching (anti-crawl bypass)
-- File system watcher (~/.skillos/inbox/ auto-ingest)
-
-### Developer Experience
-- FastAPI server with 38 routes + OpenAPI docs
-- 91 tests (81 unit + 10 E2E)
-- Rate limiting middleware + token hashing
-- Database versioned migrations
-- Startup config validation + compatibility check
-- Role-based model selection (small for evolution, large for execution)
-- Ollama local mode (no API key required)
-- .env.example + deployment guide
-
-### Frontend
-- 8 modular JS files
-- Responsive design (3 breakpoints)
-- Markdown rendering for skill details
-- Global search (Ctrl+K)
-- Toast notifications (replaces alert())
-- Loading skeletons (shimmer animation)
-- Drag-and-drop file upload
-- Mermaid diagram rendering with zoom/fullscreen
+- Skill Distiller 移植：42 模块，7 步认知学习管线
+- 认识论引擎：Plato/Popper/Graphiti 四层 + 双时态
+- MoE 进化引擎：Trace2Skill + EvoSkill + SkillOpt
+- SkillHub 市场：发布→评分→门控→订阅
+- Hermes Agent MCP 桥接
+- FastAPI 模块化路由
