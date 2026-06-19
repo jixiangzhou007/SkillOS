@@ -1,6 +1,15 @@
 /* ── Audio ─────────────────────────────────────────────────── */
 /* ── Audio encoding ─────────────────────────────────────────── */
 
+// Declared globals (shared with voice.js)
+var calling = false;
+var mediaRec = null;
+var mediaStream = null;
+var _processingAudio = false;
+var _currentAudio = null;
+var _ttsStartTime = null;
+var _audioQueue = [];
+
 function _btoa(buf) {
   let bin = '';
   for (let i = 0; i < buf.byteLength; i += 8192)

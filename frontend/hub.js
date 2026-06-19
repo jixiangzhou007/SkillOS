@@ -177,7 +177,8 @@ function applyMarketplaceMode(data) {
   });
 }
 
-function showHub() {
+// Legacy showHub removed — Alpine hubView() handles all rendering
+function _showHub_legacy_removed() {
 
   switchMainView('hub-view');
   document.getElementById('bar').style.display = 'none';
@@ -315,7 +316,7 @@ function filterHubCat(cat) {
 
 }
 
-function showHubSkill(skillId) {
+function _showHubSkill_legacy(skillId) {
 
   switchMainView('hub-view');
 

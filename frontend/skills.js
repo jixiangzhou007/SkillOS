@@ -1591,31 +1591,4 @@ function optimizeSkill(name) {
 
 }
 
-function switchSettings(t) {
-
-  _settingsTab = t;
-
-  document.querySelectorAll('#settings-view .tab').forEach(b =>
-
-    b.classList.toggle('active', b.getAttribute('data-tab') === t)
-
-  );
-
-  let el = document.getElementById('s-content');
-
-  if (t === 'model') loadModelSettings(el);
-
-  else if (t === 'usage') loadUsageSettings(el);
-
-  else if (t === 'skills') loadSkillSettings(el);
-
-  else if (t === 'voice') loadVoiceSettings(el);
-
-}
-
-
-function showSettings() {
-  switchMainView("settings-view");
-  document.getElementById("bar").style.display = "none";
-  switchSettings("model");
-}
+// switchSettings/showSettings moved to settings.js — Alpine settingsView() component
