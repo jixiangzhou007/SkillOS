@@ -127,7 +127,11 @@ def ensure_skill_params(body: str) -> str:
     return body
 
 def build_description(display_name: str, body: str) -> str:
-    """Third-person description for YAML frontmatter (AgentSkills / Cursor)."""
+    """Third-person description for YAML frontmatter (AgentSkills / Cursor).
+
+    Priority: explicit tool_description > core problem + context > S_body first step > display_name.
+    Always includes trigger keywords in English when available.
+    """
     explicit = _extract_meta_line(body, "tool_description")
     if explicit:
         return explicit[:1024]
@@ -135,26 +139,44 @@ def build_description(display_name: str, body: str) -> str:
     trigger = _extract_section(body, "S_trigger")
     core = _extract_section(body, "核心问题") or _extract_section(body, "Core Problem")
     keywords = _parse_trigger_keywords(body)
+    s_body = _extract_section(body, "S_body")
 
     parts: list[str] = []
+
+    # 1. Core problem (best quality)
     if core:
         parts.append(re.sub(r"\s+", " ", core.split("\n")[0].strip()))
-    else:
-        parts.append(f"Executes the {display_name} workflow step by step.")
+    # 2. First S_body step as fallback (better than generic)
+    elif s_body:
+        first_step = s_body.strip().split("\n")[0].strip()
+        # Strip number prefix: "1. " or "1) "
+        first_step = re.sub(r"^\d+[.)]\s*", "", first_step)
+        if len(first_step) > 10:
+            parts.append(f"{display_name}: {first_step[:120]}")
 
+    # 3. Context from S_trigger
     ctx_m = re.search(r"context\s*[:：]\s*(.+)", trigger, re.IGNORECASE | re.DOTALL)
     if ctx_m:
         ctx = re.sub(r"\s+", " ", ctx_m.group(1).split("\n")[0].strip())
-        if ctx:
+        if ctx and ctx not in " ".join(parts):
             parts.append(ctx)
 
+    # 4. Keywords as trigger hints
     if keywords:
-        parts.append(f"Trigger terms: {', '.join(keywords[:8])}.")
+        kw_str = ", ".join(keywords[:8])
+        parts.append(f"Use when user mentions: {kw_str}.")
+
+    if not parts:
+        parts.append(
+            f"Handles {display_name} workflows with clear step-by-step instructions. "
+            f"Use when the user mentions {display_name} or related tasks."
+        )
 
     desc = " ".join(parts).strip()
-    if len(desc) < 40:
+    # Ensure minimum meaningful length
+    if len(desc) < 50:
         desc = (
-            f"Handles {display_name} workflows with clear step-by-step instructions. "
+            f"Handles {display_name} workflows with step-by-step instructions. "
             f"Use when the user mentions {display_name} or related tasks."
         )
     return desc[:1024]
