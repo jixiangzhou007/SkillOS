@@ -450,8 +450,6 @@ def auto_mine_if_needed(llm_args: tuple, threshold: int = 3) -> Optional[dict]:
         if new_count >= threshold:
             return run_cross_skill_optimization(llm_args)
     return None
-    else:
-        return run_cross_skill_optimization(llm_args)
 
 
 def _numbered_step_blocks(body_section: str) -> list[str]:

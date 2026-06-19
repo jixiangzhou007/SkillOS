@@ -98,9 +98,30 @@ def _slugify(name: str) -> str:
 
 
 def _skill_path(name: str, *, root: Path | None = None) -> Path:
-    safe = re.sub(r'[<>:"/\\|?*]', "_", name)[:64]
+    """Return the path to SKILL.md for a given skill name.
+
+    Uses kebab-case directory name when name is ASCII, otherwise
+    falls back to a sanitized form compatible with AgentSkills.io standard.
+    """
+    from skillos.skills.portable_skill import tool_slug
+
+    # Try kebab-case slug first (AgentSkills.io standard)
+    slug = tool_slug(name)
     base = root if root is not None else resolve_skills_root()
-    return base / safe / "SKILL.md"
+
+    # If the slug directory exists, use it; otherwise use sanitized name
+    slug_dir = base / slug
+    if slug_dir.exists():
+        return slug_dir / "SKILL.md"
+
+    # Legacy path: sanitized original name (backward compat)
+    safe = re.sub(r'[<>:"/\\|?*]', "_", name)[:64]
+    legacy_dir = base / safe
+    if legacy_dir.exists():
+        return legacy_dir / "SKILL.md"
+
+    # New skills: use kebab-case slug directory (AgentSkills.io standard)
+    return slug_dir / "SKILL.md"
 
 
 def _split_front_matter(content: str) -> tuple[dict[str, Any], str]:
@@ -115,6 +136,17 @@ def _split_front_matter(content: str) -> tuple[dict[str, Any], str]:
 def _compose(meta: dict[str, Any], body: str) -> str:
     header = yaml.safe_dump(meta, allow_unicode=True, sort_keys=False).strip()
     return f"---\n{header}\n---\n\n{body.lstrip()}"
+
+
+def _ensure_standard_dirs(skill_dir: Path) -> None:
+    """Create AgentSkills.io standard subdirectories if they don't exist.
+
+    Standard: scripts/, references/, assets/
+    SkillOS private: .skillos/, .skillos/versions/
+    """
+    for subdir in ("scripts", "references", "assets",
+                   ".skillos", ".skillos/versions"):
+        (skill_dir / subdir).mkdir(parents=True, exist_ok=True)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -142,6 +174,10 @@ def save_skill(
     root = resolve_skills_root(tenant)
     path = _skill_path(name, root=root)
     path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Ensure AgentSkills.io standard directory structure
+    _ensure_standard_dirs(path.parent)
+
     now = _now_iso()
 
     front: dict[str, Any] = {"name": name, "created_at": now, "updated_at": now}

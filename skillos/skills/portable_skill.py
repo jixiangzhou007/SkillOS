@@ -275,3 +275,66 @@ def finalize_portable_skill(display_name: str, body: str) -> dict[str, Any]:
         "body": normalized,
         "install_paths": install_paths(slug),
     }
+
+
+def to_agent_skills_format(
+    display_name: str,
+    body: str,
+    *,
+    license_name: str = "",
+    compatibility: str = "",
+    metadata: dict[str, str] | None = None,
+) -> str:
+    """Wrap a normalized skill body in AgentSkills.io standard YAML frontmatter.
+
+    Produces output compatible with Claude Code, Cursor, Codex CLI, Gemini CLI,
+    and all other AgentSkills.io-compliant platforms (30+ as of 2026).
+    """
+    slug = tool_slug(display_name, body)
+    description = build_description(display_name, body)
+    normalized = normalize_body(display_name, body)
+
+    meta: dict[str, Any] = {
+        "name": slug,
+        "description": description,
+    }
+    if license_name:
+        meta["license"] = license_name
+    if compatibility:
+        meta["compatibility"] = compatibility
+    if metadata:
+        meta["metadata"] = metadata
+    # Always include display_name in metadata for SkillOS compatibility
+    if "metadata" not in meta:
+        meta["metadata"] = {}
+    meta["metadata"]["display_name"] = display_name
+    meta["metadata"]["generated_by"] = "SkillOS"
+    meta["metadata"]["skillos_slug"] = slug
+
+    import yaml
+    header = yaml.safe_dump(meta, allow_unicode=True, sort_keys=False).strip()
+    return f"---\n{header}\n---\n\n{normalized.lstrip()}"
+
+
+def standard_skill_dir_structure(slug: str) -> dict[str, str]:
+    """Return the standard AgentSkills.io directory structure for a skill.
+
+    Creates the canonical layout:
+      {slug}/
+      ├── SKILL.md
+      ├── scripts/          (empty, ready for user scripts)
+      ├── references/       (empty, ready for user docs)
+      ├── assets/           (empty, ready for user templates)
+      └── .skillos/         (SkillOS private data)
+          └── versions/     (version history)
+          └── memory.json   (epistemology records)
+    """
+    return {
+        "root": slug,
+        "skill_md": f"{slug}/SKILL.md",
+        "scripts_dir": f"{slug}/scripts/",
+        "references_dir": f"{slug}/references/",
+        "assets_dir": f"{slug}/assets/",
+        "skillos_dir": f"{slug}/.skillos/",
+        "versions_dir": f"{slug}/.skillos/versions/",
+    }
