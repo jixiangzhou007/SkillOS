@@ -68,8 +68,9 @@ jobs:
           from skillos.api.skills import router
           from skillos.api.skills_extract import router as extract_router
           from skillos.api._skills_shared import DispatchRequest, CreateSkillRequest
+          from skillos.skills.agent_generation import run_skill_generation
           from skillos.config import get_config
-          print('All critical imports OK')
+          print('All critical imports OK (v0.4.0)')
           "
 
   benchmark:
