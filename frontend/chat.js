@@ -393,9 +393,12 @@ function setMode(m) {
 
 }
 
+var _lastMsgDate = '';
+
 function addMsg(role, text) {
   var now = new Date();
   var time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  var dateStr = now.getFullYear() + '-' + (now.getMonth()+1).toString().padStart(2,'0') + '-' + now.getDate().toString().padStart(2,'0');
   if (role === 'sys') text += ' <span style="font-size:10px;opacity:.5">' + time + '</span>';
 
   // Push to Alpine store for reactive rendering
@@ -404,8 +407,24 @@ function addMsg(role, text) {
     role: role,
     text: text,
     time: time,
+    date: dateStr,
     opacity: 1
   };
+
+  // Inject date separator when day changes
+  if (dateStr !== _lastMsgDate && _lastMsgDate !== '') {
+    try {
+      if (Alpine && Alpine.store('chat')) {
+        Alpine.store('chat').messages.push({
+          id: 'd_' + Date.now(),
+          role: 'sys',
+          text: '<div style="text-align:center;font-size:11px;color:var(--text3);padding:12px 0"><span style="background:var(--surface2);padding:2px 12px;border-radius:10px">' + dateStr + '</span></div>',
+          time: '', date: dateStr, opacity: 1
+        });
+      }
+    } catch(e) {}
+  }
+  _lastMsgDate = dateStr;
 
   try {
     if (Alpine && Alpine.store('chat')) {

@@ -139,13 +139,16 @@
       <button class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
       <span x-text="skillName || ''" id="d-name"></span>
       <div class="detail-tabs" id="detail-tabs">
+        <span style="font-size:10px;color:var(--text3);margin:0 2px">核心</span>
         <button class="dt" :class="{ active: tab === 'overview' }" @click="switchTab('overview')">概览</button>
         <button class="dt" :class="{ active: tab === 'doc' }" @click="switchTab('doc')">文档</button>
         <button class="dt" :class="{ active: tab === 'kb' }" @click="switchTab('kb')">知识库</button>
+        <span style="font-size:10px;color:var(--text3);margin:0 2px;border-left:1px solid var(--border);padding-left:6px">质量</span>
         <button class="dt" :class="{ active: tab === 'verify' }" @click="switchTab('verify')">验证</button>
         <button class="dt" :class="{ active: tab === 'epistemic' }" @click="switchTab('epistemic')">认识论</button>
-        <button class="dt" :class="{ active: tab === 'dna' }" @click="switchTab('dna')">DNA 血缘</button>
-        <button class="dt" :class="{ active: tab === 'official' }" @click="switchTab('official')">官方评测</button>
+        <button class="dt" :class="{ active: tab === 'dna' }" @click="switchTab('dna')">血缘</button>
+        <button class="dt" :class="{ active: tab === 'official' }" @click="switchTab('official')">评测</button>
+        <span style="font-size:10px;color:var(--text3);margin:0 2px;border-left:1px solid var(--border);padding-left:6px">演进</span>
         <button class="dt" :class="{ active: tab === 'meta' }" id="d-tab-meta" @click="switchTab('meta')" style="display:none">流水线</button>
         <button class="dt" :class="{ active: tab === 'evo' }" @click="switchTab('evo')">进化</button>
         <button class="dt" :class="{ active: tab === 'decisions' }" @click="switchTab('decisions')">溯源</button>
@@ -746,6 +749,7 @@
           <input x-model="editUrl" placeholder="https://api.deepseek.com">
           <div class="modal-actions">
             <button class="modal-btn-cancel" @click="closeModelModal()">取消</button>
+            <button class="nav-sm" style="font-size:11px;border-color:var(--info);color:var(--info);margin-right:auto" @click="testConnection()">测试连接</button>
             <button class="modal-btn-primary" @click="saveModel()" x-text="editingIndex < 0 ? '添加' : '保存'"></button>
           </div>
         </div>

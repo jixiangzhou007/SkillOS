@@ -90,6 +90,21 @@ function settingsView() {
       this.$nextTick(() => { const el = this.$refs.modalLabel; if (el) el.focus(); });
     },
 
+    testConnection() {
+      var url = this.editUrl.trim();
+      var key = this.editId.trim();
+      if (!url) { toast('请先填写 API 地址', 'warn'); return; }
+      toast('测试连接中…', 'info');
+      fetch(url + '/models', {
+        headers: key ? { 'Authorization': 'Bearer ' + key } : {},
+      }).then(function(r){
+        if (r.ok) { toast('连接成功', 'success'); }
+        else { toast('连接失败: HTTP ' + r.status, 'error'); }
+      }).catch(function(e){
+        toast('连接失败: ' + e.message, 'error');
+      });
+    },
+
     closeModelModal() {
       this.modelModalOpen = false;
       this.editingIndex = -1;
