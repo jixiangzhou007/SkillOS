@@ -181,37 +181,43 @@
 
   <!-- Dashboard View -->
   <div id="dashboard-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'dashboard-view' }">
+       :class="{ active: $store.nav.currentView === 'dashboard-view' }"
+       x-data="{html:''}" x-html="html">
     <div class="view-scroll"><div id="dash-content"></div></div>
   </div>
 
   <!-- Lineage View (data provenance) -->
   <div id="lineage-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'lineage-view' }">
+       :class="{ active: $store.nav.currentView === 'lineage-view' }"
+       x-data="{html:''}" x-html="html">
     <div class="view-scroll"><div id="lineage-content"></div></div>
   </div>
 
   <!-- Graph View -->
   <div id="graph-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'graph-view' }">
+       :class="{ active: $store.nav.currentView === 'graph-view' }"
+       x-data="{html:''}" x-html="html">
     <div class="view-scroll"><div id="graph-content"></div></div>
   </div>
 
   <!-- Knowledge View (global ingested knowledge browser) -->
   <div id="knowledge-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'knowledge-view' }">
+       :class="{ active: $store.nav.currentView === 'knowledge-view' }"
+       x-data="{html:''}" x-html="html">
     <div class="view-scroll"><div id="knowledge-content"></div></div>
   </div>
 
   <!-- Knowledge Precipitation (async cycle) -->
   <div id="precipitate-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'precipitate-view' }">
+       :class="{ active: $store.nav.currentView === 'precipitate-view' }"
+       x-data="{html:''}" x-html="html">
     <div class="view-scroll"><div id="precipitate-content"></div></div>
   </div>
 
   <!-- Knowledge Review Queue -->
   <div id="review-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'review-view' }">
+       :class="{ active: $store.nav.currentView === 'review-view' }"
+       x-data="{html:''}" x-html="html">
     <div class="view-scroll"><div id="review-content"></div></div>
   </div>
 
@@ -273,7 +279,8 @@
 
   <!-- Journal View -->
   <div id="journal-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'journal-view' }">
+       :class="{ active: $store.nav.currentView === 'journal-view' }"
+       x-data="{html:''}" x-html="html">
     <div class="view-scroll"><div id="journal-content"></div></div>
   </div>
 

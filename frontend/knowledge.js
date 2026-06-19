@@ -2,6 +2,15 @@
  * Phase 9 migration. Alpine-managed knowledge browser with reactive filters.
  */
 
+// ── Helpers ────────────────────────────────────────────
+
+function _renderView(viewId, contentId, html) {
+  var el = document.getElementById(contentId);
+  if (el) el.innerHTML = html;
+  var view = document.getElementById(viewId);
+  if (view && view.__x) { view.__x.$data.html = html; }
+}
+
 // ── Constants ─────────────────────────────────────────
 
 var _EVENT_LABELS = {
