@@ -257,7 +257,7 @@ class EpistemicStore:
         cid = f"ec_{int(time.time())}_{uuid.uuid4().hex[:6]}"
 
         # Set expiration based on epistemic level
-        expires = 0
+        expires = 0.0
         if level == EpistemicLevel.EXPERIENCE:
             expires = time.time() + (14 * 86400)   # 14 days
         elif level == EpistemicLevel.EVIDENCE:

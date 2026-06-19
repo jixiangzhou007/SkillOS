@@ -336,12 +336,12 @@ def list_skill_metadata(tenant_id: str) -> list[dict]:
 def _row_to_tenant(row: sqlite3.Row | tuple) -> TenantRecord:
     if hasattr(row, "keys"):
         return TenantRecord(
-            tenant_id=row["tenant_id"],
-            tenant_type=row["tenant_type"],
-            owner_user_id=row["owner_user_id"],
-            org_id=row["org_id"],
-            name=row["name"],
-            created_at=row["created_at"],
+            tenant_id=row["tenant_id"],  # type: ignore[call-overload]
+            tenant_type=row["tenant_type"],  # type: ignore[call-overload]
+            owner_user_id=row["owner_user_id"],  # type: ignore[call-overload]
+            org_id=row["org_id"],  # type: ignore[call-overload]
+            name=row["name"],  # type: ignore[call-overload]
+            created_at=row["created_at"],  # type: ignore[call-overload]
         )
     return TenantRecord(
         tenant_id=row[0],
