@@ -140,7 +140,28 @@ function hubView() {
       showHub();
     },
 
-    showReview() { this.mode = 'review'; /* load handled by old function */ },
+    // Review queue
+    reviewItems: [],
+    reviewLoading: false,
+
+    async showReview() {
+      this.mode = 'review';
+      this.reviewLoading = true;
+      try {
+        var r = await api('/api/marketplace/review-queue');
+        if (r.ok) { var d = await r.json(); this.reviewItems = d.items || []; }
+      } catch(e) { this.reviewItems = []; }
+      this.reviewLoading = false;
+    },
+    async reviewSkill(skillId, approved) {
+      await api('/api/marketplace/review/' + encodeURIComponent(skillId), {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({approved: approved}),
+      });
+      toast(approved ? '已通过' : '已拒绝', 'success');
+      this.showReview();
+    },
+
     showAdmin() { this.mode = 'admin'; },
     showRevenue() { this.mode = 'revenue'; },
     backToCatalog() { this.mode = 'catalog'; this.loadCatalog(); },

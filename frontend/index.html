@@ -379,7 +379,24 @@
 
       <!-- Review mode -->
       <template x-if="mode === 'review'">
-        <div id="hub-review-content"><div style="color:var(--text3)">加载审核队列…</div></div>
+        <div>
+          <button class="nav-sm" @click="backToCatalog()" style="margin-bottom:12px">← 返回</button>
+          <div style="font-size:16px;font-weight:600;margin-bottom:12px">审核队列</div>
+          <template x-if="reviewLoading"><div style="color:var(--text3);padding:20px">加载中…</div></template>
+          <template x-if="!reviewLoading && !reviewItems.length">
+            <div class="empty-state"><div class="icon">✅</div><div class="title">暂无待审核技能</div></div>
+          </template>
+          <template x-for="item in reviewItems" :key="item.skill_id||item.id">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px">
+              <div style="font-weight:600;margin-bottom:4px" x-text="item.name||item.skill_id"></div>
+              <div style="font-size:12px;color:var(--text3);margin-bottom:8px" x-text="(item.description||'').substring(0,150)"></div>
+              <div style="display:flex;gap:8px">
+                <button class="nav-sm" style="border-color:var(--accent);color:var(--accent)" @click="reviewSkill(item.skill_id, true)">通过</button>
+                <button class="nav-sm" style="color:var(--err)" @click="reviewSkill(item.skill_id, false)">拒绝</button>
+              </div>
+            </div>
+          </template>
+        </div>
       </template>
 
       <!-- Admin mode -->
