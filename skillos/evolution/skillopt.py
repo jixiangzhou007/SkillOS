@@ -1051,7 +1051,7 @@ def audit_skill(
 
     try:
         raw = call(prompt, model=llm_args[2] if len(llm_args) > 2 else "",
-                   max_tokens=800, temperature=0.1)
+                   max_tokens=1500, temperature=0.1)
     except Exception as e:
         _log.warning("Auditor LLM call failed: %s", e)
         return AuditReport(passed=True, score=100,

@@ -300,6 +300,21 @@ SKILL.md 应该精简。详细内容放到 references/ 里。
     agent._draft_name = name
     agent._draft_content = final_content
 
+    # Epistemic claim recording: extract and classify claims from URL-learned skill
+    try:
+        from skillos.knowledge.epistemology import record_claim
+        claims = extract_claims_from_skill(final_content)
+        for claim_text in claims:
+            record_claim(
+                content=claim_text,
+                source=f"url_learning:{url}",
+                source_type="url_content",
+                skill_name=name,
+            )
+        _log.info("Recorded %d claims from URL learning '%s'", len(claims), name)
+    except Exception:
+        _log.debug("Epistemic recording skipped in URL learning", exc_info=True)
+
     diff_skills = [d for d in diffusion_results if d.startswith("✅")]
 
     summary = (

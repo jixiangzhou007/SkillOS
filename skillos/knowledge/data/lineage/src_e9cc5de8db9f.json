@@ -4,15 +4,15 @@
   "source_title": "演示",
   "created_at": 1781579821.4222603,
   "summary": {
-    "total_items": 9,
+    "total_items": 10,
     "by_category": {
-      "heuristic": 9
+      "heuristic": 10
     },
     "by_epistemic_level": {
-      "knowledge": 9
+      "knowledge": 10
     },
     "confidence_distribution": {
-      "high": 9,
+      "high": 10,
       "medium": 0,
       "low": 0
     }
@@ -25,7 +25,7 @@
       "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.77,
+      "strength": 0.76,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -72,9 +72,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 0.92
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 0.92
         }
       ],
-      "related_count": 8,
+      "related_count": 9,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -86,8 +91,7 @@
       "created_at": 1781579821.4220297,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781579821.4220297
+      "superseded_by": ""
     },
     {
       "item_id": "ki_4143d259",
@@ -96,7 +100,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.71,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -138,9 +142,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 0.92
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 0.92
         }
       ],
-      "related_count": 7,
+      "related_count": 8,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -152,8 +161,7 @@
       "created_at": 1781581166.5299916,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781581166.5299916
+      "superseded_by": ""
     },
     {
       "item_id": "ki_a2c4fb16",
@@ -162,7 +170,7 @@
       "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.68,
+      "strength": 0.66,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -199,9 +207,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 1.0
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 1.0
         }
       ],
-      "related_count": 6,
+      "related_count": 7,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -213,8 +226,7 @@
       "created_at": 1781594624.1383631,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781594624.1383631
+      "superseded_by": ""
     },
     {
       "item_id": "ki_e3242113",
@@ -223,7 +235,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 0.98,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -255,9 +267,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 1.0
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 1.0
         }
       ],
-      "related_count": 5,
+      "related_count": 6,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -265,12 +282,11 @@
           "timestamp": 1781796021.1620247
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781796021.1620247,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781796021.1620247
+      "superseded_by": ""
     },
     {
       "item_id": "ki_8ef99c68",
@@ -279,7 +295,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 0.98,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -306,9 +322,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 1.0
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 1.0
         }
       ],
-      "related_count": 4,
+      "related_count": 5,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -316,12 +337,11 @@
           "timestamp": 1781796198.3025875
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781796198.3025875,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781796198.3025875
+      "superseded_by": ""
     },
     {
       "item_id": "ki_f358278a",
@@ -330,7 +350,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 0.98,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -352,9 +372,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 1.0
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 1.0
         }
       ],
-      "related_count": 3,
+      "related_count": 4,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -362,12 +387,11 @@
           "timestamp": 1781796528.9745176
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781796528.9745176,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781796528.9745176
+      "superseded_by": ""
     },
     {
       "item_id": "ki_7de38374",
@@ -376,7 +400,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 0.93,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -393,9 +417,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 1.0
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 1.0
         }
       ],
-      "related_count": 2,
+      "related_count": 3,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -403,12 +432,11 @@
           "timestamp": 1781798022.2726994
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781798022.2726994,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781798022.2726994
+      "superseded_by": ""
     },
     {
       "item_id": "ki_f4e29602",
@@ -417,7 +445,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 0.83,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -429,9 +457,14 @@
           "item_id": "ki_654af86e",
           "relation_type": "same_source",
           "weight": 1.0
+        },
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 1.0
         }
       ],
-      "related_count": 1,
+      "related_count": 2,
       "affected_skills": [
         {
           "skill_name": "演示",
@@ -439,12 +472,11 @@
           "timestamp": 1781800440.2466834
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781800440.2466834,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781800440.2466834
+      "superseded_by": ""
     },
     {
       "item_id": "ki_654af86e",
@@ -453,7 +485,42 @@
       "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 0.79,
+      "source": {
+        "url": "skill://演示",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_678afb93",
+          "relation_type": "same_source",
+          "weight": 1.0
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [
+        {
+          "skill_name": "演示",
+          "score_delta": 1.0,
+          "timestamp": 1781804184.5952284
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781804184.5952284,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_678afb93",
+      "content": "技能「演示」: # 演示  ## When to use - keywords: demo  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请求或对话上下文  ## Outputs - stat",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
       "source": {
         "url": "skill://演示",
         "paragraph": 0
@@ -466,15 +533,14 @@
         {
           "skill_name": "演示",
           "score_delta": 1.0,
-          "timestamp": 1781804184.5952284
+          "timestamp": 1781829498.7510254
         }
       ],
-      "access_count": 1,
-      "created_at": 1781804184.5952284,
+      "access_count": 0,
+      "created_at": 1781829498.7510254,
       "valid_at": 0.0,
       "invalid_at": 0.0,
-      "superseded_by": "",
-      "last_accessed": 1781804184.5952284
+      "superseded_by": ""
     }
   ]
 }
