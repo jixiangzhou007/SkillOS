@@ -24,10 +24,10 @@ class TestPaperArtifacts:
     def test_submit_checklist_exists(self):
         assert (PAPER_DIR / "SUBMIT.md").exists()
 
-    def test_changelog_v020(self):
+    def test_changelog_v030(self):
         cl = (Path(__file__).resolve().parents[1] / "CHANGELOG.md").read_text(encoding="utf-8")
-        assert "## v0.2.0" in cl
-        assert "Epistemic Benchmark" in cl
+        assert "## v0.3.0" in cl
+        assert "32 commits" in cl
 
     def test_readme_narrative(self):
         readme = (Path(__file__).resolve().parents[1] / "README.md").read_text(encoding="utf-8")

@@ -18,7 +18,7 @@ skillos-mcp                      # MCP 服务器 (Claude Code / Cursor)
 
 # 验证
 curl http://127.0.0.1:9876/health
-# → {"status": "ok", "version": "0.2.1"}
+# → {"status": "ok", "version": "0.3.0"}
 ```
 
 ## 配置

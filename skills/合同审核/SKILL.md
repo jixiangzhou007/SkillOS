@@ -1,252 +1,214 @@
 ---
 name: 合同审核
 created_at: '2026-06-15T06:04:59Z'
-updated_at: '2026-06-18T17:33:56Z'
-description: 审核销售合同中的关键条款（价格、质保、责任、知识产权、违约金），识别风险并给出修改建议。
+updated_at: '2026-06-19T02:03:16Z'
+description: Handles 合同审核 workflows with step-by-step instructions. Use when the user
+  mentions 合同审核 or related tasks.
 portable_slug: skill-aecb7055
 draft: false
 domain: law
 domain_label: 法学
 philosophical_dna: pdca
 philosophical_dna_label: PDCA 循环
+philosophical_dna_secondary:
+- ooda
 methodology: business-process
 methodology_label: PDCA 循环
 dna_lineage:
   philosophical:
   - id: pdca
-    weight: 1.0
+    weight: 0.67
+  - id: ooda
+    weight: 0.33
   domain:
   - id: law-contract-review
-    version: 1.5.0
-    weight: 0.71
+    version: 1.6.0
+    weight: 0.83
     primary: true
-  - id: code-review-pr
-    version: 1.4.0
-    weight: 0.14
-    primary: false
-  - id: design-ui-review
+  - id: media-publish
     version: 1.0.0
-    weight: 0.14
+    weight: 0.17
     primary: false
-  detected_at: '2026-06-18T17:33:56Z'
-  domain_key: law
+  detected_at: '2026-06-19T02:03:16Z'
   conflicts:
-  - 代码审查 vs UI 设计评审：请确认评审对象是代码变更还是设计稿。
+  - 'PDCA(标准化渐进) vs OODA(快速适应): 两者都是迭代循环，但节奏不同。请明确本流程偏向SOP化(PDCA)还是实时响应(OODA)。'
+  domain_key: law
 bench_categories:
 - documentation
 - workflow
 bench_quality:
-  checked_at: 1781804036
+  checked_at: 1781834665
   dna_compliance:
-    before: 5/6
-    after: 5/6
-    passed: 5
+    score: 6/6
+    passed: 6
     total: 6
-    all_passed: false
+    all_passed: true
   save_gate:
-    gate_enabled: true
-    domain_smoke_suite:
-    - &id001
-      task_id: workflow-080
-      category: workflow
-      without_score: 100
-      with_score: 100
-      max_score: 100
-      passed: true
-      delta: 0
-    domain_smoke: *id001
+    smoke_pass: false
+    min_with_score: 24
+    tasks:
+    - workflow-080
   moe:
-    overall_score: 85
+    overall_score: 82
     passed: true
     confidence: 0.7
     dimensions:
-      structure: 92
+      structure: 97
       security: 100
-      params: 88
+      params: 72
       routing: 60
-      content: 88
+      content: 83
       brevity: 78
     boost_rounds:
     - boosted: true
       expert_key: params
-      before_score: 35
+      before_score: 27
       section: S_params
       round: 1
-      score_before: 78
+      score_before: 74
       soft_boost: true
-      score_after: 85
+      score_after: 82
 epistemic:
   source: session:test-meta-no-restart
   source_type: conversation
   total_claims: 40
-  verified: 33
-  pending: 7
+  verified: 39
+  pending: 1
   preferences: 0
   errors: 0
   claim_ids:
-  - ec_1781804037_b9e5e2
-  - ec_1781804038_a9f78f
-  - ec_1781804040_9dc61c
-  - ec_1781804041_092560
-  - ec_1781804042_93f773
-  - ec_1781804043_82f65d
-  - ec_1781804044_d5349e
-  - ec_1781804045_2db6b7
-  - ec_1781804046_a45b0c
-  - ec_1781804047_d08ad3
-  - ec_1781804048_730b05
-  - ec_1781804050_d5fcb3
-  - ec_1781804051_8ebb0c
-  - ec_1781804052_ad95ed
-  - ec_1781804053_d765ac
-  - ec_1781804054_a972db
-  - ec_1781804055_7b8268
-  - ec_1781804056_43cea9
-  - ec_1781804057_7e380b
-  - ec_1781804058_ae9a9e
-  - ec_1781804059_e38eaf
-  - ec_1781804060_cc35a5
-  - ec_1781804061_c57d1a
-  - ec_1781804061_0dcf0c
-  - ec_1781804061_ff1fba
-  - ec_1781804062_ae04d0
-  - ec_1781804063_27d537
-  - ec_1781804064_f1b700
-  - ec_1781804065_624926
-  - ec_1781804066_0ced20
-  - ec_1781804067_fd63fc
-  - ec_1781804068_b5b9d0
-  - ec_1781804069_0b9b27
-  - ec_1781804070_31637b
-  - ec_1781804071_c63d85
-  - ec_1781804072_abd632
-  - ec_1781804073_adfbf0
-  - ec_1781804073_f80f08
-  - ec_1781804074_46a25a
-  - ec_1781804075_526337
+  - ec_1781834597_c32139
+  - ec_1781834598_32e49f
+  - ec_1781834599_977b44
+  - ec_1781834600_9a2a7a
+  - ec_1781834601_962a1f
+  - ec_1781834601_c5f488
+  - ec_1781834602_803346
+  - ec_1781834603_690a6a
+  - ec_1781834604_fd0d6b
+  - ec_1781834604_91f9e4
+  - ec_1781834605_3c7279
+  - ec_1781834606_2ae545
+  - ec_1781834607_e1f2cd
+  - ec_1781834607_498942
+  - ec_1781834608_e6508a
+  - ec_1781834609_c9e98d
+  - ec_1781834610_f1d338
+  - ec_1781834610_42dadb
+  - ec_1781834611_fb7bb5
+  - ec_1781834612_d2625a
+  - ec_1781834613_777b3b
+  - ec_1781834614_fb8fa7
+  - ec_1781834614_64a91e
+  - ec_1781834615_8e87cb
+  - ec_1781834616_076544
+  - ec_1781834617_f105e1
+  - ec_1781834618_ee3e53
+  - ec_1781834618_117a44
+  - ec_1781834619_311af3
+  - ec_1781834620_b4ba71
+  - ec_1781834620_776d87
+  - ec_1781834621_d4b845
+  - ec_1781834622_8e2ad3
+  - ec_1781834623_9f9b32
+  - ec_1781834623_fb99ef
+  - ec_1781834624_a3d3b5
+  - ec_1781834625_5beb16
+  - ec_1781834625_a82617
+  - ec_1781834626_a5c595
+  - ec_1781834627_97da53
   pending_ids:
-  - ec_1781804061_0dcf0c
-  - ec_1781804061_ff1fba
-  - ec_1781804065_624926
-  - ec_1781804067_fd63fc
-  - ec_1781804068_b5b9d0
-  - ec_1781804069_0b9b27
-  - ec_1781804073_f80f08
-  processed_at: 1781804080.8640115
-version: 15
+  - ec_1781834598_32e49f
+  processed_at: 1781834629.9033768
+version: 16
+---
+
+---
+name: skill-aecb7055
+description: Handles 合同审核 workflows with step-by-step instructions. Use when the user
+  mentions 合同审核 or related tasks.
+metadata:
+  skillos_version: 0.3.0
+  display_name: 合同审核
+  generated_by: SkillOS
+  skillos_slug: skill-aecb7055
 ---
 
 # 合同审核
 
 ## 核心问题
-审核销售合同中的关键条款（价格、质保、责任、知识产权、违约金），识别风险并给出修改建议。
+快速识别销售合同中的关键条款风险，提供初步审核意见。
 
-## When to use
-- keywords: contract, 合同, 审核, 审阅, 条款, 风险
-- context: 用户上传或提及销售合同文件，需要分析合同条款风险并提出修改建议时
-- excludes: 用户仅询问合同模板或合同范本，不涉及具体合同审核；用户上传的是非合同类文件（如发票、订单）
+## S_trigger
+- keywords: contract, 合同审核, 审合同, 销售合同
+- context: 用户上传文件或提出审核合同的需求时
+- excludes: 文件名不包含 "contract" 且用户未明确要求审核合同；文件类型不是销售合同
 
-## S_params
-
-### 参数化设计原则
-本技能所有业务规则、风险阈值、审核范围及触发条件均需通过参数配置实现，禁止硬编码。参数分为三级：**全局默认参数**（适用于所有合同）、**企业级覆盖参数**（按客户/企业定制）、**单次调用参数**（用户临时指定）。参数优先级：单次调用 > 企业级覆盖 > 全局默认。
-
-### 参数列表
-
-| 参数名 | 类型 | 默认值 | 说明 | 覆盖层级 |
-|--------|------|--------|------|----------|
-| `risk_thresholds.liability_cap_min` | float | 1.0 | 责任限制条款中，责任上限占合同总价的最低比例（如1.0表示100%），低于此值标记为高风险 | 全局/企业/单次 |
-| `risk_thresholds.liquidated_damages_max` | float | 0.3 | 违约金占合同总价的最高比例（如0.3表示30%），超过此值标记为高风险 | 全局/企业/单次 |
-| `risk_thresholds.warranty_period_min_days` | int | 365 | 质保期最短天数，低于此值标记为中风险 | 全局/企业/单次 |
-| `risk_thresholds.payment_term_max_days` | int | 90 | 最长账期天数，超过此值标记为中风险 | 全局/企业/单次 |
-| `review_scope.required_clauses` | list[string] | ["价格与付款", "质保", "责任限制", "知识产权", "违约金"] | 必须审核的核心条款列表，可增删 | 全局/企业/单次 |
-| `review_scope.optional_clauses` | list[string] | ["保密", "终止", "不可抗力", "争议解决"] | 可选审核的附加条款列表 | 全局/企业/单次 |
-| `trigger_conditions.file_keywords` | list[string] | ["contract", "合同", "销售合同", "采购合同"] | 自动触发审核的文件名关键词列表 | 全局/企业/单次 |
-| `trigger_conditions.auto_trigger_enabled` | bool | true | 是否启用文件名关键词自动触发 | 全局/企业/单次 |
-| `risk_levels.high` | dict | {"label": "高风险", "color": "red", "priority": 1} | 高风险等级的定义（标签、颜色、优先级） | 全局/企业 |
-| `risk_levels.medium` | dict | {"label": "中风险", "color": "yellow", "priority": 2} | 中风险等级的定义 | 全局/企业 |
-| `risk_levels.low` | dict | {"label": "低风险", "color": "green", "priority": 3} | 低风险等级的定义 | 全局/企业 |
-| `output.default_format` | string | "详细报告" | 默认输出格式，可选值：["详细报告", "摘要", "表格"] | 全局/企业/单次 |
-| `output.include_negotiation_priority` | bool | true | 是否在报告中包含谈判优先级建议 | 全局/企业/单次 |
-| `enterprise_config` | dict | {} | 企业级配置对象，包含企业名称、自定义阈值、审核范围覆盖等 | 企业 |
-
-### 参数使用规则
-
-1. **风险阈值参数**：在步骤3「逐条风险评估」中，所有比较判断必须引用对应参数值，不得使用硬编码数字。例如：
-   - 判断违约金比例时，使用 `risk_thresholds.liquidated_damages_max` 而非固定值30%
-   - 判断责任上限时，使用 `risk_thresholds.liability_cap_min` 而非固定值100%
-
-2. **审核范围参数**：在步骤2「提取并解析合同关键条款」中，`required_clauses` 决定必须提取的条款，`optional_clauses` 决定可选提取的条款。若企业配置中增删了条款，则按企业配置执行。
-
-3. **触发条件参数**：在步骤1「识别合同类型与触发条件」中，`file_keywords` 决定自动触发的文件名匹配规则。若 `auto_trigger_enabled` 为 false，则所有文件上传均需用户确认。
-
-4. **企业级覆盖**：当系统识别到用户所属企业（如通过用户上下文或显式指定），应加载该企业的 `enterprise_config`，将其中的参数值覆盖全局默认值。企业配置可通过外部接口或配置文件动态加载。
-
-5. **单次调用覆盖**：用户可在本次审核请求中通过输入参数临时指定某些参数值（如 `risk_thresholds.liquidated_damages_max = 0.2`），该值仅本次生效，优先级最高。
-
-### 参数配置示例
-
-```json
-{
-  "risk_thresholds": {
-    "liability_cap_min": 1.0,
-    "liquidated_damages_max": 0.3,
-    "warranty_period_min_days": 365,
-    "payment_term_max_days": 90
-  },
-  "review_scope": {
-    "required_clauses": ["价格与付款", "质保", "责任限制", "知识产权", "违约金"],
-    "optional_clauses": ["保密", "终止", "不可抗力", "争议解决"]
-  },
-  "trigger_conditions": {
-    "file_keywords": ["contract", "合同
-
-## Instructions
+## S_body
 Follow these steps in order. Ask the user if anything is marked [待确认].
 
-1.  **识别合同类型与触发条件**
-    -   **if** 用户上传文件，且文件名包含 "contract" → 进入步骤2。
-    -   **if** 用户上传文件，但文件名不包含 "contract" → 询问用户是否仍要执行合同审核流程，等待用户确认。
-    -   **if** 用户未上传文件，但提出审核合同的需求 → 要求用户上传合同文件。
+1.  接收用户上传的文件，检查文件名是否包含 "contract" 或用户是否明确要求审核合同。
+    - 如果文件名包含 "contract" 或用户明确要求，则进入步骤 2。
+    - 否则，不触发本技能，并提示用户：“请提供文件名包含‘contract’的销售合同文件，或明确说明需要审核合同。”
+2.  确认文件类型是否为销售合同。
+    - 如果文件内容明确为销售合同（例如，包含“销售合同”、“买卖合同”等标题或条款），则进入步骤 3。
+    - 如果文件不是销售合同（例如，是劳动合同、租赁合同等），则终止流程，并提示用户：“当前文件不是销售合同，本技能仅适用于销售合同审核。”
+3.  读取并解析合同全文，提取关键条款信息，包括但不限于：
+    - 合同双方信息
+    - 标的物描述与价格
+    - 付款方式与期限
+    - 交付与验收条款
+    - 质量保证与保修条款
+    - 违约责任与赔偿限额
+    - 知识产权归属
+    - 保密条款
+    - 争议解决方式
+    - 合同期限与终止条件
+4.  根据以下规则对提取的条款进行风险审核：
+    - **价格与付款条款**：检查价格是否明确、付款节点是否清晰、是否存在不合理的预付款或尾款比例。
+    - **质量保证条款**：检查质保期是否过长或过短、质保范围是否明确、维修响应时间是否合理。
+    - **违约责任条款**：检查违约金比例是否过高（通常不超过合同总金额的30%）、赔偿限额是否对己方不利、是否存在单方免责条款。
+    - **知识产权条款**：检查在合作过程中产生的知识产权归属是否清晰、是否存在将己方背景知识产权无偿转让给对方的风险。
+    - **争议解决条款**：检查争议解决方式（仲裁或诉讼）是否对己方有利、管辖地是否合理。
+5.  汇总审核结果，生成结构化报告。
+    - 如果发现高风险条款，在报告中明确标记，并给出修改建议。
+    - 如果所有条款风险可控，则在报告中说明“未发现重大风险”。
+    - 如果无法解析合同内容或条款不完整，则在报告中说明“无法完成审核，请提供完整清晰的合同文件”。
 
-2.  **提取并解析合同关键条款**
-    -   读取合同全文，提取以下五个核心条款的原文内容：
-        -   a. 价格与付款条款
-        -   b. 质保条款
-        -   c. 责任限制条款
-        -   d. 知识产权条款
-        -   e. 违约金条款
-    -   **if** 合同中缺少上述任一核心条款 → 在步骤4的风险报告中标记为「缺失条款，存在重大风险」。
-
-3.  **逐条风险评估**
-    -   对步骤2提取的每个条款，按以下标准进行风险判断：
-        -   **价格与付款**：是否存在模糊的付款节点、过长的账期、或与市场惯例不符的定价机制？
-        -   **质保**：质保期是否过短？质保范围是否排除了关键部件或服务？
-        -   **责任限制**：责任上限是否过低（如低于合同总价的100%）？是否存在排除间接损失的条款？
-        -   **知识产权**：知识产权归属是否清晰？是否有对己方不利的授权或保证条款？
-        -   **违约金**：违约金比例是否过高（如超过合同总价的30%）？是否存在单方面惩罚性条款？
-    -   **if** 条款存在风险 → 记录风险等级（高/中/低）并给出修改建议。
-    -   **if** 条款无风险 → 标记为「通过」。
-
-4.  **生成审核报告**
-    -   汇总步骤3的结果，生成结构化报告，包含：
-        -   **合同基本信息**：合同名称、签约方。
-        -   **风险总览**：高风险项数量、中风险项数量、低风险项数量。
-        -   **条款详情**：逐条列出风险等级、风险描述、修改建议。
-        -   **谈判优先级**：建议优先谈判的高风险条款。
-    -   **if** 用户要求修改报告格式（如导出为表格或摘要）→ 根据用户要求调整输出格式。
-
-## Decision routes
+## S_route
 | 用户意图/条件 | 执行动作 | 备注 |
-|------------|---------|------|
-| 用户上传文件，文件名包含 "contract" | 自动触发合同审核流程，从步骤2开始执行 | 主要触发路径 |
-| 用户上传文件，文件名不包含 "contract" | 询问用户是否确认执行合同审核 | 防止误触发 |
-| 用户未上传文件，但要求审核合同 | 要求用户上传合同文件 | 前置条件不满足 |
-| 用户要求调整报告格式 | 根据用户要求重新组织报告输出 | 灵活响应 |
+| :--- | :--- | :--- |
+| 文件名包含 "contract" | 执行 S_body 步骤 2-5 | 主要触发路径 |
+| 用户明确要求审核合同 | 执行 S_body 步骤 1-5 | 次要触发路径 |
+| 文件名不包含 "contract" 且用户未要求 | 不触发，提示用户 | 避免误触发 |
+| 文件不是销售合同 | 终止流程，提示用户 | 类型不匹配 |
+| 合同内容无法解析 | 输出“无法完成审核”报告 | 异常处理 |
 
-## Inputs
-- contract_file: file, 必填，待审核的合同文件（支持 .docx, .pdf, .txt 格式）
-- output_format: string, 默认值 "详细报告"，可选值 ["详细报告", "摘要", "表格"]，控制审核报告的呈现格式
+## S_params
+- file_path: string, 无默认值，用户上传的文件路径
+- contract_type: string, 默认值 "sales"，文件类型，当前仅支持销售合同
+- risk_thresholds: dict, 默认值如下，风险审核规则中的关键阈值参数化，允许用户按需调整：
+  - penalty_ratio_max: float, 默认值 0.3，违约金比例上限（如合同总金额的30%），超过此值标记为高风险
+  - warranty_period_min: int, 默认值 12，质保期最短月数，低于此值标记为风险
+  - warranty_period_max: int, 默认值 60，质保期最长月数，超过此值标记为风险
+  - prepayment_ratio_max: float, 默认值 0.5，预付款比例上限，超过此值标记为风险
+  - tail_ratio_min: float, 默认值 0.1，尾款比例下限，低于此值标记为风险
+  - response_time_max: int, 默认值 48，维修响应时间上限（小时），超过此值标记为风险
+- judgment_rules: dict, 默认值如下，风险判断标准参数化，支持自定义审核策略：
+  - check_price_clarity: bool, 默认值 true，是否检查价格明确性
+  - check_payment_milestones: bool, 默认值 true，是否检查付款节点清晰度
+  - check_warranty_scope: bool, 默认值 true，是否检查质保范围明确性
+  - check_liability_cap: bool, 默认值 true，是否检查赔偿限额对己方不利
+  - check_unilateral_exemption: bool, 默认值 true，是否检查单方免责条款
+  - check_ip_ownership: bool, 默认值 true，是否检查知识产权归属清晰性
+  - check_background_ip_transfer: bool, 默认值 true，是否检查背景知识产权无偿转让风险
+  - check_dispute_method: bool, 默认值 true，是否检查争议解决方式对己方有利
+  - check_jurisdiction: bool, 默认值 true，是否检查管辖地合理性
+- custom_rules: list of dict, 默认值 []，用户可自定义扩展的审核规则列表，每条规则包含：
+  - rule_name: string，规则名称
+  - condition: string，条件表达式（如 "price > 1000000"）
+  - risk_level: string，风险等级（"high" / "medium" / "low"）
+  - suggestion: string，修改建议
 
 ## Outputs
 - status: enum — 执行结果（success / pending / rejected / escalated）
@@ -257,27 +219,21 @@ Follow these steps in order. Ask the user if anything is marked [待确认].
 > 经验 ≠ 知识。硬规则区应优先采用「已验证」声明。
 
 ### 已验证
-- ✅ keywords: contract, 合同, 审核, 审阅, 条款, 风险
-- ✅ context: 用户上传或提及销售合同文件，需要分析合同条款风险并提出修改建议时
-- ✅ excludes: 用户仅询问合同模板或合同范本，不涉及具体合同审核；用户上传的是非合同类文件（如发票、订单）
-- ✅ 参数名 → 类型
-- ✅ `risk_thresholds.liability_cap_min` → float
-- ✅ `risk_thresholds.liquidated_damages_max` → float
-- ✅ `risk_thresholds.warranty_period_min_days` → int
-- ✅ `risk_thresholds.payment_term_max_days` → int
-- ✅ `review_scope.required_clauses` → list[string]
-- ✅ `review_scope.optional_clauses` → list[string]
-- ✅ `trigger_conditions.file_keywords` → list[string]
-- ✅ `trigger_conditions.auto_trigger_enabled` → bool
-- ✅ `risk_levels.high` → dict
-- ✅ `risk_levels.medium` → dict
-- ✅ `risk_levels.low` → dict
+- ✅ keywords: contract, 合同审核, 审合同, 销售合同
+- ✅ excludes: 文件名不包含 "contract" 且用户未明确要求审核合同；文件类型不是销售合同
+- ✅ 接收用户上传的文件，检查文件名是否包含 "contract" 或用户是否明确要求审核合同。
+- ✅ 如果文件名包含 "contract" 或用户明确要求，则进入步骤 2。
+- ✅ 否则，不触发本技能，并提示用户：“请提供文件名包含‘contract’的销售合同文件，或明确说明需要审核合同。”
+- ✅ 确认文件类型是否为销售合同。
+- ✅ 如果文件内容明确为销售合同（例如，包含“销售合同”、“买卖合同”等标题或条款），则进入步骤 3。
+- ✅ 如果文件不是销售合同（例如，是劳动合同、租赁合同等），则终止流程，并提示用户：“当前文件不是销售合同，本技能仅适用于销售合同审核。”
+- ✅ 读取并解析合同全文，提取关键条款信息，包括但不限于：
+- ✅ 根据以下规则对提取的条款进行风险审核：
+- ✅ 价格与付款条款：检查价格是否明确、付款节点是否清晰、是否存在不合理的预付款或尾款比例。
+- ✅ 质量保证条款：检查质保期是否过长或过短、质保范围是否明确、维修响应时间是否合理。
+- ✅ 违约责任条款：检查违约金比例是否过高（通常不超过合同总金额的30%）、赔偿限额是否对己方不利、是否存在单方免责条款。
+- ✅ 知识产权条款：检查在合作过程中产生的知识产权归属是否清晰、是否存在将己方背景知识产权无偿转让给对方的风险。
+- ✅ 争议解决条款：检查争议解决方式（仲裁或诉讼）是否对己方有利、管辖地是否合理。
 
 ### 待确认
-- 📋 [evidence] 企业级覆盖：当系统识别到用户所属企业（如通过用户上下文或显式指定），应加载该企业的 enterprise_config，将其中的参数值覆盖全局默认值。企业配置可通过外部接口或配置文件动态加载。 (`ec_1781804061_0dcf0c`)
-- 📋 [evidence] 单次调用覆盖：用户可在本次审核请求中通过输入参数临时指定某些参数值（如 risk_thresholds.liquidated_damages_max = 0.2），该值仅本次生效，优先级最高。 (`ec_1781804061_ff1fba`)
-- 📋 [evidence] 读取合同全文，提取以下五个核心条款的原文内容： (`ec_1781804065_624926`)
-- ⏳ [待验证] 对步骤2提取的每个条款，按以下标准进行风险判断： (`ec_1781804067_fd63fc`)
-- ⏳ [待验证] 价格与付款：是否存在模糊的付款节点、过长的账期、或与市场惯例不符的定价机制？ (`ec_1781804068_b5b9d0`)
-- ⏳ [待验证] 质保：质保期是否过短？质保范围是否排除了关键部件或服务？ (`ec_1781804069_0b9b27`)
-- 📋 [evidence] if 条款无风险 → 标记为「通过」。 (`ec_1781804073_f80f08`)
+- ⏳ [待验证] context: 用户上传文件或提出审核合同的需求时 (`ec_1781834598_32e49f`)

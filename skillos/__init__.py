@@ -5,4 +5,4 @@ knowledge engineering pipeline: deep document digestion, epistemology verificati
 multi-expert skill evolution, and marketplace distribution.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.3.0"

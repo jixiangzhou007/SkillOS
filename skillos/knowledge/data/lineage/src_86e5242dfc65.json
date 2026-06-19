@@ -4,16 +4,16 @@
   "source_title": "Phase1 Test",
   "created_at": 1781537921.2942016,
   "summary": {
-    "total_items": 120,
+    "total_items": 124,
     "by_category": {
-      "concept": 60,
-      "fact": 60
+      "concept": 62,
+      "fact": 62
     },
     "by_epistemic_level": {
-      "knowledge": 120
+      "knowledge": 124
     },
     "confidence_distribution": {
-      "high": 98,
+      "high": 102,
       "medium": 22,
       "low": 0
     }
@@ -26,7 +26,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -328,9 +328,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 59,
+      "related_count": 61,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781537921.293934,
@@ -346,7 +356,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -370,7 +380,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -667,9 +677,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 58,
+      "related_count": 60,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781537921.6044183,
@@ -685,7 +705,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -709,7 +729,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -1001,9 +1021,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 57,
+      "related_count": 59,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538111.6732705,
@@ -1019,7 +1049,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -1043,7 +1073,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -1330,9 +1360,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 56,
+      "related_count": 58,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538111.9031572,
@@ -1348,7 +1388,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -1372,7 +1412,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -1654,9 +1694,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 55,
+      "related_count": 57,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538699.192507,
@@ -1672,7 +1722,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -1696,7 +1746,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -1973,9 +2023,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 54,
+      "related_count": 56,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538699.503183,
@@ -1991,7 +2051,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -2015,7 +2075,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -2287,9 +2347,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 53,
+      "related_count": 55,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538725.2296994,
@@ -2305,7 +2375,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -2329,7 +2399,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -2596,9 +2666,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 52,
+      "related_count": 54,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538725.5502634,
@@ -2614,7 +2694,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -2638,7 +2718,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -2900,9 +2980,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 51,
+      "related_count": 53,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538752.4500227,
@@ -2918,7 +3008,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -2942,7 +3032,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -3199,9 +3289,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 50,
+      "related_count": 52,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538752.747606,
@@ -3217,7 +3317,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -3241,7 +3341,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -3493,9 +3593,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 49,
+      "related_count": 51,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538785.1140893,
@@ -3511,7 +3621,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -3535,7 +3645,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -3782,9 +3892,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 48,
+      "related_count": 50,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781538785.4265802,
@@ -3800,7 +3920,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -3824,7 +3944,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4066,9 +4186,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 47,
+      "related_count": 49,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539081.5912466,
@@ -4084,7 +4214,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4108,7 +4238,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4345,9 +4475,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 46,
+      "related_count": 48,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539081.8902435,
@@ -4363,7 +4503,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4387,7 +4527,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4619,9 +4759,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 45,
+      "related_count": 47,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539133.7151136,
@@ -4637,7 +4787,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4661,7 +4811,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4888,9 +5038,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 44,
+      "related_count": 46,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539134.0112607,
@@ -4906,7 +5066,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -4930,7 +5090,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5152,9 +5312,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 43,
+      "related_count": 45,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539249.158543,
@@ -5170,7 +5340,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5194,7 +5364,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5411,9 +5581,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 42,
+      "related_count": 44,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539249.460907,
@@ -5429,7 +5609,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5453,7 +5633,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5665,9 +5845,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 41,
+      "related_count": 43,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539385.195344,
@@ -5683,7 +5873,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5707,7 +5897,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5914,9 +6104,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 40,
+      "related_count": 42,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539385.558115,
@@ -5932,7 +6132,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -5956,7 +6156,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6158,9 +6358,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 39,
+      "related_count": 41,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539798.872561,
@@ -6176,7 +6386,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6200,7 +6410,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6397,9 +6607,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 38,
+      "related_count": 40,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539799.2647772,
@@ -6415,7 +6635,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6439,7 +6659,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6631,9 +6851,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 37,
+      "related_count": 39,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539949.54838,
@@ -6649,7 +6879,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6673,7 +6903,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.78,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6860,9 +7090,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 36,
+      "related_count": 38,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781539949.8807163,
@@ -6878,7 +7118,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.6,
+      "strength": 0.58,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -6902,7 +7142,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.82,
+      "strength": 0.8,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7084,9 +7324,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 35,
+      "related_count": 37,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781579778.8111775,
@@ -7102,7 +7352,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.62,
+      "strength": 0.6,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7126,7 +7376,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.82,
+      "strength": 0.8,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7303,9 +7553,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 34,
+      "related_count": 36,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781579779.1102011,
@@ -7321,7 +7581,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.62,
+      "strength": 0.6,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7345,7 +7605,7 @@
       "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.77,
+      "strength": 0.75,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7517,9 +7777,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 33,
+      "related_count": 35,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581120.4611528,
@@ -7535,7 +7805,7 @@
       "confidence": 0.7,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.57,
+      "strength": 0.55,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7559,7 +7829,7 @@
       "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.77,
+      "strength": 0.75,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7726,9 +7996,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 32,
+      "related_count": 34,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581120.9061265,
@@ -7744,7 +8024,7 @@
       "confidence": 0.7,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.57,
+      "strength": 0.55,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7768,7 +8048,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7930,9 +8210,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 31,
+      "related_count": 33,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581756.7193167,
@@ -7948,7 +8238,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -7972,7 +8262,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8129,9 +8419,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 30,
+      "related_count": 32,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581757.0641496,
@@ -8147,7 +8447,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8171,7 +8471,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8323,9 +8623,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 29,
+      "related_count": 31,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581799.6408637,
@@ -8341,7 +8651,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8365,7 +8675,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8512,9 +8822,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 28,
+      "related_count": 30,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581799.9512422,
@@ -8530,7 +8850,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8554,7 +8874,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8696,9 +9016,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 27,
+      "related_count": 29,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581823.4261968,
@@ -8714,7 +9044,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8738,7 +9068,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8875,9 +9205,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 26,
+      "related_count": 28,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581823.780496,
@@ -8893,7 +9233,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -8917,7 +9257,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9049,9 +9389,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 25,
+      "related_count": 27,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581867.0452476,
@@ -9067,7 +9417,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9091,7 +9441,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9218,9 +9568,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 24,
+      "related_count": 26,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781581867.6399682,
@@ -9236,7 +9596,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9260,7 +9620,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9382,9 +9742,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 23,
+      "related_count": 25,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582259.902015,
@@ -9400,7 +9770,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9424,7 +9794,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9541,9 +9911,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 22,
+      "related_count": 24,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582260.276329,
@@ -9559,7 +9939,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9583,7 +9963,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9695,9 +10075,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 21,
+      "related_count": 23,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582340.5154524,
@@ -9713,7 +10103,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9737,7 +10127,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9844,9 +10234,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 20,
+      "related_count": 22,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582340.9438686,
@@ -9862,7 +10262,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9886,7 +10286,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -9988,9 +10388,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 19,
+      "related_count": 21,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582694.74914,
@@ -10006,7 +10416,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10030,7 +10440,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10127,9 +10537,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 18,
+      "related_count": 20,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582695.1356814,
@@ -10145,7 +10565,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10169,7 +10589,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10261,9 +10681,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 17,
+      "related_count": 19,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582732.9520447,
@@ -10279,7 +10709,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10303,7 +10733,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10390,9 +10820,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 16,
+      "related_count": 18,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582733.3624434,
@@ -10408,7 +10848,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10432,7 +10872,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10514,9 +10954,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 15,
+      "related_count": 17,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582909.353379,
@@ -10532,7 +10982,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10556,7 +11006,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.72,
+      "strength": 0.7,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10633,9 +11083,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 14,
+      "related_count": 16,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781582909.703137,
@@ -10651,7 +11111,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.52,
+      "strength": 0.5,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10675,7 +11135,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.71,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10747,9 +11207,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 13,
+      "related_count": 15,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781594526.411907,
@@ -10765,7 +11235,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.51,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10789,7 +11259,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.73,
+      "strength": 0.71,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10856,9 +11326,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 12,
+      "related_count": 14,
       "affected_skills": [],
       "access_count": 0,
       "created_at": 1781594526.768241,
@@ -10874,7 +11354,7 @@
       "confidence": 0.65,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.53,
+      "strength": 0.51,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10898,7 +11378,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -10960,9 +11440,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 11,
+      "related_count": 13,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781795963.9949105,
@@ -10975,10 +11465,10 @@
       "item_id": "ki_cddf21bf",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11002,7 +11492,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11059,9 +11549,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 10,
+      "related_count": 12,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781795964.6458476,
@@ -11074,10 +11574,10 @@
       "item_id": "ki_31aa04b4",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11101,7 +11601,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11153,9 +11653,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 9,
+      "related_count": 11,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781796121.6665788,
@@ -11168,10 +11678,10 @@
       "item_id": "ki_2e0dd64f",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11195,7 +11705,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11242,9 +11752,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 8,
+      "related_count": 10,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781796122.1603124,
@@ -11257,10 +11777,10 @@
       "item_id": "ki_4667acaa",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11284,7 +11804,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11326,9 +11846,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 7,
+      "related_count": 9,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781796447.7737741,
@@ -11341,10 +11871,10 @@
       "item_id": "ki_2df80782",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 1.03,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11368,7 +11898,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11405,9 +11935,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 6,
+      "related_count": 8,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781796448.680755,
@@ -11420,10 +11960,10 @@
       "item_id": "ki_ed60e526",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 1.03,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11447,7 +11987,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11479,9 +12019,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 5,
+      "related_count": 7,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781797969.422467,
@@ -11494,10 +12044,10 @@
       "item_id": "ki_2613311a",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.8,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 0.98,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11521,7 +12071,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.1,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11548,9 +12098,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 4,
+      "related_count": 6,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781797969.8138916,
@@ -11563,10 +12123,10 @@
       "item_id": "ki_0c55a285",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.8,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.9,
+      "strength": 0.98,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11587,10 +12147,10 @@
       "item_id": "ki_a58629ba",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11612,9 +12172,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 3,
+      "related_count": 5,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781799961.7383265,
@@ -11627,10 +12197,10 @@
       "item_id": "ki_cb9db68c",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.75,
+      "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.85,
+      "strength": 0.93,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11651,10 +12221,10 @@
       "item_id": "ki_2809a9da",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.05,
+      "strength": 1.08,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11671,9 +12241,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 2,
+      "related_count": 4,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781799962.12687,
@@ -11686,10 +12266,10 @@
       "item_id": "ki_ad9f4d49",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.75,
+      "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.85,
+      "strength": 0.93,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11710,10 +12290,10 @@
       "item_id": "ki_375be1a7",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 1.03,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11725,9 +12305,19 @@
           "item_id": "ki_cc241f09",
           "relation_type": "same_source",
           "weight": 0.81
+        },
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
         }
       ],
-      "related_count": 1,
+      "related_count": 3,
       "affected_skills": [],
       "access_count": 1,
       "created_at": 1781804120.3035989,
@@ -11740,10 +12330,10 @@
       "item_id": "ki_de2bb5ed",
       "content": "h: s",
       "category": "fact",
-      "confidence": 0.65,
+      "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.75,
+      "strength": 0.83,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
@@ -11764,16 +12354,51 @@
       "item_id": "ki_cc241f09",
       "content": "Alpha: 定义Alpha",
       "category": "concept",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 1.03,
       "source": {
         "url": "file://phase1-test.txt",
         "paragraph": 0
       },
       "pipeline_steps": 0,
       "graph_node": "n_1781537921_1605",
+      "related_items": [
+        {
+          "item_id": "ki_79520414",
+          "relation_type": "same_source",
+          "weight": 0.81
+        },
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 2,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781804120.709589,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781804120.709589
+    },
+    {
+      "item_id": "ki_af797516",
+      "content": "h: s",
+      "category": "fact",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.83,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_3208",
       "related_items": [],
       "related_count": 0,
       "affected_skills": [],
@@ -11785,7 +12410,37 @@
       "last_accessed": 1781804120.709589
     },
     {
-      "item_id": "ki_af797516",
+      "item_id": "ki_79520414",
+      "content": "Alpha: 定义Alpha",
+      "category": "concept",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.95,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_1605",
+      "related_items": [
+        {
+          "item_id": "ki_49cef233",
+          "relation_type": "same_source",
+          "weight": 0.81
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781834684.97242,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781834684.97242
+    },
+    {
+      "item_id": "ki_c0cdd877",
       "content": "h: s",
       "category": "fact",
       "confidence": 0.65,
@@ -11802,11 +12457,59 @@
       "related_count": 0,
       "affected_skills": [],
       "access_count": 1,
-      "created_at": 1781804120.709589,
+      "created_at": 1781834684.97242,
       "valid_at": 0.0,
       "invalid_at": 0.0,
       "superseded_by": "",
-      "last_accessed": 1781804120.709589
+      "last_accessed": 1781834684.97242
+    },
+    {
+      "item_id": "ki_49cef233",
+      "content": "Alpha: 定义Alpha",
+      "category": "concept",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.95,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_1605",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781834685.3721433,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781834685.3721433
+    },
+    {
+      "item_id": "ki_a5b65ad8",
+      "content": "h: s",
+      "category": "fact",
+      "confidence": 0.65,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "file://phase1-test.txt",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "n_1781537921_3208",
+      "related_items": [],
+      "related_count": 0,
+      "affected_skills": [],
+      "access_count": 1,
+      "created_at": 1781834685.3721433,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781834685.3721433
     }
   ]
 }
