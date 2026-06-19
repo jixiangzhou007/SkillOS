@@ -1,10 +1,13 @@
-"""MetaSkill — Multi-skill pipeline orchestration.
+"""MetaSkill — Multi-skill pipeline orchestration with role assignment.
 
-A MetaSkill is a special Markdown document that chains multiple skills into a
-workflow. Instead of pre-defining the exact flow, you describe the goal and
-the runtime auto-assembles the pipeline from available skills.
+A MetaSkill chains multiple skills into a workflow where each step is
+executed by a specialist role with defined acceptance criteria.
 
 Philosophy: "卷 Harness，不卷模型" — compete on orchestration, not model size.
+Role system inspired by Garry Tan's gstack (23 specialist personas).
+
+Roles are not just labels — each role carries acceptance criteria that
+the step output must satisfy before the pipeline can proceed.
 """
 
 
@@ -17,10 +20,64 @@ _log = logging.getLogger(__name__)
 
 META_MARKER = "type: metaskill"
 
+# ── Built-in role templates (inspired by gstack 23 roles) ──
+
+ROLE_TEMPLATES: dict[str, dict] = {
+    "business_analyst": {
+        "id": "business_analyst",
+        "label": "业务分析师",
+        "icon": "📋",
+        "responsibility": "澄清需求，将模糊描述转化为可执行规格",
+        "acceptance": "需求文档包含：触发场景、输入输出、边界条件、成功标准",
+    },
+    "process_designer": {
+        "id": "process_designer",
+        "label": "流程设计师",
+        "icon": "🔧",
+        "responsibility": "将需求转化为分步操作流程，识别决策点和异常路径",
+        "acceptance": "流程包含：≥3 步骤、≥2 决策分支、异常处理路径",
+    },
+    "reviewer": {
+        "id": "reviewer",
+        "label": "审核员",
+        "icon": "✅",
+        "responsibility": "检查流程完整性，标记缺失步骤、模糊描述和逻辑漏洞",
+        "acceptance": "审核报告包含：通过/需修改判定、具体问题位置、修改建议",
+    },
+    "qa_lead": {
+        "id": "qa_lead",
+        "label": "测试负责人",
+        "icon": "🧪",
+        "responsibility": "设计测试场景，验证流程在边界条件下的行为",
+        "acceptance": "测试报告包含：≥3 个测试场景（含边界）、通过/失败、覆盖缺口",
+    },
+    "security_auditor": {
+        "id": "security_auditor",
+        "label": "安全审计员",
+        "icon": "🛡️",
+        "responsibility": "检查流程中的数据安全、权限控制和合规风险",
+        "acceptance": "审计报告标记：敏感数据暴露、权限缺失、合规违规",
+    },
+    "tech_writer": {
+        "id": "tech_writer",
+        "label": "技术文档工程师",
+        "icon": "📝",
+        "responsibility": "将流程转化为用户友好的操作文档",
+        "acceptance": "文档可被非专业人员独立执行，无歧义",
+    },
+    "release_manager": {
+        "id": "release_manager",
+        "label": "发布经理",
+        "icon": "🚀",
+        "responsibility": "最终验证技能包完整性，确认所有门禁通过",
+        "acceptance": "发布清单全部勾选：文档齐全、测试通过、审核完成、资源就绪",
+    },
+}
+
 
 @dataclass
 class PipelineStep:
-    """A single step in a MetaSkill pipeline."""
+    """A single step in a MetaSkill pipeline, executed by a specialist role."""
 
     name: str                          # step identifier, e.g. "fact_check"
     skill_name: str                    # which skill to use
@@ -29,11 +86,15 @@ class PipelineStep:
     output_key: str = ""               # key to store output for downstream steps
     allowed_tools: list[str] = field(default_factory=list)  # tool whitelist for this step
     timeout: int = 120                 # max seconds
+    # Role assignment (v0.3.0)
+    role: str = ""                     # role ID from ROLE_TEMPLATES or custom
+    acceptance_criteria: str = ""      # what must be true for this step to pass
+    handoff_to: str = ""               # explicit role handoff (next role to receive output)
 
 
 @dataclass
 class MetaSkill:
-    """A parsed MetaSkill document."""
+    """A parsed MetaSkill document with role-assigned pipeline steps."""
 
     name: str
     goal: str                          # natural language description of the goal
@@ -42,8 +103,33 @@ class MetaSkill:
     risk_level: str = "low"            # low | medium | high
     raw_content: str = ""              # original markdown content
 
+    @property
+    def roles(self) -> list[str]:
+        """Unique roles assigned in this pipeline, in execution order."""
+        seen = set()
+        result = []
+        for s in self.steps:
+            if s.role and s.role not in seen:
+                seen.add(s.role)
+                result.append(s.role)
+        return result
+
+    @property
+    def role_count(self) -> int:
+        return len(self.roles)
+
+    def get_role_info(self, role_id: str) -> dict:
+        """Get role template info, or a basic fallback for custom roles."""
+        return ROLE_TEMPLATES.get(role_id, {
+            "id": role_id,
+            "label": role_id,
+            "icon": "👤",
+            "responsibility": f"Execute {role_id} tasks",
+            "acceptance": "Step output meets quality threshold",
+        })
+
     def to_markdown(self) -> str:
-        """Serialize to MetaSkill Markdown format."""
+        """Serialize to MetaSkill Markdown format with role annotations."""
         lines = [
             "---",
             "type: metaskill",
@@ -55,17 +141,36 @@ class MetaSkill:
             "## Goal",
             self.goal,
             "",
-            "## Pipeline",
-            "```pipeline",
         ]
+
+        # Role overview
+        if self.roles:
+            lines.append("## Roles")
+            for rid in self.roles:
+                info = self.get_role_info(rid)
+                lines.append(f"- {info['icon']} **{info['label']}** ({rid}) — {info['responsibility']}")
+            lines.append("")
+
+        lines.append("## Pipeline")
+        lines.append("```pipeline")
         for step in self.steps:
-            deps = f"depends_on: [{', '.join(step.depends_on)}]" if step.depends_on else ""
-            out = f"output_key: {step.output_key}" if step.output_key else ""
-            tools = f"tools: [{', '.join(step.allowed_tools)}]" if step.allowed_tools else ""
-            meta_parts = " | ".join(p for p in [deps, out, tools] if p)
+            parts = []
+            if step.depends_on:
+                parts.append(f"depends_on: [{', '.join(step.depends_on)}]")
+            if step.output_key:
+                parts.append(f"output_key: {step.output_key}")
+            if step.role:
+                parts.append(f"role: {step.role}")
+            if step.acceptance_criteria:
+                parts.append(f"accept: {step.acceptance_criteria[:60]}")
+            if step.handoff_to:
+                parts.append(f"handoff_to: {step.handoff_to}")
+            if step.allowed_tools:
+                parts.append(f"tools: [{', '.join(step.allowed_tools)}]")
+            meta = " | ".join(parts)
             line = f"{step.name}: {step.skill_name}"
-            if meta_parts:
-                line += f"  # {meta_parts}"
+            if meta:
+                line += f"  # {meta}"
             lines.append(line)
         lines.append("```")
         lines.append("")
@@ -75,6 +180,18 @@ class MetaSkill:
                 lines.append(f"- {t}")
             lines.append("")
         lines.append(f"## Risk Level: {self.risk_level}")
+
+        # Role acceptance summary
+        if self.roles:
+            lines.append("")
+            lines.append("## Acceptance Gates")
+            for step in self.steps:
+                if step.acceptance_criteria:
+                    info = self.get_role_info(step.role) if step.role else {}
+                    icon = info.get("icon", "👤")
+                    label = info.get("label", step.role or step.name)
+                    lines.append(f"- {icon} **{label}** → {step.name}: {step.acceptance_criteria}")
+
         return "\n".join(lines)
 
     def validate(self) -> tuple[bool, str]:
@@ -110,9 +227,15 @@ def parse_metaskill(content: str) -> Optional[MetaSkill]:
     if META_MARKER not in content[:200]:
         return None
 
-    # Extract name from heading
-    name_match = re.search(r'^#\s*MetaSkill[：:]\s*(.+?)\s*$', content, re.MULTILINE)
-    name = name_match.group(1).strip() if name_match else "Unnamed MetaSkill"
+    # Extract name from YAML frontmatter first, then heading
+    name = "Unnamed MetaSkill"
+    yaml_match = re.search(r'^---\s*\n.*?^name:\s*(.+?)\s*$', content, re.MULTILINE | re.DOTALL)
+    if yaml_match:
+        name = yaml_match.group(1).strip()
+    else:
+        name_match = re.search(r'^#\s*MetaSkill[：:]\s*(.+?)\s*$', content, re.MULTILINE)
+        if name_match:
+            name = name_match.group(1).strip()
 
     # Extract goal
     goal = ""
@@ -179,6 +302,10 @@ def _parse_pipeline_line(line: str) -> Optional[PipelineStep]:
     output_key = ""
     allowed_tools: list[str] = []
 
+    role = ""
+    acceptance_criteria = ""
+    handoff_to = ""
+
     if comment:
         for segment in comment.split("|"):
             segment = segment.strip()
@@ -194,9 +321,19 @@ def _parse_pipeline_line(line: str) -> Optional[PipelineStep]:
                 tools_str = tools_str.strip("[] ")
                 if tools_str:
                     allowed_tools = [t.strip() for t in tools_str.split(",")]
+            elif segment.startswith("role:"):
+                role = segment[len("role:"):].strip()
+            elif segment.startswith("accept:"):
+                acceptance_criteria = segment[len("accept:"):].strip()
+            elif segment.startswith("handoff_to:"):
+                handoff_to = segment[len("handoff_to:"):].strip()
 
     # Generate task template from skill name if not explicit
     task_template = f"Execute the [{skill_name}] skill for step [{name}]"
+    if role:
+        info = ROLE_TEMPLATES.get(role, {})
+        role_label = info.get("label", role)
+        task_template = f"As {role_label}, execute [{skill_name}] for step [{name}]"
 
     return PipelineStep(
         name=name,
@@ -205,6 +342,9 @@ def _parse_pipeline_line(line: str) -> Optional[PipelineStep]:
         depends_on=depends_on,
         output_key=output_key,
         allowed_tools=allowed_tools,
+        role=role,
+        acceptance_criteria=acceptance_criteria,
+        handoff_to=handoff_to,
     )
 
 
