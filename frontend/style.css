@@ -278,7 +278,9 @@ select{-webkit-appearance:none;appearance:none;padding-right:24px}
 @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
 
 @media(max-width:768px){
-  #sidebar{display:none}
+  #sidebar{display:none;position:fixed;z-index:200;top:0;left:0;height:100vh;overflow-y:auto;background:var(--bg);box-shadow:2px 0 20px rgba(0,0,0,.5)}
+  #sidebar.open{display:block;width:280px}
+  #sidebar-toggle{display:block !important}
   #global-search{width:100px}
   .msg{max-width:85%}
 }

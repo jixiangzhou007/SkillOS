@@ -313,8 +313,15 @@ function sendText() {
 
   }).catch(e => {
 
-    msgEl.textContent = e.message || '请求失败';
-    toast(e.message || '请求失败', 'error');
+    var errMsg = e.message || '请求失败';
+    msgEl.innerHTML = '<span>' + errMsg + '</span> ';
+    var retryBtn = document.createElement('button');
+    retryBtn.className = 'nav-sm';
+    retryBtn.style.cssText = 'font-size:11px;margin-left:4px;border-color:var(--warn);color:var(--warn)';
+    retryBtn.textContent = '重试';
+    retryBtn.onclick = function(){ document.getElementById('input').value = ''; sendText(); };
+    msgEl.appendChild(retryBtn);
+    toast(errMsg, 'error');
 
     msgEl.style.opacity = '1';
 
@@ -603,6 +610,12 @@ function doAction(a) {
   sendText();
 }
 
+
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  if (!sb) return;
+  sb.classList.toggle('open');
+}
 
 var _ttsEnabled = true;
 function toggleTTS() {
