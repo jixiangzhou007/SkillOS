@@ -622,7 +622,6 @@ async def run_skill(name: str, task: dict):
         "result": result[:2000],
         "score": score,
         "feedback": feedback[:500],
-        "trace_id": trace_id,
     }
 
 
