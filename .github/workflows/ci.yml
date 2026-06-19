@@ -55,8 +55,13 @@ jobs:
         run: |
           python -c "
           from skillos.skills.agent import SkillExtractionAgent
-          from skillos.skills.agent_learning import run_learning_pipeline, diffuse_knowledge, extract_claims_from_skill
-          from skillos.knowledge.epistemology import get_store
+          from skillos.skills.agent_learning import run_learning_pipeline, diffuse_knowledge, _extract_claims_from_skill
+          from skillos.skills.resource_capture import classify_resource_type, extract_script, extract_reference, extract_asset
+          from skillos.skills.portable_skill import to_agent_skills_format, finalize_portable_skill
+          from skillos.skills.metaskill import parse_metaskill, PipelineStep, MetaSkill, ROLE_TEMPLATES
+          from skillos.evolution.description_optimizer import optimize_description, generate_eval_queries
+          from skillos.evolution.skill_tester import run_test_loop, generate_test_cases
+          from skillos.knowledge.epistemology import get_store, record_claim
           from skillos.knowledge.graph import KnowledgeGraph
           from skillos.evolution.engine import run_evolution_check
           from skillos.skills.dispatcher import dispatch
