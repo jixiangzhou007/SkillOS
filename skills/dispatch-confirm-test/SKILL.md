@@ -1,7 +1,7 @@
 ---
 name: dispatch-confirm-test
 created_at: '2026-06-14T03:25:31Z'
-updated_at: '2026-06-19T18:15:51Z'
+updated_at: '2026-06-19T19:14:06Z'
 epistemic:
   source: test://dispatch
   source_type: test_result
@@ -11,10 +11,10 @@ epistemic:
   preferences: 0
   errors: 0
   claim_ids:
-  - ec_1781892946_84958e
-  - ec_1781892946_f1a9ee
+  - ec_1781896442_20a9dd
+  - ec_1781896442_66e554
   pending_ids: []
-  processed_at: 1781892951.131764
+  processed_at: 1781896446.4686527
 philosophical_dna: pdca
 philosophical_dna_label: PDCA 循环
 methodology: business-process
@@ -24,8 +24,8 @@ dna_lineage:
   - id: pdca
     weight: 1.0
   domain: []
-  detected_at: '2026-06-19T18:15:46Z'
-version: 67
+  detected_at: '2026-06-19T19:14:02Z'
+version: 69
 ---
 
 ## S_body

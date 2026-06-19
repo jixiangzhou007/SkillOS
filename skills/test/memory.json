@@ -89,6 +89,11 @@
       "role": "system",
       "text": "外部资料注入: test_source (17 chars)",
       "time": "2026-06-20T02:19:35"
+    },
+    {
+      "role": "system",
+      "text": "外部资料注入: test_source (17 chars)",
+      "time": "2026-06-20T03:18:06"
     }
   ]
 }

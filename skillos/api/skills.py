@@ -598,7 +598,6 @@ async def run_skill(name: str, task: dict):
     result = run_agent(agent, task_text)
 
     # Record trace for evolution
-    trace_id = ""
     score = 0
     feedback = ""
     try:
@@ -613,7 +612,7 @@ async def run_skill(name: str, task: dict):
         feedback = ""
 
     try:
-        trace_id = record_trace(name, task_text, result, score, feedback)
+        record_trace(name, task_text, result, score, feedback)
     except Exception:
         _log.debug("Non-critical operation skipped", exc_info=True)
 

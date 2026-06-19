@@ -1234,5 +1234,17 @@
       "about",
       "agents"
     ]
+  },
+  {
+    "id": 104,
+    "source": "test source",
+    "chunk": "This is a test document about AI agents",
+    "keywords": [
+      "this",
+      "test",
+      "document",
+      "about",
+      "agents"
+    ]
   }
 ]

@@ -96,7 +96,7 @@ epistemic:
   processed_at: 1781740763.0896068
 version: 3
 bench_quality:
-  checked_at: 1781893422
+  checked_at: 1781896973
   dna_compliance:
     score: 6/6
     passed: 6
