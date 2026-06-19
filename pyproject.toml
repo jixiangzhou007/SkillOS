@@ -50,6 +50,7 @@ select = [
     "F",    # pyflakes (unused imports, undefined names)
     "W",    # pycodestyle warnings
     "B",    # flake8-bugbear (common bugs)
+    "B006", # mutable defaults (list/dict as param default)
     "I",    # isort (import ordering)
 ]
 extend-ignore = [

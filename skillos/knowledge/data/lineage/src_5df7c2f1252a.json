@@ -4,15 +4,15 @@
   "source_title": "created_a15155",
   "created_at": 1781579895.92915,
   "summary": {
-    "total_items": 23,
+    "total_items": 25,
     "by_category": {
-      "heuristic": 23
+      "heuristic": 25
     },
     "by_epistemic_level": {
-      "knowledge": 23
+      "knowledge": 25
     },
     "confidence_distribution": {
-      "high": 23,
+      "high": 25,
       "medium": 0,
       "low": 0
     }
@@ -25,7 +25,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.7,
+      "strength": 0.67,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -142,9 +142,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 22,
+      "related_count": 24,
       "affected_skills": [
         {
           "skill_name": "created_a15155",
@@ -165,7 +175,7 @@
       "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.7,
+      "strength": 0.67,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -277,9 +287,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 21,
+      "related_count": 23,
       "affected_skills": [
         {
           "skill_name": "skill_3f8233",
@@ -300,7 +320,7 @@
       "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.65,
+      "strength": 0.62,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -407,9 +427,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 20,
+      "related_count": 22,
       "affected_skills": [
         {
           "skill_name": "created_0ef965",
@@ -430,7 +460,7 @@
       "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.65,
+      "strength": 0.62,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -532,9 +562,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 19,
+      "related_count": 21,
       "affected_skills": [
         {
           "skill_name": "skill_4162fc",
@@ -555,7 +595,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.61,
+      "strength": 0.58,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -652,9 +692,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 18,
+      "related_count": 20,
       "affected_skills": [
         {
           "skill_name": "created_4b8492",
@@ -675,7 +725,7 @@
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.61,
+      "strength": 0.58,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -767,9 +817,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 17,
+      "related_count": 19,
       "affected_skills": [
         {
           "skill_name": "skill_ab063a",
@@ -790,7 +850,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -877,9 +937,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 16,
+      "related_count": 18,
       "affected_skills": [
         {
           "skill_name": "created_6dd64f",
@@ -900,7 +970,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -982,9 +1052,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 15,
+      "related_count": 17,
       "affected_skills": [
         {
           "skill_name": "created_c9f16f",
@@ -1005,7 +1085,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1082,9 +1162,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 14,
+      "related_count": 16,
       "affected_skills": [
         {
           "skill_name": "skill_2ff92a",
@@ -1105,7 +1195,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1177,9 +1267,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 13,
+      "related_count": 15,
       "affected_skills": [
         {
           "skill_name": "skill_212dd5",
@@ -1200,7 +1300,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1267,9 +1367,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 12,
+      "related_count": 14,
       "affected_skills": [
         {
           "skill_name": "created_cf9397",
@@ -1290,7 +1400,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1352,9 +1462,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 11,
+      "related_count": 13,
       "affected_skills": [
         {
           "skill_name": "skill_6a8e00",
@@ -1375,7 +1495,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1432,9 +1552,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 10,
+      "related_count": 12,
       "affected_skills": [
         {
           "skill_name": "created_bd235c",
@@ -1455,7 +1585,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.94,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1507,9 +1637,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 9,
+      "related_count": 11,
       "affected_skills": [
         {
           "skill_name": "skill_67e40b",
@@ -1530,7 +1670,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.95,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1577,9 +1717,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 8,
+      "related_count": 10,
       "affected_skills": [
         {
           "skill_name": "skill_b5459e",
@@ -1600,7 +1750,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.95,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1642,9 +1792,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 7,
+      "related_count": 9,
       "affected_skills": [
         {
           "skill_name": "created_aef448",
@@ -1665,7 +1825,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.98,
+      "strength": 0.95,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1702,9 +1862,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 6,
+      "related_count": 8,
       "affected_skills": [
         {
           "skill_name": "skill_8dd2b8",
@@ -1725,7 +1895,7 @@
       "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.88,
+      "strength": 0.85,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1757,9 +1927,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 5,
+      "related_count": 7,
       "affected_skills": [
         {
           "skill_name": "created_781569",
@@ -1780,7 +1960,7 @@
       "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.88,
+      "strength": 0.85,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1807,9 +1987,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 4,
+      "related_count": 6,
       "affected_skills": [
         {
           "skill_name": "skill_ddd507",
@@ -1827,10 +2017,10 @@
       "item_id": "ki_6949c5cc",
       "content": "技能「created_a312e2」: # created_a312e2  ## When to use - keywords: t name: created_a312e2  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
       "category": "heuristic",
-      "confidence": 0.8,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.87,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1852,9 +2042,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 3,
+      "related_count": 5,
       "affected_skills": [
         {
           "skill_name": "created_a312e2",
@@ -1872,10 +2072,10 @@
       "item_id": "ki_81c1705a",
       "content": "技能「skill_42cf28」: # skill_42cf28  ## When to use - keywords: t name: skill_42cf28  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
       "category": "heuristic",
-      "confidence": 0.8,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.8,
+      "strength": 0.87,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1892,9 +2092,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 2,
+      "related_count": 4,
       "affected_skills": [
         {
           "skill_name": "skill_42cf28",
@@ -1912,10 +2122,10 @@
       "item_id": "ki_8a6e5116",
       "content": "技能「created_70887b」: # created_70887b  ## When to use - keywords: t name: created_70887b  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
       "category": "heuristic",
-      "confidence": 0.75,
+      "confidence": 0.85,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.75,
+      "strength": 0.82,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1927,9 +2137,19 @@
           "item_id": "ki_f5bf5422",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 1,
+      "related_count": 3,
       "affected_skills": [
         {
           "skill_name": "created_70887b",
@@ -1947,6 +2167,81 @@
       "item_id": "ki_f5bf5422",
       "content": "技能「skill_4aa1f0」: # skill_4aa1f0  ## When to use - keywords: t name: skill_4aa1f0  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
       "category": "heuristic",
+      "confidence": 0.85,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.82,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_6e537c9d",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.8
+        }
+      ],
+      "related_count": 2,
+      "affected_skills": [
+        {
+          "skill_name": "skill_4aa1f0",
+          "score_delta": 1.0,
+          "timestamp": 1781838970.2913728
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781838970.2913728,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_6e537c9d",
+      "content": "技能「created_8df509」: # created_8df509  ## When to use - keywords: t name: created_8df509  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_6a02b5c9",
+          "relation_type": "same_source",
+          "weight": 0.78
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [
+        {
+          "skill_name": "created_8df509",
+          "score_delta": 1.0,
+          "timestamp": 1781893391.7365623
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781893391.7365623,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_6a02b5c9",
+      "content": "技能「skill_4e88ec」: # skill_4e88ec  ## When to use - keywords: t name: skill_4e88ec  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
+      "category": "heuristic",
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
@@ -1961,13 +2256,13 @@
       "related_count": 0,
       "affected_skills": [
         {
-          "skill_name": "skill_4aa1f0",
+          "skill_name": "skill_4e88ec",
           "score_delta": 1.0,
-          "timestamp": 1781838970.2913728
+          "timestamp": 1781893524.8721623
         }
       ],
       "access_count": 0,
-      "created_at": 1781838970.2913728,
+      "created_at": 1781893524.8721623,
       "valid_at": 0.0,
       "invalid_at": 0.0,
       "superseded_by": ""

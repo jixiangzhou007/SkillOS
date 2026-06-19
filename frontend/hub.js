@@ -584,48 +584,26 @@ function _showHubSkill_legacy(skillId) {
 }
 
 function showPublishForm(skillName) {
-
-  if (_hubReadOnly) {
-    toast('公共市场当前为只读目录，暂不支持发布', 'warn');
-    return;
-  }
-
+  var el = document.querySelector('[x-data="hubView()"]');
+  if (el && el.__x) { el.__x.$data.openPublish(skillName); return; }
+  if (_hubReadOnly) { toast('只读目录暂不支持发布', 'warn'); return; }
   document.getElementById('publish-modal').classList.add('open');
-
-  // If a skill name is provided, pre-fill from local skill
-
-  if (skillName) {
-
-    fetch(API + '/api/skills/' + encodeURIComponent(skillName)).then(r => r.json()).then(s => {
-
-      document.getElementById('pub-name').value = s.name || skillName;
-
-      document.getElementById('pub-desc').value = '';
-
-      document.getElementById('pub-content').value = s.content || '';
-
-    }).catch(() => {});
-
-  }
-
 }
 
 function closePublishModal() {
-
+  var el = document.querySelector('[x-data="hubView()"]');
+  if (el && el.__x) { el.__x.$data.closePublish(); return; }
   document.getElementById('publish-modal').classList.remove('open');
-
 }
 
 async function publishSkill() {
-
+  var el = document.querySelector('[x-data="hubView()"]');
+  if (el && el.__x) { await el.__x.$data.publish(); return; }
+  // Legacy fallback
   let name = document.getElementById('pub-name').value.trim();
-
   let desc = document.getElementById('pub-desc').value.trim();
-
   let cat = document.getElementById('pub-cat').value;
-
   let content = document.getElementById('pub-content').value.trim();
-
   if (!name || !content) { toast('请填写名称与内容', 'error'); return; }
 
   let btn = document.querySelector('#publish-modal .modal-btn-primary');

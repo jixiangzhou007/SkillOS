@@ -895,7 +895,8 @@ async def list_variants(name: str):
 
 
 @router.post("/{name}/variants")
-async def register_variant(name: str, req: dict = {}):
+async def register_variant(name: str, req: dict | None = None):
+    if req is None: req = {}
     """Register a new variant of a skill archetype."""
     try:
         from skillos.skills.variants import VariantRegistry

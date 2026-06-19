@@ -553,6 +553,13 @@ class SkillExtractionAgent:
 
     def handle(self, message: str, existing_skills: list[str], llm_args: tuple) -> tuple[str, Optional[dict]]:
         """Handle one turn — SD-style phased Socratic extraction."""
+        try:
+            return self._handle_impl(message, existing_skills, llm_args)
+        except Exception:
+            _log.error("handle() crashed", exc_info=True)
+            return "内部错误，请重试。", None
+
+    def _handle_impl(self, message: str, existing_skills: list[str], llm_args: tuple) -> tuple[str, Optional[dict]]:
         self._turn += 1
 
         if any(exit_word in message for exit_word in SKILL_EXIT):

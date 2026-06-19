@@ -4,15 +4,15 @@
   "source_title": "合同审核",
   "created_at": 1781594515.3930228,
   "summary": {
-    "total_items": 9,
+    "total_items": 10,
     "by_category": {
-      "heuristic": 9
+      "heuristic": 10
     },
     "by_epistemic_level": {
-      "knowledge": 9
+      "knowledge": 10
     },
     "confidence_distribution": {
-      "high": 9,
+      "high": 10,
       "medium": 0,
       "low": 0
     }
@@ -25,7 +25,7 @@
       "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.66,
+      "strength": 0.63,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -52,9 +52,14 @@
           "item_id": "ki_a397b17b",
           "relation_type": "same_source",
           "weight": 0.9
+        },
+        {
+          "item_id": "ki_5adc5869",
+          "relation_type": "same_source",
+          "weight": 0.9
         }
       ],
-      "related_count": 4,
+      "related_count": 5,
       "affected_skills": [
         {
           "skill_name": "合同审核",
@@ -76,7 +81,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.08,
+      "strength": 0.94,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -92,7 +97,7 @@
           "timestamp": 1781795917.4601705
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781795917.4601705,
       "valid_at": 0.0,
       "invalid_at": 0.0,
@@ -106,7 +111,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.08,
+      "strength": 0.94,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -128,9 +133,14 @@
           "item_id": "ki_a397b17b",
           "relation_type": "same_source",
           "weight": 0.86
+        },
+        {
+          "item_id": "ki_5adc5869",
+          "relation_type": "same_source",
+          "weight": 0.86
         }
       ],
-      "related_count": 3,
+      "related_count": 4,
       "affected_skills": [
         {
           "skill_name": "合同审核",
@@ -138,7 +148,7 @@
           "timestamp": 1781796064.3067005
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781796064.3067005,
       "valid_at": 0.0,
       "invalid_at": 0.0,
@@ -152,7 +162,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.08,
+      "strength": 0.94,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -169,9 +179,14 @@
           "item_id": "ki_a397b17b",
           "relation_type": "same_source",
           "weight": 0.9
+        },
+        {
+          "item_id": "ki_5adc5869",
+          "relation_type": "same_source",
+          "weight": 1.0
         }
       ],
-      "related_count": 2,
+      "related_count": 3,
       "affected_skills": [
         {
           "skill_name": "合同审核",
@@ -179,7 +194,7 @@
           "timestamp": 1781796409.3094237
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781796409.3094237,
       "valid_at": 0.0,
       "invalid_at": 0.0,
@@ -193,7 +208,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.08,
+      "strength": 0.94,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -209,7 +224,7 @@
           "timestamp": 1781797935.5699835
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781797935.5699835,
       "valid_at": 0.0,
       "invalid_at": 0.0,
@@ -223,7 +238,7 @@
       "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.08,
+      "strength": 0.95,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -235,9 +250,14 @@
           "item_id": "ki_a397b17b",
           "relation_type": "same_source",
           "weight": 0.9
+        },
+        {
+          "item_id": "ki_5adc5869",
+          "relation_type": "same_source",
+          "weight": 0.9
         }
       ],
-      "related_count": 1,
+      "related_count": 2,
       "affected_skills": [
         {
           "skill_name": "合同审核",
@@ -245,7 +265,7 @@
           "timestamp": 1781799917.596097
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781799917.596097,
       "valid_at": 0.0,
       "invalid_at": 0.0,
@@ -259,7 +279,7 @@
       "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 1.03,
+      "strength": 0.9,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -275,7 +295,7 @@
           "timestamp": 1781804081.7993073
         }
       ],
-      "access_count": 1,
+      "access_count": 0,
       "created_at": 1781804081.7993073,
       "valid_at": 0.0,
       "invalid_at": 0.0,
@@ -286,10 +306,10 @@
       "item_id": "ki_9fe23e0c",
       "content": "技能「合同审核」: 快速识别销售合同中的关键条款风险，提供初步审核意见。",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.95,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.95,
+      "strength": 1.02,
       "source": {
         "url": "session:test-meta-no-restart",
         "paragraph": 0
@@ -316,6 +336,42 @@
       "item_id": "ki_a397b17b",
       "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，确保合同条款符合公司利益和行业惯例。",
       "category": "heuristic",
+      "confidence": 0.9,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.97,
+      "source": {
+        "url": "session:test-meta-no-restart",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_5adc5869",
+          "relation_type": "same_source",
+          "weight": 0.9
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [
+        {
+          "skill_name": "合同审核",
+          "score_delta": 1.0,
+          "timestamp": 1781838528.1182258
+        }
+      ],
+      "access_count": 1,
+      "created_at": 1781838528.1182258,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": "",
+      "last_accessed": 1781838528.1182258
+    },
+    {
+      "item_id": "ki_5adc5869",
+      "content": "技能「合同审核」: 快速识别销售合同中的关键风险条款，并给出修改建议。",
+      "category": "heuristic",
       "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
@@ -332,15 +388,15 @@
         {
           "skill_name": "合同审核",
           "score_delta": 1.0,
-          "timestamp": 1781838528.1182258
+          "timestamp": 1781893116.3690042
         }
       ],
       "access_count": 1,
-      "created_at": 1781838528.1182258,
+      "created_at": 1781893116.3690042,
       "valid_at": 0.0,
       "invalid_at": 0.0,
       "superseded_by": "",
-      "last_accessed": 1781838528.1182258
+      "last_accessed": 1781893116.3690042
     }
   ]
 }

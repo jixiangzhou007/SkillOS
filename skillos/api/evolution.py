@@ -22,7 +22,8 @@ def _load_skill_body(name: str, auth: AuthContext) -> str:
 
 
 @router.post("/{name}/optimize")
-async def optimize_skill(name: str, feedback: dict = {}, auth: AuthContext = Depends(require_auth)):
+async def optimize_skill(name: str, feedback: dict | None = None, auth: AuthContext = Depends(require_auth)):
+    if feedback is None: feedback = {}
     """Run an optimization round on a skill using the MoE system."""
     token, reset = _tenant_token(auth)
     try:

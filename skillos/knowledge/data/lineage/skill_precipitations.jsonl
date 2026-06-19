@@ -139,3 +139,7 @@
 {"event_id": "sp_459379bcd1", "skill_name": "演示", "session_id": "", "channel": "", "chat_id": "", "user_id": "", "source": "演示", "created_at": 1781838654.2264228}
 {"event_id": "sp_857c396335", "skill_name": "created_70887b", "session_id": "", "channel": "", "chat_id": "", "user_id": "usr_2f70b9268f53", "source": "api/create", "created_at": 1781838825.453384}
 {"event_id": "sp_30ab6f0834", "skill_name": "skill_4aa1f0", "session_id": "", "channel": "", "chat_id": "", "user_id": "usr_3145e2661166", "source": "api/create", "created_at": 1781838970.2723968}
+{"event_id": "sp_e36b0468f3", "skill_name": "合同审核", "session_id": "test-meta-no-restart", "channel": "", "chat_id": "", "user_id": "", "source": "session:test-meta-no-restart", "created_at": 1781893116.3453553}
+{"event_id": "sp_5889e7deeb", "skill_name": "演示", "session_id": "", "channel": "", "chat_id": "", "user_id": "", "source": "演示", "created_at": 1781893220.9020414}
+{"event_id": "sp_ced9d2228e", "skill_name": "created_8df509", "session_id": "", "channel": "", "chat_id": "", "user_id": "usr_efa0fae9dafe", "source": "api/create", "created_at": 1781893391.7194638}
+{"event_id": "sp_7d562172e5", "skill_name": "skill_4e88ec", "session_id": "", "channel": "", "chat_id": "", "user_id": "usr_c7791c395a33", "source": "api/create", "created_at": 1781893524.8551676}
