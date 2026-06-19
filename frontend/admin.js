@@ -12,6 +12,8 @@ function adminView() {
     departments: [],
     skillSearch: '',
     skillResults: [],
+    selectedSkills: [],
+    selectAll: false,
     quotaDept: '',
     quotaSkills: '',
     quotaLLM: '',
@@ -100,6 +102,33 @@ function adminView() {
       });
       if (!r.ok) { toast('复制失败', 'error'); return; }
       toast('已复制: ' + skillName, 'success');
+      refreshSkillList();
+    },
+
+    toggleSelectAll() {
+      this.selectAll = !this.selectAll;
+      this.selectedSkills = this.selectAll ? this.skillResults.map(function(s){ return s.name; }) : [];
+    },
+    toggleSelect(name) {
+      var idx = this.selectedSkills.indexOf(name);
+      if (idx >= 0) { this.selectedSkills.splice(idx, 1); }
+      else { this.selectedSkills.push(name); }
+    },
+    async batchCopyToOrg() {
+      if (!this.selectedSkills.length) { toast('请先选择技能', 'warn'); return; }
+      var count = 0;
+      for (var i = 0; i < this.selectedSkills.length; i++) {
+        try {
+          var r = await api('/api/skills/' + encodeURIComponent(this.selectedSkills[i]) + '/copy-to-org', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ org_id: this.orgId }),
+          });
+          if (r.ok) count++;
+        } catch(e) {}
+      }
+      toast('已复制 ' + count + '/' + this.selectedSkills.length + ' 个技能', 'success');
+      this.selectedSkills = [];
+      this.selectAll = false;
       refreshSkillList();
     },
 

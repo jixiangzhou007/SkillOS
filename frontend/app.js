@@ -194,9 +194,24 @@ document.addEventListener('click', function(e) {
 
 // ── Keyboard Shortcuts ──
 document.addEventListener('keydown', function(e) {
+  // Ctrl+K: focus global search
   if (e.ctrlKey && e.key === 'k') { e.preventDefault(); document.getElementById('global-search').focus(); }
+  // Ctrl+N: new chat
   if (e.ctrlKey && e.key === 'n') { e.preventDefault(); showChat(); document.getElementById('input').focus(); }
+  // Ctrl+Enter: send message
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); if (typeof sendText === 'function') sendText(); }
+  // / or \: focus chat input (skip if already in an input/textarea)
+  if ((e.key === '/' || e.key === '\\') && document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    e.preventDefault(); showChat(); document.getElementById('input').focus();
+  }
+  // Escape: clear search
   if (e.key === 'Escape') clearGlobalSearch();
+  // 1-9: switch detail tabs when in detail view
+  if (e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.metaKey && document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    var tabs = ['overview','doc','kb','verify','epistemic','dna','official','evo','decisions'];
+    var idx = parseInt(e.key) - 1;
+    if (idx < tabs.length && typeof switchTab === 'function') switchTab(tabs[idx]);
+  }
 });
 
 // ── Toast ──
