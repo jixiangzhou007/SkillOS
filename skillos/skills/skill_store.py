@@ -364,16 +364,19 @@ def list_skills(*, tenant: TenantContext | None = None) -> list[str]:
 
 
 def delete_skill(name: str, *, tenant: TenantContext | None = None) -> bool:
-    """Delete a skill and all associated files."""
+    """Delete a skill and all associated files including standard subdirectories."""
     import shutil
     root = resolve_skills_root(tenant)
     path = _skill_path(name, root=root)
-    if not path.exists():
-        return False
-    safe = re.sub(r'[<>:"/\\|?*]', "_", name)[:64]
-    skill_dir = root / safe
+    # Delete the skill directory (kebab-case slug dir with all contents)
+    skill_dir = path.parent
     if skill_dir.exists():
         shutil.rmtree(str(skill_dir))
+    # Also try legacy Chinese-name directory for backward compat
+    safe = re.sub(r'[<>:"/\\|?*]', "_", name)[:64]
+    legacy_dir = root / safe
+    if legacy_dir.exists() and legacy_dir != skill_dir:
+        shutil.rmtree(str(legacy_dir))
     return True
 
 

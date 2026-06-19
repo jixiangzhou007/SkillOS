@@ -4,15 +4,15 @@
   "source_title": "created_a15155",
   "created_at": 1781579895.92915,
   "summary": {
-    "total_items": 21,
+    "total_items": 23,
     "by_category": {
-      "heuristic": 21
+      "heuristic": 23
     },
     "by_epistemic_level": {
-      "knowledge": 21
+      "knowledge": 23
     },
     "confidence_distribution": {
-      "high": 21,
+      "high": 23,
       "medium": 0,
       "low": 0
     }
@@ -132,9 +132,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 20,
+      "related_count": 22,
       "affected_skills": [
         {
           "skill_name": "created_a15155",
@@ -257,9 +267,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 19,
+      "related_count": 21,
       "affected_skills": [
         {
           "skill_name": "skill_3f8233",
@@ -377,9 +397,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 18,
+      "related_count": 20,
       "affected_skills": [
         {
           "skill_name": "created_0ef965",
@@ -492,9 +522,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.74
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.75
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.74
         }
       ],
-      "related_count": 17,
+      "related_count": 19,
       "affected_skills": [
         {
           "skill_name": "skill_4162fc",
@@ -602,9 +642,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 16,
+      "related_count": 18,
       "affected_skills": [
         {
           "skill_name": "created_4b8492",
@@ -707,9 +757,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 15,
+      "related_count": 17,
       "affected_skills": [
         {
           "skill_name": "skill_ab063a",
@@ -807,9 +867,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 14,
+      "related_count": 16,
       "affected_skills": [
         {
           "skill_name": "created_6dd64f",
@@ -902,9 +972,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 13,
+      "related_count": 15,
       "affected_skills": [
         {
           "skill_name": "created_c9f16f",
@@ -992,9 +1072,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 12,
+      "related_count": 14,
       "affected_skills": [
         {
           "skill_name": "skill_2ff92a",
@@ -1077,9 +1167,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 11,
+      "related_count": 13,
       "affected_skills": [
         {
           "skill_name": "skill_212dd5",
@@ -1157,9 +1257,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 10,
+      "related_count": 12,
       "affected_skills": [
         {
           "skill_name": "created_cf9397",
@@ -1232,9 +1342,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 9,
+      "related_count": 11,
       "affected_skills": [
         {
           "skill_name": "skill_6a8e00",
@@ -1302,9 +1422,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 8,
+      "related_count": 10,
       "affected_skills": [
         {
           "skill_name": "created_bd235c",
@@ -1367,9 +1497,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 7,
+      "related_count": 9,
       "affected_skills": [
         {
           "skill_name": "skill_67e40b",
@@ -1427,9 +1567,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 6,
+      "related_count": 8,
       "affected_skills": [
         {
           "skill_name": "skill_b5459e",
@@ -1447,10 +1597,10 @@
       "item_id": "ki_416ad470",
       "content": "技能「created_aef448」: # created_aef448  ## When to use - keywords: t name: created_aef448  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
       "category": "heuristic",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.93,
+      "strength": 0.98,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1482,9 +1632,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 5,
+      "related_count": 7,
       "affected_skills": [
         {
           "skill_name": "created_aef448",
@@ -1502,10 +1662,10 @@
       "item_id": "ki_81e460cb",
       "content": "技能「skill_8dd2b8」: # skill_8dd2b8  ## When to use - keywords: t name: skill_8dd2b8  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
       "category": "heuristic",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.93,
+      "strength": 0.98,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1532,9 +1692,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 4,
+      "related_count": 6,
       "affected_skills": [
         {
           "skill_name": "skill_8dd2b8",
@@ -1552,10 +1722,10 @@
       "item_id": "ki_e5dd624a",
       "content": "技能「created_781569」: # created_781569  ## When to use - keywords: t name: created_781569  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.83,
+      "strength": 0.88,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1577,9 +1747,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 3,
+      "related_count": 5,
       "affected_skills": [
         {
           "skill_name": "created_781569",
@@ -1597,10 +1777,10 @@
       "item_id": "ki_fd4ce52e",
       "content": "技能「skill_ddd507」: # skill_ddd507  ## When to use - keywords: t name: skill_ddd507  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
       "category": "heuristic",
-      "confidence": 0.85,
+      "confidence": 0.9,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.83,
+      "strength": 0.88,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1617,9 +1797,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.8
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
         }
       ],
-      "related_count": 2,
+      "related_count": 4,
       "affected_skills": [
         {
           "skill_name": "skill_ddd507",
@@ -1637,10 +1827,10 @@
       "item_id": "ki_6949c5cc",
       "content": "技能「created_a312e2」: # created_a312e2  ## When to use - keywords: t name: created_a312e2  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
       "category": "heuristic",
-      "confidence": 0.75,
+      "confidence": 0.8,
       "epistemic_level": "knowledge",
       "is_valid": true,
-      "strength": 0.75,
+      "strength": 0.8,
       "source": {
         "url": "api/create",
         "paragraph": 0
@@ -1652,9 +1842,19 @@
           "item_id": "ki_81c1705a",
           "relation_type": "same_source",
           "weight": 0.78
+        },
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.8
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
         }
       ],
-      "related_count": 1,
+      "related_count": 3,
       "affected_skills": [
         {
           "skill_name": "created_a312e2",
@@ -1672,6 +1872,81 @@
       "item_id": "ki_81c1705a",
       "content": "技能「skill_42cf28」: # skill_42cf28  ## When to use - keywords: t name: skill_42cf28  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
       "category": "heuristic",
+      "confidence": 0.8,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.8,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_8a6e5116",
+          "relation_type": "same_source",
+          "weight": 0.78
+        },
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.8
+        }
+      ],
+      "related_count": 2,
+      "affected_skills": [
+        {
+          "skill_name": "skill_42cf28",
+          "score_delta": 1.0,
+          "timestamp": 1781835089.668611
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781835089.668611,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_8a6e5116",
+      "content": "技能「created_70887b」: # created_70887b  ## When to use - keywords: t name: created_70887b  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string —",
+      "category": "heuristic",
+      "confidence": 0.75,
+      "epistemic_level": "knowledge",
+      "is_valid": true,
+      "strength": 0.75,
+      "source": {
+        "url": "api/create",
+        "paragraph": 0
+      },
+      "pipeline_steps": 0,
+      "graph_node": "",
+      "related_items": [
+        {
+          "item_id": "ki_f5bf5422",
+          "relation_type": "same_source",
+          "weight": 0.78
+        }
+      ],
+      "related_count": 1,
+      "affected_skills": [
+        {
+          "skill_name": "created_70887b",
+          "score_delta": 1.0,
+          "timestamp": 1781838825.47474
+        }
+      ],
+      "access_count": 0,
+      "created_at": 1781838825.47474,
+      "valid_at": 0.0,
+      "invalid_at": 0.0,
+      "superseded_by": ""
+    },
+    {
+      "item_id": "ki_f5bf5422",
+      "content": "技能「skill_4aa1f0」: # skill_4aa1f0  ## When to use - keywords: t name: skill_4aa1f0  ## Instructions Follow these steps in order. Ask the user if anything is marked [待确认].  1. step  ## Inputs - user_message: string — 用户请",
+      "category": "heuristic",
       "confidence": 0.75,
       "epistemic_level": "knowledge",
       "is_valid": true,
@@ -1686,13 +1961,13 @@
       "related_count": 0,
       "affected_skills": [
         {
-          "skill_name": "skill_42cf28",
+          "skill_name": "skill_4aa1f0",
           "score_delta": 1.0,
-          "timestamp": 1781835089.668611
+          "timestamp": 1781838970.2913728
         }
       ],
       "access_count": 0,
-      "created_at": 1781835089.668611,
+      "created_at": 1781838970.2913728,
       "valid_at": 0.0,
       "invalid_at": 0.0,
       "superseded_by": ""

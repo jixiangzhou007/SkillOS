@@ -2,7 +2,7 @@
 
 ## v0.3.0 (2026-06-19) — 架构 A- 里程碑
 
-> 30 commits · 601 tests · AgentSkills.io 标准对齐 · Alpine.js 前端 · 认识论 5 路径贯通
+> 42 commits · 601 tests · AgentSkills.io 标准对齐 · Alpine.js 前端 UX A- · 认识论 5 路径贯通
 
 ### 后端架构拆分
 

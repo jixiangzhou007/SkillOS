@@ -1,6 +1,6 @@
 # Epistemic Ablation Results
 
-> Generated: 2026-06-19T02:00:55.131746+00:00 · Claims: 100 · LLM falsify: False
+> Generated: 2026-06-19T03:06:09.448122+00:00 · Claims: 100 · LLM falsify: False
 
 ## Summary
 
@@ -26,4 +26,4 @@ python -m skillos.benchmark_epistemic
 python -m skillos.benchmark_epistemic --with-llm  # requires DEEPSEEK_API_KEY
 ```
 
-Raw JSON: `D:\SkillOS\data\benchmarks\epistemic\results\ablation_20260619_020055.json`
+Raw JSON: `D:\SkillOS\data\benchmarks\epistemic\results\ablation_20260619_030609.json`
