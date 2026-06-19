@@ -20,14 +20,14 @@
   </div>
   <div class="nav-sep"></div>
   <nav id="primary-nav">
-    <button class="nav-mode active" onclick="showChat(); setMode('chat')">💬 对话</button>
+    <button class="nav-mode active" @click="showChat(); setMode('chat')">💬 对话</button>
   </nav>
   <div class="nav-sep"></div>
-  <button class="nav-btn" onclick="showHub()" style="border-color:var(--warn);color:var(--warn);position:relative">技能市场<span id="hub-badge" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--err);color:#fff;font-size:9px;line-height:16px;text-align:center;font-weight:700"></span></button>
-  <button class="nav-btn" onclick="showDocs()">文档</button>
-  <button class="nav-btn" onclick="showDashboard()">工作台</button>
-  <button class="nav-btn" id="admin-nav-btn" onclick="showAdmin()" style="display:none">管理</button>
-  <button class="nav-btn" onclick="showSettings()">设置</button>
+  <button class="nav-btn" @click="showHub()" style="border-color:var(--warn);color:var(--warn);position:relative">技能市场<span id="hub-badge" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--err);color:#fff;font-size:9px;line-height:16px;text-align:center;font-weight:700"></span></button>
+  <button class="nav-btn" @click="showDocs()">文档</button>
+  <button class="nav-btn" @click="showDashboard()">工作台</button>
+  <button class="nav-btn" id="admin-nav-btn" @click="showAdmin()" style="display:none">管理</button>
+  <button class="nav-btn" @click="showSettings()">设置</button>
   <div class="nav-sep"></div>
   <select id="workspace-select" onchange="switchWorkspace(this.value)" title="工作区"
     style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--text2);font-size:11px;max-width:140px;outline:none;cursor:pointer">
@@ -54,9 +54,9 @@
         <span x-text="$store.auth.workspaceLabel || '成员'">成员</span>
       </div>
       <hr>
-      <button onclick="showSettings()">设置</button>
-      <button onclick="createTeam()">创建团队</button>
-      <button onclick="doLogout()">退出</button>
+      <button @click="showSettings()">设置</button>
+      <button @click="createTeam()">创建团队</button>
+      <button @click="doLogout()">退出</button>
     </div>
   </div>
 </header>
@@ -92,10 +92,10 @@
       <span class="sb-toggle">▾</span>
     </div>
     <div class="sb-section-body open">
-      <button class="sb-nav-item" onclick="showKnowledgeView()"><span class="nav-icon">📚</span>知识库</button>
-      <button class="sb-nav-item" onclick="showGraphView()"><span class="nav-icon">🧠</span>知识图谱</button>
-      <button class="sb-nav-item" onclick="showLineageView()"><span class="nav-icon">🔗</span>数据血缘</button>
-      <button class="sb-nav-item" onclick="showAccountWatcher()"><span class="nav-icon">📡</span>公众号监控</button>
+      <button class="sb-nav-item" @click="showKnowledgeView()"><span class="nav-icon">📚</span>知识库</button>
+      <button class="sb-nav-item" @click="showGraphView()"><span class="nav-icon">🧠</span>知识图谱</button>
+      <button class="sb-nav-item" @click="showLineageView()"><span class="nav-icon">🔗</span>数据血缘</button>
+      <button class="sb-nav-item" @click="showAccountWatcher()"><span class="nav-icon">📡</span>公众号监控</button>
     </div>
   </div>
 

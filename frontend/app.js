@@ -22,19 +22,29 @@ const SYSTEM_SKILLS = ['brainstorming', 'skill-creator', 'deep-digest', 'cold-st
 // Onboarding wizard (Sprint 4 — 3 步引导)
 (function checkOnboarding() {
   if (localStorage.getItem('skillos_onboarded')) return;
+  // Push onboarding message to Alpine store (reactive, won't break x-for)
+  try {
+    if (Alpine && Alpine.store('chat')) {
+      Alpine.store('chat').addMessage('sys',
+        '<div style="padding:40px 20px;text-align:center">' +
+        '<div style="font-size:48px;margin-bottom:16px">🚀</div>' +
+        '<div style="font-size:18px;font-weight:700;margin-bottom:8px">欢迎使用 SkillOS</div>' +
+        '<div style="font-size:13px;color:var(--text2);margin-bottom:20px">对话即沉淀 · 你的 AI 技能操作系统</div>' +
+        '<div style="text-align:left;max-width:520px;margin:0 auto 20px;font-size:13px;color:var(--text2);line-height:2.2">' +
+        '<b>第 1 步</b>：在对话区描述工作流程，或粘贴方法论链接 / 拖拽 PDF<br>' +
+        '<b>第 2 步</b>：多轮对话完善技能 → 打开技能详情「认识论」Tab 确认待审声明<br>' +
+        '<b>第 3 步</b>：Org 用户提交审批发布；Personal 用户可直接使用或导出 MCP 技能' +
+        '</div>' +
+        '<button class="action-btn" onclick="localStorage.setItem(\'skillos_onboarded\',\'1\');showChat()" style="font-size:14px;padding:10px 24px">开始体验</button>' +
+        '</div>'
+      );
+      return;
+    }
+  } catch(e) {}
+  // Legacy fallback: direct DOM (only if Alpine not available)
   var msgs = document.getElementById('msgs');
   if (!msgs) return;
-  msgs.innerHTML = '<div class="welcome" style="padding:40px 20px">' +
-    '<div class="welcome-icon">🚀</div>' +
-    '<div class="welcome-title">欢迎使用 SkillOS</div>' +
-    '<div class="welcome-hint">对话即沉淀 · 你的 AI 技能操作系统</div>' +
-    '<div style="text-align:left;max-width:520px;margin:20px auto;font-size:13px;color:var(--text2);line-height:2.2">' +
-    '<b>第 1 步</b>：在对话区描述工作流程，或粘贴方法论链接 / 拖拽 PDF<br>' +
-    '<b>第 2 步</b>：多轮对话完善技能 → 打开技能详情「认识论」Tab 确认待审声明<br>' +
-    '<b>第 3 步</b>：Org 用户提交审批发布；Personal 用户可直接使用或导出 MCP 技能' +
-    '</div>' +
-    '<button class="action-btn" onclick="localStorage.setItem(&quot;skillos_onboarded&quot;,&quot;1&quot;);showChat()" style="font-size:14px;padding:10px 24px">开始体验</button>' +
-    '</div>';
+  msgs.innerHTML = '<div class="welcome"><div class="welcome-icon">🚀</div><div class="welcome-title">欢迎使用 SkillOS</div><div class="welcome-hint">对话即沉淀 · 你的 AI 技能操作系统</div><button class="action-btn" onclick="localStorage.setItem(\'skillos_onboarded\',\'1\');showChat()">开始体验</button></div>';
 })();
 
 
