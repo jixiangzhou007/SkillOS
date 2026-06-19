@@ -245,6 +245,9 @@ class SkillExtractionAgent:
         self._locked_name: str = ""
         self._domain_template_id: str = ""
         self._domain_template_ids: list[str] = []
+        # Resource capture: pending scripts/references/assets to save after generate
+        self._pending_resources: list[dict] = []
+        self._skill_dir: str = ""  # populated in _generate() after slug is known
 
     def set_team_context(
         self,
@@ -263,6 +266,54 @@ class SkillExtractionAgent:
             self._team_context["user_id"] = user_id
         if session_id:
             self._team_context["session_id"] = session_id
+
+    def _flush_pending_resources(self) -> int:
+        """Write all queued resources to the skill's standard directories.
+
+        Called after _generate() when the skill directory is ready.
+        Returns the number of files written.
+        """
+        if not self._pending_resources or not self._skill_dir:
+            return 0
+
+        from pathlib import Path
+        from skillos.skills.resource_capture import (
+            extract_script, extract_reference, extract_asset,
+        )
+        from skillos.skills.portable_skill import tool_slug
+
+        # Resolve the skill directory from the slug
+        slug = tool_slug(self._finalized_name or self._draft_name or "skill")
+        skills_root = Path(__file__).parent.parent.parent / "skills"
+        skill_dir = skills_root / slug
+        if not skill_dir.exists():
+            skill_dir = skills_root / self._skill_dir
+        if not skill_dir.exists():
+            return 0
+
+        written = 0
+        for res in self._pending_resources:
+            try:
+                rtype = res["type"]
+                text = res["text"]
+                url = res.get("source_url", "")
+                if rtype == "script":
+                    result = extract_script(text, skill_dir)
+                elif rtype == "reference":
+                    result = extract_reference(text, skill_dir, source_url=url)
+                elif rtype == "asset":
+                    result = extract_asset(text, skill_dir)
+                else:
+                    continue
+                if result:
+                    written += 1
+            except Exception:
+                _log.debug("Resource flush failed for type=%s", res.get("type"), exc_info=True)
+
+        if written:
+            _log.info("Flushed %d resources to %s", written, skill_dir)
+        self._pending_resources.clear()
+        return written
 
     def _ingest_ctx(self) -> str:
         try:
@@ -567,6 +618,12 @@ class SkillExtractionAgent:
                 if content and len(content) > 100:
                     self._context.append(f"[参考资料] {urls[0]}: {content[:500]}")
                     self._research_cache = (self._research_cache or "") + f"\n用户补充参考: {content[:300]}"
+                    # Queue URL content as a reference for the skill directory
+                    self._pending_resources.append({
+                        "type": "reference",
+                        "text": content[:2000],
+                        "source_url": urls[0],
+                    })
                     return (
                         f"📖 已读取这篇资料，我会对照里面的做法来优化「**{label}**」。"
                         f"请继续说你的想法，或者回复「生成」更新技能文档。",
@@ -681,6 +738,18 @@ class SkillExtractionAgent:
                 )
             except Exception:
                 _log.debug("Epistemic recording skipped in _explore", exc_info=True)
+
+        # Resource capture: detect scripts, templates, references in user message
+        try:
+            from skillos.skills.resource_capture import classify_resource_type
+            rtype = classify_resource_type(message)
+            if rtype:
+                self._pending_resources.append({
+                    "type": rtype, "text": message, "source_url": "",
+                })
+                _log.info("Queued resource type=%s from _explore", rtype)
+        except Exception:
+            _log.debug("Resource capture skipped in _explore", exc_info=True)
 
         if self._name:
             try:
@@ -848,6 +917,18 @@ class SkillExtractionAgent:
                 )
             except Exception:
                 _log.debug("Epistemic recording skipped in _refine", exc_info=True)
+
+        # Resource capture: detect scripts, templates, references in user refinement
+        try:
+            from skillos.skills.resource_capture import classify_resource_type
+            rtype = classify_resource_type(text)
+            if rtype:
+                self._pending_resources.append({
+                    "type": rtype, "text": text, "source_url": "",
+                })
+                _log.info("Queued resource type=%s from _refine", rtype)
+        except Exception:
+            _log.debug("Resource capture skipped in _refine", exc_info=True)
 
         # Long-context summarization: when context grows beyond 20 turns, compress older ones
         self._maybe_summarize_context()
@@ -1359,6 +1440,10 @@ tool_description: <第三人称描述：做什么 + 何时触发 + 触发词，�
             from skillos.skills.portable_skill import to_agent_skills_format
             standard_content = to_agent_skills_format(name, content,
                 metadata={"skillos_version": "0.3.0"})
+
+            # Flush pending resources to skill directory
+            self._skill_dir = str(finalized["slug"])
+            self._flush_pending_resources()
 
             self._draft_name = name
             self._draft_content = standard_content

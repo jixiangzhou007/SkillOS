@@ -1129,21 +1129,52 @@ async def ingest_file(
                     "reply": reply, "injected_into_extraction": True,
                 }
 
-        # Auto-classify: actionable → skill, conceptual → digest
+        # Auto-classify: actionable → skill, conceptual → digest,
+        #                template/reference → resource directory
         try:
             from skillos.llm_client import call
             model = llm_args[2] if len(llm_args) > 2 else ""
-            classify_prompt = f"""判断以下是"actionable"(含可执行步骤/方法论/流程)还是"conceptual"(概念/背景/参考)?
+            classify_prompt = f"""判断以下内容是"actionable"(含可执行步骤/方法论/流程)、"conceptual"(概念/背景/参考)还是"template"(模板/配置/话术/检查清单)?
 
 内容: {md_text[:500]}
 
-只回复一个词: actionable 或 conceptual"""
+只回复一个词: actionable 或 conceptual 或 template"""
             content_type = call(classify_prompt, model=model, max_tokens=10, temperature=0.1).strip().lower()
             is_actionable = "actionable" in content_type
+            is_template = "template" in content_type
         except Exception:
             is_actionable = False
+            is_template = False
 
         category = get_file_category(file.filename)
+
+        # Route 0: Template/reference → write directly to skill resource dir
+        if is_template and session_id:
+            try:
+                sm = get_session_manager()
+                session = sm.get(session_id)
+                if session and session.agent and session.agent._draft_name:
+                    from pathlib import Path as _Path
+                    from skillos.skills.portable_skill import tool_slug
+                    slug = tool_slug(session.agent._draft_name or "skill")
+                    skills_root = _Path(__file__).parent.parent.parent / "skills"
+                    skill_dir = skills_root / slug
+                    from skillos.skills.skill_store import _ensure_standard_dirs
+                    _ensure_standard_dirs(skill_dir)
+                    from skillos.skills.resource_capture import extract_asset, extract_reference
+                    asset_file = extract_asset(md_text, skill_dir, filename=file.filename)
+                    if asset_file:
+                        reply = f"📎 已保存为资源文件: {asset_file.name}"
+                    else:
+                        ref_file = extract_reference(md_text, skill_dir, filename=file.filename)
+                        reply = f"📎 已保存为参考文档: {ref_file.name}" if ref_file else "📎 文件已接收"
+                    import json as _json
+                    out = {"reply": reply, "session_id": session_id, "resource_saved": True}
+                    session.add_turn("user", f"[上传文件: {file.filename}]")
+                    session.add_turn("assistant", reply)
+                    return out
+            except Exception:
+                _log.debug("Template resource routing skipped", exc_info=True)
 
         if is_actionable:
             from skillos.skills.agent import SkillExtractionAgent
