@@ -373,7 +373,7 @@
   </div>
 
   <!-- 发布 Form Modal -->
-  <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" x-transition @click.self="closePublish()">
+  <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" x-transition @click.self="closePublish()" @keydown.escape.window="closePublish()">
     <div class="modal-box" style="max-width:520px">
       <h3>发布到技能市场</h3>
       <label>技能名称</label>

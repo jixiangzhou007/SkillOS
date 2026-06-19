@@ -52,9 +52,9 @@ function sendText() {
 
   setDot('blue');
 
-  let msgEl = addMsg('ai', '...');
+  let msgEl = addMsg('ai', '<span class="typing-dots"><span></span><span></span><span></span></span>');
 
-  msgEl.style.opacity = '0.5';
+  msgEl.style.opacity = '1';
 
 
 

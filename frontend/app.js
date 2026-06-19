@@ -206,13 +206,19 @@ function toast(msg, type) {
   if (!container) {
     container = document.createElement('div');
     container.id = 'toast-container';
+    container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none';
     document.body.appendChild(container);
   }
   var el = document.createElement('div');
   el.className = 'toast ' + type;
   el.textContent = msg;
+  el.style.cssText += ';pointer-events:auto;cursor:pointer';
+  el.title = '点击关闭';
+  el.onclick = function(){ el.classList.add('out'); setTimeout(function(){ el.remove(); }, 300); };
+  // Timeout proportional to message length (min 2s, max 8s)
+  var duration = Math.max(2000, Math.min(8000, msg.length * 60));
   container.appendChild(el);
-  setTimeout(function(){ el.classList.add('out'); setTimeout(function(){ el.remove(); }, 300); }, 3000);
+  setTimeout(function(){ if (el.parentNode) { el.classList.add('out'); setTimeout(function(){ el.remove(); }, 300); } }, duration);
 }
 
 initAuth();
