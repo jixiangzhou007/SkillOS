@@ -9,9 +9,7 @@ import tempfile
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
-from pydantic import BaseModel
 
-from skillos.identity.middleware import AuthContext, get_optional_auth, require_auth
 from skillos.api._skills_shared import (
     CreateSkillRequest,
     DispatchRequest,
@@ -20,6 +18,7 @@ from skillos.api._skills_shared import (
     _tenant_context_from_auth,
     _tenant_from_context,
 )
+from skillos.identity.middleware import AuthContext, get_optional_auth
 
 router = APIRouter()
 _log = logging.getLogger(__name__)
@@ -1155,6 +1154,7 @@ async def ingest_file(
                 session = sm.get(session_id)
                 if session and session.agent and session.agent._draft_name:
                     from pathlib import Path as _Path
+
                     from skillos.skills.portable_skill import tool_slug
                     slug = tool_slug(session.agent._draft_name or "skill")
                     skills_root = _Path(__file__).parent.parent.parent / "skills"
@@ -1168,7 +1168,6 @@ async def ingest_file(
                     else:
                         ref_file = extract_reference(md_text, skill_dir, filename=file.filename)
                         reply = f"📎 已保存为参考文档: {ref_file.name}" if ref_file else "📎 文件已接收"
-                    import json as _json
                     out = {"reply": reply, "session_id": session_id, "resource_saved": True}
                     session.add_turn("user", f"[上传文件: {file.filename}]")
                     session.add_turn("assistant", reply)

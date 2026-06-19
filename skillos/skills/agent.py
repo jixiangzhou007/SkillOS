@@ -277,10 +277,13 @@ class SkillExtractionAgent:
             return 0
 
         from pathlib import Path
-        from skillos.skills.resource_capture import (
-            extract_script, extract_reference, extract_asset,
-        )
+
         from skillos.skills.portable_skill import tool_slug
+        from skillos.skills.resource_capture import (
+            extract_asset,
+            extract_reference,
+            extract_script,
+        )
 
         # Resolve the skill directory from the slug
         slug = tool_slug(self._finalized_name or self._draft_name or "skill")

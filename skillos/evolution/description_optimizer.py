@@ -11,7 +11,6 @@ import json
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Any
 
 _log = logging.getLogger(__name__)
 
@@ -226,9 +225,9 @@ def _fallback_queries(skill_name: str) -> list[dict]:
         {"query": f"能不能帮我做{skill_name}", "should_trigger": True},
         {"query": f"有没有{skill_name}的工具", "should_trigger": True},
         {"query": f"我想了解一下{skill_name}的流程", "should_trigger": True},
-        {"query": f"帮我写一个Python脚本处理数据", "should_trigger": False},
-        {"query": f"今天天气怎么样", "should_trigger": False},
-        {"query": f"给我讲个笑话", "should_trigger": False},
-        {"query": f"怎么安装Node.js", "should_trigger": False},
-        {"query": f"推荐一本好书", "should_trigger": False},
+        {"query": "帮我写一个Python脚本处理数据", "should_trigger": False},
+        {"query": "今天天气怎么样", "should_trigger": False},
+        {"query": "给我讲个笑话", "should_trigger": False},
+        {"query": "怎么安装Node.js", "should_trigger": False},
+        {"query": "推荐一本好书", "should_trigger": False},
     ]

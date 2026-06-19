@@ -327,7 +327,6 @@ def evolve_skill(name: str, feedback: str = "") -> str:
     Returns:
         Optimization result with before/after scores, audit report, and decision ID
     """
-    import time
 
     try:
         from skillos.config import get_config

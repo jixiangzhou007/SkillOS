@@ -171,7 +171,7 @@ def extract_reference(text: str, skill_dir: Path, *, source_url: str = "", filen
     header = f"# {fname.replace('.md', '').replace('_', ' ').title()}\n\n"
     if source_url:
         header += f"**来源**: {source_url}\n\n"
-    header += f"*从 SkillOS 对话中自动提取*\n\n"
+    header += "*从 SkillOS 对话中自动提取*\n\n"
 
     fpath = refs_dir / fname
     fpath.write_text(header + content + "\n", encoding="utf-8")

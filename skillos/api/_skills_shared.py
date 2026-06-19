@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 from skillos.identity.middleware import AuthContext
 
-
 # ── Shared request models ──────────────────────────────────────
 
 class CreateSkillRequest(BaseModel):

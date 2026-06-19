@@ -1,29 +1,23 @@
 """Skill CRUD, extraction, and execution endpoints."""
 
 import logging
-import os
-import tempfile
-from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel
 
-from skillos.identity.middleware import AuthContext, get_optional_auth, require_auth
 from skillos.api._skills_shared import (
-    CreateSkillRequest,
-    DispatchRequest,
     _reset_tenant,
-    _skills_list,
     _tenant_context_from_auth,
-    _tenant_from_context,
 )
+from skillos.identity.middleware import AuthContext, get_optional_auth, require_auth
 
 router = APIRouter()
 _log = logging.getLogger(__name__)
 
 # ── Include extraction sub-router ────────────────────────────
 from skillos.api.skills_extract import router as extract_router  # noqa: E402
+
 router.include_router(extract_router)
 
 # Re-export extraction helpers for backward compatibility with tests
