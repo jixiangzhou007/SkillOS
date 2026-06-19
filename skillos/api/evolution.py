@@ -44,7 +44,6 @@ async def optimize_skill(name: str, feedback: dict = {}, auth: AuthContext = Dep
         result = evolve_with_moe(
             skill_name=name,
             skill_content=content,
-            decision=decision,
             llm_args=llm_args,
             user_feedback=feedback_text,
         )
