@@ -273,33 +273,115 @@
 
   <!-- Hub View (技能交易平台) -->
   <div id="hub-view" class="main-view"
+       x-data="hubView()" x-init="init()"
        :class="{ active: $store.nav.currentView === 'hub-view' }">
     <div style="padding:20px">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
         <span style="font-size:18px;font-weight:700;color:var(--warn)">技能市场</span>
         <span style="font-size:12px;color:var(--text3)">技能交易平台</span>
         <span style="flex:1"></span>
-        <input id="hub-search" placeholder="搜索技能..." style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);font-size:12px;width:200px;outline:none" oninput="searchHub()">
-        <select id="hub-category" onchange="searchHub()" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;outline:none"></select>
-        <button class="nav-sm" id="hub-review-btn" onclick="showReviewQueue()" style="border-color:var(--warn);color:var(--warn)">审核</button>
-        <button class="nav-sm" id="hub-admin-btn" onclick="showAdminPanel()" style="border-color:var(--info);color:var(--info)">管理</button>
-        <button class="nav-sm" id="hub-revenue-btn" onclick="showRevenueDashboard()" style="border-color:var(--accent);color:var(--accent)">收益</button>
-        <button class="nav-sm" id="hub-publish-btn" onclick="showPublishForm()">+ 发布</button>
+        <input placeholder="搜索技能..." x-model="searchQuery" @input="search()"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);font-size:12px;width:200px;outline:none">
+        <select x-model="selectedCategory" @change="search()"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;outline:none">
+          <option value="">全部分类</option>
+          <template x-for="cat in categories" :key="cat">
+            <option :value="cat" x-text="cat"></option>
+          </template>
+        </select>
+        <button class="nav-sm" @click="showReview()" style="border-color:var(--warn);color:var(--warn)">审核</button>
+        <button class="nav-sm" @click="showAdmin()" style="border-color:var(--info);color:var(--info)">管理</button>
+        <button class="nav-sm" @click="showRevenue()" style="border-color:var(--accent);color:var(--accent)">收益</button>
+        <button class="nav-sm" @click="openPublish()" x-show="!readOnly" style="display:none">+ 发布</button>
       </div>
-      <div id="hub-content"></div>
+
+      <!-- Catalog mode -->
+      <template x-if="mode === 'catalog' && !loading">
+        <div>
+          <template x-if="recommendations.length">
+            <div style="margin-bottom:16px">
+              <div style="font-size:14px;font-weight:600;margin-bottom:8px">推荐</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <template x-for="rec in recommendations" :key="rec.skill_id">
+                  <div class="skill-card" style="padding:10px;cursor:pointer" @click="showDetail(rec.skill_id)">
+                    <div class="name" x-text="rec.name||rec.skill_id"></div>
+                    <div class="meta" x-text="rec.description||''"></div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+            <template x-for="cat in categories" :key="cat">
+              <span class="kb-filter" :class="{'active-kb-filter': selectedCategory===cat}"
+                @click="filterCat(cat)" x-text="cat"></span>
+            </template>
+          </div>
+          <template x-if="!skills.length">
+            <div style="color:var(--text3);padding:40px;text-align:center">暂无技能</div>
+          </template>
+          <template x-for="s in skills" :key="s.skill_id||s.name">
+            <div class="skill-card" style="margin-bottom:8px;cursor:pointer" @click="showDetail(s.skill_id||s.name)">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="name" style="flex:1" x-text="s.name"></span>
+                <span style="font-size:11px;color:var(--text3)" x-text="hubStatusLabel(s.status||'approved')"></span>
+                <span style="font-weight:600" :style="'color:'+scoreColor(s.score||0)" x-text="s.score||'?'"></span>
+              </div>
+              <div class="meta" x-text="(s.description||'').substring(0,120)"></div>
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <!-- Detail mode -->
+      <template x-if="mode === 'detail' && detailSkill">
+        <div>
+          <button class="nav-sm" @click="backToCatalog()">← 返回</button>
+          <div style="font-size:18px;font-weight:600;margin:12px 0" x-text="detailSkill.name"></div>
+          <div style="display:flex;gap:12px;margin-bottom:12px">
+            <span style="font-weight:600" :style="'color:'+scoreColor(detailSkill.score||0)" x-text="detailSkill.score||'?'"></span>
+            <span style="font-size:11px;color:var(--text3)" x-text="gateLabel(detailSkill.gate)"></span>
+          </div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px" x-text="detailSkill.description||''"></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn a" style="font-size:12px" @click="install(detailSkill.skill_id)">安装</button>
+            <button class="btn" style="font-size:12px" @click="subscribe(detailSkill.skill_id)">订阅</button>
+          </div>
+        </div>
+      </template>
+
+      <!-- Review mode -->
+      <template x-if="mode === 'review'">
+        <div id="hub-review-content"><div style="color:var(--text3)">加载审核队列…</div></div>
+      </template>
+
+      <!-- Admin mode -->
+      <template x-if="mode === 'admin'">
+        <div id="hub-admin-content"><div style="color:var(--text3)">加载管理面板…</div></div>
+      </template>
+
+      <!-- Revenue mode -->
+      <template x-if="mode === 'revenue'">
+        <div id="hub-revenue-content"><div style="color:var(--text3)">加载收益数据…</div></div>
+      </template>
+
+      <!-- Loading -->
+      <template x-if="loading">
+        <div style="color:var(--text3);padding:40px;text-align:center">加载中…</div>
+      </template>
     </div>
   </div>
 
   <!-- 发布 Form Modal -->
-  <div class="modal-overlay" id="publish-modal">
+  <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" @click.self="closePublish()">
     <div class="modal-box" style="max-width:520px">
       <h3>发布到技能市场</h3>
       <label>技能名称</label>
-      <input id="pub-name" placeholder="例如：合同审核专家">
+      <input x-model="publishName" placeholder="例如：合同审核专家">
       <label>描述</label>
-      <input id="pub-desc" placeholder="功能描述和触发条件">
+      <input x-model="publishDesc" placeholder="功能描述和触发条件">
       <label>分类</label>
-      <select id="pub-cat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;margin-top:4px">
+      <select x-model="publishCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;margin-top:4px">
         <option value="automation">自动化</option><option value="development">开发</option>
         <option value="data-science">Data Science</option><option value="writing">Writing</option>
         <option value="design">Design</option><option value="legal">Legal</option>
@@ -307,10 +389,10 @@
         <option value="security">Security</option><option value="other">Other</option>
       </select>
       <label>技能内容 (SKILL.md)</label>
-      <textarea id="pub-content" rows="10" placeholder="粘贴 SKILL.md 内容..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:12px;outline:none;resize:vertical;font-family:var(--mono);margin-top:4px"></textarea>
+      <textarea x-model="publishContent" rows="10" placeholder="粘贴 SKILL.md 内容..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:12px;outline:none;resize:vertical;font-family:var(--mono);margin-top:4px"></textarea>
       <div class="modal-actions">
-        <button class="modal-btn-cancel" onclick="closePublishModal()">取消</button>
-        <button class="modal-btn-primary" onclick="publishSkill()">发布并评分</button>
+        <button class="modal-btn-cancel" @click="closePublish()">取消</button>
+        <button class="modal-btn-primary" @click="publish()">发布并评分</button>
       </div>
     </div>
   </div>

@@ -1,6 +1,163 @@
-/* hub.js — extracted from app.js */
+/* hub.js — Skill Marketplace (Alpine.js)
+ * Route B: reactive market with catalog/detail/review/admin/revenue modes.
+ */
 
 var _hubReadOnly = true;
+
+// ── Alpine component ──────────────────────────────────
+
+function hubView() {
+  return {
+    mode: 'catalog',        // catalog | detail | review | admin | revenue
+    readOnly: true,
+    skills: [],
+    categories: [],
+    searchQuery: '',
+    selectedCategory: '',
+    stats: null,
+    recommendations: [],
+    detailSkill: null,
+    detailScore: null,
+    loading: false,
+    publishFormOpen: false,
+    publishName: '',
+    publishDesc: '',
+    publishCat: 'automation',
+    publishContent: '',
+
+    async init() {
+      this.loading = true;
+      await this.loadCatalog();
+      this.loading = false;
+    },
+
+    async loadCatalog() {
+      this.mode = 'catalog';
+      try {
+        var q = encodeURIComponent(this.searchQuery || '');
+        var cat = encodeURIComponent(this.selectedCategory || '');
+        var url = '/api/marketplace/catalog?q=' + q + '&category=' + cat;
+        var r = await api(url);
+        if (!r.ok) return;
+        var d = await r.json();
+        this.skills = d.skills || [];
+        this.categories = d.categories || [];
+        this.stats = d.stats || null;
+        this.recommendations = d.recommendations || [];
+        applyMarketplaceMode(d);
+        this.readOnly = _hubReadOnly;
+      } catch (e) { this.skills = []; }
+    },
+
+    search() { this.loadCatalog(); },
+    filterCat(cat) {
+      this.selectedCategory = (this.selectedCategory === cat) ? '' : cat;
+      this.loadCatalog();
+    },
+
+    async showDetail(skillId) {
+      this.mode = 'detail';
+      this.loading = true;
+      try {
+        var r = await api('/api/marketplace/skill/' + encodeURIComponent(skillId));
+        if (!r.ok) { this.loading = false; return; }
+        var s = await r.json();
+        this.detailSkill = s;
+        // Fetch score separately
+        try {
+          var sr = await api('/api/marketplace/skill/' + encodeURIComponent(skillId) + '/score');
+          if (sr.ok) this.detailScore = await sr.json();
+        } catch (e) { this.detailScore = null; }
+      } catch (e) { this.detailSkill = null; }
+      this.loading = false;
+    },
+
+    scoreColor(score) {
+      return score >= 70 ? 'var(--accent)' : score >= 50 ? 'var(--warn)' : 'var(--err)';
+    },
+    gateLabel(status) {
+      var m = { approved: '已通过', pending: '待审核', rejected: '已拒绝' };
+      return m[status] || status || '?';
+    },
+
+    async subscribe(skillId) {
+      await api('/api/marketplace/subscribe/' + encodeURIComponent(skillId), { method: 'POST' });
+      this.showDetail(skillId);
+    },
+    async unsubscribe(skillId) {
+      await api('/api/marketplace/unsubscribe/' + encodeURIComponent(skillId), { method: 'POST' });
+      this.showDetail(skillId);
+    },
+    async install(skillId) {
+      var r = await api('/api/marketplace/install/' + encodeURIComponent(skillId), { method: 'POST' });
+      if (!r.ok) { toast('Install failed', 'error'); return; }
+      var d = await r.json();
+      addMsg('sys', 'Installed: ' + (d.name || skillId));
+      refreshSkillList();
+      checkHubUpdates();
+    },
+
+    openPublish(skillName) {
+      this.publishFormOpen = true;
+      this.publishName = skillName || '';
+    },
+    closePublish() { this.publishFormOpen = false; },
+    async publish() {
+      var r = await api('/api/marketplace/publish', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: this.publishName, description: this.publishDesc,
+          category: this.publishCat, content: this.publishContent,
+        }),
+      });
+      if (!r.ok) { var e = await r.json().catch(function(){return{}}); toast(e.detail||'发布失败', 'error'); return; }
+      toast('已发布', 'success');
+      this.closePublish();
+      showHub();
+    },
+
+    showReview() { this.mode = 'review'; /* load handled by old function */ },
+    showAdmin() { this.mode = 'admin'; },
+    showRevenue() { this.mode = 'revenue'; },
+    backToCatalog() { this.mode = 'catalog'; this.loadCatalog(); },
+  };
+}
+
+// ── Legacy wrappers (delegate to Alpine) ──────────────
+
+function showHub() {
+  switchMainView('hub-view');
+  document.getElementById('bar').style.display = 'none';
+  var el = document.querySelector('[x-data="hubView()"]');
+  if (el && el.__x) { el.__x.$data.loadCatalog(); return; }
+  loadHub();
+}
+
+function searchHub() {
+  var el = document.querySelector('[x-data="hubView()"]');
+  if (el && el.__x) { el.__x.$data.search(); }
+}
+
+function filterHubCat(cat) {
+  var el = document.querySelector('[x-data="hubView()"]');
+  if (el && el.__x) { el.__x.$data.filterCat(cat); }
+}
+
+function showHubSkill(skillId) {
+  var el = document.querySelector('[x-data="hubView()"]');
+  if (el && el.__x) { el.__x.$data.showDetail(skillId); return; }
+  // Legacy fallback
+  switchMainView('hub-view');
+  var content = document.getElementById('hub-content');
+  content.innerHTML = '<div style="color:var(--text3);padding:20px">加载中…</div>';
+  api('/api/marketplace/skill/' + encodeURIComponent(skillId)).then(function(r){return r.json()}).then(function(s){
+    var scoreColor = s.score >= 70 ? 'var(--accent)' : s.score >= 50 ? 'var(--warn)' : 'var(--err)';
+    content.innerHTML = '<div style="padding:12px"><button class="nav-sm" onclick="showHub()">← 返回</button>' +
+      '<div style="font-size:18px;font-weight:600;margin:12px 0">' + escHtml(s.name||skillId) + '</div>' +
+      '<div style="display:flex;gap:12px;margin-bottom:12px"><span style="color:'+scoreColor+';font-weight:600">'+(s.score||'?')+'</span></div>' +
+      '<div style="font-size:12px;color:var(--text3)">' + escHtml(s.description||'') + '</div></div>';
+  });
+}
 
 function hubStatusLabel(status) {
   var map = { approved: '已通过', pending: '待审核', rejected: '已拒绝' };
