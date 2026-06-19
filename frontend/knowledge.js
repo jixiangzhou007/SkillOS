@@ -103,13 +103,13 @@ function knowledgeView() {
 
 // ── Views ─────────────────────────────────────────────
 
-function showDashboard() { switchMainView('dashboard-view'); document.getElementById('bar').style.display='none'; loadDashboard(); }
-function showGraphView() { switchMainView('graph-view'); document.getElementById('bar').style.display='none'; loadGraphView(); }
-function showJournalView() { switchMainView('journal-view'); document.getElementById('bar').style.display='none'; loadJournalView(); }
-function showKnowledgeView() { switchMainView('knowledge-view'); document.getElementById('bar').style.display='none'; loadKnowledgeView(); }
-function showLineageView() { switchMainView('lineage-view'); document.getElementById('bar').style.display='none'; loadLineageView(); }
-function showPrecipitateView() { switchMainView('precipitate-view'); document.getElementById('bar').style.display='none'; loadPrecipitateView(); }
-function showReviewView() { switchMainView('review-view'); document.getElementById('bar').style.display='none'; loadReviewView(); }
+function showDashboard() { if(window.__alpineReady) Alpine.store('nav').navigate('dashboard-view'); else switchMainView('dashboard-view'); document.getElementById('bar').style.display='none'; loadDashboard(); }
+function showGraphView() { if(window.__alpineReady) Alpine.store('nav').navigate('graph-view'); else switchMainView('graph-view'); document.getElementById('bar').style.display='none'; loadGraphView(); }
+function showJournalView() { if(window.__alpineReady) Alpine.store('nav').navigate('journal-view'); else switchMainView('journal-view'); document.getElementById('bar').style.display='none'; loadJournalView(); }
+function showKnowledgeView() { if(window.__alpineReady) Alpine.store('nav').navigate('knowledge-view'); else switchMainView('knowledge-view'); document.getElementById('bar').style.display='none'; loadKnowledgeView(); }
+function showLineageView() { if(window.__alpineReady) Alpine.store('nav').navigate('lineage-view'); else switchMainView('lineage-view'); document.getElementById('bar').style.display='none'; loadLineageView(); }
+function showPrecipitateView() { if(window.__alpineReady) Alpine.store('nav').navigate('precipitate-view'); else switchMainView('precipitate-view'); document.getElementById('bar').style.display='none'; loadPrecipitateView(); }
+function showReviewView() { if(window.__alpineReady) Alpine.store('nav').navigate('review-view'); else switchMainView('review-view'); document.getElementById('bar').style.display='none'; loadReviewView(); }
 
 // Dashboard
 

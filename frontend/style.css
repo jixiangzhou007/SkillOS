@@ -252,10 +252,14 @@ select{-webkit-appearance:none;appearance:none;padding-right:24px}
 .user-dropdown button{display:block;width:100%;text-align:left;padding:7px 14px;font-size:12px;color:var(--text2);background:transparent;border:none;transition:all var(--t)}
 .user-dropdown button:hover{background:var(--surface2);color:var(--text)}
 
-/* ── Skeleton ────────────────────────────────────────────── */
-.skeleton{background:linear-gradient(90deg,var(--surface2),var(--elevated),var(--surface2));background-size:200px 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-sm)}
-.skeleton-line{height:14px;margin-bottom:8px;width:80%}.skeleton-line.short{width:50%}
-.skeleton-card{height:80px;margin-bottom:10px}.skeleton-kpi{height:100px}
+/* ── Alpine transitions ──────────────────────────────────── */
+[x-cloak] { display: none !important; }
+.modal-overlay { transition: opacity 0.15s ease; }
+.modal-overlay[x-show] { opacity: 0; }
+.modal-overlay[x-show]:not([x-transition]) { opacity: 1; }
+.x-transition-enter { opacity: 0; transform: scale(0.95); }
+.x-transition-enter-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.x-transition-leave-active { transition: opacity 0.1s ease, transform 0.1s ease; opacity: 0; transform: scale(0.95); }
 
 /* ── Misc ────────────────────────────────────────────────── */
 #body-wrap.drag-over #main{outline:2px dashed var(--accent);outline-offset:-4px;background:var(--accent-glow)}

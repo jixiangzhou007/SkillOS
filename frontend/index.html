@@ -373,7 +373,7 @@
   </div>
 
   <!-- 发布 Form Modal -->
-  <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" @click.self="closePublish()">
+  <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" x-transition @click.self="closePublish()">
     <div class="modal-box" style="max-width:520px">
       <h3>发布到技能市场</h3>
       <label>技能名称</label>
@@ -711,7 +711,7 @@
       </template>
 
       <!-- Model Edit Modal -->
-      <div class="modal-overlay" x-show="modelModalOpen" @click.self="closeModelModal()" @keydown.escape.window="closeModelModal()">
+      <div class="modal-overlay" x-show="modelModalOpen" x-transition @click.self="closeModelModal()" @keydown.escape.window="closeModelModal()">
         <div class="modal-box">
           <h3 x-text="editingIndex < 0 ? '添加模型' : '编辑模型'"></h3>
           <label>显示名称</label>
@@ -728,7 +728,7 @@
       </div>
 
       <!-- Delete Confirm Modal -->
-      <div class="modal-overlay" x-show="deleteModalOpen" @click.self="closeDeleteModal()" @keydown.escape.window="closeDeleteModal()">
+      <div class="modal-overlay" x-show="deleteModalOpen" x-transition @click.self="closeDeleteModal()" @keydown.escape.window="closeDeleteModal()">
         <div class="modal-box">
           <h3>删除模型</h3>
           <p style="color:var(--text2);font-size:14px;margin-bottom:4px">移除 <strong style="color:var(--err)" x-text="deleteTargetIndex >= 0 && models[deleteTargetIndex] ? models[deleteTargetIndex].label + ' (' + models[deleteTargetIndex].id + ')' : ''"></strong>？</p>
