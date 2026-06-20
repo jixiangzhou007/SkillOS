@@ -233,7 +233,7 @@ class EpistemicStore:
                     claim = EpistemicClaim.from_dict(c)
                     self.claims[claim.claim_id] = claim
             elif isinstance(claims_data, dict):
-                for cid, cdata in claims_data.items():
+                for _cid, cdata in claims_data.items():
                     claim = EpistemicClaim.from_dict(cdata)
                     self.claims[claim.claim_id] = claim
         except Exception as e:

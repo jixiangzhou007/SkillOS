@@ -123,7 +123,7 @@ def search_high_level(skill_name: str, query: str, top_k: int = 3, graph_travers
         node = g.find_node(seed) or g.find_node(seed[:40])
         if node:
             neighbors = g.get_neighbors(node.id)
-            for neighbor, edge in neighbors[:graph_traversal_depth * 3]:
+            for neighbor, _edge in neighbors[:graph_traversal_depth * 3]:
                 expanded.add(f"{neighbor.name}: {neighbor.description[:200]}")
 
     # Combine low-level results with graph-expanded context

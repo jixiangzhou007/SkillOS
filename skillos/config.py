@@ -108,7 +108,7 @@ class AppConfig:
 
 
     def get_model_for_role(self, role: str = "executor") -> str:
-        """Harness-Updating (evolver) can use cheap models. 
+        """Harness-Updating (evolver) can use cheap models.
         Harness-Benefit (executor) needs capable models."""
         if role == "evolver" and self.evolver_model:
             return self.evolver_model

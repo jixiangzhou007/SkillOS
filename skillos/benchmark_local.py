@@ -418,7 +418,7 @@ def run_quick8_for_skill(
             "without_score": wo.get("score"),
             "skill_used": w.get("skill_used"),
         }
-        for w, wo in zip(matched_with, matched_without)
+        for w, wo in zip(matched_with, matched_without, strict=False)
     ]
 
     compare = {

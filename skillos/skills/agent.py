@@ -127,7 +127,7 @@ def _research_topic(topic: str, existing_skills: list[str] | None = None) -> str
         try:
             from skillos.knowledge.graph import get_graph
             g = get_graph()
-            for nid, node in list(g.nodes.items())[:50]:
+            for _nid, node in list(g.nodes.items())[:50]:
                 if any(kw in node.name for kw in re.findall(r'[\w一-鿿]{2,}', topic)):
                     knowledge_parts.append(f"📊 知识图谱节点: {node.name}")
         except Exception:
@@ -745,7 +745,7 @@ class SkillExtractionAgent:
             )
 
             reply += f"**{self._draft_name}** 测试结果（{len(result.tests)} 个用例）:\n\n"
-            for i, r in enumerate(result.results):
+            for _i, r in enumerate(result.results):
                 icon = "✅" if r.passed else "❌"
                 reply += f"{icon} **{r.test.category}**: {r.test.prompt[:60]}...\n"
                 reply += f"   评分: {r.score}/100"

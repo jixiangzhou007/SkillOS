@@ -32,7 +32,7 @@ def generate_eval_queries(skill_name: str, body: str, llm_args: tuple) -> list[d
 
     model = llm_args[2] if len(llm_args) > 2 else ""
     # Extract key terms
-    keywords = _extract_keywords(body)
+    _extract_keywords(body)
     trigger_section = ""
     tm = re.search(r'##\s*S_trigger\s*\n(.*?)(?=\n##|\Z)', body, re.DOTALL)
     if tm:
