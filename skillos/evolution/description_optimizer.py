@@ -20,7 +20,7 @@ class OptResult:
     """Result of a description optimization run."""
     original: str
     best: str
-    iterations: int
+    iterations: int = 0
     train_scores: list[float] = field(default_factory=list)
     test_scores: list[float] = field(default_factory=list)
     eval_queries: list[dict] = field(default_factory=list)
