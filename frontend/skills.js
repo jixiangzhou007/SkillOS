@@ -1219,6 +1219,7 @@ async function addToKB() {
 async function loadBenchDashboard() {
   var el = document.getElementById('bench-dashboard');
   if (!el) return;
+  el.style.display = 'block';
   try {
     var r = await api('/api/bench/official/summary');
     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -1255,7 +1256,9 @@ async function loadBenchDashboard() {
     });
     el.innerHTML = h;
   } catch (e) {
-    el.textContent = '评测概览不可用';
+    // Fallback: show skill count
+    var total = (typeof _allSkillsCache !== 'undefined' && _allSkillsCache.length) ? _allSkillsCache.length : '—';
+    el.innerHTML = '<span style=\"color:var(--text-tertiary)\">' + total + ' 个技能</span>';
   }
 }
 
