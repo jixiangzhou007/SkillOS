@@ -2,7 +2,7 @@
 
 ## v0.3.0 (2026-06-19) — 架构 A- 里程碑
 
-> 49 commits · 601 tests (98.3% pass) · mypy 0 errors · ruff 3 categories zeroed · AgentSkills.io 标准对齐 · Alpine.js UX A- · skill-creator 5/5 模式 · 认识论 5 路径贯通
+> 70 commits · 605 tests (98.3% pass) · mypy 0 errors · ruff 3 categories zeroed · AgentSkills.io standard · Alpine.js CSS v3 · 5 knowledge domains · skill-creator 5/5 · epistemology 5 paths
 
 ### 后端架构拆分
 
