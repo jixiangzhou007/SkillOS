@@ -135,7 +135,7 @@ async function loadDashboard() {
       _kpiCard('待验证',stats.pending||0,'var(--warn)','经验、声明待审核')+
       _kpiCard('图谱边',stats.edges||0,'var(--info)','关系连接')+'</div>'+
       '<div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px">最近活动</div>';
-    el.innerHTML = h + (recent.length ? recent.map(function(e){
+    var dh = h + (recent.length ? recent.map(function(e){
       return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;gap:8px"><span>'+(e.type==='knowledge_ingested'?'📥':e.type==='claim_verified'?'✅':'📌')+'</span><span style="flex:1;color:var(--text2)">'+escHtml(e.summary||e.content||'')+'</span><span style="color:var(--text3);white-space:nowrap">'+_eventLabel(e.type)+'</span></div>';
     }).join('') : '<div style="color:var(--text3);font-size:12px;padding:20px">暂无活动</div>') + '</div>';
   } catch(e) { el.innerHTML = _viewHeader('知识仪表盘','')+_quickNav('dashboard')+'<div style="color:var(--err)">加载失败</div>'; }
