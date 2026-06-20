@@ -28,8 +28,10 @@ We present \textsc{SkillOS}, a system that addresses these gaps through three no
 First, an \textit{epistemology engine} grounded in Plato's justified true belief and Popper's falsificationism that classifies claims into a six-level confidence hierarchy and automatically promotes experiences to verified knowledge through adversarial testing.
 Second, a \textit{Socratic extraction pipeline} that employs a seven-step cognitive learning process (inspired by Feynman, Bloom, and deliberate practice) to extract structured, executable skill documents from URLs and conversation.
 Third, a \textit{Mixture-of-Experts self-evolution system} with a gating network that routes skills to three specialized optimizers and propagates improvements across related skills through knowledge diffusion.
-Experiments on three skill creation tasks show that SkillOS-generated skills consistently include decision-table routing structures (S\_route) that bare LLM generation never produces, and that the system achieves 100\% structural completeness across all tested dimensions.
+Experiments on three skill creation tasks show that SkillOS-generated skills consistently include decision-table routing structures (S\_route) that bare LLM generation never produces (100\% vs 0\%), and that the pipeline achieves differentiated audit scores (70--75/100) validated across 235 benchmark runs with 4,400+ accumulated epistemology claims.
 On a 100-claim epistemic ablation benchmark, the full pipeline (classify + falsify + corroboration) achieves F1=0.750 versus 0.462 for a trust-all baseline, with 100\% false-claim filtering while retaining all gold-true claims.
+Beyond epistemology, we introduce a \textit{domain DNA system} spanning 12 academic disciplines with 13 domain templates and 8 philosophical methods, a \textit{gate semantics} framework ([动作]/[门禁]) that prevents agents from silently skipping critical checks, and a \textit{resource capture pipeline} that extracts scripts, templates, and references from dialogue into AgentSkills.io standard directories.
+The complete system represents 82 engineering commits, 605 tests (98.3\% pass), and has accumulated 4,400+ epistemology claims from real pipeline runs.}
 \end{abstract}
 
 %==============================================================================
@@ -96,6 +98,31 @@ The falsification step is particularly important. The system prompts an LLM to a
 Claims flow through a complete lifecycle: \texttt{classify} $\rightarrow$ \texttt{add\_claim} $\rightarrow$ \texttt{cross\_reference} $\rightarrow$ \texttt{\_falsify\_claim} $\rightarrow$ \texttt{promote\_to\_knowledge}. The \texttt{cross\_reference} function uses text overlap analysis ($>40\%$ word overlap) to automatically discover corroborating and contradicting claim pairs. Expired Experience claims (14-day TTL) have their confidence automatically downgraded; Knowledge claims persist for 90 days.
 
 \textbf{Why this is novel.} To our knowledge, no other skill system---academic or industrial---implements an epistemology layer. Most systems assume that extracted content is valid by default. SkillOS is the first to systematically question this assumption.
+
+%==============================================================================
+\section{Domain DNA: A 12-Discipline Knowledge Framework}
+\label{sec:domain-dna}
+%==============================================================================
+
+Beyond individual claim verification, SkillOS addresses a second challenge: \textit{domain-aware extraction}. A contract review skill requires knowledge of legal statutes (Civil Code, Company Law); a construction safety skill requires GB standards (GB 50656, JGJ 59); a medical triage skill requires clinical guidelines (NICE, WHO). Without domain context, extraction is generic.
+
+\subsection{Three-Layer Architecture}
+
+SkillOS implements a three-layer domain knowledge system:
+
+\begin{enumerate}[leftmargin=*,nosep]
+    \item \textbf{Taxonomy (12 Disciplines).} A keyword-based classification system maps any skill topic to one of 12 academic disciplines (Computer Science, Medicine, Management, Law, Economics, Education, Design, Engineering, Natural Science, Social Science, Journalism, Agriculture). Each discipline carries a \textit{concrete evidence standard} referencing real certification criteria: ISO/IEC 25010 for software quality, JCI for hospital accreditation, IFRS/IAS for financial reporting, WCAG 2.1 AA for accessibility.
+    \item \textbf{Methodology Detection (6 Patterns).} Six underlying thinking patterns are detected from process descriptions: engineering (reductionist), scientific (Baconian), diagnostic (Aristotelian), design-thinking (pragmatic), business-process (Taylorist), and creative (deliberate practice). Each methodology carries a philosophical lineage and domain-specific trigger questions.
+    \item \textbf{Philosophical DNA (8 Methods).} Eight philosophical methods ground the extraction in intellectual tradition: PDCA (Deming), OODA (Boyd), Scientific Method (Bacon+Popper), Dialectical (Hegel+Marx), Reductionist (Descartes), Pragmatic (Dewey+Simon), Deliberate Practice (Ericsson), and Strategic Adaptive (Sun Tzu+Daoism). Methods map to methodologies, which map to disciplines, which map to 13 domain templates with pre-defined skeletons, trigger conditions, and S\_route structures.
+\end{enumerate}
+
+\subsection{Authoritative Reference Registry}
+
+A key practical contribution is a \textit{domain reference library} mapping each of the 12 disciplines to 5--6 authoritative sources (70 total): laws, ISO standards, clinical guidelines, industry certifications. During extraction, detected domain references are automatically injected into the generation prompt, enabling the LLM to reference specific statutory provisions (e.g., ``per GB 50656 Section 4.2'') rather than generic advice.
+
+\subsection{Gate Semantics}
+
+SkillOS introduces a \textit{gate semantics} framework where S\_body steps are explicitly tagged as [动作] (action) or [门禁] (gate). Gate steps define mandatory checkpoints that, if failed, abort or escalate the process---preventing the common agent failure mode of silently skipping critical checks. Gate steps are automatically propagated to the S\_route decision table, ensuring the agent cannot proceed without satisfying all preconditions.
 
 %==============================================================================
 \section{Socratic Skill Extraction}
