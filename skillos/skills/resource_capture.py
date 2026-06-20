@@ -29,12 +29,15 @@ _SCRIPT_SIGNALS = [
 _ASSET_SIGNALS = [
     r"(?:模板|模版|template)\s*(?:如下|是[：:]|：)",
     r"(?:话术|回复语|应答|文案)\s*(?:如下|是[：:]|：)",
-    r"(?:格式|format)\s*(?:如下|是[：:]|：)",
+    r"(?:格式|format)\s*(?:如下|是[：:]|：|固定)",
     r"(?:邮件|短信|通知)\s*(?:模板|内容|正文)[：:]",
     r"(?:检查清单|checklist|check.?list)[：:]",
     r"亲爱的\{.*?\}",
     r"(?:你好|亲爱的)\s*(?:客户|用户|先生|女士)",
     r"\{\{.*?\}\}",
+    r"(?:报告|记录|报表|表格|登记表).{0,5}(?:格式|样式|模板|固定)",
+    r"(?:固定|统一|标准).{0,5}(?:格式|模板|样式|报告)",
+    r"App.{0,5}(?:拍照|上传|生成|自动).{0,5}(?:报告|记录|报表)",  # App自动生成报告
 ]
 
 # Patterns that signal the user is describing a rule, policy, or reference
@@ -45,6 +48,15 @@ _REFERENCE_SIGNALS = [
     r"(?:金额|超过|大于|小于|不低于).{0,10}(?:元|块|万).{0,10}(?:需要|必须|应该|自动)",
     r"https?://[^\s]{5,}",
     r"(?:参见|详见|参考|查阅).{0,5}(?:文档|手册|指南|链接)",
+    # Simple substring patterns for Chinese text (more reliable than complex regex)
+    r"有本.{0,5}(?:手册|指南|规范|标准|文档|文件|资料)",
+    r"(?:手册|指南|规范|标准).{0,5}(?:里|里面|上|中).{0,5}(?:写|规定|列|要求|说明)",
+    r"(?:法定|法律|法规|国标|行标|ISO|GB|JGJ).{0,10}(?:要求|规定|标准|规范|必须)",
+    r"(?:证|操作证|资格证|许可证|执照).{0,10}(?:上岗|要求|必须|需要|复审|有效|持有)",
+    r"(?:归档|保存|留存|备案).{0,10}(?:年|月|天|日)",
+    r"(?:第三方|有资质).{0,10}(?:检测|审计|审核|检查|评估|认证)",
+    r"(?:安全生产法|消防法|环保法|劳动法|合同法|建筑法|食品安全法).{0,10}(?:规定|要求|必须)",
+    r"(?:法条|条款|条例|法规).{0,10}(?:规定|要求|必须|明确|说明)",
 ]
 
 
@@ -54,7 +66,7 @@ def classify_resource_type(text: str) -> str | None:
     Returns:
         'script' | 'reference' | 'asset' | None
     """
-    if not text or len(text.strip()) < 20:
+    if not text or len(text.strip()) < 10:
         return None
 
     # Check for embedded code blocks first (strongest script signal)
