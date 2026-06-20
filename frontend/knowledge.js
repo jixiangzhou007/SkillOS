@@ -124,9 +124,10 @@ function showReviewView() { if(window.__alpineReady) Alpine.store('nav').navigat
 
 async function loadDashboard() {
   var el = document.getElementById('dash-content'); if (!el) return;
-  el.innerHTML = '<div style="color:var(--text3);padding:20px">加载仪表盘…</div>';
+  el.innerHTML = '<div style="text-align:center;padding:60px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载仪表盘…</div></div>';
   try {
     var statsR = await api('/api/knowledge/stats'), recentR = await api('/api/knowledge/recent?limit=10');
+    if (!statsR.ok && !recentR.ok) throw new Error('API unavailable');
     var stats = statsR.ok ? await statsR.json() : {}, recent = recentR.ok ? (await recentR.json()).items||[] : [];
     var h = _viewHeader('知识仪表盘','知识库总览') + _quickNav('dashboard') +
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">'+
@@ -138,7 +139,11 @@ async function loadDashboard() {
     var dh = h + (recent.length ? recent.map(function(e){
       return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;gap:8px"><span>'+(e.type==='knowledge_ingested'?'📥':e.type==='claim_verified'?'✅':'📌')+'</span><span style="flex:1;color:var(--text2)">'+escHtml(e.summary||e.content||'')+'</span><span style="color:var(--text3);white-space:nowrap">'+_eventLabel(e.type)+'</span></div>';
     }).join('') : '<div style="color:var(--text3);font-size:12px;padding:20px">暂无活动</div>') + '</div>';
-  } catch(e) { el.innerHTML = _viewHeader('知识仪表盘','')+_quickNav('dashboard')+'<div style="color:var(--err)">加载失败</div>'; }
+    el.innerHTML = dh;
+  } catch(e) {
+    el.innerHTML = _viewHeader('知识仪表盘','')+_quickNav('dashboard')+
+      '<div class="empty-state"><div class="icon">📊</div><div class="title">仪表盘暂不可用</div><div class="hint">请启动后端服务后重试<br><code style=\"font-size:11px\">skillos --server-only</code></div><button class=\"action-btn\" onclick=\"loadDashboard()\">重试</button></div>';
+  }
 }
 
 // Graph
