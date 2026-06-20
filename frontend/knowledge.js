@@ -150,7 +150,9 @@ async function loadDashboard() {
 
 async function loadGraphView() {
   var el = document.getElementById('graph-content'); if (!el) return;
-  el.innerHTML = '<div style="color:var(--text3);padding:20px">加载知识图谱…</div>';
+  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
+  // Original loading placeholder removed — using animated dots now
+  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载知识图谱…</div>';
   try {
     var r = await api('/api/knowledge/graph'), d = await r.json();
     if (d.mermaid) {
@@ -165,7 +167,9 @@ async function loadGraphView() {
 
 async function loadJournalView() {
   var el = document.getElementById('journal-content'); if (!el) return;
-  el.innerHTML = '<div style="color:var(--text3);padding:20px">加载事件日志…</div>';
+  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
+  // Original loading placeholder removed — using animated dots now
+  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载事件日志…</div>';
   try {
     var r = await api('/api/knowledge/journal?limit=50'), d = await r.json(), events = d.events||[];
     el.innerHTML = _viewHeader('事件日志','知识库变更记录')+_quickNav('journal')+(events.length?events.map(function(e){return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;gap:8px"><span style="color:var(--text3);white-space:nowrap">'+(e.timestamp||'').substring(0,16)+'</span><span style="color:var(--accent);white-space:nowrap">'+_eventLabel(e.type)+'</span><span style="flex:1;color:var(--text2)">'+escHtml(e.summary||e.content||'')+'</span></div>';}).join(''):'<div style="color:var(--text3);padding:20px">暂无事件</div>')+'</div>';
@@ -198,7 +202,9 @@ function loadKnowledgeView() {
 
 async function loadLineageView() {
   var el = document.getElementById('lineage-content'); if (!el) return;
-  el.innerHTML = '<div style="color:var(--text3);padding:20px">加载数据血缘…</div>';
+  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
+  // Original loading placeholder removed — using animated dots now
+  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载数据血缘…</div>';
   try {
     var r = await api('/api/knowledge/lineage'), d = await r.json();
     if (d.mermaid) {
@@ -210,7 +216,9 @@ async function loadLineageView() {
 
 function loadLineageGraph(sessionId) {
   var el = document.getElementById('lineage-content'); if (!el) return;
-  el.innerHTML = '<div style="color:var(--text3);padding:20px">加载会话血缘…</div>';
+  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
+  // Original loading placeholder removed — using animated dots now
+  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载会话血缘…</div>';
   api('/api/knowledge/lineage?session_id='+encodeURIComponent(sessionId)).then(function(r){return r.json()}).then(function(d){
     if (d.mermaid) { el.innerHTML = _viewHeader('数据血缘','会话: '+sessionId)+_quickNav('lineage')+'<div style="overflow:auto;background:var(--srf);border-radius:8px;padding:12px"><pre class="mermaid" id="lineage-mermaid">'+escHtml(d.mermaid)+'</pre></div>'; setTimeout(function(){renderMermaidInto('lineage-mermaid',d.mermaid);},50); }
   });
@@ -230,7 +238,9 @@ function loadPrecipitateView() {
 
 async function loadReviewView() {
   var el = document.getElementById('review-content'); if (!el) return;
-  el.innerHTML = '<div style="color:var(--text3);padding:20px">加载审核队列…</div>';
+  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
+  // Original loading placeholder removed — using animated dots now
+  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载审核队列…</div>';
   try {
     var r = await api('/api/knowledge/review-queue'), d = await r.json(), items = d.items||[];
     el.innerHTML = _viewHeader('审核队列','待确认的经验与声明')+_quickNav('review')+(items.length?items.map(function(item){
