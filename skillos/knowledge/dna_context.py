@@ -31,6 +31,8 @@ PHILOSOPHICAL_TO_TAXONOMY: dict[str, str] = {
     "dialectical": "diagnostic",
     "reductionist": "engineering",
     "pragmatic": "design-thinking",
+    "deliberate-practice": "creative",
+    "strategic-adaptive": "business-process",
 }
 
 TAXONOMY_TO_PHILOSOPHICAL: dict[str, str] = {
@@ -39,7 +41,7 @@ TAXONOMY_TO_PHILOSOPHICAL: dict[str, str] = {
     "scientific": "scientific-method",
     "engineering": "reductionist",
     "design-thinking": "pragmatic",
-    "creative": "pragmatic",
+    "creative": "deliberate-practice",
 }
 
 

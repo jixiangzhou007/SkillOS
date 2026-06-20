@@ -134,6 +134,38 @@ PHILOSOPHICAL_DNA: dict[str, PhilosophicalDNA] = {
         domain_affinities=["design-creative", "education-training", "business-management"],
         stability=0.75,
     ),
+    "deliberate-practice": PhilosophicalDNA(
+        method_id="deliberate-practice",
+        name="刻意练习方法",
+        name_en="Deliberate Practice",
+        philosophical_root="Ericsson 刻意练习 + 浪漫主义创作论。创造性的突破来自在自由探索与严格打磨之间的反复交替。",
+        pattern=["Explore (自由探索与灵感收集)", "Draft (快速产出初稿，不求完美)", "Critique (寻求外部反馈与自我审视)", "Polish (基于反馈精雕细琢)", "Publish (发布并积累作品集)"],
+        trigger_questions=[
+            "这个创作过程的灵感来源是什么？如何系统化收集？",
+            "反馈循环有多快？谁能提供高质量的批评？",
+            "打磨的标准是什么？什么时候算'够了'？",
+        ],
+        evidence_standard="作品迭代次数 + 外部反馈质量 + 出版/发布记录",
+        ideal_structure="S_trigger(创作任务触发) → S_body(5步,Explore带灵感源) → S_route(反馈门/重做条件) → S_params(迭代次数/审稿人/质量标准)",
+        domain_affinities=["journalism-communication"],
+        stability=0.7,
+    ),
+    "strategic-adaptive": PhilosophicalDNA(
+        method_id="strategic-adaptive",
+        name="战略适应方法",
+        name_en="Strategic Adaptive Method",
+        philosophical_root="孙子兵法 + 道家无为而治 + Boyd OODA。在复杂多变环境中，最优策略是感知态势、顺势而为、以柔克刚。",
+        pattern=["Assess (评估态势: 天时地利人和)", "Position (定位: 找到最优发力点)", "Adapt (适应: 根据变化调整策略)", "Execute (执行: 集中优势兵力)", "Reflect (复盘: 胜可知而不可为)"],
+        trigger_questions=[
+            "当前环境的最大变量是什么？有哪些不可控因素？",
+            "如果硬来不行，有没有'以柔克刚'的替代方案？",
+            "复盘时学到了什么？下次如何做得更好？",
+        ],
+        evidence_standard="策略调整次数 + 适应速度 + 复盘质量",
+        ideal_structure="S_trigger(复杂/多变场景触发) → S_body(5步,Assess带环境变量) → S_route(变化响应策略表) → S_params(态势变量/调整频率/复盘周期)",
+        domain_affinities=["management-science", "computer-science", "agriculture"],
+        stability=0.65,
+    ),
 }
 
 
