@@ -84,8 +84,8 @@ button:active{transform:scale(.97)}
 
 /* ── Sidebar ────────────────────────────────────────── */
 #sidebar{width:260px;min-width:260px;background:var(--bg-secondary);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
-.sb-section-header{display:flex;align-items:center;gap:10px;padding:var(--space-3) var(--space-4);cursor:pointer;font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;transition:all var(--t)}
-.sb-section-header:hover{color:var(--text);background:rgba(255,255,255,.02)}
+.sb-section-header{display:flex;align-items:center;gap:10px;padding:var(--space-3) var(--space-4);cursor:pointer;font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em;transition:all var(--t);border-left:2px solid transparent}
+.sb-section-header:hover{color:var(--text);background:rgba(255,255,255,.02);border-left-color:var(--accent)}
 .sb-count{font-size:10px;padding:1px 8px;border-radius:10px;background:rgba(16,185,129,.12);color:var(--accent);font-weight:700}
 .sb-toggle{font-size:8px;color:var(--text-tertiary);margin-left:auto;transition:transform .25s ease}
 .sb-section-header:hover .sb-toggle{color:var(--text-secondary)}
@@ -105,8 +105,8 @@ button:active{transform:scale(.97)}
 .sb-action:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 
 /* ── Skill Tree ─────────────────────────────────────── */
-.skill-card{padding:var(--space-2) var(--space-3);background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all var(--t)}
-.skill-card:hover{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04);transform:translateX(2px)}
+.skill-card{padding:var(--space-2) var(--space-3);background:rgba(255,255,255,.02);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all var(--t)}
+.skill-card:hover{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04);transform:translateX(2px);border-left-color:var(--accent)}
 .skill-card .name{font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:6px}
 .skill-card .health{width:6px;height:6px;border-radius:50%}.skill-card .health.good{background:var(--accent);box-shadow:0 0 6px rgba(16,185,129,.4)}.skill-card .health.warn{background:var(--warn)}.skill-card .health.bad{background:var(--err)}
 .skill-card .meta{font-size:10px;color:var(--text-tertiary);margin-top:2px}
