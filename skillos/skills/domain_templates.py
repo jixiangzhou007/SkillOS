@@ -38,7 +38,7 @@ class DomainCompetitionResult:
 
 
 # Minimum keyword score to enter competition; gap below this → ambiguous primary
-_MIN_MATCH_SCORE = 2
+_MIN_MATCH_SCORE = 1  # lowered from 2: short Chinese topics (2-4 chars) may only hit 1 keyword
 _AMBIGUITY_GAP = 2
 
 # Domain-template pairs that need explicit user disambiguation
@@ -195,6 +195,7 @@ DOMAIN_TEMPLATES: tuple[DomainTemplate, ...] = (
         domain="economics-finance", bench_categories=["workflow", "documentation"],
         keywords=(
             "报销", "发票", "财务审计", "差旅", "财务", "费用", "凭证", "对账", "expense",
+            "审批", "报销审批", "财务报销",
         ),
         tool_name_hint="expense-audit",
         negative_keywords=(
@@ -290,7 +291,7 @@ DOMAIN_TEMPLATES: tuple[DomainTemplate, ...] = (
     DomainTemplate(
         template_id="science-experiment-design", title="科学实验设计",
         domain="natural-science", bench_categories=["data-processing", "documentation"],
-        keywords=("实验", "假设", "数据", "对照", "变量", "科学", "验证", "观测", "experiment", "统计"),
+        keywords=("实验", "假设", "数据", "对照", "变量", "科学", "验证", "观测", "experiment", "统计", "实验设计", "科学研究"),
         tool_name_hint="experiment-design",
         opening=("已匹配 **科学实验设计** 模板。请补充：\n1. 实验类型（对照实验/自然观察/模拟）\n2. 变量设计（自变量/因变量/控制变量）\n3. 统计分析方案与样本量要求\n\n若流程已清楚，可直接回复「可以了」生成技能。"),
         skeleton="""## 建议骨架（science-experiment-design）
@@ -509,7 +510,8 @@ DOMAIN_TEMPLATES: tuple[DomainTemplate, ...] = (
         domain="agriculture",
         bench_categories=["workflow", "documentation"],
         keywords=("种植", "养殖", "畜牧", "兽医", "检疫", "食品安全", "土壤", "灌溉", "施肥", "收割", "储藏",
-                  "转基因", "有机", "农药", "质检", "种子", "农产品", "田间", "agriculture", "crop", "farm"),
+                  "转基因", "有机", "农药", "质检", "种子", "农产品", "田间", "agriculture", "crop", "farm",
+                  "农业", "农场", "农作物", "耕作", "栽培", "田间管理", "采收", "病虫"),
         tool_name_hint="crop-management",
         opening=("已匹配 **农作物种植管理** 模板。请补充：\n"
                  "1. 作物类型（粮食/蔬菜/水果/经济作物）\n"
