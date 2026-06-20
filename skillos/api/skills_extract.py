@@ -308,7 +308,8 @@ def _persist_created_skill(
                 if evolved:
                     try:
                         from skillos.knowledge.dna_store import backfill_skill_lineage
-                        skill_path = _skill_path(finalized["name"], tenant=tenant)
+                        from skillos.skills.skill_store import resolve_skills_root
+                        skill_path = _skill_path(finalized["name"], root=resolve_skills_root(tenant))
                         row = backfill_skill_lineage(skill_path)
                         if row.get("changed"):
                             ep["dna_lineage"] = row["lineage"]
