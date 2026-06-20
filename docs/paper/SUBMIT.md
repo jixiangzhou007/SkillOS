@@ -2,13 +2,17 @@
 
 > **标题**：*Experience ≠ Knowledge: An Epistemology Engine for Agent Skill Quality*  
 > **源文件**：[`paper.tex`](paper.tex) · **实验数据**：[`experiments/epistemic_results.md`](experiments/epistemic_results.md)
+> **状态**：2026-06-20 更新（84 commits baseline）
 
 ---
 
 ## 投稿前
 
-- [ ] 本地编译 PDF 通过（见下方命令）
-- [ ] 摘要含 Phase 2 ablation 数字（F1 0.750 vs 0.462，false filter 100%）
+- [ ] 本地编译 PDF 通过（需 MiKTeX/TeX Live）
+- [x] 摘要含最新数据（235 runs, 4,400+ claims, 100% S_route）
+- [x] Domain DNA (§3) + Gate semantics + 12 disciplines 章节
+- [x] Evaluation 数据与 experiments/ 一致
+- [x] Limitations 记录 audit JSON parsing fix
 - [ ] 作者列表、邮箱、机构确认
 - [ ] 代码可用性 URL 有效（或改为实际仓库地址）
 - [ ] 引用 AgentSkills.io、SkillOpt、Popper 等 bibitem 完整
@@ -22,7 +26,7 @@ pdflatex paper.tex   # 第二次解决交叉引用
 # 输出: paper.pdf
 ```
 
-Windows（已安装 TeX Live / MiKTeX）：
+Windows（需安装 TeX Live / MiKTeX）：
 
 ```powershell
 cd D:\SkillOS\docs\paper
