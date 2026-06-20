@@ -77,7 +77,8 @@ DOMAINS: list[Domain] = [
            "工程思维：需求→设计→施工→验收→运维，重规范性和安全性"),
     Domain("natural-science", "自然科学", "Natural Science",
            ("实验", "物理", "化学", "生物", "统计", "数据", "假设", "验证", "观测",
-            "测量", "样本", "显著性", "p值", "对照", "变量", "科学方法"),
+            "测量", "样本", "显著性", "p值", "对照", "变量", "科学方法", "实验设计",
+            "科研", "研究设计"),
            "可复现的实验结果 + 统计显著性",
            "科学思维：观察→假设→实验→分析→结论，重可复现性和证伪"),
     Domain("social-science", "社会科学", "Social Science",
@@ -93,7 +94,8 @@ DOMAINS: list[Domain] = [
     Domain("agriculture", "农学", "Agriculture",
            ("农业", "种植", "养殖", "畜牧", "兽医", "检疫", "食品安全", "土壤",
             "灌溉", "施肥", "收割", "储藏", "转基因", "有机", "农药",
-            "质检", "检测", "种子", "农产品", "品质", "田间"),
+            "质检", "检测", "种子", "农产品", "品质", "田间", "种植管理",
+            "农作物", "耕作", "栽培"),
            "田间实验 + 行业标准",
            "农学思维：环境→品种→管理→收获→检验，重因地制宜和周期管理"),
 ]
@@ -111,7 +113,7 @@ def detect_domain(topic: str, content: str = "") -> Optional[Domain]:
         if score > best_score:
             best_score = score
             best = d
-    return best if best_score >= 2 else None
+    return best if best_score >= 1 else None  # lowered from 2: short Chinese topics may only hit 1 keyword
 
 
 def domain_classification_context(topic: str, content: str = "") -> str:
@@ -202,7 +204,7 @@ def detect_methodology(topic: str, content: str = "") -> Optional[Methodology]:
     text = (topic + " " + content[:1000]).lower()
 
     patterns = {
-        "engineering": ("设计", "实现", "测试", "部署", "开发", "构建", "发布", "代码", "审查", "review", "上线"),
+        "engineering": ("实现", "测试", "部署", "开发", "构建", "发布", "代码", "审查", "review", "上线", "运维", "巡检"),
         "scientific": ("假设", "实验", "数据", "分析", "结论", "验证", "观测"),
         "diagnostic": ("诊断", "分类", "检查", "排查", "定位", "根因", "症状", "判断", "识别"),
         "design-thinking": ("设计", "原型", "用户", "迭代", "反馈", "修改"),
@@ -217,7 +219,15 @@ def detect_methodology(topic: str, content: str = "") -> Optional[Methodology]:
             best_score = score
             best = next((m for m in METHODOLOGIES if m.key == key), None)
 
-    return best if best_score >= 3 else None
+    if best and best_score >= 1:
+        return best
+
+    # Fallback: infer methodology from discipline when keywords are insufficient
+    domain = detect_domain(text[:200] if len(text) > 200 else text)
+    if domain:
+        return _discipline_methodology(domain.key)
+
+    return None
 
 
 def methodology_context(topic: str, content: str = "") -> str:
@@ -239,3 +249,29 @@ def methodology_context(topic: str, content: str = "") -> str:
 def build_taxonomy_context(topic: str, content: str = "") -> str:
     """Domain-only taxonomy context (methodology via dna_context.build_dna_context)."""
     return domain_classification_context(topic, content)
+
+
+# ── Discipline → Methodology mapping (fallback when keyword detection fails) ──
+
+_DISCIPLINE_METHODOLOGY: dict[str, str] = {
+    "computer-science": "engineering",
+    "medicine-health": "diagnostic",
+    "management-science": "business-process",
+    "law": "diagnostic",
+    "economics-finance": "business-process",
+    "education": "design-thinking",
+    "design": "design-thinking",
+    "engineering": "engineering",
+    "natural-science": "scientific",
+    "social-science": "scientific",
+    "journalism-communication": "creative",
+    "agriculture": "engineering",
+}
+
+
+def _discipline_methodology(discipline_key: str) -> Methodology | None:
+    """Get the methodology for a discipline (fallback mapping)."""
+    method_key = _DISCIPLINE_METHODOLOGY.get(discipline_key)
+    if method_key:
+        return next((m for m in METHODOLOGIES if m.key == method_key), None)
+    return None
