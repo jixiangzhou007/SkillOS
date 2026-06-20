@@ -502,6 +502,47 @@ DOMAIN_TEMPLATES: tuple[DomainTemplate, ...] = (
 - review_level: enum — standard/sensitive/legal
 """,
     ),
+    # ── Agriculture (12-discipline completion) ──
+    DomainTemplate(
+        template_id="agriculture-crop-management",
+        title="农作物种植管理",
+        domain="agriculture",
+        bench_categories=["workflow", "documentation"],
+        keywords=("种植", "养殖", "畜牧", "兽医", "检疫", "食品安全", "土壤", "灌溉", "施肥", "收割", "储藏",
+                  "转基因", "有机", "农药", "质检", "种子", "农产品", "田间", "agriculture", "crop", "farm"),
+        tool_name_hint="crop-management",
+        opening=("已匹配 **农作物种植管理** 模板。请补充：\n"
+                 "1. 作物类型（粮食/蔬菜/水果/经济作物）\n"
+                 "2. 种植规模（小农户/合作社/企业农场）\n"
+                 "3. 认证要求（有机/绿色/无公害/GAP）\n\n"
+                 "若流程已清楚，可直接回复「可以了」生成技能。"),
+        skeleton="""## 建议骨架（agriculture-crop-management）
+## S_trigger
+- keywords: 种植, 作物, 田间管理, 施肥, 收割
+- context: 种植季开始前或日常田间巡查时
+- excludes: 畜牧业、水产养殖
+
+## S_body
+1. 土壤检测：pH、有机质、N-P-K、重金属（参照GB 15618标准）
+2. 品种选择：根据气候区、土壤类型、市场需求选择
+3. 播种/定植：播期、密度、深度；种子处理（温汤浸种/药剂拌种）
+4. 水肥管理：滴灌/喷灌方案；基肥+追肥；叶面肥补充
+5. 病虫害防治：IPM综合防治；定期巡查记录；生物防治优先
+6. 采收与采后处理：成熟度判断→采收→预冷→分级→包装→冷链
+
+## S_route
+| 条件 | 动作 |
+|------|------|
+| 土壤pH<5.5 | 施用石灰调节 |
+| 病虫害爆发 | 启动应急防治方案 |
+| 采收期遇雨 | 延迟采收+排水 |
+
+## S_params
+- crop_type: enum — grain/vegetable/fruit/cash_crop
+- area_mu: number — 种植面积（亩）
+- certification: enum — organic/green/conventional/GAP
+""",
+    ),
 )
 def list_domain_templates() -> list[dict]:
     """Serialize templates for API / UI."""
