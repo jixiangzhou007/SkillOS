@@ -448,39 +448,48 @@
     </div>
   </div>
 
-  <!-- Docs View (Sprint 7) -->
+  <!-- Docs View -->
   <div id="docs-view" class="main-view"
        x-data="docsView()"
        :class="{ active: $store.nav.currentView === 'docs-view' }"
        x-init="init()">
-    <div class="view-scroll" style="max-width:860px;margin:0 auto;width:100%">
-      <div class="view-header">
-        <button class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
-        <div>
-          <div style="font-size:16px;font-weight:600">文档</div>
-          <div style="font-size:12px;color:var(--text3)">快速开始与用户指南</div>
-        </div>
+    <div style="display:flex;height:100%">
+      <!-- Doc sidebar -->
+      <div style="width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:var(--s-6) var(--s-4);overflow-y:auto;display:flex;flex-direction:column;gap:var(--s-1)">
+        <button class="nav-sm" @click="$store.nav.showChat()" style="margin-bottom:var(--s-4)">← 返回</button>
+        <div style="font:700 var(--t-xs)/1 var(--font);color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--s-2)">目录</div>
+        <button @click="loadSection('quickstart')" style="text-align:left;padding:var(--s-2) var(--s-3);font:500 var(--t-sm)/1.4 var(--font);color:var(--text2);background:transparent;border:none;border-radius:var(--r-sm);cursor:pointer"
+          :style="section==='quickstart'?'background:var(--accent-bg);color:var(--a3);font-weight:600':''">快速开始</button>
+        <button @click="loadSection('guide')" style="text-align:left;padding:var(--s-2) var(--s-3);font:500 var(--t-sm)/1.4 var(--font);color:var(--text2);background:transparent;border:none;border-radius:var(--r-sm);cursor:pointer"
+          :style="section==='guide'?'background:var(--accent-bg);color:var(--a3);font-weight:600':''">用户指南</button>
       </div>
-      <div class="tab-row" style="margin-bottom:16px">
-        <button class="tab" :class="{ active: section === 'quickstart' }" @click="loadSection('quickstart')">快速开始</button>
-        <button class="tab" :class="{ active: section === 'guide' }" @click="loadSection('guide')">用户指南</button>
+      <!-- Doc content -->
+      <div class="view-scroll" style="max-width:780px;padding:var(--s-10) var(--s-12)">
+        <template x-if="loading">
+          <div style="text-align:center;padding:var(--s-16) 0">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <div style="font:400 var(--t-sm)/1.5 var(--font);color:var(--text3);margin-top:var(--s-3)">加载文档…</div>
+          </div>
+        </template>
+        <template x-if="error">
+          <div style="text-align:center;padding:var(--s-16) 0">
+            <div class="empty-state">
+              <div class="icon">📄</div>
+              <div class="title">文档加载失败</div>
+              <div class="hint" x-text="error"></div>
+              <button class="action-btn" @click="loadSection(section)">重试</button>
+            </div>
+          </div>
+        </template>
+        <template x-if="!loading && !error && content">
+          <div>
+            <article class="doc-content" x-ref="docBody" x-html="content"></article>
+            <div x-show="source === 'static'" style="text-align:center;margin-top:var(--s-8);padding-top:var(--s-4);border-top:1px solid var(--border)">
+              <span style="font:400 var(--t-xs)/1 var(--font);color:var(--text3);background:var(--surface);padding:4px 12px;border-radius:10px">离线文档副本</span>
+            </div>
+          </div>
+        </template>
       </div>
-      <template x-if="loading">
-        <div style="color:var(--text3);padding:20px">加载文档…</div>
-      </template>
-      <template x-if="error">
-        <div style="color:var(--err);padding:20px">
-          文档加载失败：<span x-text="error"></span>
-          <div style="margin-top:12px;font-size:12px;color:var(--text3)">请通过 SkillOS 服务访问（如 <code>http://127.0.0.1:8765</code>），不要单独打开 HTML 文件。</div>
-          <button class="nav-sm" style="margin-top:12px" @click="loadSection(section)">重试</button>
-        </div>
-      </template>
-      <template x-if="!loading && !error && content">
-        <div>
-          <article class="doc-content" x-ref="docBody" x-html="content"></article>
-          <div x-show="source === 'static'" style="font-size:11px;color:var(--text3);margin-top:12px">（离线文档副本）</div>
-        </div>
-      </template>
     </div>
   </div>
 
