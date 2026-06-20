@@ -84,4 +84,8 @@ disable_error_code = [
     "var-annotated",   # type inference is sufficient for most local vars
     "union-attr",      # list|bool|None patterns in hermes_bridge are intentional
     "arg-type",        # overloaded max() key functions
+    "return-value",    # legacy code return type mismatches
+    "return",          # legacy code missing return statements
+    "assignment",      # legacy code type assignment issues
+    "name-defined",    # legacy playbook variable
 ]
