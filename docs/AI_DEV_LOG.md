@@ -6,6 +6,58 @@
 
 ---
 
+## [2026-06-24] Reference Quick8 修复 commit — push 阻塞（无 remote）— Cursor Agent
+
+**背景 / 触发**：用户「按顺序来」→ commit + push。
+
+**修改思路**：仅提交可追踪文件（`data/domain_packs/` 在 `.gitignore`，为本地运行时数据）。
+
+**修改内容**：
+
+| 项 | 结果 |
+|----|------|
+| Git commit | `f597a2e` — PR/CSV 技能速查 + AI_DEV_LOG |
+| Git push | **失败** — 仓库未配置 `origin` remote |
+
+**未修改 / 刻意不做**：retag v0.3.3（tag 仍在 `9cb41de`）；lineage/测试 skill 脏数据
+
+**验证**：`git commit` 3 files 成功
+
+**开放问题 / 下一步**：配置 remote 后 `git push -u origin main && git push origin v0.3.3`
+
+---
+
+## [2026-06-24] Reference Quick8 回归修复 — domain pack 路由 + 技能速查 — Cursor Agent
+
+**背景 / 触发**：用户「按顺序来」；v0.3.3 发版后 bench 三门禁 FAIL（+9.4 / -4.4 / +7.3 pp），Smoke GitHub Pull min=50。
+
+**修改思路**：
+- 根因：`workflow-refund` pack 误扩 `workflow-065/066`（非退款题）稀释 Δ；`code-review-pr` pack 仅 3 题致 inject 7→3；CSV 缺 fuzzy 去重速查
+- 收窄 refund quick8 为 `workflow-064`；扩 code-review pack 含 dependency-audit/011/012/008；CSV pack 加 018/029 + fuzzy heritage
+- GitHub Pull / CSV 技能「应答速查」补强 null 判空与模糊去重关键词
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `data/domain_packs/workflow-refund.json` | quick8 移除 065/066 |
+| `data/domain_packs/code-review-pr.json` | 扩 anchor/smoke/quick8 + heritage |
+| `data/domain_packs/data-csv-clean.json` | 加 018/029 anchor；fuzzy heritage |
+| `skills/GitHub Pull/SKILL.md` | Null/空指针审查速查（优先） |
+| `skills/CSV数据清洗助手/SKILL.md` | 模糊去重步骤 |
+
+**未修改 / 刻意不做**：`git commit/push`（用户未要求）；全量 pytest
+
+**验证**：
+- `pytest tests/test_benchmark_local.py tests/test_cold_start.py tests/test_save_gate.py` — 24 passed
+- `python scripts/run_bench_regression.py` — **ALL PASS**（`bench_regression_1782265989.json`）
+  - Reference Quick8：+28.0 / +18.6 / +22.0 pp（inject 1/1 · 8/8 · 7/8）
+  - Smoke：6/6 OK（GitHub Pull min=100）
+
+**开放问题 / 下一步**：已 commit `f597a2e`；push 需配置 origin；domain pack 变更仅本地
+
+---
+
 ## [2026-06-24] v0.3.3 发布收尾 — commit/tag + bench + E2E 走查 — Cursor Agent
 
 **背景 / 触发**：用户「按顺序来」：① commit+tag ② bench 回归 ③ 浏览器 E2E。

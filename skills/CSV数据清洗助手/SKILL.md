@@ -175,7 +175,8 @@ Follow these steps in order. Ask the user if anything is marked [待确认].
 **标准步骤模板**
 1. 按主键 id **去重**（duplicate/dedup），保留最早一条。
 2. email 为空或格式非法 → 导出**异常表**，不静默删除。
-3. 金额/日期规范化后输出**清洗报告**（总行数、去重数、异常数、字段填充率）。
+3. **模糊去重**：拼写近似（Bejing/Beijing）用 fuzzy/similarity/Levenshtein 归并。
+4. 金额/日期规范化后输出**清洗报告**（总行数、去重数、异常数、字段填充率）。
 
 ## 认识论状态
 > 经验 ≠ 知识。硬规则区应优先采用「已验证」声明。

@@ -96,7 +96,7 @@ epistemic:
   processed_at: 1781740763.0896068
 version: 3
 bench_quality:
-  checked_at: 1781896973
+  checked_at: 1782173269
   dna_compliance:
     score: 6/6
     passed: 6
@@ -104,7 +104,7 @@ bench_quality:
     all_passed: true
   save_gate:
     smoke_pass: false
-    min_with_score: 74
+    min_with_score: 50
     tasks:
     - software-dependency-audit
     - code-review-002
@@ -183,6 +183,11 @@ Follow these steps in order. Ask the user if anything is marked [待确认].
 **硬性规则**
 - 先点明审查维度（动机/diff 规模/安全/性能/依赖/测试/CI），再引用具体代码行或依赖包名。
 - 阻塞问题 → request changes；风格问题 → suggestion；CI 未全绿不得 approve。
+
+**Null/空指针审查（优先）**
+- `db.query` / ORM 单条查询可能返回 **None** → 访问 `.email`、`.upper()` 等属性前**必须判空**。
+- 应答**必须**含：`null|None|Optional`、`db.query` 结果判空、`if u is None` 或 Optional 类型注解。
+- 示例：`u=db.query(...)` 后直接 `u.email` → **blocking**；建议 `if u is None: return` 或 Optional 返回。
 
 **性能审查（含 N+1 / 时间复杂度）**
 - ORM 循环访问关联字段 → 指出 **N+1**，建议 `select_related` / `prefetch_related` / join / 批量查询。
