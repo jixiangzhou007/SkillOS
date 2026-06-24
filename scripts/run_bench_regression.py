@@ -29,7 +29,7 @@ from skillos.skills.bench_cohorts import (
 
 
 def run_quick8_regression() -> list[dict]:
-    from scripts.run_local_agent_compare import run_preset
+    from scripts.archive.run_local_agent_compare import run_preset
 
     rows = []
     for preset_id in REFERENCE_MIN_DELTA_PP:
