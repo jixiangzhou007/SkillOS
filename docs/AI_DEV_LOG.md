@@ -6,6 +6,40 @@
 
 ---
 
+## [2026-06-24] v0.3.3 发布收尾 — commit/tag + bench + E2E 走查 — Cursor Agent
+
+**背景 / 触发**：用户「按顺序来」：① commit+tag ② bench 回归 ③ 浏览器 E2E。
+
+**修改思路**：
+- 提交 M0–M5 前端批次（51 文件，不含本地 lineage/skill 测试脏数据）
+- `git tag v0.3.3`
+- 修复 `run_bench_regression.py` 归档后 import 路径
+- 浏览器走查登录/知识透镜/对话气泡
+
+**修改内容**：
+
+| 项 | 结果 |
+|----|------|
+| Git commit | `9cb41de` Release v0.3.3 |
+| Git tag | `v0.3.3` |
+| Bench fix | `scripts/archive/run_local_agent_compare` import |
+| E2E 浏览器 | 登录 ✅ · 知识透镜二级 Tab ✅ · 对话气泡+草稿面板 ✅ |
+
+**Bench 回归**（`bench_regression_1782265262.json`）：
+- Reference Quick8：**3/3 FAIL**（Δ 低于门槛：+9.4 / -4.4 / +7.3 pp）
+- Generalize domain Quick8：**3/3 OK**
+- Smoke：**5/6 OK**（GitHub Pull min=50）
+
+**未修改 / 刻意不做**：`git push`（用户未要求）；reference Quick8 技能内容调优
+
+**验证**：
+- `pytest tests/test_precipitation.py tests/test_portal_e2e.py` — 10 passed（发版前）
+- 浏览器 http://127.0.0.1:8765 走查通过
+
+**开放问题 / 下一步**：Reference Quick8 三门禁回归；可选 `git push --tags`
+
+---
+
 ## [2026-06-24] Post-M5 收尾 — CHANGELOG v0.3.3 + skill-tree 折叠 — Cursor Agent
 
 **背景 / 触发**：M0–M5 前端批次完成，用户「继续」；做发版文档与 M3 遗留项。
