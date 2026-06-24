@@ -1,4 +1,40 @@
-/* chat.js — extracted from app.js */
+/* chat.js — extraction chat engine */
+
+function renderSidebarWorkspace(skills) {
+  if (!Array.isArray(skills)) return;
+  var recent = skills.filter(function(s) {
+    return typeof SYSTEM_SKILLS === 'undefined' || !SYSTEM_SKILLS.includes(s.name);
+  }).slice(0, 5);
+
+  var welcomeEl = document.getElementById('welcome-recent-skills');
+  if (welcomeEl && recent.length) {
+    welcomeEl.innerHTML = '<div style="font-size:var(--t-xs);color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">最近技能</div>' +
+      recent.map(function(s) {
+        return '<span class="welcome-skill-chip" onclick="showDetail(\'' + s.name + '\')">' + s.name + '</span>';
+      }).join('');
+  }
+
+  var sbWs = document.getElementById('sb-workspace-content');
+  if (sbWs) {
+    sbWs.innerHTML = recent.length ? ('<div style="font-size:var(--t-xs);color:var(--text3);margin-bottom:var(--s-2)">最近技能</div>' + recent.map(function(s) {
+      var badge = s.avg_score >= 4 ? '<span style="color:var(--a3);font-size:9px">●</span>' :
+                  s.avg_score >= 2 ? '<span style="color:var(--amber);font-size:9px">●</span>' :
+                  '<span style="color:var(--text3);font-size:9px">●</span>';
+      return '<div class="sb-ws-item" onclick="showDetail(\'' + s.name + '\')" style="cursor:pointer;display:flex;align-items:center;gap:6px">' +
+        badge + '<span style="font-size:var(--t-sm);color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + s.name + '</span>' +
+        '<span style="font-size:var(--t-xs);color:var(--text3)">v' + s.version + '</span>' +
+        '</div>';
+    }).join('')) : '<div style="padding:var(--s-2) var(--s-3);font-size:var(--t-xs);color:var(--text3);text-align:center">开始对话萃取新技能</div>';
+  }
+}
+
+function loadRecentSkills() {
+  if (typeof api !== 'function') return;
+  api('/api/skills/').then(function(r) { return r.json(); }).then(function(skills) {
+    if (!Array.isArray(skills) || !skills.length) return;
+    renderSidebarWorkspace(skills);
+  }).catch(function() {});
+}
 
 function apiErrorMessage(r, body) {
   body = body || {};
@@ -10,30 +46,71 @@ function apiErrorMessage(r, body) {
 }
 
 function finalizeSkill() {
-  var sid = localStorage.getItem('skillos_session_id') || '';
+  var sid = localStorage.getItem(StorageKeys.SESSION) || '';
   if (!sid) { addMsg('sys', '请先开始对话再生成技能'); return; }
   setStatus('generating'); setDot('blue');
-  fetch(API + '/api/skills/finalize?session_id=' + encodeURIComponent(sid), { method: 'POST' })
+  fetch(API + '/api/skills/finalize?session_id=' + encodeURIComponent(sid), {
+    method: 'POST',
+    headers: typeof authHeaders === 'function' ? authHeaders() : {}
+  })
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.reply) addMsg('ai', d.reply);
-      if (d.skill_saved) { setStatus('saved: ' + d.skill_saved); setDot('on'); refreshSkillList(); }
-      else { setStatus(d.error || 'done'); setDot(''); }
-      document.getElementById('finalize-btn').style.display = d.skill_active ? '' : 'none';
+      if (d.skill_saved) {
+        setStatus('saved: ' + d.skill_saved);
+        setDot('on');
+        if (typeof precipitateFromResponse === 'function') precipitateFromResponse(d, 'conversation');
+        else refreshSkillList();
+      } else { setStatus(d.error || 'done'); setDot(''); }
+      updateWorkspace(d || {});
+      // finalize button now handled by workspace phase bar
     })
     .catch(function(e) { addMsg('sys', '生成失败: ' + e.message); setStatus('error'); setDot(''); });
 }
 
-var _useStreaming = true;  // Enable SSE streaming by default
+var _useStreaming = false;  // 默认走 /dispatch 一次性返回，避免 SSE+Alpine 不刷新
 
 function sendText() {
-  if (_useStreaming) { sendTextStream(); return; }
-  _sendTextLegacy();
+  var inp = document.getElementById('input');
+  var text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  var ta = document.getElementById('input');
+  if (ta) { ta.style.height = 'auto'; }
+  document.getElementById('bar').style.display = 'flex';
+  if (typeof maybeBeginSourceProgress === 'function') maybeBeginSourceProgress(text, isLikelyUrl(text) ? 'url' : '');
+  if (_useStreaming) { sendTextStream(text); return; }
+  _sendTextLegacy(text);
 }
 
-function _sendTextLegacy() {
+function buildChatHistory() {
+  var history = [];
+  var list = document.getElementById('chat-msgs-list');
+  if (list) {
+    list.querySelectorAll('.msg-row-user, .msg-row-ai').forEach(function(el) {
+      var role = el.classList.contains('msg-row-user') ? 'user' : 'assistant';
+      var body = el.querySelector('.msg-body');
+      var txt = body ? body.textContent.trim() : el.textContent.trim();
+      if (!txt || txt === '...') return;
+      history.push({ role: role, content: txt });
+    });
+    if (history.length) return history;
+  }
+  try {
+    if (Alpine && Alpine.store('chat')) {
+      Alpine.store('chat').messages.forEach(function(m) {
+        if (m.role !== 'user' && m.role !== 'ai') return;
+        var txt = (m.text || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        if (!txt || txt === '...') return;
+        history.push({ role: m.role === 'user' ? 'user' : 'assistant', content: txt });
+      });
+    }
+  } catch (e) {}
+  return history;
+}
 
-  if (welcome) welcome.style.display = 'none';
+function _sendTextLegacy(text) {
+  if (!text) return;
 
   addMsg('user', text);
 
@@ -49,19 +126,7 @@ function _sendTextLegacy() {
 
   // Build history from DOM (will be replaced by server-side session history)
 
-  let history = [];
-
-  document.querySelectorAll('#msgs .msg.user, #msgs .msg.ai').forEach(el => {
-
-    let role = el.classList.contains('user') ? 'user' : 'assistant';
-
-    let txt = el.textContent.trim();
-
-    if (txt && txt !== '...') history.push({ role, content: txt });
-
-  });
-
-
+  let history = buildChatHistory();
 
   api('/api/skills/dispatch', {
 
@@ -83,13 +148,13 @@ function _sendTextLegacy() {
 
       session_id: _sessionId,
 
-      tts_backend: localStorage.getItem('sd_tts_backend') || 'edge',
+      tts_backend: localStorage.getItem(StorageKeys.TTS_BACKEND) || 'edge',
 
-      tts_voice: localStorage.getItem('sd_tts_voice') || 'Xiaoxiao (Natural)',
+      tts_voice: localStorage.getItem(StorageKeys.TTS_VOICE) || 'Xiaoxiao (Natural)',
 
-      tts_speed: parseFloat(localStorage.getItem('sd_tts_speed') || '1.1'),
+      tts_speed: parseFloat(localStorage.getItem(StorageKeys.TTS_SPEED) || '1.1'),
 
-      tts_emotion: localStorage.getItem('sd_tts_emotion') || 'friendly'
+      tts_emotion: localStorage.getItem(StorageKeys.TTS_EMOTION) || 'friendly'
 
     })
 
@@ -104,9 +169,18 @@ function _sendTextLegacy() {
 
   }).then(d => {
 
-    msgEl.textContent = d.reply || '(no response)';
-
-    msgEl.style.opacity = '1';
+    var actions = typeof resolveExtractionActions === 'function'
+      ? resolveExtractionActions(d, d.reply) : (d.actions || []);
+    if (typeof applySocraticReply === 'function') {
+      applySocraticReply(msgEl, d.reply || '(no response)', actions, {
+        multi: d.actions_multi,
+        actionKey: d.action_key,
+      });
+    } else if (msgEl._msg) {
+      patchChatMsg(msgEl._msg, _renderStreamHtml(d.reply || '(no response)'));
+    } else {
+      msgEl.textContent = d.reply || '(no response)';
+    }
 
     scrollMsgs();
 
@@ -114,7 +188,7 @@ function _sendTextLegacy() {
 
     _sessionId = d.session_id || _sessionId;
 
-    if (_sessionId) localStorage.setItem('sd_session', _sessionId);
+    if (_sessionId) localStorage.setItem(StorageKeys.SESSION, _sessionId);
 
     // Status handling
 
@@ -143,14 +217,12 @@ function _sendTextLegacy() {
         statusText += ' · 回归评测后台运行中';
       }
       setStatus(statusText);
-      if (typeof toast === 'function') {
-        var toastMsg = '技能已保存';
-        if (pb && pb.repair && pb.repair.dna_score) toastMsg += ' · DNA ' + pb.repair.dna_score;
-        if (pb && pb.regression_scheduled) toastMsg += ' · 参考技能回归已排队';
-        toast(toastMsg, 'success');
-      }
 
       refreshSkillList();
+
+      if (typeof precipitateFromResponse === 'function') {
+        precipitateFromResponse(d, (d.epistemic_summary && d.epistemic_summary.source_type) || 'conversation');
+      }
 
     } else if (d.metaskill_active) {
 
@@ -176,107 +248,11 @@ function _sendTextLegacy() {
 
     }
 
-    var banner = document.getElementById('extract-banner');
-    if (banner) {
-      if (d.skill_active || d.quick_mode) {
-        banner.style.display = '';
-        banner.textContent = d.quick_mode ? '● 快速萃取模式' : '● 技能萃取进行中';
-      } else {
-        banner.style.display = 'none';
-      }
-    }
+    // Extraction panel
+    updateWorkspace(d || {});
+    // finalize button now handled by workspace phase bar
 
     setDot(d.skill_active || d.draft_saved || d.metaskill_active ? 'on' : '');
-
-    // Action buttons (clickable options)
-
-    if (d.actions && d.actions.length > 0) {
-
-      let ad = document.createElement('div');
-
-      ad.className = 'msg ai';
-
-      ad.style.cssText = 'display:flex;flex-direction:column;gap:8px;padding:10px 14px';
-
-
-
-      if (d.actions_multi) {
-
-        // Multi-select mode: checkboxes + confirm button
-
-        let selected = new Set();
-
-        d.actions.forEach((a, i) => {
-
-          let row = document.createElement('label');
-
-          row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text)';
-
-          let cb = document.createElement('input');
-
-          cb.type = 'checkbox';
-
-          cb.style.cssText = 'accent-color:var(--accent);width:16px;height:16px';
-
-          cb.onchange = () => cb.checked ? selected.add(i) : selected.delete(i);
-
-          row.appendChild(cb);
-
-          row.appendChild(document.createTextNode(a.label));
-
-          ad.appendChild(row);
-
-        });
-
-        let confirmBtn = document.createElement('button');
-
-        confirmBtn.className = 'opt-btn';
-
-        confirmBtn.textContent = '确认选择 (' + d.actions.length + '项可选)';
-
-        confirmBtn.style.cssText = 'font-size:12px;padding:8px 16px;margin-top:4px;align-self:flex-start';
-
-        confirmBtn.onclick = () => {
-
-          let picked = [...selected].map(i => d.actions[i]);
-
-          if (picked.length === 0) { addMsg('sys', '请至少选择一项'); return; }
-
-          doAction({action: d.action_key || 'multi_select', skills: picked.map(a => a.action).join(','), label: picked.map(a=>a.label).join(' + ')});
-
-        };
-
-        ad.appendChild(confirmBtn);
-
-      } else {
-
-        // Single-select mode: clickable buttons
-
-        ad.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px';
-
-        d.actions.forEach(a => {
-
-          let btn = document.createElement('button');
-
-          btn.className = 'opt-btn';
-
-          btn.textContent = a.label;
-
-          btn.style.cssText = 'font-size:12px;padding:6px 14px';
-
-          btn.onclick = () => doAction(a);
-
-          ad.appendChild(btn);
-
-        });
-
-      }
-
-      document.getElementById('msgs').appendChild(ad);
-
-      scrollMsgs();
-
-    }
 
     if (_ttsEnabled) {
 
@@ -303,21 +279,12 @@ function _sendTextLegacy() {
   }).catch(e => {
 
     var errMsg = e.message || '请求失败';
-    msgEl.innerHTML = '<span>' + errMsg + '</span> ';
-    var retryBtn = document.createElement('button');
-    retryBtn.className = 'nav-sm';
-    retryBtn.style.cssText = 'font-size:11px;margin-left:4px;border-color:var(--warn);color:var(--warn)';
-    retryBtn.textContent = '重试';
-    retryBtn.onclick = function(){ document.getElementById('input').value = ''; sendText(); };
-    msgEl.appendChild(retryBtn);
+    var errHtml = '<span>' + escHtml(errMsg) + '</span> <button type="button" class="nav-sm" style="font-size:11px;margin-left:4px;border-color:var(--warn);color:var(--warn)" onclick="sendText()">重试</button>';
+    if (msgEl._msg) patchChatMsg(msgEl._msg, errHtml);
+    else if (msgEl.innerHTML !== undefined) msgEl.innerHTML = errHtml;
     toast(errMsg, 'error');
-
-    msgEl.style.opacity = '1';
-
     scrollMsgs();
-
     setStatus('error');
-
     setDot('');
 
   });
@@ -327,14 +294,7 @@ function _sendTextLegacy() {
 function setMode(m) {
 
   _mode = m;
-
-  let labels = {create:'Create', agent:'Chat', meta:'Pipeline'};
-
-  document.querySelectorAll('.nav-mode').forEach(b =>
-
-    b.classList.toggle('active', b.textContent === labels[m])
-
-  );
+  localStorage.setItem(StorageKeys.MODE, m);
 
   showChat();
 
@@ -342,7 +302,7 @@ function setMode(m) {
 
     // Meta mode: immediately start MetaSkill creation
 
-    document.getElementById('msgs').innerHTML = '';
+    clearChatMessages();
 
     addMsg('sys', '🔗 Meta 模式 — 正在启动流水线设计…');
 
@@ -384,13 +344,99 @@ function setMode(m) {
 
 var _lastMsgDate = '';
 
+function _msgListEl() {
+  return document.getElementById('chat-msgs-list');
+}
+
+function _syncWelcome() {
+  var w = document.getElementById('chat-welcome');
+  var list = _msgListEl();
+  if (w) w.style.display = (list && list.childElementCount > 0) ? 'none' : 'block';
+}
+
+function _chatStorePush(msg) {
+  try {
+    if (Alpine && Alpine.store('chat')) {
+      Alpine.store('chat').messages = Alpine.store('chat').messages.concat([msg]);
+    }
+  } catch (e) {}
+}
+
+function _appendMsgRow(msg) {
+  var list = _msgListEl();
+  if (!list) return null;
+  var row = document.createElement('div');
+  row.className = 'msg-row msg-row-' + msg.role;
+  row.setAttribute('data-msg-id', msg.id);
+  var bodyEl;
+  if (msg.role === 'sys') {
+    bodyEl = document.createElement('div');
+    bodyEl.className = 'msg-sys';
+    bodyEl.innerHTML = msg.text;
+    row.appendChild(bodyEl);
+  } else {
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble bubble-' + msg.role;
+    bodyEl = document.createElement('div');
+    bodyEl.className = 'msg-body';
+    bodyEl.innerHTML = msg.text;
+    bubble.appendChild(bodyEl);
+    row.appendChild(bubble);
+    var ts = document.createElement('span');
+    ts.className = 'msg-time';
+    ts.textContent = msg.time || '';
+    row.appendChild(ts);
+  }
+  list.appendChild(row);
+  return bodyEl;
+}
+
+function _touchChatMessages() {
+  try {
+    if (Alpine && Alpine.store('chat')) {
+      Alpine.store('chat').messages = Alpine.store('chat').messages.slice();
+    }
+  } catch (e) {}
+}
+
+function patchChatMsg(msg, html) {
+  if (!msg) return;
+  msg.text = html;
+  var list = _msgListEl();
+  if (list && msg.id) {
+    var row = list.querySelector('[data-msg-id="' + msg.id.replace(/"/g, '\\"') + '"]');
+    if (row) {
+      var body = row.querySelector('.msg-body') || row.querySelector('.msg-sys');
+      if (body) body.innerHTML = html;
+    }
+  }
+  try {
+    if (Alpine && Alpine.store('chat') && msg.id) {
+      var store = Alpine.store('chat');
+      store.messages = store.messages.map(function(m) {
+        return m.id === msg.id ? Object.assign({}, m, { text: html }) : m;
+      });
+    }
+  } catch (e) {}
+  scrollMsgs();
+}
+
+function clearChatMessages() {
+  var list = _msgListEl();
+  if (list) list.innerHTML = '';
+  try {
+    if (Alpine && Alpine.store('chat')) Alpine.store('chat').messages = [];
+  } catch (e) {}
+  _lastMsgDate = '';
+  _syncWelcome();
+}
+
 function addMsg(role, text) {
   var now = new Date();
   var time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
   var dateStr = now.getFullYear() + '-' + (now.getMonth()+1).toString().padStart(2,'0') + '-' + now.getDate().toString().padStart(2,'0');
-  if (role === 'sys') text += ' <span style="font-size:10px;opacity:.5">' + time + '</span>';
+  if (role === 'sys') text += ' <span class="msg-sys-time">' + time + '</span>';
 
-  // Push to Alpine store for reactive rendering
   var msg = {
     id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
     role: role,
@@ -400,50 +446,31 @@ function addMsg(role, text) {
     opacity: 1
   };
 
-  // Inject date separator when day changes
   if (dateStr !== _lastMsgDate && _lastMsgDate !== '') {
-    try {
-      if (Alpine && Alpine.store('chat')) {
-        Alpine.store('chat').messages.push({
-          id: 'd_' + Date.now(),
-          role: 'sys',
-          text: '<div style="text-align:center;font-size:11px;color:var(--text3);padding:12px 0"><span style="background:var(--surface2);padding:2px 12px;border-radius:10px">' + dateStr + '</span></div>',
-          time: '', date: dateStr, opacity: 1
-        });
-      }
-    } catch(e) {}
+    var sep = {
+      id: 'd_' + Date.now(),
+      role: 'sys',
+      text: '<div class="msg-date-sep">' + dateStr + '</div>',
+      time: '', date: dateStr, opacity: 1
+    };
+    _appendMsgRow(sep);
+    _chatStorePush(sep);
   }
   _lastMsgDate = dateStr;
 
-  try {
-    if (Alpine && Alpine.store('chat')) {
-      Alpine.store('chat').messages.push(msg);
-      setTimeout(function(){ scrollMsgs(); }, 20);
-      // Return proxy for backward compat (style.opacity manipulation)
-      return {
-        get style() { return { set opacity(v) {
-          msg.opacity = v;
-          try { Alpine.store('chat').messages = Alpine.store('chat').messages.map(function(m) { return m; }); } catch(e) {}
-        }}; },
-        set textContent(v) { msg.text = v; },
-        set onclick(v) {}
-      };
-    }
-  } catch(e) {}
+  var bodyEl = _appendMsgRow(msg);
+  _chatStorePush(msg);
+  _syncWelcome();
+  setTimeout(function() { scrollMsgs(); }, 10);
 
-  // Legacy fallback
-  var el = document.createElement('div');
-  el.className = 'msg ' + role;
-  if (role === 'user' || role === 'ai') {
-    var ts = document.createElement('span');
-    ts.style.cssText = 'font-size:9px;color:var(--text3);display:block;margin-top:4px;text-align:' + (role==='user'?'right':'left');
-    ts.textContent = time;
-    el.appendChild(ts);
-  }
-  el.textContent = text;
-  document.getElementById('msgs').appendChild(el);
-  scrollMsgs();
-  return el;
+  return {
+    _msg: msg,
+    _bodyEl: bodyEl,
+    get style() { return { set opacity(v) { msg.opacity = v; } }; },
+    set textContent(v) { patchChatMsg(msg, escHtml(String(v))); },
+    set innerHTML(v) { patchChatMsg(msg, v); },
+    set onclick(v) {}
+  };
 }
 
 function scrollMsgs() {
@@ -454,9 +481,30 @@ function scrollMsgs() {
 
 }
 
-function setDot(c) { document.getElementById('conn-dot').className = 'dot ' + c; }
+function setDot(c) { var d = document.getElementById('conn-dot'); if (d) d.className = 'header-dot ' + c; }
 
-function setStatus(s) { document.getElementById('status').textContent = s; }
+function setStatus(s) {
+  s = s || '';
+  var statusEl = document.getElementById('status');
+  if (statusEl) statusEl.textContent = s;
+  var turnEl = document.getElementById('wp-turn');
+  var bar = document.getElementById('workspace-phase');
+  if (turnEl && bar && bar.style.display !== 'none') {
+    turnEl.textContent = _formatStatusHint(s);
+  }
+  try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').setStatus(s); } catch (e) {}
+}
+
+function _formatStatusHint(s) {
+  if (!s || s === 'idle' || s === '就绪') return '';
+  if (s.indexOf('extracting') >= 0) return '萃取进行中';
+  if (s.indexOf('thinking') >= 0 || s.indexOf('streaming') >= 0) return '等待回复…';
+  if (s.indexOf('generating') >= 0) return '生成技能中…';
+  if (s.indexOf('uploading') >= 0) return '上传处理中…';
+  if (s.indexOf('saved:') >= 0 || s.indexOf('skill:') >= 0) return '已沉淀';
+  if (s === 'error') return '出错了';
+  return s.length > 24 ? s.slice(0, 24) + '…' : s;
+}
 
 function escHtml(s) {
 
@@ -467,6 +515,10 @@ function escHtml(s) {
 async function uploadFile(file) {
 
   if (!file) return;
+
+  showChat();
+  document.getElementById('bar').style.display = 'flex';
+  if (typeof maybeBeginSourceProgress === 'function') maybeBeginSourceProgress('', 'file');
 
   addMsg('sys', '📎 上传中：' + file.name + ' (' + (file.size/1024).toFixed(0) + 'KB)…');
 
@@ -479,7 +531,7 @@ async function uploadFile(file) {
   form.append('file', file);
 
   // Include session_id so backend can inject into active extraction conversation
-  let sid = localStorage.getItem('skillos_session_id') || '';
+  let sid = localStorage.getItem(StorageKeys.SESSION) || '';
   if (sid) form.append('session_id', sid);
 
   try {
@@ -493,15 +545,12 @@ async function uploadFile(file) {
 
     let d = await r.json();
 
-    if (d.reply) addMsg('ai', d.reply);
-    else if (d.title) {
-      var digestMsg = '📦 知识包「' + d.title + '」(' + (d.glossary_terms || 0) + '术语, ' + (d.patterns || 0) + '模式)';
-      if (d.lineage_notice) digestMsg += '\n\n🔗 ' + d.lineage_notice;
-      addMsg('ai', digestMsg);
-    }
-    else if (d.note) addMsg('sys', d.note);
+    if (typeof hideSourceProgress === 'function') hideSourceProgress();
 
-    if (d.lineage_notice && !d.title && !d.reply) addMsg('sys', '🔗 ' + d.lineage_notice);
+    if (d.reply) addMsg('ai', d.reply);
+
+    if (d.lineage_notice && !d.title && !d.reply && !d.skill_saved) addMsg('sys', '🔗 ' + d.lineage_notice);
+    if (d.note && !d.skill_saved && !d.title) addMsg('sys', d.note);
     if (d.warnings && d.warnings.length) {
       d.warnings.forEach(function(w) {
         addMsg('sys', w);
@@ -514,15 +563,18 @@ async function uploadFile(file) {
 
     scrollMsgs();
 
-    let label = d.skill_saved ? 'skill: ' + d.skill_saved : (d.title ? 'digest: ' + d.title : 'done');
-    if (d.injected_into_extraction) label = 'injected into extraction';
-    setStatus(label);
+    if (typeof precipitateFromResponse === 'function') {
+      precipitateFromResponse(d, 'file');
+    } else if (d.skill_saved || d.title) {
+      refreshSkillList();
+    }
 
     setDot(d.skill_saved || d.title || d.injected_into_extraction ? 'on' : '');
-
-    if (d.skill_saved || d.title) refreshSkillList();
+    setStatus(d.skill_saved ? 'saved: ' + d.skill_saved : (d.title ? 'digest: ' + d.title : 'done'));
 
   } catch(e) {
+
+    if (typeof hideSourceProgress === 'function') hideSourceProgress();
 
     addMsg('sys', '上传失败：' + e.message);
 
@@ -538,35 +590,81 @@ async function uploadFile(file) {
 
 function switchMainView(id) {
 
+  try {
+    if (window.__alpineReady && typeof Alpine !== 'undefined' && Alpine.store('nav') && Alpine.store('nav').goTo) {
+      Alpine.store('nav').goTo(id);
+      return;
+    }
+  } catch (e) {}
+
   document.querySelectorAll('.main-view').forEach(v => v.classList.remove('active'));
 
   let el = document.getElementById(id);
 
   if (el) el.classList.add('active');
 
-  // Sync with Alpine store for reactive views
-  try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').currentView = id; } catch(e) {}
+  try {
+    if (Alpine && Alpine.store('nav')) {
+      var nav = Alpine.store('nav');
+      nav.currentView = id;
+      nav.barVisible = (id === 'chat-view');
+      if (id === 'chat-view') nav.primaryNav = 'extract';
+      else if (id === 'hub-view') nav.primaryNav = 'market';
+      else if (id === 'knowledge-unified-view') nav.primaryNav = 'knowledge';
+    }
+  } catch(e) {}
 
 }
 
 function showChat() {
 
-  switchMainView('chat-view');
-  document.getElementById('bar').style.display = 'flex';
+  if (window.__alpineReady && typeof Alpine !== 'undefined' && Alpine.store('nav')) {
+    Alpine.store('nav').showChat();
+  } else {
+    switchMainView('chat-view');
+    document.getElementById('bar').style.display = 'flex';
+  }
   _currentSkill = null;
+  if (_mode !== 'create') { _mode = 'create'; localStorage.setItem(StorageKeys.MODE, 'create'); }
   try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').currentSkill = null; } catch(e) {}
+  // If no active session, ensure clean state
+  if (!_sessionId) resetWorkspace();
+}
 
+function resumeSession() {
+  var sid = localStorage.getItem(StorageKeys.SESSION);
+  if (!sid) return;
+  _sessionId = sid;
+  api('/api/skills/status?session_id=' + encodeURIComponent(sid))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.active) {
+        updateWorkspace({
+          skill_active: true,
+          extraction_phase: d.phase || 'EXPLORING',
+          extraction_turn: d.turn || 0,
+          draft_preview: d.skill_name || '',
+          draft_content: '',
+          draft_progress: { probes_done: 0, probes_total: 5, messages_collected: d.context_turns || 0 }
+        });
+        setStatus('extracting');
+        setDot('on');
+        addMsg('sys', '已恢复萃取「' + (d.skill_name || '技能') + '」，继续对话即可');
+      }
+    }).catch(function() {});
 }
 
 function newSession() {
 
   _sessionId = '';
 
-  localStorage.removeItem('sd_session');
+  localStorage.removeItem(StorageKeys.SESSION);
 
-  document.getElementById('msgs').innerHTML = '';
+  clearChatMessages();
 
-  addMsg('sys', '已开始新会话');
+  if (typeof setExtractionSource === 'function') setExtractionSource('conversation');
+  resetWorkspace();
+  addMsg('sys', '开始新的萃取——请描述你要沉淀的工作流程');
 
   api('/api/skills/dispatch', {
 
@@ -594,7 +692,7 @@ function toggleAuto() {
     b.textContent = '手动';
   }
 
-  localStorage.setItem('sd_auto', _autoMode);
+  localStorage.setItem(StorageKeys.AUTO, _autoMode);
 
   addMsg('sys', _autoMode ? '自动模式：AI 将自动选择工具' : '手动模式：逐步确认');
 
@@ -603,9 +701,9 @@ function toggleAuto() {
 function onModelChange() {
 
   _selectedModel = document.getElementById('model-select').value;
-
-  localStorage.setItem('sd_model', _selectedModel);
-
+  if (!_selectedModel) return;
+  localStorage.setItem(StorageKeys.MODEL, _selectedModel);
+  try { if (Alpine && Alpine.store('chat')) Alpine.store('chat').selectedModel = _selectedModel; } catch(e) {}
   setStatus('model: ' + _selectedModel.split('-').slice(0, 2).join(' '));
 
 }
@@ -627,79 +725,154 @@ function toggleSidebar() {
 
 // ── SSE Streaming ──────────────────────────────────────
 
-async function sendTextStream() {
-  var ta = document.getElementById('input');
-  ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
-  var inp = document.getElementById('input'), text = inp.value.trim();
-  if (!text) return;
-  inp.value = '';
+function _consumeSSELines(buffer, state) {
+  state.buf += buffer;
+  var lines = state.buf.split('\n');
+  state.buf = lines.pop() || '';
+  var events = [];
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].replace(/\r$/, '');
+    if (!line) continue;
+    if (line.indexOf('event:') === 0) {
+      state.event = line.slice(6).trim();
+    } else if (line.indexOf('data:') === 0) {
+      events.push({ event: state.event || 'token', data: line.slice(5).replace(/^\s/, '') });
+    }
+  }
+  return events;
+}
+
+function _renderStreamHtml(text) {
+  return '<span>' + String(text || '').replace(/\n/g, '<br>') + '</span>';
+}
+
+async function sendTextStream(text) {
+  text = (text || '').trim();
+  if (!text) {
+    var inp = document.getElementById('input');
+    text = inp && inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+  }
   document.getElementById('bar').style.display = 'flex';
-  var welcome = document.querySelector('.welcome');
-  if (welcome) welcome.style.display = 'none';
 
   addMsg('user', text);
-  var msgEl = addMsg('ai', '<span class=\"typing-dots\"><span></span><span></span><span></span></span>');
+  if (typeof setExtractionSource === 'function') setExtractionSource('conversation');
+  var msgEl = addMsg('ai', '<span class="typing-dots"><span></span><span></span><span></span></span>');
+  var streamMsg = msgEl._msg || null;
+  var streamBody = msgEl._bodyEl || null;
   setStatus('streaming'); setDot('blue');
 
   // Build history from DOM
-  var history = [];
-  document.querySelectorAll('#msgs .msg.user, #msgs .msg.ai').forEach(function(el) {
-    var role = el.classList.contains('user') ? 'user' : 'assistant';
-    var txt = el.textContent.trim();
-    if (txt && txt !== '...') history.push({ role: role, content: txt });
-  });
+  var history = buildChatHistory();
 
   var body = JSON.stringify({
     message: text, history: history.slice(-12), mode: _mode,
     model: _selectedModel, auto: _autoMode, session_id: _sessionId,
-    tts_backend: localStorage.getItem('sd_tts_backend') || 'edge',
-    tts_voice: localStorage.getItem('sd_tts_voice') || 'Xiaoxiao (Natural)',
+    tts_backend: localStorage.getItem(StorageKeys.TTS_BACKEND) || 'edge',
+    tts_voice: localStorage.getItem(StorageKeys.TTS_VOICE) || 'Xiaoxiao (Natural)',
+    tts_speed: parseFloat(localStorage.getItem(StorageKeys.TTS_SPEED) || '1.1'),
+    tts_emotion: localStorage.getItem(StorageKeys.TTS_EMOTION) || 'friendly'
   });
 
   try {
     var resp = await fetch(API + '/api/skills/dispatch/stream', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body,
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, typeof authHeaders === 'function' ? authHeaders() : {}),
+      body: body,
     });
     if (!resp.ok) { msgEl.textContent = 'HTTP ' + resp.status; setStatus('error'); setDot(''); return; }
 
-    var reader = resp.body.getReader(), decoder = new TextDecoder(), buffer = '';
+    var reader = resp.body.getReader(), decoder = new TextDecoder();
     var fullReply = '';
+    var sseState = { buf: '', event: 'token' };
 
     while (true) {
       var { done, value } = await reader.read();
       if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      var lines = buffer.split('\n');
-      buffer = lines.pop() || '';
+      var events = _consumeSSELines(decoder.decode(value, { stream: true }), sseState);
 
-      for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].trim();
-        if (!line.startsWith('data: ')) continue;
-        var data = line.substring(6);
-        // Find event type from previous line
-        var eventType = 'token';
-        if (i > 0 && lines[i-1].startsWith('event: ')) eventType = lines[i-1].substring(7).trim();
+      for (var j = 0; j < events.length; j++) {
+        var ev = events[j];
+        if (ev.event === 'token' || ev.event === 'reply') {
+          fullReply += ev.data;
+          var html = _renderStreamHtml(fullReply);
+          if (streamBody) streamBody.innerHTML = html;
+          else if (streamMsg) patchChatMsg(streamMsg, html);
+          else msgEl.innerHTML = html;
+        } else if (ev.event === 'done') {
+          try {
+            var meta = JSON.parse(ev.data || '{}');
+            _sessionId = meta.session_id || _sessionId;
+            if (_sessionId) { localStorage.setItem(StorageKeys.SESSION, _sessionId); }
 
-        if (eventType === 'token') {
-          fullReply += data;
-          msgEl.innerHTML = '<span>' + fullReply.replace(/\n/g, '<br>') + '</span>';
-        } else if (eventType === 'done') {
-          try { var meta = JSON.parse(data); _sessionId = meta.session_id || _sessionId;
-            if (_sessionId) localStorage.setItem('sd_session', _sessionId);
-            if (meta.skill_saved) refreshSkillList();
-          } catch(e) {}
-        } else if (eventType === 'error') {
-          msgEl.innerHTML = '<span>' + data + '</span> <button class=\"nav-sm\" style=\"font-size:11px;border-color:var(--warn);color:var(--warn)\" onclick=\"sendText()\">重试</button>';
+            if (meta.skill_saved) {
+              setStatus('saved: ' + meta.skill_saved);
+              if (typeof hideSourceProgress === 'function') hideSourceProgress();
+              if (typeof precipitateFromResponse === 'function') {
+                precipitateFromResponse(meta, (meta.epistemic_summary && meta.epistemic_summary.source_type) || 'conversation');
+              } else if (typeof refreshSkillList === 'function') refreshSkillList();
+            } else if (meta.skill_active) {
+              if (typeof hideSourceProgress === 'function') hideSourceProgress();
+              setStatus('extracting');
+            } else {
+              if (typeof hideSourceProgress === 'function') hideSourceProgress();
+              setStatus('idle');
+            }
+
+            updateWorkspace(meta);
+            setDot(meta.skill_active || meta.skill_saved ? 'on' : '');
+          } catch (e) {}
+        } else if (ev.event === 'error') {
+          var errHtml = _renderStreamHtml(ev.data) + ' <button class="nav-sm" style="font-size:11px;border-color:var(--warn);color:var(--warn)" onclick="sendText()">重试</button>';
+          if (streamBody) streamBody.innerHTML = errHtml;
+          else if (streamMsg) patchChatMsg(streamMsg, errHtml);
+          else msgEl.innerHTML = errHtml;
         }
       }
     }
-    msgEl.style.opacity = '1';
+    // Flush any trailing SSE frame in buffer
+    if (sseState.buf.trim()) {
+      _consumeSSELines('\n', sseState).forEach(function(ev) {
+        if (ev.event === 'token' || ev.event === 'reply') {
+          fullReply += ev.data;
+        }
+      });
+      if (fullReply) {
+        var finalHtml = _renderStreamHtml(fullReply);
+        if (streamBody) streamBody.innerHTML = finalHtml;
+        else if (streamMsg) patchChatMsg(streamMsg, finalHtml);
+        else msgEl.innerHTML = finalHtml;
+      }
+    }
     scrollMsgs();
-    setStatus('idle'); setDot('on');
-    try { if (Alpine && Alpine.store('chat')) Alpine.store('chat').addMessage('ai', fullReply); } catch(e) {}
+    if (!fullReply) {
+      var emptyHtml = '<span style="color:var(--text3)">未收到回复，请重试</span>';
+      if (streamBody) streamBody.innerHTML = emptyHtml;
+      else if (streamMsg) patchChatMsg(streamMsg, emptyHtml);
+      else msgEl.innerHTML = emptyHtml;
+    }
+    // Status/dot are set by the 'done' SSE event; fallback for missing done event
+    if (!_sessionId) { setStatus('idle'); setDot(''); }
+    // TTS audio output
+    if (_ttsEnabled && fullReply && window.speechSynthesis) {
+      var u = new SpeechSynthesisUtterance(fullReply);
+      u.lang = 'zh-CN'; u.rate = 1.1;
+      speechSynthesis.speak(u);
+    }
   } catch(e) {
-    msgEl.textContent = e.message || '流式请求失败';
-    toast(e.message, 'error');
+    if (typeof hideSourceProgress === 'function') hideSourceProgress();
+    resetSSERetry();
+    var streamErr = escHtml(e.message || '流式请求失败');
+    var streamErrHtml = '<span>' + streamErr + '</span> <button type="button" class="nav-sm" style="font-size:11px;border-color:var(--warn);color:var(--warn)" onclick="sendText()">重试</button>';
+    if (streamBody) streamBody.innerHTML = streamErrHtml;
+    else if (streamMsg) patchChatMsg(streamMsg, streamErrHtml);
+    else msgEl.textContent = e.message || '流式请求失败';
+    if (e.message === 'Failed to fetch' || e.name === 'TypeError') {
+      showConnectionError();
+    } else {
+      toast(e.message, 'error');
+    }
     setStatus('error'); setDot('');
   }
 }

@@ -95,30 +95,14 @@ class TestWatcherArchive:
 
 class TestQueueUnifiedExit:
     def test_url_digest_calls_finalize_ingest(self, monkeypatch):
-        mock_dd = MagicMock()
-        mock_dd.title = "Queue Doc"
-        mock_dd.glossary = [{"term": "T", "definition": "D" * 20}]
-        mock_dd.patterns = []
-        mock_dd.sections = []
-
-        finalize_calls: list = []
-
-        def _capture_finalize(*args, **kwargs):
-            finalize_calls.append(kwargs)
-            return {"lineage": {"lineage_applied": True}, "lineage_notice": "ok"}
-
-        task = MagicMock()
-        task.source_type = "url"
-        task.source_path = "https://queue.test/article"
-
         with patch("skillos.utils.web_fetch.fetch", return_value="x" * 200), \
              patch("skillos.knowledge.ingest_dedup.should_skip_ingest", return_value=False), \
              patch("skillos.knowledge.content_classify.classify_content", return_value="conceptual"), \
-             patch("skillos.knowledge.deep_digest.deep_digest", return_value=mock_dd), \
-             patch("skillos.knowledge.deep_digest.save_digest"), \
-             patch("skillos.knowledge.extractor.extract_knowledge", return_value=[]), \
-             patch("skillos.knowledge.ingest_pipeline.finalize_ingest", side_effect=_capture_finalize), \
-             patch("skillos.knowledge.refresher.mark_source_refreshed"):
+             patch("skillos.knowledge.precipitation.precipitate_conceptual_source") as mock_conceptual:
+            mock_conceptual.return_value = {
+                "title": "Queue Doc",
+                "lineage_applied": True,
+            }
             from skillos.knowledge.ingestion_queue import IngestionTask, process_ingestion_task
 
             result = process_ingestion_task(
@@ -129,6 +113,5 @@ class TestQueueUnifiedExit:
             )
 
         assert "digest:Queue Doc:lineage=yes" == result
-        assert finalize_calls
-        assert finalize_calls[0]["channel"] == "ingestion_queue"
-        assert finalize_calls[0]["source_title"] == "Queue Doc"
+        mock_conceptual.assert_called_once()
+        assert mock_conceptual.call_args.kwargs.get("channel") == "ingestion_queue"

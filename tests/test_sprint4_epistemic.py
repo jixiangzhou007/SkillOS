@@ -99,10 +99,11 @@ class TestQuickMode:
         mock_agent = MagicMock()
         mock_agent.is_active = False
         mock_agent.start.return_value = "快速模式已启动"
+        mock_agent.handle.return_value = ("快速模式已启动", None)
         shared_mgr = __import__("skillos.skills.session_manager", fromlist=["SessionManager"]).SessionManager()
 
         with patch("skillos.skills.agent.SkillExtractionAgent", return_value=mock_agent), patch(
-            "skillos.skills.session_manager.SessionManager", return_value=shared_mgr
+            "skillos.skills.session_manager.get_session_manager", return_value=shared_mgr
         ):
             r = client.post(
                 "/api/skills/dispatch",

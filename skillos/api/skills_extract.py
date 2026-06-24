@@ -501,11 +501,16 @@ def _finalize_extraction_response(
 ) -> dict:
     """Build dispatch JSON and attach clickable [选项] buttons when present."""
     from skillos.skills.extraction_helpers import attach_extraction_actions
+    from skillos.skills.agent import Phase
 
-    result: dict = {"reply": reply, "session_id": session.id, **(extra or {})}
+    phase = agent._phase.name if isinstance(getattr(agent, "_phase", None), Phase) else str(getattr(agent, "_phase", ""))
+    result: dict = {"reply": reply, "session_id": session.id, **(extra or {}),
+                     "extraction_phase": phase, "extraction_turn": agent._turn}
     if doc:
         result["skill_saved"] = doc["name"]
         result["draft_saved"] = doc["name"]
+        if doc.get("diffusion"):
+            result["diffusion"] = doc["diffusion"]
         if doc.get("slug"):
             result["portable_slug"] = doc["slug"]
         if doc.get("install_paths"):
@@ -533,6 +538,11 @@ def _finalize_extraction_response(
             result["draft_preview"] = agent.draft_name
             result["draft_in_session"] = True
             result["draft_saved"] = agent.draft_name
+        # Expose growing draft and progress for workspace preview panel
+        dc = getattr(agent, '_draft_content', '') or ''
+        if dc:
+            result["draft_content"] = dc[:3000]
+        result["draft_progress"] = agent.to_progress_dict()
     return attach_extraction_actions(result, result["reply"])
 
 
@@ -543,11 +553,21 @@ def _run_extraction_dispatch(session, msg: str, auth, llm_args, req: DispatchReq
     agent = session.agent
     skills = _create_mode_skills_list(auth)
 
-    if agent.is_active and is_meta_extraction_question(msg):
-        reply = agent.reply_to_meta_question()
+    if is_meta_extraction_question(msg):
+        if not agent.is_active:
+            agent.restore_from_history(session.history)
+        if agent.is_active:
+            reply = agent.reply_to_meta_question()
+            session.add_turn("user", msg)
+            session.add_turn("assistant", reply)
+            return _finalize_extraction_response(session, reply, agent, extra={"skill_active": True})
+        reply = (
+            "我们还没开始具体的技能沉淀。"
+            "你可以直接说想沉淀什么流程，比如「合同审核」或「退款处理」。"
+        )
         session.add_turn("user", msg)
         session.add_turn("assistant", reply)
-        return _finalize_extraction_response(session, reply, agent, extra={"skill_active": True})
+        return {"reply": reply, "session_id": session.id}
 
     from skillos.skills.agent import Phase
 
@@ -566,17 +586,11 @@ def _run_extraction_dispatch(session, msg: str, auth, llm_args, req: DispatchReq
             session_id=session.id,
         )
 
-    if not agent.is_active and is_meta_extraction_question(msg):
-        reply = (
-            "我们还没开始具体的技能沉淀。"
-            "你可以直接说想沉淀什么流程，比如「合同审核」或「退款处理」。"
-        )
-        session.add_turn("user", msg)
-        session.add_turn("assistant", reply)
-        return {"reply": reply, "session_id": session.id}
-
-    if not agent.is_active and req.quick_mode and len(msg.strip()) >= 500:
+    extra: dict = {}
+    use_quick = (not agent.is_active) and (req.quick_mode or len(msg.strip()) >= 500)
+    if use_quick and len(msg.strip()) >= 400:
         agent.start(msg, quick_mode=True)
+        extra["quick_mode"] = True
 
     reply, doc = agent.handle(msg, skills, llm_args)
     session.add_turn("user", msg)
@@ -595,9 +609,9 @@ def _run_extraction_dispatch(session, msg: str, auth, llm_args, req: DispatchReq
             if isinstance(exc, QuotaExceededError):
                 raise HTTPException(status_code=402, detail=str(exc)) from exc
             raise
-        return _finalize_extraction_response(session, reply, agent, doc=doc, ep=ep)
+        return _finalize_extraction_response(session, reply, agent, doc=doc, ep=ep, extra=extra)
 
-    return _finalize_extraction_response(session, reply, agent)
+    return _finalize_extraction_response(session, reply, agent, extra=extra or None)
 
 
 @router.post("/dispatch")
@@ -975,10 +989,20 @@ async def dispatch_message_stream(
                 yield _sse_event("token", char)
                 await asyncio.sleep(0.015)  # ~60 chars/sec, natural reading speed
 
-            meta = {"session_id": session.id}
+            meta = {"session_id": session.id, "skill_active": session.agent.is_active,
+                    "extraction_phase": session.agent._phase.name,
+                    "extraction_turn": session.agent._turn}
+            dc = getattr(session.agent, '_draft_content', '') or ''
+            if dc:
+                meta["draft_content"] = dc[:3000]
+            meta["draft_progress"] = session.agent.to_progress_dict()
             if doc:
                 meta["skill_saved"] = doc.get("name", "")
                 meta["slug"] = doc.get("slug", "")
+                if doc.get("diffusion"):
+                    meta["diffusion"] = doc["diffusion"]
+                if doc.get("pipeline_log"):
+                    meta["pipeline_log"] = doc["pipeline_log"]
             yield _sse_event("done", _json.dumps(meta, ensure_ascii=False))
         except Exception as e:
             yield _sse_event("error", str(e))
@@ -1122,7 +1146,8 @@ async def resume_extraction(session_id: str = "", message: str = ""):
 
     if not agent.is_active and agent._context:
         # Agent has context but is not active — rehydrate from draft
-        agent._phase = type(agent._phase).REFINING if hasattr(agent, '_phase') else agent._phase
+        from skillos.skills.agent import Phase
+        agent._phase = Phase.REFINING
         agent._refinement_rounds = max(0, getattr(agent, '_refinement_rounds', 1) - 1)
         agent._turn = len(agent._context)
 

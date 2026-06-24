@@ -24,33 +24,33 @@ SKILL_EXIT = ["不做了", "取消", "算了", "不用了", "跳过全部", "换
 
 # ── Static examples shown in start() when topic is unknown ──
 _EXAMPLES = [
-    ("处理客户投诉", "投诉接收→分类→升级→解决→回访"),
-    ("代码审查流程", "PR提交→静态检查→人工审查→合并"),
-    ("数据分析报告", "数据获取→清洗→分析→可视化→出报告"),
-    ("API接口设计", "需求分析→接口定义→文档→联调→上线"),
+    ("合同审核流程", "接收→条款检查→风险标记→修订→确认"),
+    ("代码审查规范", "PR提交→静态检查→人工审查→合并"),
+    ("数据报表生成", "数据获取→清洗→分析→可视化→交付"),
+    ("故障排查流程", "告警接收→分级→定位→修复→复盘"),
 ]
 
 # Domain-aware first-turn hints (keyword groups → natural storytelling invitation)
 _DOMAIN_OPENINGS: list[tuple[tuple[str, ...], str]] = [
     (
         ("合同审核", "合同审查", "审合同", "合同合规", "合同", "协议", "条款", "法务", "合规"),
-        "上次同事找你审合同，从收到合同到给出意见，你是怎么一步一步帮他搞定的？随便聊聊就行，不用列提纲。",
+        "收到一份采购合同后，从初审到出具意见，你的标准流程是什么？请按步骤描述——触发条件、检查点、常见风险条款。",
     ),
     (
         ("投诉", "退款", "售后", "客服", "工单"),
-        "你碰到过最头疼的一个客户投诉或退款，是怎么处理的？从接到问题到最后解决，中间都发生了什么？",
+        "处理一个客户投诉或退款请求，你通常经过哪些环节？从接收问题到最终解决，每一步的决策依据是什么？",
     ),
     (
         ("代码", "审查", "PR", "发布", "CI", "测试"),
-        "你最近一次做代码审查，打开那个PR之后，你第一眼看什么？然后一步步怎么查的？",
+        "进行一次代码审查时，你的检查清单是什么？先看什么，后看什么，什么情况下需要驳回？",
     ),
     (
         ("报销", "审批", "发票", "财务", "对账"),
-        "你们公司的报销审批，从员工填单子到钱到账，中间经过哪些人、哪些环节？有没有碰到过特别麻烦的单子？",
+        "你们公司的报销审批链路是怎样的？从提交到到账，经过哪些节点？有哪些容易卡住的环节？",
     ),
     (
         ("报表", "数据分析", "指标", "可视化"),
-        "你每周出的那个数据报表，从拿到数据到发给老板，中间都做了什么？有没有哪次数据特别难处理？",
+        "制作一份数据报表，从取数到交付，你的标准流程是什么？有哪些质量检查点？",
     ),
 ]
 
@@ -201,7 +201,7 @@ def _domain_opening_for_topic(topic: str) -> str:
     )
 
 # ── Probe order for progressive exploration ──
-_PROBE_ORDER = ["trigger", "input", "steps", "output", "edge_cases"]
+_PROBE_ORDER = ["trigger", "input", "steps", "output", "edge_cases", "gotchas"]
 
 _PROBE_DESCRIPTIONS = {
     "trigger": "触发场景（何时/什么条件下触发这个流程）",
@@ -209,6 +209,7 @@ _PROBE_DESCRIPTIONS = {
     "steps": "执行步骤（具体怎么做，分几步）",
     "output": "输出/产出（流程的产出物是什么格式）",
     "edge_cases": "边界情况（特殊情况、异常怎么处理）",
+    "gotchas": "常见坑点（容易出错的地方、看起来对但实际错的）",
 }
 
 
@@ -334,6 +335,27 @@ class SkillExtractionAgent:
     @property
     def is_active(self) -> bool:
         return self._phase not in (Phase.IDLE, Phase.DONE)
+
+    def to_progress_dict(self) -> dict:
+        """Return structured extraction progress for frontend draft panel."""
+        return {
+            "phase": self._phase.name,
+            "turn": self._turn,
+            "goal": self._goal,
+            "draft_name": self.draft_name,
+            "has_draft": bool(self._draft_content.strip()),
+            "draft_length": len(self._draft_content),
+            "probes_total": len(_PROBE_ORDER),
+            "probes_done": len(self._probes_completed),
+            "probe_dimensions": [
+                {"key": k, "label": _PROBE_DESCRIPTIONS.get(k, k),
+                 "covered": k in self._probes_completed}
+                for k in _PROBE_ORDER
+            ],
+            "saturated": self._context_saturated(),
+            "has_research": bool(self._research_cache),
+            "messages_collected": len(self._context),
+        }
 
     @property
     def draft_name(self) -> str:
@@ -486,6 +508,9 @@ class SkillExtractionAgent:
                 comp = resolve_domain_competition(goal or topic, top_k=3)
                 if comp and comp.primary:
                     self._domain_template_id = comp.primary.template_id
+                    self._domain_template_ids = [comp.primary.template_id] + [
+                        s.template.template_id for s in comp.secondary
+                    ]
                     self._context.append(f"[domain:{comp.primary.template_id}]")
             except Exception:
                 pass
@@ -499,14 +524,14 @@ class SkillExtractionAgent:
             )
 
         return (
-            f"嘿，跟我聊聊你平时工作里的一个流程吧——比如每次都按固定套路处理的那种事。\n\n"
-            f"举个栗子：{examples_text}\n\n"
-            f"你有类似的事吗？随便说说就行。"
+            f"请描述你工作中一个可按固定流程处理的任务——每次遇到它，你都会按照相似的步骤来推进。\n\n"
+            f"参考示例：{examples_text}\n\n"
+            f"你手头有类似的工作流程吗？请直接描述，我会逐步追问细节。"
         )
 
     def restore_from_history(self, history: list[dict[str, str]]) -> bool:
         """Rehydrate extraction state from persisted conversation turns."""
-        if self.is_active or not history or self._phase == Phase.DONE:
+        if self.is_active or not history:
             return False
 
         user_msgs = [h["content"] for h in history if h.get("role") == "user" and h.get("content")]
@@ -514,11 +539,13 @@ class SkillExtractionAgent:
         if not user_msgs:
             return False
 
-        extraction_markers = ("沉淀", "技能萃取", "我们来沉淀", "萃取助手", "好的，我们来")
+        extraction_markers = ("沉淀", "技能萃取", "我们来沉淀", "萃取助手", "好的，我们来", "聊聊「")
         in_extraction = any(
             any(m in a for m in extraction_markers) for a in assistant_msgs
         )
         if not in_extraction:
+            if self._phase == Phase.DONE:
+                return False
             from skillos.skills.intent_router import DispatchIntent, classify_message_intent
             if classify_message_intent(user_msgs[0]) != DispatchIntent.EXTRACT:
                 return False
@@ -587,6 +614,9 @@ class SkillExtractionAgent:
         if self._phase == Phase.CONFIRMING:
             return self._confirm_turn(message, existing_skills, llm_args)
         if self._phase == Phase.DONE:
+            # Handle ecosystem integration request
+            if any(kw in message for kw in ["生态集成", "生态", "hooks", "MCP", "subagent"]):
+                return self._ecosystem_turn()
             # Handle description optimization request
             if any(kw in message for kw in ["优化描述", "优化触发", "optimize description"]):
                 return self._optimize_description_turn(existing_skills, llm_args)
@@ -613,6 +643,37 @@ class SkillExtractionAgent:
         self._phase = Phase.REFINING
         self._awaiting_confirm = False
         return self._refine(text, existing_skills, llm_args)
+
+    def _ecosystem_turn(self) -> tuple[str, None]:
+        """Provide ecosystem integration guidance for the generated skill."""
+        name = self._finalized_name or self._draft_name or "该技能"
+        return (
+            f"## 🔌「{name}」生态集成建议\n\n"
+            f"Claude Code 生态中的 5 个能力层，可以和你的技能配合使用：\n\n"
+            f"### 1. Hooks（钩子）\n"
+            f"让 Claude 在关键节点自动触发动作。适合配合 `{name}` 的 hook：\n"
+            f"- **PostToolUse**：每次调用工具后自动检查结果是否符合预期\n"
+            f"- **Stop**：任务结束时自动保存中间产物或生成摘要\n"
+            f"- **Notification**：关键步骤完成时发送通知\n\n"
+            f"### 2. MCP Servers（外部能力）\n"
+            f"接入外部 API 和服务。这个技能可能需要：\n"
+            f"- 与你业务系统的 API 对接（数据库查询、内部工具调用）\n"
+            f"- 如果技能涉及外部数据源，建议配置对应的 MCP Server\n\n"
+            f"### 3. Subagents（子代理）\n"
+            f"将大任务拆分为并行子任务执行。建议：\n"
+            f"- 把可独立执行的步骤标记出来，分派给子代理并行处理\n"
+            f"- 用 MetaSkill 编排多个技能时，每个技能以 subagent 模式运行\n\n"
+            f"### 4. Skills（技能组合）\n"
+            f"本技能可以和其他技能配合：\n"
+            f"- 检查知识库中是否有相关技能的参考案例\n"
+            f"- 用「skill-creator」持续优化本技能的质量\n\n"
+            f"### 5. Automations（自动化）\n"
+            f"- 配合文件监听，当有新文件进入时自动触发本技能\n"
+            f"- 结合定时任务周期性地执行检查和优化\n\n"
+            f"---\n"
+            f"需要我帮你深入分析某个方向吗？",
+            None,
+        )
 
     def _post_done_turn(
         self, text: str, existing_skills: list[str], llm_args: tuple,

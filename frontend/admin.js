@@ -151,7 +151,7 @@ function adminView() {
 
 async function resolveAdminOrgId() {
   try {
-    const ws = JSON.parse(localStorage.getItem('sd_workspace') || '{}');
+    const ws = JSON.parse(localStorage.getItem(StorageKeys.WORKSPACE) || '{}');
     if (ws.org_id) return ws.org_id;
     if (ws.tenant_id && ws.tenant_id.indexOf('org:') === 0) return ws.tenant_id.split(':')[1];
     const r = await api('/api/orgs');
@@ -166,8 +166,7 @@ async function resolveAdminOrgId() {
 
 function showAdmin() {
   if (window.__alpineReady) {
-    Alpine.store('nav').navigate('admin-view');
-    document.getElementById('bar').style.display = 'none';
+    Alpine.store('nav').goTo('admin-view');
   } else {
     switchMainView('admin-view');
     document.getElementById('bar').style.display = 'none';
@@ -188,5 +187,9 @@ function exportAuditCsv() {
 var _adminOrgId = '';
 
 function updateAdminNavVisibility() {
-  // Called from auth.js after login. Admin nav already renders via Alpine.
+  // Admin button now in user dropdown + sidebar tools
+  var hdrBtn = document.getElementById('admin-nav-btn');
+  if (hdrBtn) hdrBtn.style.display = '';
+  var sbBtn = document.getElementById('sb-admin-btn');
+  if (sbBtn) sbBtn.style.display = '';
 }

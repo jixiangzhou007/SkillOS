@@ -195,27 +195,32 @@ class TestDispatchExtract:
         get_session_manager().delete(sid)
 
         client = TestClient(app)
-        r1 = client.post(
-            "/api/skills/dispatch",
-            json={"message": "我想创建一个合同审核的技能", "session_id": sid, "mode": "create"},
+        llm_reply = (
+            "<QUESTION>合同审核时验收条款有哪些要点？</QUESTION>\n"
+            "<SKILL_DRAFT>\n```skill_doc\n# 技能名称：合同审核\n## S_body\n1. 检查条款\n```\n</SKILL_DRAFT>"
         )
-        assert r1.status_code == 200
-        assert "合同" in r1.json()["reply"]
-
-        client.post(
-            "/api/skills/dispatch",
-            json={"message": "销售合同，文件名带 contract 触发", "session_id": sid, "mode": "create"},
-        )
-        client.post(
-            "/api/skills/dispatch",
-            json={"message": "是的", "session_id": sid, "mode": "create"},
-        )
-
-        with patch("skillos.llm_client.call", return_value="继续补充验收条款即可。"):
-            r4 = client.post(
+        with patch("skillos.llm_client.call", return_value=llm_reply):
+            r1 = client.post(
                 "/api/skills/dispatch",
-                json={"message": "你不是沉淀技能吗", "session_id": sid, "mode": "create"},
+                json={"message": "我想创建一个合同审核的技能", "session_id": sid, "mode": "create"},
             )
+            assert r1.status_code == 200
+            assert "合同" in r1.json()["reply"]
+
+            client.post(
+                "/api/skills/dispatch",
+                json={"message": "销售合同，文件名带 contract 触发", "session_id": sid, "mode": "create"},
+            )
+            client.post(
+                "/api/skills/dispatch",
+                json={"message": "还有法务会签和盖章归档两步", "session_id": sid, "mode": "create"},
+            )
+
+            with patch("skillos.llm_client.call", return_value="继续补充验收条款即可。"):
+                r4 = client.post(
+                    "/api/skills/dispatch",
+                    json={"message": "你不是沉淀技能吗", "session_id": sid, "mode": "create"},
+                )
         assert r4.status_code == 200
         reply = r4.json()["reply"]
         assert "合同" in reply

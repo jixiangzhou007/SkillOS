@@ -4,8 +4,18 @@
 
 const _DOC_SOURCES = {
   quickstart: { title: '快速开始', api: '/api/docs/quickstart', static: '/docs/quickstart.md' },
-  guide: { title: 'SkillOS 用户指南', api: '/api/docs/guide', static: '/docs/user_guide.md' }
+  guide: { title: '用户指南', api: '/api/docs/guide', static: '/docs/user_guide.md' }
 };
+
+/** Drop markdown H1 — sidebar already shows the section title. */
+function _stripDocTitle(md) {
+  var lines = (md || '').split('\n');
+  if (lines.length && /^#\s+/.test(lines[0].trim())) {
+    lines.shift();
+    while (lines.length && !lines[0].trim()) lines.shift();
+  }
+  return lines.join('\n');
+}
 
 function docsView() {
   return {
@@ -50,7 +60,7 @@ function docsView() {
           source = 'static';
         }
 
-        this.content = renderDocMarkdown(content);
+        this.content = renderDocMarkdown(_stripDocTitle(content));
         this.source = source;
         this.error = '';
 
@@ -94,20 +104,28 @@ function bindDocLinks(container) {
 
 // ── Backward-compatible wrappers ─────────────────────
 
+function _docsAlpine() {
+  var el = document.getElementById('docs-view');
+  return el && el.__x ? el.__x.$data : null;
+}
+
 function showDocs() {
   if (window.__alpineReady) {
-    Alpine.store('nav').navigate('docs-view');
+    Alpine.store('nav').goTo('docs-view');
   } else {
     switchMainView('docs-view');
     document.getElementById('bar').style.display = 'none';
   }
+  var data = _docsAlpine();
+  if (data) data.loadSection('quickstart');
+  else loadDocs('quickstart');
+  setTimeout(function() { if (typeof hydrateIcons === 'function') hydrateIcons(); }, 0);
 }
 
 function loadDocs(section) {
-  // Delegate to Alpine component if available
-  const el = document.querySelector('[x-data="docsView()"]');
-  if (el && el.__x) {
-    el.__x.$data.loadSection(section);
+  var data = _docsAlpine();
+  if (data) {
+    data.loadSection(section);
     return;
   }
   // Legacy fallback
@@ -118,11 +136,8 @@ function loadDocs(section) {
   fetch(typeof api === 'function' ? '/api/docs/' + section : spec.static)
     .then(r => typeof api === 'function' ? r.json().then(d => d.content || spec.title) : r.text())
     .then(content => {
-      el2.innerHTML = '<article class="doc-content">' + renderDocMarkdown(typeof content === 'string' ? content : '') + '</article>';
+      el2.innerHTML = '<article class="doc-content">' + renderDocMarkdown(_stripDocTitle(typeof content === 'string' ? content : '')) + '</article>';
       bindDocLinks(el2);
     })
     .catch(e => { el2.innerHTML = '<div style="color:var(--err);padding:20px">加载失败: ' + escHtml(e.message) + '</div>'; });
-  document.querySelectorAll('#docs-view .tab').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('data-doc') === section);
-  });
 }

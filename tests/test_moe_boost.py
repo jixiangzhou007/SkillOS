@@ -47,10 +47,10 @@ class TestBoostWeakest:
 
 class TestEvaluateAndBoost:
     def test_stops_when_threshold_met(self):
-        good = _report(75, {"params": 72})
+        good = _report(82, {"params": 72})
         with patch("skillos.evaluation.moe_boost.evaluate_skill", return_value=good):
             body, report, boosts = evaluate_and_boost("## x", "t", ())
-        assert report.overall_score == 75
+        assert report.overall_score == 82
         assert boosts == []
 
     def test_boosts_when_below_threshold(self):

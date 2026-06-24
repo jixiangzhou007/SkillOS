@@ -1,8 +1,98 @@
 # SkillOS Changelog
 
+## v0.3.3 (2026-06-24) — 前端 M0–M5 产品化批次
+
+> Verified Skill 验货控制台 · 三路径沉淀 · Cursor 导出优先
+
+### M0 叙事锁稿
+- 统一「可验证的技能工厂」copy；欢迎页 / 侧栏 / onboarding / 知识 Tab「后台摄入」
+
+### M1 可信完成态
+- `precipitation-result.js`：三路径共用 Verified Skill 结果卡片
+- 认识论信任条 + Overview 来源/安装卡片
+- 顶栏状态合并；诚实 `pipeline-wait`
+
+### M2 一条沉淀线
+- `workspace-phase` 顶栏互斥（对话 / 链接 / 文件）
+- digest 与 skill 分叉卡片；Zip/路径统一出口
+
+### M3 对话 IDE
+- `socratic-ui.js`：选项 chip + 草稿四分区（目标/维度/结构/预览）
+
+### M4 输出/通道
+- `export-channel.js`：Cursor 三步安装引导 + Zip/SKILL.md 复制
+
+### M5 视觉收敛 + 知识透镜
+- 知识 Tab 二级 IA（概览/知识库 + 工具区）；页头「喂大脑，不是做 Skill」
+- 详情 `page-shell`；移动端 FAB（对话/链接/文件）；emoji → SVG 治理
+
+### 聊天修复（批次内）
+- DOM 直渲染消息；默认非流式 dispatch；紧凑气泡布局
+
+---
+
+## v0.3.2 (2026-06-22) — 前端体验 P1/P2
+
+> 93 commits · 605 tests collected · Alpine.js + v8 Atelier
+
+### 导航与路由
+
+- **`nav.goTo()`**：视图切换、DOM active、底栏显隐三合一
+- 顶栏 **primaryNav** active 同步（萃取 / 知识 / 市场）
+- **移动端底栏**（≤768px）：三 Tab + SVG 图标
+
+### UI  polish
+
+- **icons.js**：侧栏、用户菜单、欢迎页 chips、底栏附件/音量 SVG 化
+- **Hub**：page-shell 布局；审核队列 / 发布模态 v8 样式；**Admin / Revenue / 定价 全 Alpine 化**（移除 `#hub-content` 与动态定价 DOM）；目录只读横幅 + 市场 KPI
+- **Admin / Docs / Account Watcher**：去 inline style，统一 page 组件
+- **设置**：技能 Tab 文案更新；语音 Tab 表单类；情感选项去 emoji
+- **详情页**：legacy loader → `#d-content-staging` 隔离；全 Tab v8 样式类（概览/验证/认识论/DNA/进化/决策/KB/Meta/评测 KPI）
+
+### 工程
+
+- **storage-keys.js**：localStorage 键名常量；app/auth/chat/settings/hub/login 迁移
+- **Onboarding** 3 步首次引导（P0）
+- **Finalize** 唯一入口：阶段条「⚡ 生成技能」（P0）
+
+---
+
+## v0.3.1 (2026-06-22) — 前端 v8 Atelier 重设计
+
+> 93 commits · 601 tests collected · Alpine.js 前端 · 产品化 UI
+
+### 前端 v8 — Atelier 设计系统
+
+- **美学方向**：工坊/精工（Atelier）— 暖炭底 + 铜色 accent，替代通用 emerald-on-dark
+- **字体**：Syne（标题/品牌）+ DM Sans（界面）+ IBM Plex Mono（代码）
+- **视觉**：ambient 噪点背景、玻璃顶栏、侧栏铜轨激活态、消息气泡与 CTA 铜色渐变
+- **欢迎页**：「技能工厂」hero 重排，层次更清晰
+- **登录页**：与主站设计系统对齐
+
+### 产品（P0 · 2026-06-22）
+
+- **详情 Tab**：概览 / 文档 / 质量 / 演进 + 「更多」子 Tab
+- **知识视图**：统一 `knowledge-unified-view`；顶栏「知识」入口
+- **Onboarding**：3 步首次引导（模型 → 对话 → 生成）
+- **Finalize**：阶段条「⚡ 生成技能」为唯一生成入口
+
+### 产品（2026-06-20 ~ 06-22，含未提交改动）
+
+- 对话萃取前端修复：`sd_session` key、SSE auth、`finalize-btn` 显示
+- Anthropic Skill 洞察：Gotchas 探针、`## Ecosystem` 章节、生态集成引导
+- 设置页 Alpine `@click` 兜底：`renderModelList()` + 原生 `onclick`
+- CSS v5→v7 排版迭代（Inter 13px base）→ **v8 Atelier 整体重设计**
+
+### 文档
+
+- 项目快照更新至 **2026-06-22**
+- CHANGELOG v0.3.0 commit 数同步（30 → 93）
+
+---
+
 ## v0.3.0 (2026-06-19) — 架构 A- 里程碑
 
-> 70 commits · 605 tests (98.3% pass) · mypy 0 errors · ruff 3 categories zeroed · AgentSkills.io standard · Alpine.js CSS v3 · 5 knowledge domains · skill-creator 5/5 · epistemology 5 paths
+> 93 commits · **605** tests collected · mypy 91 errors · ruff 3 categories zeroed · AgentSkills.io standard · Alpine.js · epistemology 5 paths
 
 ### 后端架构拆分
 
@@ -60,7 +150,7 @@
 
 ### 测试
 
-- **测试总数**: 501 → **601**（+100）
+- **测试总数**: 501 → **605**（+104）
 - **新增**: test_agent_learning.py(9), test_skills_extract.py(7), test_pipeline_integration.py(13), test_extraction_universal.py(67)
 - **萃取普适性**: 67 tests × 6 domains（客服/合同/代码审查/数据清洗/财务报销/内容合规）
 - **通过率**: 470/485 pass（96.9%），0 新增回归
@@ -77,7 +167,7 @@
 
 ### 版本控制
 
-- **Git**: 0 → 30 commits（从零到完整历史）
+- **Git**: 0 → **93 commits**（从零到完整历史）
 
 ---
 

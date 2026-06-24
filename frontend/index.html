@@ -4,61 +4,83 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SkillOS</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=17">
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.x/dist/cdn.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" onerror="window._mermaidFailed=1"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
-  <script>mermaid.initialize({startOnLoad:false,theme:'dark',securityLevel:'loose',themeVariables:{lineColor:'#5a5a6e',textColor:'#c8c8d8',primaryColor:'#1a3a2a',primaryBorderColor:'#10b981',primaryTextColor:'#a7f3d0',edgeLabelBackground:'#1c1c22'}});</script>
+  <script>window._mermaidFailed=0;try{mermaid.initialize({startOnLoad:false,theme:'dark',securityLevel:'loose',themeVariables:{lineColor:'#6b665e',textColor:'#d4d0c8',primaryColor:'#3d2a22',primaryBorderColor:'#d4845f',primaryTextColor:'#fde8dc',edgeLabelBackground:'#1a1917'}})}catch(e){window._mermaidFailed=1}</script>
 </head>
 <body>
+
+<div class="ambient-bg" aria-hidden="true"></div>
+
+<div id="toast-container"></div>
+
+<!-- Onboarding (first visit) -->
+<div id="onboarding-overlay" class="onboarding-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+  <div class="onboarding-card">
+    <div class="onboarding-step-indicator" id="onboarding-dots"></div>
+    <h2 id="onboarding-title" class="onboarding-title"></h2>
+    <p id="onboarding-body" class="onboarding-body"></p>
+    <div class="onboarding-actions">
+      <button type="button" class="btn-ghost" id="onboarding-skip">跳过</button>
+      <button type="button" class="btn-primary" id="onboarding-next">下一步</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ Header ════════════════════════════════════════════════ -->
 <header id="header" x-data>
   <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()"
     style="display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:4px 8px"
     title="切换侧边栏">☰</button>
-  <div class="logo-area">
-    <div class="logo">SkillOS</div>
-    <div class="dot" id="conn-dot"></div>
-  </div>
-  <div class="nav-sep"></div>
-  <nav id="primary-nav">
-    <button class="nav-mode active" @click="showChat(); setMode('chat')">💬 对话</button>
+
+  <!-- Brand -->
+  <a class="header-brand" @click="showChat()" style="cursor:pointer;text-decoration:none">
+    <span class="header-logo">SkillOS</span>
+    <span class="header-dot" id="conn-dot"></span>
+  </a>
+
+  <!-- Primary Nav -->
+  <nav class="header-nav" x-data>
+    <button type="button" class="hn-item" :class="{ active: $store.nav.primaryNav === 'extract' }" @click="showChat(); setMode('create')">萃取</button>
+    <button type="button" class="hn-item" :class="{ active: $store.nav.primaryNav === 'knowledge' }" @click="showUnifiedKnowledge('dashboard')">知识</button>
+    <button type="button" class="hn-item" :class="{ active: $store.nav.primaryNav === 'market' }" @click="showHub()" style="position:relative">
+      市场<span id="hub-badge" style="display:none;position:absolute;top:2px;right:-12px;width:8px;height:8px;border-radius:50%;background:var(--red)"></span>
+    </button>
   </nav>
-  <div class="nav-sep"></div>
-  <button class="nav-btn" @click="showHub()" style="border-color:var(--warn);color:var(--warn);position:relative">技能市场<span id="hub-badge" style="display:none;position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--err);color:#fff;font-size:9px;line-height:16px;text-align:center;font-weight:700"></span></button>
-  <button class="nav-btn" @click="showDocs()">文档</button>
-  <button class="nav-btn" @click="showDashboard()">工作台</button>
-  <button class="nav-btn" id="admin-nav-btn" @click="showAdmin()" style="display:none">管理</button>
-  <button class="nav-btn" @click="showSettings()">设置</button>
-  <div class="nav-sep"></div>
-  <select id="workspace-select" onchange="switchWorkspace(this.value)" title="工作区"
-    style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--text2);font-size:11px;max-width:140px;outline:none;cursor:pointer">
-    <option value="">工作区</option>
-  </select>
-  <span id="workspace-label" style="font-size:11px;color:var(--text3);display:none"></span>
-  <div class="nav-sep"></div>
+
+  <!-- Spacer -->
+  <span style="flex:1"></span>
+
+  <!-- Global Search -->
   <div id="global-search-wrap">
-    <input id="global-search" placeholder="搜索技能、知识、市场… (Ctrl+K)" autocomplete="off"
+    <input id="global-search" placeholder="搜索… (Ctrl+K)" autocomplete="off"
       onfocus="onGlobalSearchFocus()" oninput="doGlobalSearch()"
       onkeydown="if(event.key==='Escape'){event.preventDefault();clearGlobalSearch()}">
     <div id="global-search-panel" class="global-search-panel" style="display:none"></div>
   </div>
-  <span style="flex:1"></span>
+
+  <!-- User Menu -->
   <div class="user-menu" x-data>
     <button class="user-menu-btn" @click="document.getElementById('user-drop').classList.toggle('open')">
       <span class="user-avatar" x-text="$store.auth.avatarLetter">?</span>
       <span x-text="$store.auth.user || '用户'">用户</span>
-      <span class="user-arrow">▾</span>
     </button>
     <div class="user-dropdown" id="user-drop">
       <div class="user-drop-info">
         <span x-text="$store.auth.user || '用户'">用户</span>
-        <span x-text="$store.auth.workspaceLabel || '成员'">成员</span>
+        <span x-text="$store.auth.workspaceLabel || '个人'">个人</span>
       </div>
       <hr>
-      <button @click="showSettings()">设置</button>
-      <button @click="createTeam()">创建团队</button>
+      <button @click="showDocs()"><span class="user-drop-ico" data-icon="file"></span> 文档</button>
+      <button @click="showSettings()"><span class="user-drop-ico" data-icon="settings"></span> 设置</button>
+      <button @click="createTeam()"><span class="user-drop-ico" data-icon="users"></span> 创建团队</button>
+      <button id="admin-nav-btn" @click="showAdmin()" style="display:none"><span class="user-drop-ico" data-icon="shield"></span> 管理</button>
+      <hr>
       <button @click="doLogout()">退出</button>
     </div>
   </div>
@@ -67,12 +89,22 @@
 <!-- ═══ Body (sidebar + main) ═════════════════════════════════ -->
 <div id="body-wrap" x-data>
 
-<!-- ═══ Sidebar — Library ═════════════════════════════════════ -->
+<!-- ═══ Sidebar ═══════════════════════════════════════════════ -->
 <aside id="sidebar">
 
+  <!-- Primary CTA -->
+  <div class="sb-cta">
+    <div id="sb-workspace-content" style="margin-bottom:var(--s-2)">
+      <div style="font-size:var(--t-xs);color:var(--text3);text-align:center">可验证的技能工厂</div>
+    </div>
+    <button class="btn-primary" onclick="resetWorkspace();newSession();showChat();document.getElementById('input').focus()" style="width:100%;justify-content:center">对话萃取</button>
+    <button class="btn-secondary sb-source-btn" onclick="openSourceMaterialModal()" style="width:100%;margin-top:var(--s-2);justify-content:center"><span class="nav-icon" data-icon="link"></span>从资料沉淀</button>
+  </div>
+
+  <!-- Skills Library -->
   <div class="sb-section">
     <div class="sb-section-header" onclick="toggleSection(this)">
-      <span>📁 技能</span>
+      <span class="sb-section-label"><span class="nav-icon" data-icon="folder"></span>技能库</span>
       <span class="sb-count" id="skill-count">0</span>
       <span class="sb-toggle">▾</span>
     </div>
@@ -82,23 +114,23 @@
         <button class="sb-tab active" data-tab="mine" onclick="switchSkillTab('mine')">我的</button>
         <button class="sb-tab" data-tab="system" onclick="switchSkillTab('system')">系统</button>
       </div>
-      <div id="bench-dashboard" style="padding:6px 12px;font-size:10px;color:var(--text-tertiary);border-bottom:1px solid var(--border);display:none"></div>
-      <div id="skill-list"></div>
-      <button class="sb-action" onclick="importSkill()">📥 导入</button>
+      <div id="skill-list"><div class="skeleton skeleton-card" style="margin:2px 0"></div><div class="skeleton skeleton-card" style="margin:2px 0"></div><div class="skeleton skeleton-card" style="margin:2px 0"></div></div>
+      <button class="sb-action" onclick="importSkill()"><span class="nav-icon" data-icon="download"></span>导入技能</button>
     </div>
   </div>
 
+  <!-- Knowledge (collapsed by default) -->
   <div class="sb-section">
-    <div class="sb-section-header" onclick="focusKnowledgeSection(this)">
-      <span>🧠 知识</span>
+    <div class="sb-section-header collapsed" onclick="focusKnowledgeSection(this)">
+      <span class="sb-section-label"><span class="nav-icon" data-icon="brain"></span>知识库</span>
       <span class="sb-count" id="kp-count">0</span>
       <span class="sb-toggle">▾</span>
     </div>
-    <div class="sb-section-body open">
-      <button class="sb-nav-item" @click="showKnowledgeView()"><span class="nav-icon">📚</span>知识库</button>
-      <button class="sb-nav-item" @click="showGraphView()"><span class="nav-icon">🧠</span>知识图谱</button>
-      <button class="sb-nav-item" @click="showLineageView()"><span class="nav-icon">🔗</span>数据血缘</button>
-      <button class="sb-nav-item" @click="showAccountWatcher()"><span class="nav-icon">📡</span>公众号监控</button>
+    <div class="sb-section-body">
+      <button class="sb-nav-item" onclick="showUnifiedKnowledge('dashboard')"><span class="nav-icon" data-icon="chart"></span>仪表盘</button>
+      <button class="sb-nav-item" onclick="showUnifiedKnowledge('knowledge')"><span class="nav-icon" data-icon="book"></span>知识库</button>
+      <button class="sb-nav-item" onclick="showUnifiedKnowledge('graph')"><span class="nav-icon" data-icon="graph"></span>图谱</button>
+      <button class="sb-nav-item" onclick="showUnifiedKnowledge('lineage')"><span class="nav-icon" data-icon="link"></span>血缘</button>
     </div>
   </div>
 
@@ -107,168 +139,227 @@
 <!-- ═══ Main ══════════════════════════════════════════════════ -->
 <main id="main">
 
-  <!-- Chat View -->
-  <div id="chat-view" class="main-view active"
+  <!-- Chat / Workspace View -->
+  <div id="chat-view" class="main-view"
        :class="{ active: $store.nav.currentView === 'chat-view' }">
-    <div id="msgs" x-data>
-      <div class="welcome" x-show="$store.chat.messages.length === 0">
-        <div class="welcome-icon" id="welcome-logo">🔧</div>
-        <div class="welcome-title">今天想做什么？</div>
-        <div class="welcome-hint">描述你的工作流程，或者粘贴链接、拖拽文件</div>
-        <div class="welcome-chips">
-          <span onclick="document.getElementById('input').value='帮我创建一个合同审核的技能';sendText()">📝 沉淀新技能</span>
-          <span onclick="document.getElementById('input').value='帮我创建一个处理客户投诉的技能';sendText()">💬 客户投诉流程</span>
-          <span onclick="document.getElementById('input').value='帮我用多个技能串一条工作流';sendText()">🔗 编排流水线</span>
+
+    <!-- Unified extraction strip (ingest + workspace — mutually exclusive) -->
+    <div id="workspace-phase" class="workspace-phase" style="display:none" aria-live="polite">
+      <div class="wp-left">
+        <span class="wp-badge" id="wp-badge"></span>
+        <span class="wp-source" id="wp-source"></span>
+        <span class="wp-name" id="wp-name"></span>
+        <span class="wp-turn" id="wp-turn"></span>
+        <span class="wp-quality" id="wp-quality"></span>
+      </div>
+      <button class="wp-finalize" id="wp-finalize" onclick="finalizeSkill()" title="生成并保存 Verified Skill">⚡ 生成 Verified Skill</button>
+    </div>
+
+    <!-- Workspace body (split: chat + draft) -->
+    <div class="workspace-body" id="workspace-body">
+      <!-- Chat panel -->
+      <div class="ws-panel ws-chat" id="ws-chat-panel">
+        <div id="msgs">
+          <div class="welcome" id="chat-welcome">
+            <div class="welcome-icon" id="welcome-logo"><span data-icon="hammer"></span></div>
+            <div class="welcome-sub">SkillOS</div>
+            <div class="welcome-title">可验证的技能工厂</div>
+            <div class="welcome-hint">在 Cursor 里沉淀 · 在这里验货导出。对话、链接或文件，输出 AgentSkills.io 标准 SKILL.md。</div>
+            <div class="welcome-chips">
+              <span class="welcome-chip" onclick="resetWorkspace();newSession();showChat();document.getElementById('input').focus()"><span class="chip-ico" data-icon="edit"></span>对话萃取</span>
+              <span class="welcome-chip" onclick="startFromLink()"><span class="chip-ico" data-icon="link"></span>从链接沉淀</span>
+              <span class="welcome-chip" onclick="startFromFile()"><span class="chip-ico" data-icon="paperclip"></span>上传资料</span>
+            </div>
+            <div class="welcome-hint welcome-hint-drag">支持拖拽 PDF / Word / 图片到窗口 · 或粘贴网页链接</div>
+            <div id="welcome-recent-skills" class="welcome-recent"></div>
+          </div>
+          <div id="chat-msgs-list"></div>
+        </div>
+        <div id="status-bar" x-data x-show="$store.chat.messages.length > 0" x-cloak><span id="status">就绪</span><div id="vol-bar"></div></div>
+      </div>
+
+      <!-- Divider (draggable, visible when workspace active) -->
+      <div class="ws-divider" id="ws-divider" style="display:none"></div>
+
+      <!-- Draft preview panel (visible when workspace active) -->
+      <div class="ws-panel ws-draft" id="ws-draft-panel" style="display:none">
+        <div class="ws-draft-header">
+          <span class="ws-draft-label"><span class="chip-ico" data-icon="edit"></span>草稿 · 苏格拉底分区</span>
+          <button class="ws-draft-toggle" id="ws-draft-toggle" onclick="toggleDraftPanel()" title="折叠草稿">◀</button>
+        </div>
+        <div class="ws-draft-content" id="ws-draft-content">
+          <div class="ws-draft-empty">草稿正在构建中…<br><small>继续对话，AI 会在后台逐步完善</small></div>
         </div>
       </div>
-      <template x-for="msg in $store.chat.messages" :key="msg.id">
-        <div :class="'msg ' + msg.role">
-          <span class="msg-time" x-text="msg.time || ''"></span>
-          <div x-html="msg.text"></div>
-        </div>
-      </template>
     </div>
-    <div id="status-bar"><span id="status">就绪</span><span id="extract-banner" style="display:none;margin-left:12px;font-size:11px;color:var(--accent)">● 技能萃取进行中</span><div id="vol-bar"></div></div>
+
   </div>
 
   <!-- Detail View (for skill inspection) -->
-  <div id="detail-view" class="main-view"
+  <div id="detail-view" class="main-view page-shell"
        x-data="skillView()"
        :class="{ active: $store.nav.currentView === 'detail-view' }">
-    <div class="detail-header">
-      <button class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
-      <span x-text="skillName || ''" id="d-name"></span>
+    <div class="page-body detail-page-body">
+    <header class="page-header detail-page-header">
+      <div class="page-header-text">
+        <button type="button" class="nav-sm detail-back-btn" @click="$store.nav.showChat()">← 返回</button>
+        <h2 class="page-title" x-text="skillName || ''" id="d-name"></h2>
+        <p class="page-subtitle detail-page-sub">验货 · 认识论 · 导出</p>
+      </div>
+      <div class="detail-actions-wrap" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
+        <button type="button" class="nav-sm detail-actions-trigger" @click="actionsOpen = !actionsOpen">操作 ▾</button>
+        <div class="detail-actions-menu" x-show="actionsOpen" x-cloak x-transition>
+          <button type="button" @click="optimizeCurrent(); actionsOpen = false">优化技能</button>
+          <button type="button" id="detail-publish-btn" @click="publishCurrent(); actionsOpen = false">发布到市场</button>
+          <button type="button" @click="exportSkill(); actionsOpen = false">导出 SKILL.md</button>
+          <button type="button" @click="exportUniversal(); actionsOpen = false">通用格式导出</button>
+        </div>
+      </div>
+    </header>
+    <div class="detail-toolbar">
       <div class="detail-tabs" id="detail-tabs">
-        <span style="font-size:10px;color:var(--text3);margin:0 2px">核心</span>
         <button class="dt" :class="{ active: tab === 'overview' }" @click="switchTab('overview')">概览</button>
         <button class="dt" :class="{ active: tab === 'doc' }" @click="switchTab('doc')">文档</button>
-        <button class="dt" :class="{ active: tab === 'kb' }" @click="switchTab('kb')">知识库</button>
-        <span style="font-size:10px;color:var(--text3);margin:0 2px;border-left:1px solid var(--border);padding-left:6px">质量</span>
-        <button class="dt" :class="{ active: tab === 'verify' }" @click="switchTab('verify')">验证</button>
-        <button class="dt" :class="{ active: tab === 'epistemic' }" @click="switchTab('epistemic')">认识论</button>
-        <button class="dt" :class="{ active: tab === 'dna' }" @click="switchTab('dna')">血缘</button>
-        <button class="dt" :class="{ active: tab === 'official' }" @click="switchTab('official')">评测</button>
-        <span style="font-size:10px;color:var(--text3);margin:0 2px;border-left:1px solid var(--border);padding-left:6px">演进</span>
-        <button class="dt" :class="{ active: tab === 'meta' }" id="d-tab-meta" @click="switchTab('meta')" style="display:none">流水线</button>
-        <button class="dt" :class="{ active: tab === 'evo' }" @click="switchTab('evo')">进化</button>
-        <button class="dt" :class="{ active: tab === 'decisions' }" @click="switchTab('decisions')">溯源</button>
+        <button class="dt" :class="{ active: tab === 'quality' }" @click="switchTab('quality')">质量</button>
+        <button class="dt" :class="{ active: tab === 'evolution' }" @click="switchTab('evolution')">演进</button>
+        <div class="detail-more-wrap" @click.outside="moreOpen = false">
+          <button type="button" class="dt dt-more" :class="{ active: moreTabActive }" @click="moreOpen = !moreOpen">更多 ▾</button>
+          <div class="detail-more-menu" x-show="moreOpen" x-cloak x-transition>
+            <button type="button" @click="switchTab('kb'); moreOpen = false">知识库</button>
+            <button type="button" @click="switchTab('verify'); moreOpen = false">验证</button>
+            <button type="button" @click="switchTab('epistemic'); moreOpen = false">认识论</button>
+            <button type="button" @click="switchTab('dna'); moreOpen = false">DNA 血缘</button>
+            <button type="button" @click="switchTab('official'); moreOpen = false">评测</button>
+            <button type="button" id="d-tab-meta-more" @click="switchTab('meta'); moreOpen = false" x-show="metaVisible">流水线</button>
+            <button type="button" @click="switchTab('evo'); moreOpen = false">进化</button>
+            <button type="button" @click="switchTab('decisions'); moreOpen = false">溯源</button>
+          </div>
+        </div>
       </div>
-      <button class="nav-sm" onclick="optimizeSkill(_currentSkill)">优化</button>
-      <button class="nav-sm" id="detail-publish-btn" onclick="showPublishForm(_currentSkill)" style="border-color:var(--warn);color:var(--warn)">发布</button>
-      <button class="nav-sm" onclick="exportSkill()">导出</button>
-      <button class="nav-sm" onclick="exportUniversal()">通用</button>
     </div>
-    <div class="detail-body" id="d-content">
-      <template x-if="loading"><div style="color:var(--text3);padding:20px">加载中…</div></template>
-      <template x-if="!loading && !skillName"><div style="color:var(--text3);padding:40px;text-align:center">选择一个技能查看详情</div></template>
-      <template x-if="!loading && skillName">
-        <div>
-          <!-- overview / doc / kb / verify / epistemic / dna / official / meta / evo / decisions -->
-          <template x-if="tab === 'overview'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'doc'"><pre style="white-space:pre-wrap;font-family:var(--mono);font-size:12px;color:var(--text);background:var(--surface2);padding:16px;border-radius:8px" x-text="tabContent"></pre></template>
-          <template x-if="tab === 'kb'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'verify'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'epistemic'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'dna'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'official'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'meta'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'evo'"><div x-html="tabContent"></div></template>
-          <template x-if="tab === 'decisions'"><div x-html="tabContent"></div></template>
+    <div id="quality-strip-container" class="quality-strip-container"></div>
+    <div id="d-content-staging" hidden aria-hidden="true"></div>
+    <div class="detail-body view-scroll">
+      <template x-if="loading">
+        <div class="detail-loading">
+          <div class="skeleton skeleton-line w60"></div>
+          <div class="skeleton skeleton-line w80"></div>
+          <div class="skeleton skeleton-line w40"></div>
+          <div class="skeleton skeleton-card detail-loading-card"></div>
+          <div class="skeleton skeleton-card"></div>
         </div>
       </template>
+      <template x-if="!loading && !skillName">
+        <div class="detail-empty">选择一个技能查看详情</div>
+      </template>
+      <template x-if="!loading && skillName && tab === 'doc'">
+        <pre class="detail-doc-pre" x-text="tabContent"></pre>
+      </template>
+      <template x-if="!loading && skillName && tab !== 'doc'">
+        <div class="detail-tab-html" x-html="tabContent"></div>
+      </template>
+    </div>
     </div>
   </div>
 
-  <!-- Dashboard View -->
-  <div id="dashboard-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'dashboard-view' }"
-       x-data="{html:''}">
-    <div class="view-scroll"><div id="dash-content"></div></div>
+  <!-- Hidden DOM targets for knowledge loaders (unified view only) -->
+  <div id="knowledge-legacy-sources" hidden aria-hidden="true">
+    <div id="dash-content"></div>
+    <div id="lineage-content"></div>
+    <div id="graph-content"></div>
+    <div id="knowledge-content"></div>
+    <div id="precipitate-content"></div>
+    <div id="review-content"></div>
+    <div id="journal-content"></div>
   </div>
 
-  <!-- Lineage View (data provenance) -->
-  <div id="lineage-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'lineage-view' }"
+  <!-- Unified Knowledge View -->
+  <div id="knowledge-unified-view" class="main-view page-shell knowledge-shell"
+       :class="{ active: $store.nav.currentView === 'knowledge-unified-view' }"
        x-data="{html:''}">
-    <div class="view-scroll"><div id="lineage-content"></div></div>
-  </div>
-
-  <!-- Graph View -->
-  <div id="graph-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'graph-view' }"
-       x-data="{html:''}">
-    <div class="view-scroll"><div id="graph-content"></div></div>
-  </div>
-
-  <!-- Knowledge View (global ingested knowledge browser) -->
-  <div id="knowledge-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'knowledge-view' }"
-       x-data="{html:''}">
-    <div class="view-scroll"><div id="knowledge-content"></div></div>
-  </div>
-
-  <!-- Knowledge Precipitation (async cycle) -->
-  <div id="precipitate-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'precipitate-view' }"
-       x-data="{html:''}">
-    <div class="view-scroll"><div id="precipitate-content"></div></div>
-  </div>
-
-  <!-- Knowledge Review Queue -->
-  <div id="review-view" class="main-view"
-       :class="{ active: $store.nav.currentView === 'review-view' }"
-       x-data="{html:''}">
-    <div class="view-scroll"><div id="review-content"></div></div>
+    <div class="page-body knowledge-page-body">
+      <header class="page-header knowledge-page-header">
+        <div class="page-header-text">
+          <h2 class="page-title">知识透镜</h2>
+          <p class="page-subtitle">喂大脑，不是做 Skill — 后台摄入与认识论资产</p>
+        </div>
+      </header>
+      <nav class="knowledge-tabs" id="knowledge-tabs" aria-label="知识子导航">
+        <div class="knowledge-tabs-row knowledge-tabs-primary">
+          <button type="button" class="kt active" data-kt="dashboard" onclick="switchKnowledgeTab('dashboard')"><span class="nav-icon" data-icon="chart"></span>概览</button>
+          <button type="button" class="kt" data-kt="knowledge" onclick="switchKnowledgeTab('knowledge')"><span class="nav-icon" data-icon="book"></span>知识库</button>
+        </div>
+        <div class="knowledge-tabs-row knowledge-tabs-secondary">
+          <span class="knowledge-tabs-label">工具</span>
+          <button type="button" class="kt" data-kt="precipitate" onclick="switchKnowledgeTab('precipitate')"><span class="nav-icon" data-icon="flask"></span>后台摄入</button>
+          <button type="button" class="kt" data-kt="graph" onclick="switchKnowledgeTab('graph')"><span class="nav-icon" data-icon="graph"></span>图谱</button>
+          <button type="button" class="kt" data-kt="lineage" onclick="switchKnowledgeTab('lineage')"><span class="nav-icon" data-icon="link"></span>血缘</button>
+          <button type="button" class="kt" data-kt="journal" onclick="switchKnowledgeTab('journal')"><span class="nav-icon" data-icon="journal"></span>日志</button>
+          <button type="button" class="kt" data-kt="review" onclick="switchKnowledgeTab('review')"><span class="nav-icon" data-icon="review"></span>审核</button>
+        </div>
+      </nav>
+      <div class="knowledge-content view-scroll" id="knowledge-tab-content"></div>
+    </div>
   </div>
 
   <!-- Account Watcher View -->
-  <div id="account-watcher-view" class="main-view"
+  <div id="account-watcher-view" class="main-view page-shell"
        x-data="accountWatcherView()"
        :class="{ active: $store.nav.currentView === 'account-watcher-view' }"
        x-init="init()">
-    <div style="padding:20px">
+    <div class="page-body aw-page">
+      <header class="page-header">
+        <div class="page-header-text">
+          <button type="button" class="nav-sm" @click="showUnifiedKnowledge('dashboard')">← 知识</button>
+          <h2 class="page-title" style="margin-top:var(--s-3)">公众号监控</h2>
+          <p class="page-subtitle">自动抓取已关注公众号的新文章并摄入知识库</p>
+        </div>
+      </header>
+
       <template x-if="loading">
-        <div style="padding:20px;text-align:center;color:var(--text3)">加载中…</div>
+        <div class="aw-loading">加载中…</div>
       </template>
+
       <template x-if="!loading">
-        <div>
-          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px">公众号监控</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:12px">
+        <div class="aw-panel">
+          <div class="aw-status-row">
             <template x-if="loginStatus && loginStatus.logged_in">
-              <span style="color:var(--accent)">微信：已登录</span>
+              <span class="aw-status aw-status-ok">微信已登录</span>
             </template>
             <template x-if="!loginStatus || !loginStatus.logged_in">
-              <span>
-                <span style="color:var(--warn)">微信：未登录</span>
-                <button class="nav-sm" @click="showQR()" style="font-size:10px">登录</button>
-              </span>
+              <span class="aw-status aw-status-warn">微信未登录</span>
+              <button type="button" class="nav-sm" @click="showQR()">扫码登录</button>
             </template>
           </div>
-          <div style="display:flex;gap:8px;margin-bottom:16px">
-            <input x-ref="awName" placeholder="公众号名称"
-              style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;outline:none">
+
+          <div class="aw-form-row">
+            <input x-ref="awName" placeholder="公众号名称" class="form-input aw-name-input">
             <input x-ref="awInterval" type="number" value="6" min="1" max="72"
-              style="width:60px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:13px;outline:none" title="Hours">
-            <button class="btn a" style="font-size:12px;padding:8px 16px" @click="addAccount()">关注</button>
+              class="form-input aw-interval-input" title="检查间隔（小时）">
+            <button type="button" class="btn-primary" @click="addAccount()">关注</button>
           </div>
+
           <template x-if="!accounts.length">
             <div class="empty-state">
-              <div class="icon">📡</div>
+              <div class="icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
+              </div>
               <div class="title">未关注任何公众号</div>
-              <div class="hint">添加公众号名称，自动抓取文章</div>
+              <div class="hint">添加公众号名称，系统将定期抓取新文章</div>
             </div>
           </template>
+
           <template x-for="a in accounts" :key="a.name">
-            <div class="skill-card" style="margin-bottom:6px">
-              <div class="name">
-                <span x-text="a.name"></span>
-                <span style="font-size:10px" :style="'color:' + (a.active ? 'var(--accent)' : 'var(--text3)')"
-                  x-text="a.active ? ' 运行中' : ' 已暂停'"></span>
+            <div class="skill-card aw-account-card">
+              <div class="aw-account-head">
+                <span class="name" x-text="a.name"></span>
+                <span class="aw-account-badge" :class="a.active ? 'on' : 'off'"
+                  x-text="a.active ? '运行中' : '已暂停'"></span>
               </div>
-              <div class="meta" x-text="a.articles_seen + ' 篇文章，每 ' + (a.interval_hours||6) + 'h'"></div>
-              <div style="margin-top:4px;display:flex;gap:6px">
-                <button class="nav-sm" @click="checkNow(a.name)" style="font-size:10px">检查</button>
-                <button class="nav-sm" @click="removeAccount(a.name)" style="font-size:10px;color:var(--err)">移除</button>
+              <div class="meta" x-text="a.articles_seen + ' 篇文章 · 每 ' + (a.interval_hours||6) + ' 小时检查'"></div>
+              <div class="aw-account-actions">
+                <button type="button" class="nav-sm nav-sm-compact" @click="checkNow(a.name)">立即检查</button>
+                <button type="button" class="nav-sm nav-sm-compact nav-sm-danger" @click="removeAccount(a.name)">移除</button>
               </div>
             </div>
           </template>
@@ -285,83 +376,94 @@
   </div>
 
   <!-- Hub View (技能交易平台) -->
-  <div id="hub-view" class="main-view"
+  <div id="hub-view" class="main-view page-shell"
        x-data="hubView()" x-init="init()"
        :class="{ active: $store.nav.currentView === 'hub-view' }">
-    <div style="padding:20px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-        <span style="font-size:18px;font-weight:700;color:var(--warn)">技能市场</span>
-        <span style="font-size:12px;color:var(--text3)">技能交易平台</span>
-        <span style="flex:1"></span>
-        <input placeholder="搜索技能..." x-model="searchQuery" @input="search()"
-          style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);font-size:12px;width:200px;outline:none">
-        <select x-model="selectedCategory" @change="search()"
-          style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;outline:none">
-          <option value="">全部分类</option>
-          <template x-for="cat in categories" :key="cat">
-            <option :value="cat" x-text="cat"></option>
-          </template>
-        </select>
-        <button class="nav-sm" @click="showReview()" style="border-color:var(--warn);color:var(--warn)">审核</button>
-        <button class="nav-sm" @click="showAdmin()" style="border-color:var(--info);color:var(--info)">管理</button>
-        <button class="nav-sm" @click="showRevenue()" style="border-color:var(--accent);color:var(--accent)">收益</button>
-        <button class="nav-sm" @click="openPublish()" x-show="!readOnly" style="display:none">+ 发布</button>
-      </div>
+    <div class="page-body">
+      <header class="page-header hub-header">
+        <div class="page-header-text">
+          <h2 class="page-title">技能市场</h2>
+          <p class="page-subtitle">发现、安装与发布 Agent Skills</p>
+        </div>
+        <div class="page-toolbar hub-toolbar">
+          <input class="hub-search-input" placeholder="搜索技能…" x-model="searchQuery" @input="search()">
+          <select class="form-select hub-category-select" x-model="selectedCategory" @change="search()">
+            <option value="">全部分类</option>
+            <template x-for="cat in categories" :key="cat">
+              <option :value="cat" x-text="cat"></option>
+            </template>
+          </select>
+          <button type="button" class="nav-sm" @click="showReview()">审核</button>
+          <button type="button" class="nav-sm nav-sm-muted" @click="showAdmin()">管理</button>
+          <button type="button" class="nav-sm" @click="showRevenue()">收益</button>
+          <button type="button" class="btn-primary btn-sm" @click="openPublish()" x-show="!readOnly">+ 发布</button>
+        </div>
+      </header>
 
       <!-- Catalog mode -->
       <template x-if="mode === 'catalog' && !loading">
-        <div>
+        <div class="hub-catalog">
+          <div class="hub-readonly-banner" x-show="readOnly">
+            公共市场为只读目录，暂不支持发布与定价修改。
+          </div>
+          <template x-if="stats">
+            <div class="dash-grid hub-stats-grid">
+              <div class="dash-card"><div class="value" x-text="stats.total||0"></div><div class="label">已发布</div></div>
+              <div class="dash-card"><div class="value" x-text="stats.pending_review||0"></div><div class="label">待审核</div></div>
+              <div class="dash-card"><div class="value" x-text="stats.avg_score||'—'"></div><div class="label">平均分</div></div>
+            </div>
+          </template>
           <template x-if="recommendations.length">
-            <div style="margin-bottom:16px">
-              <div style="font-size:14px;font-weight:600;margin-bottom:8px">推荐</div>
-              <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <section class="hub-section">
+              <div class="section-heading">推荐</div>
+              <div class="hub-rec-grid">
                 <template x-for="rec in recommendations" :key="rec.skill_id">
-                  <div class="skill-card" style="padding:10px;cursor:pointer" @click="showDetail(rec.skill_id)">
+                  <div class="skill-card skill-card-compact hub-rec-card" @click="showDetail(rec.skill_id)">
                     <div class="name" x-text="rec.name||rec.skill_id"></div>
                     <div class="meta" x-text="rec.description||''"></div>
                   </div>
                 </template>
               </div>
-            </div>
+            </section>
           </template>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-            <div style="display:flex;flex-wrap:wrap;gap:8px;flex:1">
+          <div class="hub-filter-row">
+            <div class="hub-cat-filters">
               <template x-for="cat in categories" :key="cat">
                 <span class="kb-filter" :class="{'active-kb-filter': selectedCategory===cat}"
                   @click="filterCat(cat)" x-text="cat"></span>
               </template>
             </div>
-            <div style="display:flex;gap:4px">
-              <span style="font-size:10px;color:var(--text3);padding:4px 0">排序:</span>
-              <button class="nav-sm" style="font-size:10px;padding:2px 8px"
-                :style="sortBy==='score'?'border-color:var(--accent);color:var(--accent)':''"
+            <div class="hub-sort-row">
+              <span class="hub-sort-label">排序</span>
+              <button type="button" class="nav-sm nav-sm-compact"
+                :class="{'nav-sm-active': sortBy === 'score'}"
                 @click="setSort('score')">评分</button>
-              <button class="nav-sm" style="font-size:10px;padding:2px 8px"
-                :style="sortBy==='name'?'border-color:var(--accent);color:var(--accent)':''"
+              <button type="button" class="nav-sm nav-sm-compact"
+                :class="{'nav-sm-active': sortBy === 'name'}"
                 @click="setSort('name')">名称</button>
-              <button class="nav-sm" style="font-size:10px;padding:2px 8px"
-                :style="sortBy==='recent'?'border-color:var(--accent);color:var(--accent)':''"
+              <button type="button" class="nav-sm nav-sm-compact"
+                :class="{'nav-sm-active': sortBy === 'recent'}"
                 @click="setSort('recent')">最新</button>
             </div>
           </div>
-          <div style="font-size:11px;color:var(--text3);margin-bottom:8px" x-show="totalCount > 0">
+          <p class="hub-count" x-show="totalCount > 0">
             共 <span x-text="totalCount"></span> 个技能 · 显示 <span x-text="skills.length"></span> 个
-          </div>
+          </p>
           <template x-if="!skills.length">
-            <div style="color:var(--text3);padding:40px;text-align:center">暂无技能</div>
+            <div class="empty-state"><div class="icon">🏪</div><div class="title">暂无技能</div><div class="hint">试试调整搜索或分类筛选</div></div>
           </template>
-          <template x-for="s in skills" :key="s.skill_id||s.name">
-            <div class="skill-card" style="margin-bottom:8px;cursor:pointer" @click="showDetail(s.skill_id||s.name)">
-              <div style="display:flex;align-items:center;gap:8px">
-                <span class="name" style="flex:1" x-text="s.name"></span>
-                <span style="font-size:11px;color:var(--text3)" x-text="hubStatusLabel(s.status||'approved')"></span>
-                <span style="font-weight:600" :style="'color:'+scoreColor(s.score||0)" x-text="s.score||'?'"></span>
+          <template x-for="(s, si) in skills" :key="si">
+            <div class="skill-card hub-list-card" @click="showDetail(s.skill_id||s.name)">
+              <div class="hub-list-row">
+                <span class="name hub-list-name" x-text="s.name"></span>
+                <span class="hub-list-status" x-text="hubStatusLabel(s.status||'approved')"></span>
+                <span class="hub-list-score" :style="'color:'+scoreColor(s.score||0)" x-text="s.score||'?'"></span>
               </div>
               <div class="meta" x-text="(s.description||'').substring(0,120)"></div>
             </div>
           </template>
-          <div style="text-align:center;padding:16px" x-show="hasMore">
-            <button class="btn" style="font-size:13px;padding:8px 32px" @click="loadMore()"
+          <div class="hub-load-more" x-show="hasMore">
+            <button type="button" class="btn-secondary" @click="loadMore()"
               x-text="loading ? '加载中…' : '加载更多'"></button>
           </div>
         </div>
@@ -369,37 +471,50 @@
 
       <!-- Detail mode -->
       <template x-if="mode === 'detail' && detailSkill">
-        <div>
-          <button class="nav-sm" @click="backToCatalog()">← 返回</button>
-          <div style="font-size:18px;font-weight:600;margin:12px 0" x-text="detailSkill.name"></div>
-          <div style="display:flex;gap:12px;margin-bottom:12px">
-            <span style="font-weight:600" :style="'color:'+scoreColor(detailSkill.score||0)" x-text="detailSkill.score||'?'"></span>
-            <span style="font-size:11px;color:var(--text3)" x-text="gateLabel(detailSkill.gate)"></span>
+        <div class="hub-detail">
+          <button type="button" class="nav-sm" @click="backToCatalog()">← 返回目录</button>
+          <h3 class="hub-detail-title" x-text="detailSkill.name"></h3>
+          <div class="hub-detail-meta">
+            <span class="hub-list-score" :style="'color:'+scoreColor(detailSkill.score||0)" x-text="detailSkill.score||'?'"></span>
+            <span class="hub-list-status" x-text="gateLabel(detailSkill.gate||detailSkill.status)"></span>
+            <span class="hub-detail-author" x-show="detailSkill.author" x-text="'作者 · '+(detailSkill.author||'')"></span>
           </div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:16px" x-text="detailSkill.description||''"></div>
-          <div style="display:flex;gap:8px">
-            <button class="btn a" style="font-size:12px" @click="install(detailSkill.skill_id)">安装</button>
-            <button class="btn" style="font-size:12px" @click="subscribe(detailSkill.skill_id)">订阅</button>
+          <template x-if="detailScore && detailScore.dimensions">
+            <div class="hub-score-breakdown">
+              <template x-for="(val, dim) in detailScore.dimensions" :key="dim">
+                <span class="hub-score-dim"><span x-text="dim"></span>: <b x-text="val"></b></span>
+              </template>
+            </div>
+          </template>
+          <p class="hub-detail-desc" x-text="detailSkill.description||''"></p>
+          <div class="hub-detail-actions">
+            <button type="button" class="btn-primary" @click="install(detailSkill.skill_id)">安装到工作区</button>
+            <button type="button" class="btn-secondary" @click="subscribe(detailSkill.skill_id)">订阅更新</button>
+            <button type="button" class="btn-secondary" @click="unsubscribe(detailSkill.skill_id)">取消订阅</button>
+            <button type="button" class="nav-sm" x-show="!readOnly" @click="openPricing(detailSkill.skill_id)">设置定价</button>
           </div>
         </div>
       </template>
 
       <!-- Review mode -->
       <template x-if="mode === 'review'">
-        <div>
-          <button class="nav-sm" @click="backToCatalog()" style="margin-bottom:12px">← 返回</button>
-          <div style="font-size:16px;font-weight:600;margin-bottom:12px">审核队列</div>
-          <template x-if="reviewLoading"><div style="color:var(--text3);padding:20px">加载中…</div></template>
+        <div class="hub-subview">
+          <button type="button" class="nav-sm hub-subview-back" @click="backToCatalog()">← 返回目录</button>
+          <h3 class="hub-subview-title">审核队列</h3>
+          <template x-if="reviewLoading"><div class="hub-loading">加载中…</div></template>
           <template x-if="!reviewLoading && !reviewItems.length">
-            <div class="empty-state"><div class="icon">✅</div><div class="title">暂无待审核技能</div></div>
+            <div class="empty-state">
+              <div class="icon"><span data-icon="check"></span></div>
+              <div class="title">暂无待审核技能</div>
+            </div>
           </template>
-          <template x-for="item in reviewItems" :key="item.skill_id||item.id">
-            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px">
-              <div style="font-weight:600;margin-bottom:4px" x-text="item.name||item.skill_id"></div>
-              <div style="font-size:12px;color:var(--text3);margin-bottom:8px" x-text="(item.description||'').substring(0,150)"></div>
-              <div style="display:flex;gap:8px">
-                <button class="nav-sm" style="border-color:var(--accent);color:var(--accent)" @click="reviewSkill(item.skill_id, true)">通过</button>
-                <button class="nav-sm" style="color:var(--err)" @click="reviewSkill(item.skill_id, false)">拒绝</button>
+          <template x-for="(item, ri) in reviewItems" :key="ri">
+            <div class="hub-review-card">
+              <div class="hub-review-name" x-text="item.name||item.skill_id"></div>
+              <div class="hub-review-desc" x-text="(item.description||'').substring(0,150)"></div>
+              <div class="hub-review-actions">
+                <button type="button" class="nav-sm nav-sm-active" @click="reviewSkill(item.skill_id, true)">通过</button>
+                <button type="button" class="nav-sm nav-sm-danger" @click="reviewSkill(item.skill_id, false)">拒绝</button>
               </div>
             </div>
           </template>
@@ -408,29 +523,133 @@
 
       <!-- Admin mode -->
       <template x-if="mode === 'admin'">
-        <div id="hub-admin-content"><div style="color:var(--text3)">加载管理面板…</div></div>
+        <div class="hub-subview hub-admin">
+          <button type="button" class="nav-sm hub-subview-back" @click="backToCatalog()">← 返回目录</button>
+          <h3 class="hub-subview-title">管理面板</h3>
+          <template x-if="adminLoading"><div class="hub-loading">加载中…</div></template>
+          <template x-if="!adminLoading && adminError">
+            <div class="admin-alert admin-alert-err" x-text="adminError"></div>
+          </template>
+          <template x-if="!adminLoading && !adminError">
+            <div class="dash-grid hub-admin-kpi">
+              <div class="dash-card"><div class="value" x-text="adminUsers.length"></div><div class="label">用户</div></div>
+              <div class="dash-card"><div class="value" x-text="adminStats ? adminStats.total_events : adminEntries.length"></div><div class="label">审计事件</div></div>
+            </div>
+            <section class="hub-admin-section">
+              <div class="section-heading">用户管理</div>
+              <div class="hub-admin-form admin-form-row admin-form-row-top">
+                <input class="form-input admin-input-narrow" placeholder="用户名" x-model="adminNewUser">
+                <input class="form-input admin-input-narrow" type="password" placeholder="密码" x-model="adminNewPw">
+                <select class="form-select hub-admin-role-select" x-model="adminNewRole">
+                  <option value="member">成员</option>
+                  <option value="publisher">发布者</option>
+                  <option value="reviewer">审核员</option>
+                  <option value="admin">管理员</option>
+                </select>
+                <button type="button" class="nav-sm" @click="adminCreateUser()">+ 创建</button>
+              </div>
+              <template x-if="!adminUsers.length">
+                <div class="hub-admin-empty">暂无用户</div>
+              </template>
+              <template x-for="u in adminUsers" :key="u.user_id">
+                <div class="hub-admin-user-row">
+                  <span class="hub-admin-user-name" x-text="u.username"></span>
+                  <span class="hub-role-badge" :class="'hub-role-' + (u.role||'member')" x-text="roleLabel(u.role)"></span>
+                  <span class="hub-admin-user-email" x-text="u.email||''"></span>
+                  <span class="hub-admin-user-spacer"></span>
+                  <template x-if="u.role !== 'admin'">
+                    <select class="form-select hub-admin-role-select"
+                      :value="u.role"
+                      @change="adminChangeRole(u.user_id, $event.target.value)">
+                      <option value="member">成员</option>
+                      <option value="publisher">发布者</option>
+                      <option value="reviewer">审核员</option>
+                      <option value="admin">管理员</option>
+                    </select>
+                    <button type="button" class="nav-sm nav-sm-danger" @click="adminDeleteUser(u.user_id)">删除</button>
+                  </template>
+                </div>
+              </template>
+            </section>
+            <section class="hub-admin-section">
+              <div class="section-heading">最近活动</div>
+              <template x-if="!adminEntries.length">
+                <div class="hub-admin-empty">暂无审计记录</div>
+              </template>
+              <template x-for="(e, ei) in adminEntries.slice(0, 30)" :key="ei">
+                <div class="hub-audit-row">
+                  <span class="hub-audit-user" x-text="e.username"></span>
+                  <span class="hub-audit-action" x-text="auditLabel(e.action)"></span>
+                  <span class="hub-audit-detail" x-text="e.detail||e.target||''"></span>
+                  <span class="hub-audit-time" x-text="formatTs(e.created_at)"></span>
+                </div>
+              </template>
+            </section>
+          </template>
+        </div>
       </template>
 
       <!-- Revenue mode -->
       <template x-if="mode === 'revenue'">
-        <div id="hub-revenue-content"><div style="color:var(--text3)">加载收益数据…</div></div>
+        <div class="hub-subview hub-revenue">
+          <button type="button" class="nav-sm hub-subview-back" @click="backToCatalog()">← 返回目录</button>
+          <h3 class="hub-subview-title">收益面板</h3>
+          <template x-if="revenueLoading"><div class="hub-loading">加载收益数据…</div></template>
+          <template x-if="!revenueLoading && revenueError">
+            <div class="admin-alert admin-alert-err" x-text="revenueError"></div>
+          </template>
+          <template x-if="!revenueLoading && revenueData">
+            <div class="dash-grid hub-revenue-kpi">
+              <div class="dash-card"><div class="value" x-text="revenueData.total_sales||0"></div><div class="label">总销量</div></div>
+              <div class="dash-card"><div class="value" x-text="'$'+(revenueData.total_earnings||0)"></div><div class="label">作者收益</div></div>
+              <div class="dash-card"><div class="value" x-text="'$'+(revenueData.total_revenue||0)"></div><div class="label">总流水</div></div>
+              <div class="dash-card"><div class="value" x-text="Math.round((revenueData.commission_rate||0.2)*100)+'%'"></div><div class="label">平台抽成</div></div>
+            </div>
+            <template x-if="revenueData.by_model && Object.keys(revenueData.by_model).length">
+              <section class="hub-revenue-section">
+                <div class="section-heading">按定价模式</div>
+                <template x-for="(info, model) in revenueData.by_model" :key="model">
+                  <div class="hub-revenue-model-row">
+                    <span class="hub-revenue-model-name" x-text="revenueModelLabel(model)"></span>
+                    <span class="hub-revenue-model-stat" x-text="(info.sales||0)+' 笔'"></span>
+                    <span class="hub-revenue-model-stat" x-text="'收益 $'+(info.earnings||0)"></span>
+                  </div>
+                </template>
+              </section>
+            </template>
+            <section class="hub-revenue-section">
+              <div class="section-heading">最近交易</div>
+              <template x-if="!(revenueData.recent_purchases||[]).length">
+                <div class="hub-admin-empty">暂无交易记录</div>
+              </template>
+              <template x-for="(p, pi) in revenueData.recent_purchases||[]" :key="pi">
+                <div class="hub-audit-row">
+                  <span class="hub-audit-action" x-text="revenueModelLabel(p.model)"></span>
+                  <span class="hub-audit-detail" x-text="p.skill_id"></span>
+                  <span class="hub-revenue-amount" x-text="'$'+(p.earnings||p.amount||0)"></span>
+                  <span class="hub-audit-time" x-text="formatTs(p.created_at)"></span>
+                </div>
+              </template>
+            </section>
+          </template>
+        </div>
       </template>
 
       <!-- Loading -->
       <template x-if="loading">
-        <div style="color:var(--text3);padding:40px;text-align:center">加载中…</div>
+        <div class="hub-loading hub-loading-center">加载中…</div>
       </template>
 
       <!-- 发布 Form Modal (inside hub-view x-data scope) -->
       <div class="modal-overlay" id="publish-modal" x-show="publishFormOpen" x-transition @click.self="closePublish()" @keydown.escape.window="closePublish()">
-        <div class="modal-box" style="max-width:520px">
+        <div class="modal-box modal-box-wide">
           <h3>发布到技能市场</h3>
           <label>技能名称</label>
-          <input x-model="publishName" placeholder="例如：合同审核专家">
+          <input x-model="publishName" placeholder="例如：合同审核专家" class="form-input">
           <label>描述</label>
-          <input x-model="publishDesc" placeholder="功能描述和触发条件">
+          <input x-model="publishDesc" placeholder="功能描述和触发条件" class="form-input">
           <label>分类</label>
-          <select x-model="publishCat" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;margin-top:4px">
+          <select x-model="publishCat" class="form-select modal-field-full">
             <option value="automation">自动化</option><option value="development">开发</option>
             <option value="data-science">Data Science</option><option value="writing">Writing</option>
             <option value="design">Design</option><option value="legal">Legal</option>
@@ -438,176 +657,196 @@
             <option value="security">Security</option><option value="other">Other</option>
           </select>
           <label>技能内容 (SKILL.md)</label>
-          <textarea x-model="publishContent" rows="10" placeholder="粘贴 SKILL.md 内容..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:12px;outline:none;resize:vertical;font-family:var(--mono);margin-top:4px"></textarea>
+          <textarea x-model="publishContent" rows="10" placeholder="粘贴 SKILL.md 内容..." class="form-input modal-textarea"></textarea>
           <div class="modal-actions">
-            <button class="modal-btn-cancel" @click="closePublish()">取消</button>
-            <button class="modal-btn-primary" @click="publish()">发布并评分</button>
+            <button class="btn-secondary" @click="closePublish()">取消</button>
+            <button class="btn-primary" @click="publish()">发布并评分</button>
           </div>
+        </div>
+      </div>
+
+      <!-- 定价 Modal -->
+      <div class="modal-overlay pricing-modal-overlay" x-show="pricingFormOpen" x-transition
+           @click.self="closePricing()" @keydown.escape.window="closePricing()">
+        <div class="modal-box modal-box-wide">
+          <h3>设置定价</h3>
+          <template x-if="pricingLoading">
+            <div class="hub-loading">加载定价…</div>
+          </template>
+          <template x-if="!pricingLoading">
+            <label>模式</label>
+            <select x-model="pricingModel" class="form-select modal-field-full">
+              <option value="free">免费</option>
+              <option value="one_time">一次性购买</option>
+              <option value="subscription">按月订阅</option>
+            </select>
+            <label>价格 ($)</label>
+            <input x-model.number="pricingPrice" type="number" min="0" step="1" class="form-input modal-field-full">
+            <p class="hub-pricing-hint">
+              平台抽成: $<span x-text="pricingCommission()"></span> (20%) —
+              你的收益: $<span x-text="pricingEarnings()"></span>
+            </p>
+            <div class="modal-actions">
+              <button type="button" class="btn-secondary" @click="closePricing()">取消</button>
+              <button type="button" class="btn-primary" @click="savePricing()"
+                :disabled="pricingSaving" x-text="pricingSaving ? '保存中…' : '保存'"></button>
+            </div>
+          </template>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Docs View -->
-  <div id="docs-view" class="main-view"
+  <div id="docs-view" class="main-view page-shell"
        x-data="docsView()"
        :class="{ active: $store.nav.currentView === 'docs-view' }"
        x-init="init()">
-    <div style="display:flex;height:100%">
-      <!-- Doc sidebar -->
-      <div style="width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:var(--s-6) var(--s-4);overflow-y:auto;display:flex;flex-direction:column;gap:var(--s-1)">
-        <button class="nav-sm" @click="$store.nav.showChat()" style="margin-bottom:var(--s-4)">← 返回</button>
-        <div style="font:700 var(--t-xs)/1 var(--font);color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--s-2)">目录</div>
-        <button @click="loadSection('quickstart')" style="text-align:left;padding:var(--s-2) var(--s-3);font:500 var(--t-sm)/1.4 var(--font);color:var(--text2);background:transparent;border:none;border-radius:var(--r-sm);cursor:pointer"
-          :style="section==='quickstart'?'background:var(--accent-bg);color:var(--a3);font-weight:600':''">快速开始</button>
-        <button @click="loadSection('guide')" style="text-align:left;padding:var(--s-2) var(--s-3);font:500 var(--t-sm)/1.4 var(--font);color:var(--text2);background:transparent;border:none;border-radius:var(--r-sm);cursor:pointer"
-          :style="section==='guide'?'background:var(--accent-bg);color:var(--a3);font-weight:600':''">用户指南</button>
-      </div>
-      <!-- Doc content -->
-      <div class="view-scroll" style="max-width:780px;padding:var(--s-10) var(--s-12)">
-        <template x-if="loading">
-          <div style="text-align:center;padding:var(--s-16) 0">
-            <div class="typing-dots"><span></span><span></span><span></span></div>
-            <div style="font:400 var(--t-sm)/1.5 var(--font);color:var(--text3);margin-top:var(--s-3)">加载文档…</div>
+    <div class="page-body docs-page">
+      <header class="page-header">
+        <div class="page-header-text">
+          <button type="button" class="nav-sm" @click="section === 'guide' ? loadSection('quickstart') : $store.nav.showChat()">
+            <span x-text="section === 'guide' ? '← 快速开始' : '← 返回'"></span>
+          </button>
+          <h2 class="page-title docs-page-title">帮助文档</h2>
+          <p class="page-subtitle" x-text="section === 'guide' ? '话术与沉淀协议' : '注册、萃取、认识论与 MCP'"></p>
+        </div>
+      </header>
+
+      <template x-if="loading">
+        <div class="docs-loading">
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+          <div class="docs-loading-text">加载文档…</div>
+        </div>
+      </template>
+      <template x-if="error">
+        <div class="docs-error">
+          <div class="empty-state">
+            <div class="icon"><span data-icon="file"></span></div>
+            <div class="title">文档加载失败</div>
+            <div class="hint" x-text="error"></div>
+            <button type="button" class="action-btn" @click="loadSection(section)">重试</button>
           </div>
-        </template>
-        <template x-if="error">
-          <div style="text-align:center;padding:var(--s-16) 0">
-            <div class="empty-state">
-              <div class="icon">📄</div>
-              <div class="title">文档加载失败</div>
-              <div class="hint" x-text="error"></div>
-              <button class="action-btn" @click="loadSection(section)">重试</button>
-            </div>
-          </div>
-        </template>
-        <template x-if="!loading && !error && content">
-          <div>
-            <article class="doc-content" x-ref="docBody" x-html="content"></article>
-            <div x-show="source === 'static'" style="text-align:center;margin-top:var(--s-8);padding-top:var(--s-4);border-top:1px solid var(--border)">
-              <span style="font:400 var(--t-xs)/1 var(--font);color:var(--text3);background:var(--surface);padding:4px 12px;border-radius:10px">离线文档副本</span>
-            </div>
-          </div>
-        </template>
-      </div>
+        </div>
+      </template>
+      <template x-if="!loading && !error && content">
+        <article class="doc-content" x-ref="docBody" x-html="content"></article>
+        <div class="docs-offline-badge" x-show="source === 'static'">离线文档副本</div>
+      </template>
     </div>
   </div>
 
   <!-- Admin View (Sprint 6) -->
-  <div id="admin-view" class="main-view"
+  <div id="admin-view" class="main-view page-shell"
        x-data="adminView()" x-init="init()"
        :class="{ active: $store.nav.currentView === 'admin-view' }">
-    <div style="padding:20px;max-width:900px;margin:0 auto">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-        <button class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
-        <span style="font-size:16px;font-weight:600">组织管理</span>
-      </div>
+    <div class="page-body admin-page">
+      <header class="page-header">
+        <div class="page-header-text">
+          <button type="button" class="nav-sm" @click="$store.nav.showChat()">← 返回</button>
+          <h2 class="page-title admin-page-title">组织管理</h2>
+          <p class="page-subtitle">成员、部门配额与技能治理</p>
+        </div>
+      </header>
 
       <template x-if="loading">
-        <div style="color:var(--text3);padding:20px">加载管理控制台…</div>
+        <div class="admin-loading">加载管理控制台…</div>
       </template>
 
       <template x-if="!loading && error === 'no_org'">
-        <div>
-          <div style="padding:20px;color:var(--warn)">请先创建或切换至组织工作区。</div>
-          <button class="btn a" onclick="createTeam()">创建团队</button>
+        <div class="admin-alert admin-alert-warn">
+          <p>请先创建或切换至组织工作区。</p>
+          <button type="button" class="btn-primary" onclick="createTeam()">创建团队</button>
         </div>
       </template>
 
       <template x-if="!loading && error && error !== 'no_org'">
-        <div style="color:var(--err);padding:20px" x-text="'加载失败: ' + error"></div>
+        <div class="admin-alert admin-alert-err" x-text="'加载失败: ' + error"></div>
       </template>
 
       <template x-if="!loading && hasOrg && overview">
-        <div>
-          <!-- Header -->
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div class="admin-content">
+          <div class="admin-org-header">
             <div>
-              <div style="font-size:18px;font-weight:600" x-text="overview.org.display_name"></div>
-              <div style="font-size:12px;color:var(--text3)" x-text="overview.org.tenant_id"></div>
+              <div class="admin-org-name" x-text="overview.org.display_name"></div>
+              <div class="admin-org-id" x-text="overview.org.tenant_id"></div>
             </div>
-            <div>
-              <button class="btn a" style="font-size:12px" @click="loadAll()">刷新</button>
-              <button class="btn" style="font-size:12px;margin-left:8px" @click="exportAuditCsv()">导出审计 CSV</button>
+            <div class="admin-org-actions">
+              <button type="button" class="btn-primary btn-sm" @click="loadAll()">刷新</button>
+              <button type="button" class="btn-secondary btn-sm" @click="exportAuditCsv()">导出审计 CSV</button>
             </div>
           </div>
 
-          <!-- KPIs -->
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">
+          <div class="admin-kpi-grid">
             <div class="dash-card"><div class="value" x-text="overview.members_count"></div><div class="label">成员</div></div>
             <div class="dash-card"><div class="value" x-text="overview.departments_count"></div><div class="label">部门</div></div>
             <div class="dash-card"><div class="value" x-text="overview.skills_count"></div><div class="label">技能</div></div>
             <div class="dash-card"><div class="value" x-text="(overview.usage.llm_calls.used || 0) + '/' + (overview.usage.llm_calls.limit || '∞')"></div><div class="label">LLM 本月</div></div>
           </div>
 
-          <!-- Governance compliance -->
           <template x-if="governance">
-            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
-              <div style="font-size:14px;font-weight:600;margin-bottom:12px">治理合规</div>
+            <div class="admin-card">
+              <div class="section-heading admin-card-title">治理合规</div>
               <template x-for="c in complianceRates" :key="c.label">
-                <div style="margin-bottom:8px">
-                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px">
+                <div class="admin-progress-row">
+                  <div class="admin-progress-label">
                     <span x-text="c.label"></span><span x-text="c.pct + '%'"></span>
                   </div>
-                  <div style="height:4px;background:#222;border-radius:2px">
-                    <div style="height:100%;background:var(--accent);border-radius:2px" :style="'width:' + c.pct + '%'"></div>
+                  <div class="admin-progress-track">
+                    <div class="admin-progress-fill" :style="'width:' + c.pct + '%'"></div>
                   </div>
                 </div>
               </template>
             </div>
           </template>
 
-          <!-- Quota -->
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
-            <div style="font-size:14px;font-weight:600;margin-bottom:8px">部门配额</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <select x-model="quotaDept" style="background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
+          <div class="admin-card">
+            <div class="section-heading admin-card-title">部门配额</div>
+            <div class="admin-form-row">
+              <select x-model="quotaDept" class="form-select">
                 <option value="">全部</option>
                 <template x-for="d in departments" :key="d.id">
                   <option :value="d.id" x-text="d.name"></option>
                 </template>
               </select>
-              <input x-model="quotaSkills" type="number" placeholder="技能上限" style="width:100px;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
-              <input x-model="quotaLLM" type="number" placeholder="LLM 上限" style="width:100px;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
-              <button class="btn a" style="font-size:12px" @click="saveQuota()">保存配额</button>
+              <input x-model="quotaSkills" type="number" placeholder="技能上限" class="form-inline admin-input-narrow">
+              <input x-model="quotaLLM" type="number" placeholder="LLM 上限" class="form-inline admin-input-narrow">
+              <button type="button" class="btn-primary btn-sm" @click="saveQuota()">保存配额</button>
             </div>
           </div>
 
-          <!-- Departments -->
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
-            <div style="font-size:14px;font-weight:600;margin-bottom:8px">部门</div>
+          <div class="admin-card">
+            <div class="section-heading admin-card-title">部门</div>
             <template x-for="d in departments" :key="d.id">
-              <div style="padding:4px 0;font-size:12px;color:var(--text2)" x-text="d.name + (d.quota ? ' (配额: ' + d.quota.skills + '技能 / ' + d.quota.llm_calls + 'LLM)' : '')"></div>
+              <div class="admin-dept-row" x-text="d.name + (d.quota ? ' (配额: ' + d.quota.skills + '技能 / ' + d.quota.llm_calls + 'LLM)' : '')"></div>
             </template>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <input x-model="newDeptName" placeholder="新部门名称" style="flex:1;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
-              <button class="btn a" style="font-size:12px" @click="addDepartment()">添加部门</button>
+            <div class="admin-form-row admin-form-row-top">
+              <input x-model="newDeptName" placeholder="新部门名称" class="form-input admin-dept-input">
+              <button type="button" class="btn-primary btn-sm" @click="addDepartment()">添加部门</button>
             </div>
           </div>
 
-          <!-- Skill Search -->
-          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-            <div style="font-size:14px;font-weight:600;margin-bottom:8px">技能搜索 & 导入</div>
-            <div style="display:flex;gap:8px;margin-bottom:8px">
-              <input x-model="skillSearch" placeholder="搜索技能名称" @keydown.enter="searchOrgSkills()"
-                style="flex:1;background:var(--srf);border:1px solid #333;border-radius:6px;padding:8px;color:var(--text);font-size:12px">
-              <button class="btn a" style="font-size:12px" @click="searchOrgSkills()">搜索</button>
+          <div class="admin-card">
+            <div class="section-heading admin-card-title">技能搜索 & 导入</div>
+            <div class="admin-form-row">
+              <input x-model="skillSearch" placeholder="搜索技能名称" @keydown.enter="searchOrgSkills()" class="form-input admin-search-input">
+              <button type="button" class="btn-primary btn-sm" @click="searchOrgSkills()">搜索</button>
             </div>
             <template x-if="skillResults.length">
-              <div>
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;padding:4px 0;border-bottom:1px solid var(--border)">
-                  <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" style="accent-color:var(--accent)">
-                  <span style="font-size:10px;color:var(--text3)" x-text="'全选 (' + skillResults.length + ')'"></span>
+              <div class="admin-skill-results">
+                <div class="admin-skill-toolbar">
+                  <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" class="admin-checkbox">
+                  <span class="admin-skill-count" x-text="'全选 (' + skillResults.length + ')'"></span>
                   <span style="flex:1"></span>
-                  <button class="nav-sm" style="font-size:10px;border-color:var(--accent);color:var(--accent)"
+                  <button type="button" class="nav-sm nav-sm-active"
                     @click="batchCopyToOrg()" x-show="selectedSkills.length > 0"
                     x-text="'批量复制 (' + selectedSkills.length + ')'"></button>
                 </div>
                 <template x-for="s in skillResults" :key="s.name">
-                  <div style="padding:4px 0;display:flex;align-items:center;gap:8px">
-                    <input type="checkbox" :checked="selectedSkills.includes(s.name)" @change="toggleSelect(s.name)" style="accent-color:var(--accent)">
-                    <span style="font-size:12px;cursor:pointer;color:var(--accent);flex:1" @click="showSkill(s.name)" x-text="s.name"></span>
-                    <button class="nav-sm" style="font-size:10px" @click="copyToOrg(s.name)">复制</button>
+                  <div class="admin-skill-row">
+                    <input type="checkbox" :checked="selectedSkills.includes(s.name)" @change="toggleSelect(s.name)" class="admin-checkbox">
+                    <span class="admin-skill-name" @click="showSkill(s.name)" x-text="s.name"></span>
+                    <button type="button" class="nav-sm nav-sm-compact" @click="copyToOrg(s.name)">复制</button>
                   </div>
                 </template>
               </div>
@@ -623,36 +862,25 @@
        x-data="settingsView()"
        :class="{ active: $store.nav.currentView === 'settings-view' }"
        x-init="init()">
-    <div style="padding:20px">
-      <div class="tab-row" style="margin-bottom:16px">
-        <button class="tab" :class="{ active: tab === 'model' }" @click="switchTab('model')">模型</button>
-        <button class="tab" :class="{ active: tab === 'usage' }" @click="switchTab('usage')">用量</button>
-        <button class="tab" :class="{ active: tab === 'skills' }" @click="switchTab('skills')">技能</button>
-        <button class="tab" :class="{ active: tab === 'voice' }" @click="switchTab('voice')">语音</button>
+    <div class="settings-layout">
+      <!-- Tab nav -->
+      <div class="settings-nav">
+        <button class="sn-item" :class="{ active: tab === 'model' }" @click="switchTab('model')">模型</button>
+        <button class="sn-item" :class="{ active: tab === 'usage' }" @click="switchTab('usage')">用量</button>
+        <button class="sn-item" :class="{ active: tab === 'skills' }" @click="switchTab('skills')">技能</button>
+        <button class="sn-item" :class="{ active: tab === 'voice' }" @click="switchTab('voice')">语音</button>
       </div>
+
+      <!-- Content -->
+      <div class="settings-content">
 
       <!-- Model tab -->
       <template x-if="tab === 'model'">
         <div>
-          <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:12px">已配置模型</div>
-          <template x-for="(m, i) in models" :key="m.id">
-            <div style="background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:8px"
-                 :style="'border:1px solid ' + (m.id === activeModelId ? 'var(--accent)' : 'var(--border)')">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                <span style="font-weight:600;color:var(--text);flex:1" x-text="m.label"></span>
-                <span style="font-size:10px;color:var(--text3)" x-text="m.id"></span>
-                <span x-show="m.id === activeModelId" style="font-size:10px;background:var(--accent);color:#fff;padding:2px 7px;border-radius:8px">当前</span>
-              </div>
-              <div style="font-size:11px;color:var(--text3);margin-bottom:6px" x-text="m.base_url"></div>
-              <div style="display:flex;gap:6px">
-                <button class="nav-sm" style="font-size:10px" @click="openModelModal(i)">编辑</button>
-                <button x-show="m.id !== activeModelId" class="nav-sm" style="font-size:10px;border-color:var(--accent);color:var(--accent)" @click="activateModel(i)">启用</button>
-                <button class="nav-sm" style="font-size:10px;color:var(--err)" @click="openDeleteModal(i)">删除</button>
-              </div>
-            </div>
-          </template>
-          <button class="btn a" style="font-size:12px;padding:6px 14px;margin-top:8px" @click="openModelModal(-1)">+ 添加模型</button>
-          <div style="margin-top:12px;color:var(--text3);font-size:11px">当前模型用于对话与技能萃取。API Key 请在 .env 中配置（DEEPSEEK_API_KEY、HUOSHAN_API_KEY）。</div>
+          <div class="settings-section-title">已配置模型</div>
+          <div id="model-list-container"></div>
+          <button class="btn-primary" style="margin-top:var(--s-3)" onclick="openModelModal(-1)">+ 添加模型</button>
+          <div style="margin-top:var(--s-4);color:var(--text3);font-size:var(--t-sm)">API Key 请在 .env 中配置（DEEPSEEK_API_KEY、HUOSHAN_API_KEY）。</div>
         </div>
       </template>
 
@@ -660,43 +888,38 @@
       <template x-if="tab === 'usage'">
         <div>
           <template x-if="usageError">
-            <div style="color:var(--err)" x-text="usageError"></div>
+            <div style="color:var(--red)" x-text="usageError"></div>
           </template>
           <template x-if="!usage && !usageError">
-            <div style="color:var(--text3);font-size:13px">加载用量…</div>
+            <div style="padding:20px"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>
           </template>
           <template x-if="usage">
             <div>
-              <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:12px">Personal Free 用量</div>
-              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
-                <div style="font-size:12px;color:var(--text3);margin-bottom:4px">技能</div>
-                <div style="font-size:18px;font-weight:600" x-text="usage.skills.used + ' / ' + usage.skills.limit"></div>
-                <div style="height:6px;background:#222;border-radius:3px;margin-top:8px">
-                  <div style="height:100%;background:var(--accent);border-radius:3px" :style="'width:' + skillPct + '%'"></div>
-                </div>
+              <div class="settings-section-title">Personal Free 用量</div>
+              <div class="settings-usage-card">
+                <div class="settings-usage-label">技能</div>
+                <div class="settings-usage-value" x-text="usage.skills.used + ' / ' + usage.skills.limit"></div>
+                <div class="settings-usage-bar"><div class="settings-usage-fill" :style="'width:' + skillPct + '%'"></div></div>
               </div>
-              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
-                <div style="font-size:12px;color:var(--text3);margin-bottom:4px">本月 AI 萃取（<span x-text="usage.llm_calls.period || ''"></span>）</div>
-                <div style="font-size:18px;font-weight:600" x-text="usage.llm_calls.used + ' / ' + usage.llm_calls.limit"></div>
-                <div style="height:6px;background:#222;border-radius:3px;margin-top:8px">
-                  <div style="height:100%;background:var(--accent);border-radius:3px" :style="'width:' + llmPct + '%'"></div>
-                </div>
+              <div class="settings-usage-card">
+                <div class="settings-usage-label">本月 AI 萃取（<span x-text="usage.llm_calls.period || ''"></span>）</div>
+                <div class="settings-usage-value" x-text="usage.llm_calls.used + ' / ' + usage.llm_calls.limit"></div>
+                <div class="settings-usage-bar"><div class="settings-usage-fill" :style="'width:' + llmPct + '%'"></div></div>
               </div>
-              <div style="font-size:12px;color:var(--text3);margin-bottom:10px" x-text="usage.byok ? 'BYOK：已启用（自带 Key 不计入额度）' : 'BYOK：未启用'"></div>
-              <div style="font-size:13px;font-weight:600;color:var(--accent);margin:16px 0 8px">自带 API Key（BYOK）</div>
-              <input type="password" placeholder="sk-..." x-model="byokKey"
-                style="width:100%;background:var(--srf);border:1px solid #333;border-radius:6px;padding:10px;color:var(--text);font-size:13px;margin-bottom:8px">
-              <div style="display:flex;gap:8px">
-                <button class="btn a" style="font-size:12px;padding:6px 14px" @click="saveByok(true)">启用 BYOK</button>
-                <button class="btn" style="font-size:12px;padding:6px 14px" @click="saveByok(false)">关闭 BYOK</button>
+              <div style="font-size:var(--t-sm);color:var(--text3);margin-bottom:var(--s-3)" x-text="usage.byok ? 'BYOK：已启用（自带 Key 不计入额度）' : 'BYOK：未启用'"></div>
+              <div class="settings-section-title">自带 API Key（BYOK）</div>
+              <input type="password" placeholder="sk-..." x-model="byokKey" class="form-input">
+              <div style="display:flex;gap:var(--s-2);margin-top:var(--s-2)">
+                <button class="btn-primary" @click="saveByok(true)" onclick="saveByok(true)">启用 BYOK</button>
+                <button class="btn-secondary" @click="saveByok(false)" onclick="saveByok(false)">关闭 BYOK</button>
               </div>
-              <div style="margin-top:12px;color:var(--text3);font-size:11px">配置后平台 LLM 额度不再扣减；Key 仅存于本地数据库。</div>
+              <div style="margin-top:var(--s-3);color:var(--text3);font-size:var(--t-sm)">配置后平台 LLM 额度不再扣减；Key 仅存于本地数据库。</div>
               <template x-if="usage.plan === 'personal_free'">
-                <div style="margin-top:16px;padding:12px;background:#1a1a2a;border:1px solid var(--border);border-radius:8px">
-                  <div style="font-size:13px;font-weight:600;margin-bottom:8px">Personal Pro 内测</div>
-                  <div style="font-size:12px;color:var(--text3);margin-bottom:8px">无限技能 · 500 次/月 LLM</div>
-                  <input id="pro-beta-code" placeholder="内测邀请码" style="width:100%;padding:8px;margin-bottom:8px;background:var(--srf);border:1px solid #333;border-radius:6px;color:var(--text)">
-                  <button class="btn a" style="font-size:12px" @click="enableProPlan()">启用 Pro</button>
+                <div class="settings-pro-card">
+                  <div class="section-heading">Personal Pro 内测</div>
+                  <div style="font-size:var(--t-sm);color:var(--text3);margin-bottom:var(--s-2)">无限技能 · 500 次/月 LLM</div>
+                  <input id="pro-beta-code" placeholder="内测邀请码" class="form-input" style="margin-bottom:var(--s-2)">
+                  <button class="btn-primary" @click="enableProPlan()" onclick="enableProPlan()">启用 Pro</button>
                 </div>
               </template>
             </div>
@@ -707,81 +930,79 @@
       <!-- Skills tab -->
       <template x-if="tab === 'skills'">
         <div>
-          <div style="margin:10px 0;color:var(--dim);font-size:14px">技能列表</div>
+          <div class="settings-section-title">技能列表</div>
           <template x-if="!skills.length">
-            <div style="color:var(--dim);font-size:14px">暂无技能</div>
+            <div style="color:var(--text3);font-size:var(--t-sm);padding:var(--s-4)">暂无技能</div>
           </template>
           <template x-for="s in skills" :key="s.name">
-            <div style="padding:12px;margin:6px 0;background:var(--srf);border-radius:6px;display:flex;align-items:center">
-              <span style="flex:1;font-size:14px">
+            <div class="settings-skill-row">
+              <span class="settings-skill-info">
                 <span x-text="s.name"></span>
-                <span style="color:var(--dim);font-size:12px" x-text="' v' + s.version + ' · ' + s.runs + ' 次运行'"></span>
+                <span class="settings-skill-meta" x-text="' v' + s.version + ' · ' + s.runs + ' 次运行'"></span>
               </span>
-              <button style="font-size:11px;padding:4px 14px;margin-left:6px;border-radius:12px;cursor:pointer"
-                :style="'border:1px solid ' + (isSkillEnabled(s.name) ? 'var(--accent)' : '#444') + ';background:' + (isSkillEnabled(s.name) ? 'var(--accent)' : 'transparent') + ';color:' + (isSkillEnabled(s.name) ? '#fff' : 'var(--dim)')"
+              <button type="button" class="settings-skill-toggle"
+                :class="{ on: isSkillEnabled(s.name) }"
                 @click="toggleSkill(s.name)"
                 x-text="isSkillEnabled(s.name) ? '开' : '关'"></button>
-              <button class="btn r" style="font-size:10px;padding:3px 8px;margin-left:4px" @click="deleteSkill(s.name)">✕</button>
+              <button type="button" class="btn r settings-skill-delete" @click="deleteSkill(s.name)">✕</button>
             </div>
           </template>
-          <div style="margin-top:16px;color:var(--dim);font-size:13px">Create 模式：全部启用技能；Agent 模式：仅 brainstorming。</div>
+          <p class="settings-hint">关闭的技能在 Agent 对话中不会被自动调用；萃取流程不受影响。</p>
         </div>
       </template>
 
       <!-- Voice tab -->
       <template x-if="tab === 'voice'">
         <div>
-          <h3 style="color:var(--accent);font-size:14px;margin-bottom:12px">🎙️ 语音识别 (ASR)</h3>
-          <div style="margin:8px 0">
-            <label style="color:var(--dim);font-size:12px">识别引擎</label>
-            <select x-model="asrEngine" @change="saveVoiceSetting('asr_engine', asrEngine)"
-              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
+          <div class="settings-section-title">语音识别 (ASR)</div>
+          <div class="settings-field">
+            <label class="settings-label">识别引擎</label>
+            <select x-model="asrEngine" @change="saveVoiceSetting('asr_engine', asrEngine)" class="form-select settings-select-full">
               <option value="whisper">Whisper（本地，CPU/GPU）</option>
               <option value="funasr">FunASR SenseVoice（GPU，含情感/说话人）</option>
               <option value="hybrid">混合（本地 + 云端回退）</option>
             </select>
           </div>
 
-          <h3 style="color:var(--accent);font-size:14px;margin:20px 0 12px">🔊 语音合成 (TTS)</h3>
-          <div style="margin:8px 0">
-            <label style="color:var(--dim);font-size:12px">合成后端</label>
-            <select x-model="ttsBackend" @change="onTTSBackendChange()"
-              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
+          <div class="settings-section-title">语音合成 (TTS)</div>
+          <div class="settings-field">
+            <label class="settings-label">合成后端</label>
+            <select x-model="ttsBackend" @change="onTTSBackendChange()" class="form-select settings-select-full">
               <option value="edge">Edge TTS（云端免费，无需 GPU）</option>
               <option value="omnivoice">OmniVoice（本地，646 语言，建议 GPU）</option>
             </select>
           </div>
-          <div style="margin:8px 0">
-            <label style="color:var(--dim);font-size:12px">音色</label>
-            <select x-model="ttsVoice" @change="saveVoiceSetting('tts_voice', ttsVoice)"
-              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
+          <div class="settings-field">
+            <label class="settings-label">音色</label>
+            <select x-model="ttsVoice" @change="saveVoiceSetting('tts_voice', ttsVoice)" class="form-select settings-select-full">
               <template x-for="v in voiceList" :key="v">
                 <option :value="v" x-text="v" :selected="v === ttsVoice"></option>
               </template>
             </select>
           </div>
-          <div style="margin:8px 0">
-            <label style="color:var(--dim);font-size:12px">语速: <span x-text="ttsSpeed + 'x'"></span></label>
+          <div class="settings-field">
+            <label class="settings-label">语速: <span x-text="ttsSpeed + 'x'"></span></label>
             <input type="range" min="0.7" max="1.5" step="0.05" x-model="ttsSpeed"
-              @input="saveVoiceSetting('tts_speed', ttsSpeed)"
-              style="width:100%;margin-top:4px;accent-color:var(--accent)">
+              @input="saveVoiceSetting('tts_speed', ttsSpeed)" class="settings-range">
           </div>
-          <div style="margin:8px 0">
-            <label style="color:var(--dim);font-size:12px">情感预设</label>
-            <select x-model="ttsEmotion" @change="saveVoiceSetting('tts_emotion', ttsEmotion)"
-              style="width:100%;background:var(--srf);border:1px solid #222;border-radius:6px;padding:10px;color:var(--text);font-size:14px;margin-top:4px">
-              <option value="neutral">😐 中性</option>
-              <option value="happy">😊 愉快</option>
-              <option value="gentle">🌸 温柔</option>
-              <option value="excited">🎉 兴奋</option>
-              <option value="sad">😢 柔和</option>
+          <div class="settings-field">
+            <label class="settings-label">情感预设</label>
+            <select x-model="ttsEmotion" @change="saveVoiceSetting('tts_emotion', ttsEmotion)" class="form-select settings-select-full">
+              <option value="neutral">中性</option>
+              <option value="happy">愉快</option>
+              <option value="gentle">温柔</option>
+              <option value="excited">兴奋</option>
+              <option value="sad">柔和</option>
             </select>
           </div>
-          <div style="margin:16px 0;padding:10px;background:#0a1a10;border-radius:6px;font-size:12px;color:var(--accent)">
-            💡 TTS 后端、语速与情感立即生效；ASR 引擎变更需重启服务。
+          <div class="settings-hint">
+            TTS 后端、语速与情感立即生效；ASR 引擎变更需重启服务。
           </div>
         </div>
       </template>
+
+    </div><!-- /settings-content -->
+    </div><!-- /settings-layout -->
 
       <!-- Model Edit Modal -->
       <div class="modal-overlay" x-show="modelModalOpen" x-transition @click.self="closeModelModal()" @keydown.escape.window="closeModelModal()">
@@ -794,9 +1015,9 @@
           <label>API 地址</label>
           <input x-model="editUrl" placeholder="https://api.deepseek.com">
           <div class="modal-actions">
-            <button class="modal-btn-cancel" @click="closeModelModal()">取消</button>
-            <button class="nav-sm" style="font-size:11px;border-color:var(--info);color:var(--info);margin-right:auto" @click="testConnection()">测试连接</button>
-            <button class="modal-btn-primary" @click="saveModel()" x-text="editingIndex < 0 ? '添加' : '保存'"></button>
+            <button class="btn-secondary" onclick="closeModelModal()">取消</button>
+            <button class="nav-sm" style="font-size:14px;border-color:var(--info);color:var(--info);margin-right:auto" onclick="testConnection()">测试连接</button>
+            <button class="btn-primary" onclick="saveModelFromModal()">保存</button>
           </div>
         </div>
       </div>
@@ -806,10 +1027,10 @@
         <div class="modal-box">
           <h3>删除模型</h3>
           <p style="color:var(--text2);font-size:14px;margin-bottom:4px">移除 <strong style="color:var(--err)" x-text="deleteTargetIndex >= 0 && models[deleteTargetIndex] ? models[deleteTargetIndex].label + ' (' + models[deleteTargetIndex].id + ')' : ''"></strong>？</p>
-          <p style="color:var(--text3);font-size:12px">此操作不可撤销，模型将从选择器中移除。</p>
+          <p style="color:var(--text3);font-size:14px">此操作不可撤销，模型将从选择器中移除。</p>
           <div class="modal-actions">
-            <button class="modal-btn-cancel" @click="closeDeleteModal()">取消</button>
-            <button class="modal-btn-danger" @click="confirmDelete()">删除</button>
+            <button class="btn-secondary" onclick="closeDeleteModal()">取消</button>
+            <button class="btn-danger" onclick="confirmDelete()">删除</button>
           </div>
         </div>
       </div>
@@ -823,11 +1044,10 @@
       <button id="auto-btn" class="bar-chip" onclick="toggleAuto()">自动</button>
       <textarea id="input" placeholder="描述工作流程、粘贴链接、或拖拽文件到窗口..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendText()}" rows="1"></textarea>
       <input type="file" id="file-input" style="display:none" accept=".pdf,.docx,.doc,.pptx,.ppt,.xlsx,.xls,.html,.htm,.epub,.rtf,.txt,.md,.csv,.json,.png,.jpg,.jpeg,.wav,.mp3" onchange="uploadFile(this.files[0])">
-      <button class="bar-action" onclick="document.getElementById('file-input').click()" title="上传文件">📎</button>
-      <button class="bar-action" id="finalize-btn" onclick="finalizeSkill()" title="对话聊够了，生成技能文档" style="background:var(--accent);color:var(--on-primary);font-weight:700;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;display:none">⚡ 生成技能</button>
-      <button class="bar-action" id="tts-btn" onclick="toggleTTS()" title="语音播报">🔊</button>
+      <button class="bar-action bar-ico" onclick="document.getElementById('file-input').click()" title="上传文件" aria-label="上传文件"><span data-icon="paperclip"></span></button>
+      <button class="bar-action bar-ico" id="tts-btn" onclick="toggleTTS()" title="语音播报" aria-label="语音播报"><span data-icon="volume"></span></button>
       <button class="bar-action" id="mic-btn" x-data="voiceControl()"
-        @click="toggleMic()" :style="micStyle" x-text="micText" title="语音输入"></button>
+        @click="toggleMic()" :style="micStyle" x-text="micText" title="语音输入" aria-label="语音输入"></button>
       <button id="send-btn" onclick="sendText()">发送</button>
     </div>
   </div>
@@ -836,23 +1056,84 @@
 
 </div><!-- /body-wrap -->
 
+<!-- 从资料创建：链接输入 -->
+<div id="source-material-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="source-modal-title"
+     onclick="if(event.target===this)closeSourceMaterialModal()">
+  <div class="modal-box source-modal-box">
+    <h3 id="source-modal-title">从资料沉淀 Skill</h3>
+    <p class="source-modal-hint">粘贴文章或 GitHub 链接。系统将拉取内容、经认识论验证后沉淀为可安装的 Verified Skill。</p>
+    <input type="url" id="source-url-input" class="form-input source-url-input" placeholder="https://… 或 github.com/owner/repo"
+           onkeydown="onSourceUrlKeydown(event)">
+    <div class="source-modal-tips">
+      <span>也可拖拽 PDF / Word 到主窗口</span>
+      <button type="button" class="nav-sm" onclick="closeSourceMaterialModal();startFromFile()">改为上传文件</button>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" onclick="closeSourceMaterialModal()">取消</button>
+      <button type="button" class="btn-primary" onclick="submitSourceUrl()">开始学习</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile FAB — 三路径沉淀 (≤768px, chat view only) -->
+<div id="extract-fab" class="extract-fab" x-data="{ fabOpen: false }"
+     x-show="$store.nav.currentView === 'chat-view'" x-cloak>
+  <div class="extract-fab-menu" x-show="fabOpen" @click.outside="fabOpen = false" x-transition>
+    <button type="button" @click="fabOpen=false; showChat(); setMode('create'); var i=document.getElementById('input'); if(i) i.focus();">
+      <span class="nav-icon" data-icon="message"></span>对话萃取
+    </button>
+    <button type="button" @click="fabOpen=false; openSourceMaterialModal()">
+      <span class="nav-icon" data-icon="link"></span>从链接
+    </button>
+    <button type="button" @click="fabOpen=false; startFromFile()">
+      <span class="nav-icon" data-icon="paperclip"></span>上传资料
+    </button>
+  </div>
+  <button type="button" class="extract-fab-btn" @click="fabOpen = !fabOpen" aria-label="沉淀方式">+</button>
+</div>
+
+<!-- Mobile bottom nav (≤768px) -->
+<nav id="mobile-nav" class="mobile-nav" x-data aria-label="主导航">
+  <button type="button" class="mobile-nav-item" :class="{ active: $store.nav.primaryNav === 'extract' }" @click="showChat(); setMode('create')">
+    <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>萃取</span>
+  </button>
+  <button type="button" class="mobile-nav-item" :class="{ active: $store.nav.primaryNav === 'knowledge' }" @click="showUnifiedKnowledge('dashboard')">
+    <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span>知识</span>
+  </button>
+  <button type="button" class="mobile-nav-item" :class="{ active: $store.nav.primaryNav === 'market' }" @click="showHub()">
+    <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    <span>市场</span>
+  </button>
+</nav>
 
 
+
+<script src="/storage-keys.js"></script>
+<script src="/icons.js"></script>
 <script src="/audio.js"></script>
 <script src="/voice.js"></script>
 <script src="/auth.js"></script>
-<script src="/chat.js"></script>
+<script src="/export-channel.js?v=1"></script>
+<script src="/precipitation-result.js?v=4"></script>
+<script src="/source_material.js?v=3"></script>
+<script src="/socratic-ui.js?v=1"></script>
+<script src="/chat.js?v=9"></script>
 <script src="/skills_io.js"></script>
-<script src="/skills.js"></script>
-<script src="/knowledge.js"></script>
+<script src="/skills.js?v=3"></script>
+<script src="/quality.js?v=2"></script>
+<script src="/workspace.js?v=5"></script>
+<script src="/error-boundary.js?v=2"></script>
+<script src="/knowledge.js?v=3"></script>
 <script src="/account_watcher.js"></script>
 <script src="/intelligence.js"></script>
 <script src="/hub.js"></script>
-<script src="/settings.js"></script>
-<script src="/admin.js"></script>
+<script src="/settings.js?v=3"></script>
+<script src="/admin.js?v=2"></script>
 <script src="/docs.js"></script>
-<script>console.log('HTML script loaded');window._testMode='create';</script>
 <script src="/alpine-bridge.js"></script>
-<script src="/app.js?v=4"></script>
+<script src="/onboarding.js?v=2"></script>
+<script src="/app.js?v=6"></script>
 </body>
 </html>

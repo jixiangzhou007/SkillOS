@@ -47,11 +47,12 @@ def _read_doc(*relative_paths: str) -> str:
 @router.get("/guide")
 async def user_guide():
     """Return USER_GUIDE markdown for in-app docs site."""
-    content = _read_doc("USER_GUIDE.md", "user_guide.md")
-    return {"title": "SkillOS 用户指南", "format": "markdown", "content": content}
+    content = _read_doc("user_guide.md", "USER_GUIDE.md")
+    return {"title": "用户指南", "format": "markdown", "content": content}
 
 
 @router.get("/quickstart")
 async def quickstart():
-    content = _read_doc("sprint7/QUICKSTART.md", "quickstart.md")
+    # In-app bundle first; sprint7 copy is legacy fallback.
+    content = _read_doc("quickstart.md", "sprint7/QUICKSTART.md")
     return {"title": "快速开始", "format": "markdown", "content": content}

@@ -84,7 +84,7 @@ function accountWatcherView() {
 
 function showAccountWatcher() {
   if (window.__alpineReady) {
-    Alpine.store('nav').navigate('account-watcher-view');
+    Alpine.store('nav').goTo('account-watcher-view');
   } else {
     switchMainView('account-watcher-view');
     document.getElementById('bar').style.display = 'none';

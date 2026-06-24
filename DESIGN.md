@@ -169,6 +169,109 @@ SkillOS 记录每一次执行的结果（trace）。当某个技能连续失败 
 - Wittgenstein 的家族相似性（技能之间不需要共享一个本质）
 - Java 的 Interface/Concrete/@Override 工程化
 
+### 2.6 Anthropic 的 Skill 设计哲学（2026.06 纳入）
+
+Anthropic Claude Code 团队在官方博客中总结了 Skill 设计的核心洞察。SkillOS 作为 Agent Skills 的「IDE」，将这些洞察融入萃取流程：
+
+**2.6.1 Skill = Context Engineering**
+
+SKILL.md 不是信息堆场，而是**导航页**。标准目录结构应渐进暴露知识：
+
+```
+skill/
+├── SKILL.md          ← 导航页（触发条件 + 核心步骤 + 门禁检查）
+├── references/       ← 详细说明、API 参考、边界条件（按需加载）
+├── scripts/          ← 可执行脚本（已验证的重复操作）
+├── examples/         ← 历史案例
+├── assets/           ← 模板、图片、固定素材
+```
+
+SkillOS 萃取过程中，AI 会引导用户将重复步骤识别为 Scripts（而非写入 Instructions），将详细参考材料放入 references/。
+
+**2.6.2 Gotchas 是最有价值的内容**
+
+Skill 不应重复模型已知的常识。真正有价值的是**组织内部的隐性知识**——常踩的坑：
+
+- "这个表不能按 created_at 排序"
+- "staging 返回 200 不代表成功"
+- "request_id 和 trace_id 是同一个东西"
+
+SkillOS 萃取维度已从 5 项扩至 **6 项**（新增 gotchas），AI 会在对话中主动追问"这个流程有什么容易出错的地方？"
+
+**2.6.3 Description 是路由规则**
+
+Description 不是功能介绍，而是**触发条件**。应描述用户会说什么话，而非 Skill 能干什么。好的 Description 如"用户询问合同条款问题时触发"，而非"帮助审查合同"。
+
+SkillOS 生成的 SKILL.md 中 `tool_description` 字段已改为路由导向提示。
+
+**2.6.4 Instructions ≠ Scripts**
+
+| Instructions | Scripts |
+|------|------|
+| 提供经验和判断（"如果 Stripe 返回 200，要进一步检查 payment_events"） | 提供能力和执行（`check_payment_events()`） |
+| 告诉模型**为什么**和**什么时候** | 告诉模型**怎么做** |
+
+**2.6.5 轻量级 Marketplace 验证**
+
+让 Skill 先在小范围试用——用的人多了自然进入正式体系。不做重审批流程，用真实使用场景检验价值。
+
+**2.6.9 Skill 自进化三种范式（2026.06 纳入）**
+
+阿里技术专家深度对比了三种 Skill 自进化范式：
+
+| 范式 | 代表项目 | 核心思路 | 类比 |
+|------|------|------|------|
+| 归纳法 | Trace2Skill（阿里千问） | 并行分析大量轨迹 → 层次化合并 | 专家开会，多人提到的才进报告 |
+| 验证选择 | EvoSkill（Sentient Labs） | 前沿集合 + 失败驱动提案 + 验证 gate | 自然选择，适应度高的延续 |
+| 训练范式 | SkillOpt（微软） | 学习率约束 + 验证 gate + 负反馈 buffer + 动量 | 带 SGD + momentum 的参数训练 |
+
+关键发现：
+- **单轨迹进化会过拟合**：基于个例的 Skill 更新容易"跑偏"，需要批量处理
+- **验证是不可或缺的**：没有验证 gate 的进化是盲目的
+- **混合策略最优**：Trace2Skill 快速基线 → EvoSkill 扩充库 → SkillOpt 精细打磨
+
+SkillOS 进化引擎当前采用 Trace2Skill（批量轨迹分析）+ EvoSkill（前沿集合淘汰）混合策略，"进化"tab 已展示三种范式对比。
+
+**2.6.8 SkillsBench 评估五维度（2026.06 纳入）**
+
+SkillsBench 论文提出 Skills 的工程评估范式：Model = CPU，Harness = OS，Skill = Application。对照实验证明人工整理 skill +16.2pp，模型自生成 -1.3pp。评估一个 Skill 不应看"是否专业"，而应回答五个问题：
+
+| 维度 | 问题 |
+|------|------|
+| 边界 | 任务边界清晰？触发条件明确？ |
+| 过程 | 提供检查点、示例、工具和中间格式？ |
+| 增益 | 相对无 skill 基线有稳定提升？ |
+| 稳定性 | 换模型/环境后仍有效？ |
+| 成本 | 上下文占用+审核+维护成本是否值得？ |
+
+关键数据：2-3 个 skill 最优，过多会干扰模型。SkillOS 萃取提示和技能详情页已纳入五维度评估框架。
+
+**2.6.7 自我改进循环（2026.06 纳入）**
+
+Warp 创始人 Zach Lloyd（前 Google Docs 首席工程师）提出 Agent Skills 的"内循环 + 外循环"架构：
+
+```
+内循环（执行）        反馈（审阅）        外循环（改进）
+┌──────────┐     →     ┌──────────┐     →     ┌──────────┐
+│ Skill 执行│           │ 人类反馈 │           │ 生成 diff │
+│ 记录轨迹  │     ←     │ 调整标签 │     ←     │ 更新 Skill│
+└──────────┘           └──────────┘           └──────────┘
+```
+
+- **内循环**：每次新建 Issue 时自动运行 Skill，记录交互轨迹
+- **外循环**：定期审查所有内循环运行记录，根据人类反馈生成 diff 改进 Skill
+
+SkillOS 的进化引擎（Trace2Skill、EvoSkill、SkillOpt）正是这个架构的完整实现。"进化" tab 已加入可视化循环图。
+
+**2.6.6 生态集成引导（2026.06 纳入）**
+
+Claude Code 的 `claude-code-setup` 插件展示了 Skill 在完整生态中的位置。一个 Skill 不是孤立的 `.md` 文件——它应该明确自己在 hooks、MCP servers、subagents、automations 四层生态中的协作方式。
+
+SkillOS 萃取流程已加入生态引导：
+- SKILL.md 格式包含 `## Ecosystem` 章节（hooks/MCP/subagents 建议）
+- 技能生成后 AI 主动提示"生态集成"选项
+- 前端萃取进度卡显示生态提示
+
 ---
 
 ## 3. 系统架构

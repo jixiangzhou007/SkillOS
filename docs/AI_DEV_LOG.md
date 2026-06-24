@@ -6,6 +6,596 @@
 
 ---
 
+## [2026-06-24] Post-M5 收尾 — CHANGELOG v0.3.3 + skill-tree 折叠 — Cursor Agent
+
+**背景 / 触发**：M0–M5 前端批次完成，用户「继续」；做发版文档与 M3 遗留项。
+
+**修改思路**：
+- CHANGELOG **v0.3.3** 汇总 M0–M5 交付物
+- 草稿面板恢复 **skill-tree** 为 `<details>` 折叠参考区（非主视图）
+- 更新项目快照至 2026-06-24
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `CHANGELOG.md` | v0.3.3 M0–M5 条目 |
+| `frontend/workspace.js` v5 | skill-tree 折叠；完成 banner 去 emoji |
+| `frontend/style.css` v17 | draft-skill-tree-fold 样式 |
+| `docs/AI_DEV_LOG.md` | 本记录 + 快照更新 |
+
+**未修改 / 刻意不做**：git tag（用户未要求）；bench 回归（需 DEEPSEEK_API_KEY）
+
+**验证**：`python -m pytest tests/test_precipitation.py tests/test_portal_e2e.py -q`
+
+**开放问题 / 下一步**：用户确认后可 `git tag v0.3.3`；bench 回归 `scripts/run_bench_regression.py`
+
+---
+
+## [2026-06-24] 前端 M5 — 视觉收敛 + 知识透镜（二级 IA）— Cursor Agent
+
+**背景 / 触发**：M4 完成，用户「下一步」；终稿计划 M5 = 知识透镜 + 视觉收敛。
+
+**修改思路**：
+- 知识 Tab 二级 IA：主区（概览/知识库）+ 工具区（摄入/图谱/血缘/日志/审核），页头「喂大脑，不是做 Skill」
+- 详情页对齐 `page-shell`（Hub 同级）
+- 移动端 FAB：对话 / 链接 / 文件三路径
+- 知识子页 inline style → CSS 类；emoji → SVG icons
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/index.html` | 知识透镜 shell、详情 page-shell、FAB |
+| `frontend/knowledge.js` v3 | 二级导航、样式类、去重复 quickNav |
+| `frontend/style.css` v16 | knowledge/detail/FAB 样式 |
+| `frontend/icons.js` | journal/review/flask/zoom 图标 |
+| `frontend/alpine-bridge.js` | nav.knowledgeTab |
+| `frontend/precipitation-result.js` | 结果卡片 SVG 图标 |
+
+**未修改 / 刻意不做**：skills.js 全量 Alpine 重写；Hub/Admin 已达标区域
+
+**验证**：未跑 E2E；Ctrl+F5 后：知识 Tab 应显示二级导航 + 页头；详情页有 page-header；移动端 chat 页有 + FAB
+
+**开放问题 / 下一步**：路线图 M0–M5 前端批次完成；可选 bench 回归与 tag v0.3.2
+
+---
+
+## [2026-06-24] 前端 M4 — 输出/通道强化（Cursor 安装引导）— Cursor Agent
+
+**背景 / 触发**：M3 完成，用户「继续」；PM 决策 M1 主 CTA = Cursor 路径。
+
+**修改思路**：
+- 新增 `export-channel.js`：三步安装引导、Cursor 主 CTA、Zip/SKILL.md 复制、其他平台路径折叠
+- 结果卡片 + 详情 Overview 共用 `renderExportChannelPanel`
+- Zip 下载统一走 `downloadSkillExportZip`
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/export-channel.js` | 安装引导面板、路径构建、事件委托 |
+| `frontend/precipitation-result.js` | 结果卡片嵌入 export-channel |
+| `frontend/skills.js` | Overview export meta 含全路径 |
+| `frontend/style.css` v15 | export-channel 样式 |
+
+**未修改 / 刻意不做**：M5 视觉收敛；后端 install_paths API 扩展
+
+**验证**：未跑 E2E；沉淀后卡片应显示三步引导 + 复制路径/下载 Zip/复制 SKILL.md
+
+**开放问题 / 下一步**：M5 视觉收敛、知识二级 IA
+
+---
+
+## [2026-06-24] 前端 M3 — 苏格拉底 IDE（chip + 草稿分区）— Cursor Agent
+
+**背景 / 触发**：M2 完成，用户「继续」；交付 M3。
+
+**修改思路**：
+- 新增 `socratic-ui.js`：剥离回复中 `[选项]` 行，chip 附在 AI 气泡内
+- 草稿面板改为 **目标 / 维度 / 结构 / 预览** 四分区，去掉假 skill-tree 主视图
+- dispatch 响应统一 `applySocraticReply`
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/socratic-ui.js` | stripOptionLines、parseOptionActions、attachSocraticChips |
+| `frontend/chat.js` | 接入 applySocraticReply，移除旧 opt-btn 块 |
+| `frontend/workspace.js` | renderDraftPanel 分区布局 |
+| `frontend/index.html` / `style.css` v14 | 脚本与 chip/draft 样式 |
+
+**未修改 / 刻意不做**：后端 prompt；M4 通道强化
+
+**验证**：未跑 E2E；萃取对话含 `[选项]` 时应显示 chip 且正文无选项行；右侧草稿分区随对话更新
+
+**开放问题 / 下一步**：M4 输出/通道强化；可选恢复 skill-tree 为折叠详情
+
+---
+
+## [2026-06-24] 前端 M2 — 统一顶栏状态 + 三路径出口 — Cursor Agent
+
+**背景 / 触发**：M1 验收通过，用户「进入下一步」；按计划交付 M2。
+
+**修改思路**：
+- 合并 `pipeline-wait` 与 `workspace-phase` 为单一 `#workspace-phase`（ingest / extract 互斥）
+- 新增 `showIngestStrip` / `hideExtractionStrip` / `setExtractionSource`（对话/链接/文件标签）
+- 顶栏激活时隐藏底部 `#status-bar`，状态同步到 `wp-turn`
+- 上传/链接 digest 统一走 `precipitateFromResponse`，去掉重复 AI 气泡
+- 沉淀完成自动收起顶栏
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/workspace.js` | 统一 strip API、来源标签、chrome 互斥 |
+| `frontend/source_material.js` | 接入 ingest strip |
+| `frontend/chat.js` | setStatus 双写、上传统一出口、链接 ingest |
+| `frontend/precipitation-result.js` | 完成态 hide strip |
+| `frontend/index.html` | 去掉 pipeline-wait，加 wp-source |
+| `frontend/style.css` v13 | ingest 样式、隐藏重复 status-bar |
+
+**未修改 / 刻意不做**：M3 苏格拉底 draft 分区；后端 API
+
+**验证**：未跑 E2E；Ctrl+F5：链接/文件应只显示一条顶栏；沉淀后顶栏收起 + 结果卡片
+
+**开放问题 / 下一步**：M3 苏格拉底 IDE（draft 分区、选项 chip）
+
+---
+
+## [2026-06-24] 聊天 DOM 直渲染 + 非流式默认 — 气泡/回复二次修复 — Cursor Agent
+
+**背景 / 触发**：用户反馈上次修改无效果；气泡仍过大、Agent 一直 loading。
+
+**根因**：
+1. Alpine `x-for` + `x-html` 对 store 内对象 patch 不可靠，流式/一次性回复都不刷新 DOM
+2. 默认 SSE 流式：后端先等 LLM 全量返回再逐字推送，长时间只有 loading
+3. `width:fit-content` 在 Alpine `x-show` 下表现不稳定
+
+**修改思路**：
+- 消息改 **DOM 直渲染**（`#chat-msgs-list` + `data-msg-id`），Alpine store 仅同步条数
+- 默认 `_useStreaming=false`，走 `/api/skills/dispatch` 一次性写入回复
+- 气泡 `display:inline-block; max-width:320px`，微信式紧凑绿/灰底
+
+**修改内容**：`frontend/chat.js` v7、`frontend/index.html`、`frontend/style.css` v12
+
+**验证**：未跑 E2E；Ctrl+F5 后发消息：气泡应贴文字、AI 应在请求完成后显示正文
+
+---
+
+## [2026-06-24] 聊天气泡紧凑化 + Agent 流式回复修复 — Cursor Agent
+
+**背景 / 触发**：用户反馈气泡尺寸过大不紧凑；Agent 回复一直显示加载动画、正文不更新。
+
+**根因**：
+1. SSE 解析用 `lines[i-1]` 取 event 类型，遇空行失效；未处理 `reply` 事件
+2. 流式更新只改 `msg.text` 引用，Alpine `x-html` 未可靠重渲染
+3. 气泡 CSS 无 `width:fit-content`，user 消息被撑到 max-width
+
+**修改思路**：
+- 重写 SSE 状态机 + 支持 `token`/`reply`/`done`/`error`
+- `patchChatMsg()` 替换 store 中消息对象触发 Alpine 更新
+- HTML 改为 `msg-row` + `msg-bubble` 微信式布局；user 绿调、ai 深灰、紧凑 padding
+
+**修改内容**：`frontend/chat.js` v6、`frontend/index.html`、`frontend/style.css` v11
+
+**验证**：未跑 E2E；Ctrl+F5 后发消息应看到紧凑气泡 + AI 正文流式出现
+
+---
+
+## [2026-06-24] 修复对话气泡不显示 — innerHTML 破坏 Alpine — Cursor Agent
+
+**背景 / 触发**：用户反馈「对话的气泡都没有出现」。
+
+**根因**：`newSession()` / Meta 模式 / 优化模式用 `document.getElementById('msgs').innerHTML = ''` 清空聊天区，连带销毁 `#msgs` 内 Alpine `x-for` 模板；之后 `addMsg` 虽写入 store 但 DOM 不再渲染。另：流式更新 `msg.text` 未触发 Alpine 响应式刷新。
+
+**修改思路**：
+- 新增 `clearChatMessages()`，只清 store、不碰 DOM
+- `addMsg` 用数组 reassignment + `_touchChatMessages()` 保证渲染/流式更新
+- 去掉手动 `welcome.style.display = 'none'`（与 `x-show` 冲突）
+
+**修改内容**：`frontend/chat.js`、`frontend/skills.js`、`frontend/index.html`（chat.js?v=5）
+
+**验证**：未跑 E2E；Ctrl+F5 后点「对话萃取」或发消息应出现 user/ai 气泡
+
+---
+
+## [2026-06-24] M1 验收修复 — 结果卡片 onclick / slug / 流式重复 — Cursor Agent
+
+**背景 / 触发**：用户反馈 M0+M1 验收不通过；自查发现结果卡片按钮 HTML 属性引号嵌套错误、Overview 无法解析 AgentSkills.io 的 `name:` slug、流式对话末尾重复 push 消息。
+
+**修改思路**：
+- 用 `data-pr-action` + 文档级事件委托替代 `onclick="showDetail(JSON…)"` 嵌套引号
+- 缺 `install_paths` 时异步 `GET …/export?format=markdown` 补全 Cursor 路径
+- Overview 同源解析 `name:` frontmatter + export 兜底
+- 删除 stream 结束时的重复 `addMessage`
+
+**修改内容（文件表）**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/precipitation-result.js` | 事件委托、export 补全、slug 解析、`name:` 字段 |
+| `frontend/skills.js` | Overview 拉 export meta |
+| `frontend/chat.js` | 去掉流式重复 AI 消息 |
+| `frontend/index.html` | precipitation-result.js?v=2 |
+| `frontend/style.css` | pr-icon 字符图标样式 |
+
+**未修改 / 刻意不做**：后端 stream done 字段补全（前端 export 只读兜底已够 M1）
+
+**验证**：`python -m pytest tests/test_precipitation.py -q`（若跑）；浏览器 Ctrl+F5 后 finalize / 链接 / 上传应可点「复制路径」「查看详情」
+
+**开放问题 / 下一步**：M2 顶栏状态合并；可选在后端 stream done 内联 `install_paths` 减少一次 export 请求
+
+---
+
+## [2026-06-24] 前端 M0+M1 — 叙事锁稿 + Verified Skill 完成态 — Cursor Agent
+
+**背景 / 触发**：PM×UI 终稿计划首批交付（M0 叙事 + M1 可信完成态），不动后端 API。
+
+**修改思路**：
+- M0：统一「可验证的技能工厂」copy；侧栏/欢迎/onboarding/知识 Tab「后台摄入」
+- M1：新增 `PrecipitationResultCard` 三路径共用；诚实 `pipeline-wait` 替代假六步进度
+- 详情 Overview 增加认识论 + 来源安装卡片
+
+**修改内容（文件表）**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/precipitation-result.js` | 新增：结果卡片、复制路径、zip 下载、Overview 卡片 |
+| `frontend/source_material.js` | 诚实等待条；去掉假 progress |
+| `frontend/chat.js` | finalize/stream/legacy/upload → `precipitateFromResponse` |
+| `frontend/skills.js` | Overview 前置信任/来源卡片 |
+| `frontend/index.html` | M0 copy、pipeline-wait、脚本顺序 |
+| `frontend/style.css` | pr-* / trust-badge / pipeline-wait |
+| `frontend/onboarding.js` | 三步 micro-story（三种输入 + Cursor 导出） |
+| `frontend/knowledge.js` | 「后台摄入」文案 |
+
+**未修改 / 刻意不做**：
+- M2 顶栏状态合并、M3 苏格拉底 draft 分区
+- 后端 API / precipitation.py 队列层
+- 全量 skills.js Alpine 重写
+
+**验证**：未跑浏览器 E2E；需 Ctrl+F5 后：上传/链接/对话 finalize 应出现统一结果卡片
+
+**开放问题 / 下一步**：M2 三路径 digest 卡片 polish；dispatch 响应补全 `export_zip_url`/`install_paths` 到 stream done 事件
+
+---
+
+
+**根因**：`agent_generation.py` 将 `_phase` 设为 int；MagicMock 未配置 `handle.return_value`；测试断言/端口过时。
+
+**修复**：
+| 区域 | 说明 |
+|------|------|
+| `agent_generation.py` / `agent.py` | 正确使用 `Phase` enum；`start()` 填充 `_domain_template_ids`；meta 问题可从 history 恢复 |
+| `skills_extract.py` | 安全 `extraction_phase`；长文自动 quick_mode；meta 问题统一入口 |
+| `pilot_bootstrap.py` | 补 `--dry-run` 参数 |
+| `tests/test_*` | mock/断言/动态端口/LLM patch 对齐现状 |
+
+**验证**：原 13 项失败用例 → **12 passed, 1 skipped**（e2e consolidate 超时 skip）
+
+---
+
+## [2026-06-14] 集成测试修复 + 官方评测 v8 收尾 — Cursor Agent
+
+**修改**：
+| 文件 | 说明 |
+|------|------|
+| `tests/test_api_integration.py` | `_register_token()`；`test_consolidate` 带 Bearer；`test_publish` 接受只读市场 403 |
+| `frontend/skills.js` | 删除未使用的 `loadDoc()`；Quick8 区 `_renderQuick8Section` 等 v8 类 |
+| `frontend/style.css` | `detail-delta` 色调 / `detail-task-list` |
+
+**验证**：`pytest tests/test_api_integration.py -q` → 14 passed, 2 skipped（慢测 `test_consolidate` 需 `SKILLOS_RUN_SLOW=1`）
+
+---
+
+## [2026-06-14] Hub legacy 重构收尾 — Admin/Revenue Alpine 模板 — Cursor Agent
+
+**背景**：`#hub-content` 已移除，hub.js 仍有向旧 DOM 写 innerHTML 的管理面板与 admin CRUD。
+
+**修改**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/hub.js` | 删除 legacy `showAdminPanel` innerHTML；admin CRUD 全委托 `hubDelegate`；`hubDelegate` 改返回 boolean；catalog 拉取 stats/recommendations；categories 对象→字符串 |
+| `frontend/index.html` | Admin/Revenue 完整 Alpine 模板；catalog 只读横幅 + KPI |
+| `frontend/style.css` | `hub-admin-*` / `hub-revenue-*` / `hub-readonly-banner` / `hub-pricing-hint` |
+
+**未完成**：DNA loader 内层仍有少量 inline style；全量 pytest 未 triage。
+
+---
+
+## [2026-06-14] 详情 Tab v8 续 — DNA/Meta/进化/决策/KB — Cursor Agent
+
+**修改**：`loadDnaLineage` / `loadMeta` / `loadEvo` / `loadDecisions` / `loadKB` / 评测 Tab KPI 区 v8 类；新增 `detail-decision-*` / `detail-loop-*` / `detail-kb-*` 等样式。
+
+---
+
+## [2026-06-14] 详情概览/验证/认识论 v8 样式 — Cursor Agent
+
+**修改**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/skills.js` | `_detailKpi` / `_detailCard` 等 HTML 助手；`loadOverview` / `loadVerify` / `loadEpistemic` 去 inline style |
+| `frontend/style.css` | `detail-kpi-*` / `detail-panel` / `detail-trace-*` / `detail-claim-row` 等 |
+
+---
+
+## [2026-06-14] 技能详情 Alpine 隔离 — staging + skillDelegate — Cursor Agent
+
+**背景**：legacy loader 向 `#d-content` 写 innerHTML 会破坏 Alpine 模板；`showDetail`+`switchTab` 竞态。
+
+**修改**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/skills.js` | `#d-content-staging` 隐藏区；`skillDelegate`；移除 legacy switchTab fallback；`showDetail(name,tab)`；Mermaid 队列 `flushDetailMermaid` |
+| `frontend/index.html` | 详情 body 与 staging 分离；操作菜单走 Alpine；简化 tab 渲染 |
+| `frontend/style.css` | `detail-doc-pre` / `detail-loading` / `detail-empty` |
+
+---
+
+## [2026-06-14] Hub 定价模态 Alpine 化 — Cursor Agent
+
+**修改**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/hub.js` | `openPricing` / `savePricing` / `closePricing`；移除定价与发布 legacy DOM；全局 wrapper 统一 `hubDelegate` |
+| `frontend/index.html` | 定价 modal 模板；详情页评分维度/作者/定价按钮；移除推荐卡错误 onclick |
+| `frontend/style.css` | `hub-score-breakdown` / `hub-detail-author` |
+
+---
+
+## [2026-06-22] P2 收尾 — 欢迎页 / Hub 审核 / login / CHANGELOG — Cursor Agent
+
+**修改**：welcome chips SVG；Hub 审核+发布模态；login StorageKeys+hammer 图标；设置情感去 emoji；CHANGELOG v0.3.2。
+
+---
+
+## [2026-06-22] P2 续 — SVG 图标 / Admin·Docs v8 / StorageKeys 全量 — Cursor Agent
+
+**背景 / 触发**：继续 P2：侧栏与用户菜单 emoji→SVG、Admin/Docs 去 inline style、settings/hub StorageKeys 迁移。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/icons.js` | **新增** — `data-icon`  hydration + Lucide 风格 SVG |
+| `frontend/index.html` | 侧栏/用户菜单/底栏附件与音量图标；Docs/Admin 布局类；设置语音 Tab |
+| `frontend/style.css` | `.ico` / docs-* / admin-* / settings-field |
+| `frontend/settings.js` / `hub.js` / `admin.js` / `skills.js` | StorageKeys 迁移 |
+| `frontend/docs.js` / `admin.js` | `goTo()` 路由 |
+
+**验证**：刷新后侧栏图标渲染；文档页/组织管理页布局；设置→语音 Tab 表单样式。
+
+---
+
+## [2026-06-22] P2 前端 — 路由统一 / 移动底栏 / Account Watcher v8 — Cursor Agent
+
+**背景 / 触发**：P1 完成后继续 P2：单一路由入口、移动端底栏、Account Watcher 去 inline style、StorageKeys 扩展迁移。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/alpine-bridge.js` | `nav.goTo()` — 视图 + DOM + 底栏三合一 |
+| `frontend/chat.js` / `hub.js` / `knowledge.js` / `settings.js` / `account_watcher.js` / `skills.js` | 导航统一走 `goTo` |
+| `frontend/index.html` | Account Watcher `page-shell`；移动端底栏 + SVG 图标 |
+| `frontend/style.css` | `aw-*` / `mobile-nav` 响应式 |
+| `frontend/storage-keys.js` | `lsGet()`；脚本提前至 auth 之前加载 |
+| `frontend/app.js` / `auth.js` / `chat.js` / `workspace.js` | 核心 localStorage 键迁移 |
+
+**验证**：窄屏（≤768px）底栏切换；公众号监控页布局；顶栏与底栏 active 同步。
+
+---
+
+## [2026-06-22] P1 前端体验 — 顶栏同步 / Hub v8 / storage-keys — Cursor Agent
+
+**背景 / 触发**：P0 完成后继续 P1：顶栏 active 状态、Hub/设置/管理 v8 样式、localStorage 统一、过时文案清理。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/alpine-bridge.js` | `nav.primaryNav` + `navigate()` 同步萃取/知识/市场 |
+| `frontend/index.html` | 顶栏 `:class` active；Hub `page-shell`；详情「操作 ▾」；设置技能 Tab 文案 |
+| `frontend/style.css` | page-header / hub-* / detail-actions / settings-skill-row |
+| `frontend/storage-keys.js` | **新增** — localStorage 键名常量 |
+| `frontend/chat.js` / `hub.js` / `knowledge.js` | 导航走 Alpine store |
+| `frontend/onboarding.js` | 使用 StorageKeys.ONBOARDING_DONE |
+
+**验证**：浏览器走查顶栏切换（萃取↔知识↔市场）、Hub 列表/详情、设置→技能 Tab。
+
+---
+
+## [2026-06-22] P0 产品路径 — 详情 Tab / 知识统一 / Onboarding / Finalize — Cursor Agent
+
+**背景 / 触发**：用户要求落地 P0：详情 Tab 4+更多、知识视图统一、3 步 onboarding、finalize 按钮统一。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/index.html` | 详情 4 Tab + 更多菜单；顶栏「知识」；隐藏 legacy 知识 main-view；onboarding 模态 |
+| `frontend/skills.js` | quality/evolution 复合 Tab；Alpine moreOpen |
+| `frontend/knowledge.js` | 所有 show* → showUnifiedKnowledge |
+| `frontend/onboarding.js` | 3 步首次引导（localStorage） |
+| `frontend/workspace.js` | syncFinalizeButton — 唯一生成入口 |
+| `frontend/app.js` | 搜索/快捷键对齐 |
+| `frontend/style.css` | detail-more / onboarding / composite section |
+
+**验证**：纯前端；需浏览器手动走查 onboarding + 详情 Tab + 知识侧栏。
+
+---
+
+## [2026-06-22] 前端 v8 Atelier 重设计 + 文档快照同步 — Cursor Agent
+
+**背景 / 触发**：用户要求更新项目快照/CHANGELOG，并对前端页面整体重新设计。
+
+**设计方向**：Atelier 工坊美学 — 暖炭底、铜色 accent、Syne+DM Sans 字体、ambient 噪点背景；保留全部 CSS 类名与 Alpine/JS 契约。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/style.css` | v7→**v8 Atelier** 设计系统整体重写（色彩/字体/布局层次） |
+| `frontend/index.html` | 字体 CDN、ambient 背景层、welcome hero、css v8 |
+| `frontend/login.html` | 登录页对齐 v8 视觉 |
+| `CHANGELOG.md` | **v0.3.1** + v0.3.0 commit 数修正 |
+| `docs/AI_DEV_LOG.md` | 项目快照 → 2026-06-22 |
+
+**验证**：纯前端 CSS/HTML，类名未改；`style.css` 选择器与 v7 兼容。
+
+**开放问题 / 下一步**：全量 pytest 重跑；localStorage key 统一常量；21 个历史失败单测 triage。
+
+---
+
+## [2026-06-20] 修复对话萃取前端无响应 — Claude Code
+
+**背景 / 触发**：用户反馈「对话萃取，前端无响应」——点击发送消息后萃取流程无反应，生成技能按钮不出现。
+
+**根因分析**（4 个 bug）：
+1. **localStorage key 不匹配**：session 写入 `sd_session`，但 `finalizeSkill()` 和 `uploadFile()` 读取 `skillos_session_id` → 永远拿到空值
+2. **SSE 流式请求缺 auth headers**：`sendTextStream()` 用裸 `fetch()` 而非 `api()` helper → 登录用户丢 tenant/user context
+3. **`finalize-btn` 流式路径从不显示**：streaming `done` 事件处理缺失按钮展示逻辑；非流式路径同样缺失
+4. **后端 streaming `done` 事件缺 `skill_active`**：前端无法判断是否该展示按钮
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/chat.js:13` | `skillos_session_id` → `sd_session`（2 处：finalizeSkill + uploadFile） |
+| `frontend/chat.js:660` | `sendTextStream()` 的 `fetch()` 添加 `authHeaders()` |
+| `frontend/chat.js:688-691` | streaming `done` 事件：解析 `skill_active` 并据此显示/隐藏 `#finalize-btn` |
+| `frontend/chat.js:179-189` | 非流式路径：添加 `#finalize-btn` 显示逻辑（`skill_active \|\| draft_saved`） |
+| `frontend/index.html:830` | `#finalize-btn` 的 `color:var(--on-primary)` → `color:#fff`（变量未定义导致文字不可见） |
+| `skillos/api/skills_extract.py:978` | streaming `done` 事件添加 `skill_active` 字段 |
+
+**验证**：
+- `pytest tests/test_phase_a.py tests/test_production_extraction.py` → 20 passed，1 pre-existing failure（`_skills_list` mock 路径过期，与本次无关）
+
+**开放问题 / 下一步**：
+- `localStorage` key 应统一为一个常量，避免再次出现 key 散落各处的问题
+- 后续可清理 `skillos_session_id` 的残留引用（alpine-bridge.js:154, auth.js:73）
+
+---
+
+## [2026-06-20] 按钮圆角优化 — Claude Code
+
+**背景 / 触发**：用户反馈「按钮和相关圆角，设计的不好看」。当前 r-sm=6px 使按钮近乎直角，36px 高度按钮的 radius/height 比仅 0.17，而 Linear/Vercel/Stripe 均为 8px (ratio 0.22)。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/style.css` | `--r-sm:6px→8px`：全局按钮/输入框/导航项圆角软化；`.msg.user` `border-bottom-right-radius:4→6px`；`.msg.ai` `border-bottom-left-radius:4→6px`；`.sb-tab` `border-radius:5→6px`；`.opt-btn` `border-radius:4→6px` |
+
+**验证**：纯 CSS 变更，radius 比例对齐行业标准（8px on 36px button = 0.22）
+
+**开放问题 / 下一步**：pill 元素（tab 20px, kb-filter 20px, welcome-chips 20px）后续可统一用 `--r-xl` 变量
+
+---
+
+## [2026-06-20] 字体微调 — v6→v7 refined scale — Claude Code
+
+**背景 / 触发**：v6 字体改革（14px base）后，用户反馈「整体字号太大了，显得不精致」。开发者工具需要更紧凑的排版。
+
+**修改思路**：
+1. base 14px → **13px**（Linear 的基准线）
+2. 全 scale 等比例回调 ~1-2px：md:16→14, lg:18→16, xl:22→20, 2xl:28→24, 3xl:36→30
+3. 行高收紧：body 1.6→1.5, doc 1.75→1.65
+4. 字间距归零：body letter-spacing: 0
+5. HTML 内联样式上次 10→11→12→13→14 级联塌缩（所有尺寸变成 14px），本次手动恢复层次：badge 类元素 11px，compact label 12px，正文保持 13-14px
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/style.css` | v6→v7：type scale 全面回调 1-2px，body 13px/1.5，btn 36px，input padding 复原 8px 12px |
+| `frontend/index.html` | 修复级联塌缩：model ID/当前 badge/extract banner/bench/account status/全选→11px；workspace select/label/gate label/sort buttons→12px；保留正文级 14px |
+
+**验证**：
+- 纯 CSS/HTML 变更，无需跑 pytest
+- 基准 13px 匹配 Linear 的开发者工具定位
+- 层次恢复：11px(badge) → 12px(compact) → 13px(body) → 14px(emphasis) → 16px(h3) → 20px(h2) → 24px(h1)
+
+**未修改 / 刻意不做**：
+- 不改 JS 逻辑
+- 不引入构建工具处理 CSS
+- 部分内联 14px（如 form input）保持不动——它们作为正文字号合理
+
+**开放问题 / 下一步**：
+- 后续可持续观察用户反馈微调
+- 可考虑将重复内联 style 提取为 CSS class
+
+---
+
+## [2026-06-22] 生态集成引导 + 按钮事件修复 — Claude Code
+
+**背景 / 触发**：研究 Claude Code `claude-code-setup` 插件生态（hooks/MCP/subagents/automations），发现 SkillOS 萃取流程缺少"技能在生态中的位置"引导。用户生成技能后不知道该配合什么 hooks、MCP 使用。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/agent.py` | 新增 `_ecosystem_turn()` 方法（5 层生态建议）；`_handle_impl` 路由识别"生态集成"关键词 |
+| `skillos/skills/agent_generation.py` | SKILL.md 格式新增 `## Ecosystem` 章节；质量通过提示增加"生态集成"选项 |
+| `frontend/workspace.js` | 进度卡底部增加生态提示"生成后可配合 hooks·MCP·subagents 使用" |
+
+**验证**：Backend 19 passed, E2E 0 PAGE ERRORs
+
+---
+
+## [2026-06-22] Anthropic Skill 设计洞察落实 + 按钮事件修复 — Claude Code
+
+**背景 / 触发**：阅读 Anthropic 官方博客《Lessons from building Claude Code: How we use skills》，提取 5 个核心洞察（Skill=Context Engineering、Gotchas最有价值、Description是路由规则、Instructions≠Scripts、轻量Marketplace）并落实到萃取流程。同时修复设置页 Alpine `@click` 在 `x-if → x-for` 嵌套中静默失效的 bug。
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/agent.py` | `_PROBE_ORDER` 从 5→6 维，新增 `gotchas`（常见坑点/容易出错的地方）；`_PROBE_DESCRIPTIONS` 同步更新 |
+| `skillos/skills/agent_generation.py` | `tool_description` 提示改为路由规则（"用户说什么话触发"）；SKILL.md 输出格式新增 `## Gotchas` 章节 |
+| `frontend/workspace.js` | 进度卡提示语加入 gotchas 引导（"多说说容易出错的地方"）；进度阈值调至 50%/80% 两档 |
+| `frontend/settings.js` | 新增 `renderModelList()` 纯 JS 渲染（替代 Alpine `x-for`）；所有模态框函数加原生 DOM 兜底路径 |
+| `frontend/index.html` | 模型卡片从 Alpine 模板改为 `#model-list-container` 占位；BYOK/Pro 按钮加 `onclick` |
+| `frontend/style.css` | 去掉 `.main-view`/`#main`/`body` 的 `overflow:hidden`，修复模态框被裁剪 |
+
+**验证**：
+- Backend: `pytest tests/` → 43 passed, 3 pre-existing failures
+- E2E: `python test_e2e.py` → 7/7 sections, 0 PAGE ERRORs, 设置模型编辑 OK
+- Gotchas probe: `_PROBE_ORDER` 确认 6 维（trigger/input/steps/output/edge_cases/gotchas）
+
+**开放问题 / 下一步**：
+- 其他 `x-if` 内 `@click`（Hub 技能卡片、管理后台按钮）可同样加 onclick 兜底
+- Gotchas 苏格拉底追问语可在 `_DOMAIN_OPENINGS` 中进一步细化
+- 考虑在萃取工作台展示文件夹结构（SKILL.md + references/ + scripts/ + examples/ + assets/）
+
+---
+
+## [2026-06-20] 专业字体排版重构 — Claude Code
+
+**背景 / 触发**：用户反馈「字体，字号的设计依然不专业」。CI 中对 UI 设计质量的持续追踪。上一版设计参考了 Linear/Vercel/Stripe/Notion，但字体 scale 偏小（base 12px），缺少专业字体栈（无 Inter），行高/字间距缺乏系统性。
+
+**修改思路**：
+1. **字体基准从 12px → 14px**：行业标准（Linear 13px, Vercel 14px, Notion 14px, Stripe 15px），开发者工具的甜点位
+2. **1.20 模数比例**：--t-xs:11 / --t-sm:12 / --t-base:14 / --t-md:16 / --t-lg:18 / --t-xl:22 / --t-2xl:28 / --t-3xl:36
+3. **专业字体栈**：Inter (Google Fonts CDN) → system-ui → PingFang SC → HarmonyOS Sans → Noto Sans SC → Microsoft YaHei。等宽字体加入 Cascadia Code
+4. **行高系统**：正文 1.6, 标题 1.2-1.3, UI 单行 1
+5. **字间距系统**：标题 -0.03em → -0.01em 梯度，正文 -0.01em
+
+**修改内容**：
+| 文件 | 说明 |
+|------|------|
+| `frontend/style.css` | v5→v6：type scale 全面升级，字体栈加入 Inter + 更好 CJK fallback，行高/字间距系统化，组件样式同步更新（btn height 36→38px, input padding 增大, 文档排版优化） |
+| `frontend/index.html` | `<head>` 加入 Inter Google Fonts CDN（preconnect + 400/500/600/700/800 weight），内联 `font-size` 系统性上移（10→11, 11→12, 12→13, 13→14），保留细节标签分隔线为 11px |
+
+**验证**：
+- 前端 CSS/HTML 变更，不涉及 Python 后端，无需跑 pytest
+- 视觉验证：字体栈在 Windows (Segoe UI + Microsoft YaHei)、macOS (SF Pro + PingFang SC)、Android (HarmonyOS Sans) 均有恰当 fallback
+- Inter 通过 Google Fonts CDN 加载，`font-display:swap` 确保无闪烁
+
+**未修改 / 刻意不做**：
+- 不做暗色/亮色主题切换 — 保持单一暗色主题
+- 不重构 CSS 架构（BEM/Utility class） — 保持现有链式规则风格，避免引入构建工具
+- 不修改 JS 逻辑 — 纯视觉变更
+- 内联 style 中的 `font-size` 做了系统性批量替换（10→11→12→13→14），未逐个元素调整 — 14px 作为最低可读尺寸对多数 UI 元素合理
+
+**开放问题 / 下一步**：
+- 后续可考虑将高频内联 style 提取为 CSS utility class
+- 移动端 responsive 断点（768px）的排版可进一步微调
+- 可加入 `font-variant-numeric: tabular-nums` 用于表格数字对齐
+
+---
+
 ## [2026-06-19] Phase 1.6 — agent.py 继续拆分 + audit 修复 — Claude Code
 
 **背景 / 触发**：继续 Week 3-4 路线图（agent.py 拆分）+ Week 5（benchmark audit 评分修复）。
@@ -1146,25 +1736,39 @@ export SKILLOS_MCP_TOKEN=<jwt>     # MCP 写入 personal/org tenant
 
 ---
 
-## 项目快照（截至 2026-06-18，供新工具快速对齐）
+## 项目快照（截至 2026-06-24，供新工具快速对齐）
+
+| 项 | 值 |
+|----|-----|
+| 定位 | AI Skill Operating System — **Verified Skill 验货与导出控制台** |
+| 规模 | **167+** Python 模块 · **612** pytest collected · **93** git commits |
+| 前端 | **M0–M5 已交付**（叙事→完成态→沉淀线→苏格拉底 IDE→导出通道→知识透镜） |
+| 设计 | v8 Atelier · `style.css` v17 · DOM 直渲染聊天 |
+| 认识论 | 5 条路径贯通 · precipitation 结果卡片三路径共用 |
+| 对外入口 | FastAPI `:9876` · MCP · Web 门户 |
+| 版本 | CHANGELOG **v0.3.3**（未 tag） |
+
+---
+
+## 项目快照（截至 2026-06-22，供新工具快速对齐）
 
 | 项 | 值 |
 |----|-----|
 | 定位 | AI Skill Operating System — 创建 / 验证 / 进化 Agent Skills（AgentSkills.io 标准） |
-| 规模 | ~159 Python 模块（`skillos/`），501 pytest collected；全量 **478 passed / 21 failed / 2 skipped**（2026-06-18，`--ignore=tests/test_feasibility_eval.py`） |
-| 三层 DNA | L0 哲学（`philosophical_dna.py`）· L1 领域 pack（`domain_pack.py`，10 个 JSON）· L2 技能结构（`pattern_miner.py`） |
-| Path B | `cold_start.py` — anchor rubric → HERITAGE → pack 持久化 |
-| 本地 Bench | median 泛化 domain Quick8 Δ **+45** · 回归 **ALL PASS** · ablation heritage+pack 缺一不可 |
-| 核心模块 | `skills/agent.py`（萃取）、`knowledge/epistemology.py`（认识论）、`evaluation/ablation.py`（Layer 1） |
-| 对外入口 | FastAPI `:9876`、`skillos-mcp`、桌面 `skillos` |
-| 设计文档 | `DESIGN.md` §4.0d · [`docs/BENCHMARK_LOCAL.md`](BENCHMARK_LOCAL.md) · [`docs/SKILLSBENCH_CI.md`](SKILLSBENCH_CI.md) |
-| 版本 | CHANGELOG **v0.3.0 草案**（未 tag） |
+| 规模 | **167** Python 模块 · **605** pytest collected · **93** git commits |
+| 架构 | `agent.py` ~1754L · `skills_extract.py` ~1200L · `api/skills.py` ~923L |
+| 三层 DNA | L0 哲学 · L1 领域 pack（10 JSON）· L2 技能结构 |
+| Path B / Bench | 泛化 median Δ **+45** · ablation heritage+pack 缺一不可 |
+| 前端 | **v8 Atelier**（Syne + DM Sans + 铜色 accent）· Alpine.js 13 view |
+| 认识论 | 5 条路径贯通（generate/url/confirm/explore/refine） |
+| 对外入口 | FastAPI `:9876` · MCP · Web 门户 |
+| 版本 | CHANGELOG **v0.3.1**（未 tag） |
 
 ---
 
 *以下为新会话记录区 — 请在每次修改后于「记录模板」下方、本行之上插入新条目。*
 
-## 项目快照（历史 · 2026-06-14）
+## 项目快照（历史 · 2026-06-18）
 
 | 项 | 值 |
 |----|-----|

@@ -1,6 +1,11 @@
 /* intelligence.js — role templates, SkillOpt CLI hints */
 
 function renderMermaidInto(elId, code) {
+  if (window._mermaidFailed || typeof mermaid === 'undefined') {
+    var el = document.getElementById(elId);
+    if (el) el.textContent = code || '';
+    return;
+  }
   if (typeof mermaid === 'undefined' || !code) return;
   var el = document.getElementById(elId);
   if (!el) return;
@@ -49,7 +54,7 @@ async function showRoleTemplate(roleId) {
     if (d.metaskill_blueprint && d.metaskill_blueprint.mermaid) {
       var mid = 'role-dag-' + roleId.replace(/[^a-z0-9]/gi, '');
       h += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">MetaSkill 蓝图 · ' + escHtml(d.metaskill_blueprint.name) + '</div>';
-      h += '<div style="overflow:auto;background:var(--srf);border-radius:8px;padding:12px;margin-bottom:12px">';
+      h += '<div style="overflow:auto;background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:12px">';
       h += '<pre class="mermaid" id="' + mid + '" style="margin:0;background:transparent"></pre></div>';
     }
 

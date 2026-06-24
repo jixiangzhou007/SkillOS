@@ -3,30 +3,28 @@
  * Legacy functions kept as thin wrappers for backward compat.
  */
 
-// Legacy globals — aliased via alpine-bridge.js getter/setter
-var _authUser = '';
-var _authWorkspace = null;
+// Legacy globals — now managed by alpine-bridge.js Object.defineProperty aliases
 
 function getAuthToken() {
-  try { return Alpine.store('auth').token; } catch (e) { return localStorage.getItem('sd_auth_token') || ''; }
+  try { return Alpine.store('auth').token; } catch (e) { return localStorage.getItem(StorageKeys.AUTH_TOKEN) || ''; }
 }
 
 function authHeaders() {
   try { return Alpine.store('auth').authHeaders(); } catch (e) {
-    const token = localStorage.getItem('sd_auth_token') || '';
+    const token = localStorage.getItem(StorageKeys.AUTH_TOKEN) || '';
     return token ? { Authorization: 'Bearer ' + token } : {};
   }
 }
 
 function saveAuthSession(data) {
   try { Alpine.store('auth').saveSession(data); } catch (e) {
-    if (data.token) localStorage.setItem('sd_auth_token', data.token);
+    if (data.token) localStorage.setItem(StorageKeys.AUTH_TOKEN, data.token);
     if (data.user && data.user.username) {
-      localStorage.setItem('sd_user', data.user.username);
+      localStorage.setItem(StorageKeys.USER, data.user.username);
       _authUser = data.user.username;
     }
     if (data.workspace) {
-      localStorage.setItem('sd_workspace', JSON.stringify(data.workspace));
+      localStorage.setItem(StorageKeys.WORKSPACE, JSON.stringify(data.workspace));
       _authWorkspace = data.workspace;
     }
   }
@@ -35,7 +33,7 @@ function saveAuthSession(data) {
 function updateUserUI(me) {
   // Alpine bindings handle this reactively. Kept for backward compat.
   const user = (me && me.user) || {};
-  const name = user.username || localStorage.getItem('sd_user') || '用户';
+  const name = user.username || localStorage.getItem(StorageKeys.USER) || '用户';
   _authUser = name;
   try { Alpine.store('auth').user = name; } catch (e) {}
   try { if (me && me.workspace) Alpine.store('auth').workspace = me.workspace; } catch (e) {}
@@ -70,7 +68,7 @@ async function switchWorkspace(tenantId) {
       const d = await r.json();
       saveAuthSession(d);
       updateUserUI({ user: d.user, workspace: d.workspace });
-      _sessionId = ''; localStorage.removeItem('sd_session'); localStorage.removeItem('skillos_session_id');
+      _sessionId = ''; localStorage.removeItem(StorageKeys.SESSION); localStorage.removeItem('skillos_session_id');
       if (typeof refreshSkillList === 'function') refreshSkillList();
       toast('已切换至 ' + (d.workspace.label || d.workspace.tenant_type), 'success');
     } catch (e2) { toast('切换工作区失败: ' + e2.message, 'err'); }
@@ -87,10 +85,10 @@ async function initAuth() {
       const r = await api('/api/auth/me');
       const d = await r.json();
       if (!d.user || d.user.error || d.user.username === 'anonymous') {
-        localStorage.removeItem('sd_auth_token'); localStorage.removeItem('sd_workspace');
+        localStorage.removeItem(StorageKeys.AUTH_TOKEN); localStorage.removeItem(StorageKeys.WORKSPACE);
         window.location.href = '/login.html'; return;
       }
-      if (d.workspace) localStorage.setItem('sd_workspace', JSON.stringify(d.workspace));
+      if (d.workspace) localStorage.setItem(StorageKeys.WORKSPACE, JSON.stringify(d.workspace));
       updateUserUI(d);
       await loadWorkspaces();
       if (typeof refreshSkillList === 'function') refreshSkillList();
@@ -103,7 +101,7 @@ async function initAuth() {
 function doLogout() {
   try { Alpine.store('auth').logout(); } catch (e) {
     _authUser = ''; _authWorkspace = null;
-    ['sd_auth_token', 'sd_token', 'sd_user', 'sd_workspace', 'sd_session'].forEach(k => localStorage.removeItem(k));
+    ['sd_auth_token', 'sd_token', 'sd_user', 'sd_workspace', 'sd_session', StorageKeys.AUTH_TOKEN, StorageKeys.USER, StorageKeys.WORKSPACE, StorageKeys.SESSION].forEach(function(k) { localStorage.removeItem(k); });
     window.location.href = '/login.html';
   }
 }

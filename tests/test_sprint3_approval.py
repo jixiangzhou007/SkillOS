@@ -121,7 +121,9 @@ class TestFeishuWebhook:
 
     def test_extract_message(self, client):
         mock_agent = MagicMock()
+        mock_agent.is_active = False
         mock_agent.start.return_value = "开始沉淀。"
+        mock_agent.handle.return_value = ("开始沉淀。", None)
 
         with patch("skillos.skills.agent.SkillExtractionAgent", return_value=mock_agent):
             r = client.post(

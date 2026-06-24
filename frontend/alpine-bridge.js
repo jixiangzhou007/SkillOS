@@ -12,6 +12,8 @@ document.addEventListener('alpine:init', () => {
 
   Alpine.store('nav', {
     currentView: 'chat-view',
+    primaryNav: 'extract',
+    knowledgeTab: 'dashboard',
     barVisible: true,
     dot: '',
     status: '就绪',
@@ -23,10 +25,26 @@ document.addEventListener('alpine:init', () => {
     navigate(viewId) {
       this.currentView = viewId;
       this.barVisible = (viewId === 'chat-view');
+      if (viewId === 'chat-view') this.primaryNav = 'extract';
+      else if (viewId === 'hub-view') this.primaryNav = 'market';
+      else if (viewId === 'knowledge-unified-view') this.primaryNav = 'knowledge';
+    },
+
+    goTo(viewId) {
+      this.navigate(viewId);
+      document.querySelectorAll('.main-view').forEach(function(v) { v.classList.remove('active'); });
+      var el = document.getElementById(viewId);
+      if (el) el.classList.add('active');
+      var bar = document.getElementById('bar');
+      if (bar) bar.style.display = (viewId === 'chat-view') ? 'flex' : 'none';
+    },
+
+    setPrimaryNav(id) {
+      this.primaryNav = id;
     },
 
     showChat() {
-      this.navigate('chat-view');
+      this.goTo('chat-view');
       this.currentSkill = null;
     },
 
@@ -40,10 +58,10 @@ document.addEventListener('alpine:init', () => {
   });
 
   Alpine.store('chat', {
-    mode: localStorage.getItem('sd_mode') || 'create',
-    selectedModel: localStorage.getItem('sd_model') || 'deepseek-v4-flash',
-    autoMode: localStorage.getItem('sd_auto') === 'true',
-    sessionId: localStorage.getItem('sd_session') || '',
+    mode: localStorage.getItem(StorageKeys.MODE) || 'create',
+    selectedModel: localStorage.getItem(StorageKeys.MODEL) || 'deepseek-v4-flash',
+    autoMode: localStorage.getItem(StorageKeys.AUTO) === 'true',
+    sessionId: localStorage.getItem(StorageKeys.SESSION) || '',
     ttsEnabled: true,
     messages: [],
 
@@ -55,28 +73,29 @@ document.addEventListener('alpine:init', () => {
 
     setMode(m) {
       this.mode = m;
-      localStorage.setItem('sd_mode', m);
+      localStorage.setItem(StorageKeys.MODE, m);
     },
 
     setModel(m) {
       this.selectedModel = m;
-      localStorage.setItem('sd_model', m);
+      localStorage.setItem(StorageKeys.MODEL, m);
     },
 
     setSessionId(id) {
       this.sessionId = id;
-      if (id) localStorage.setItem('sd_session', id);
+      if (id) localStorage.setItem(StorageKeys.SESSION, id);
+      else localStorage.removeItem(StorageKeys.SESSION);
     },
 
     toggleAuto() {
       this.autoMode = !this.autoMode;
-      localStorage.setItem('sd_auto', String(this.autoMode));
+      localStorage.setItem(StorageKeys.AUTO, String(this.autoMode));
     }
   });
 
   Alpine.store('auth', {
-    user: localStorage.getItem('sd_user') || '',
-    token: localStorage.getItem('sd_auth_token') || '',
+    user: localStorage.getItem(StorageKeys.USER) || '',
+    token: localStorage.getItem(StorageKeys.AUTH_TOKEN) || '',
     workspace: null,
     initialized: false,
 
@@ -98,15 +117,15 @@ document.addEventListener('alpine:init', () => {
     },
 
     saveSession(data) {
-      if (data.token) { this.token = data.token; localStorage.setItem('sd_auth_token', data.token); }
+      if (data.token) { this.token = data.token; localStorage.setItem(StorageKeys.AUTH_TOKEN, data.token); }
       if (data.user) {
         const name = data.user.username || data.user;
         this.user = typeof name === 'string' ? name : (data.user.username || '');
-        localStorage.setItem('sd_user', this.user);
+        localStorage.setItem(StorageKeys.USER, this.user);
       }
       if (data.workspace) {
         this.workspace = data.workspace;
-        localStorage.setItem('sd_workspace', JSON.stringify(data.workspace));
+        localStorage.setItem(StorageKeys.WORKSPACE, JSON.stringify(data.workspace));
       }
     },
 
@@ -150,7 +169,7 @@ document.addEventListener('alpine:init', () => {
         // Reset session
         const chatStore = Alpine.store('chat');
         chatStore.sessionId = '';
-        localStorage.removeItem('sd_session');
+        localStorage.removeItem(StorageKeys.SESSION);
         localStorage.removeItem('skillos_session_id');
         if (typeof refreshSkillList === 'function') refreshSkillList();
         toast('已切换至 ' + (d.workspace.label || d.workspace.tenant_type), 'success');
@@ -186,13 +205,13 @@ document.addEventListener('alpine:init', () => {
       this.user = '';
       this.token = '';
       this.workspace = null;
-      ['sd_auth_token', 'sd_token', 'sd_user', 'sd_workspace', 'sd_session'].forEach(k => localStorage.removeItem(k));
+      [StorageKeys.AUTH_TOKEN, StorageKeys.USER, StorageKeys.WORKSPACE, StorageKeys.SESSION, 'sd_auth_token', 'sd_token', 'sd_user', 'sd_workspace', 'sd_session'].forEach(function(k) { localStorage.removeItem(k); });
       window.location.href = '/login.html';
     },
 
     _clearAndRedirect() {
-      localStorage.removeItem('sd_auth_token');
-      localStorage.removeItem('sd_workspace');
+      localStorage.removeItem(StorageKeys.AUTH_TOKEN);
+      localStorage.removeItem(StorageKeys.WORKSPACE);
       window.location.href = '/login.html';
     }
   });

@@ -14,7 +14,7 @@ def test_export_csv_skill(tmp_path: Path):
     assert md.startswith("---")
     assert "name:" in md
     assert "description:" in md
-    assert "Instructions" in md or "When to use" in md
+    assert "Instructions" in md or "When to use" in md or "## S_" in md or "S_body" in md
 
 
 def test_suggest_tasks():

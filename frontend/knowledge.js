@@ -28,30 +28,23 @@ function _cycleStatusColor(status) {
 // ── UI helpers ────────────────────────────────────────
 
 function _viewHeader(title, subtitle) {
-  return '<div class="view-header"><button class="nav-sm" onclick="showChat()">← 返回</button><div><div style="font-size:16px;font-weight:600">'+escHtml(title)+'</div>'+(subtitle?'<div style="font-size:12px;color:var(--text3)">'+escHtml(subtitle)+'</div>':'')+'</div></div>';
+  return '<div class="knowledge-section-head"><div class="knowledge-section-title">'+escHtml(title)+'</div>'+(subtitle?'<div class="knowledge-section-sub">'+escHtml(subtitle)+'</div>':'')+'</div>';
+}
+
+function _emptyIcon(name) {
+  return typeof Icons !== 'undefined' && Icons.svg ? '<div class="empty-state-icon">'+Icons.svg(name)+'</div>' : '<div class="empty-state-icon"></div>';
 }
 
 function _quickNav(active) {
-  var items = [
-    {id:'dashboard',label:'仪表盘',icon:'📊',fn:'showDashboard()'},
-    {id:'graph',label:'图谱',icon:'🧠',fn:'showGraphView()'},
-    {id:'journal',label:'日志',icon:'📋',fn:'showJournalView()'},
-    {id:'knowledge',label:'知识库',icon:'📚',fn:'showKnowledgeView()'},
-    {id:'precipitate',label:'沉淀',icon:'⚗️',fn:'showPrecipitateView()'},
-    {id:'review',label:'审核',icon:'✅',fn:'showReviewView()'},
-    {id:'lineage',label:'血缘',icon:'🔗',fn:'showLineageView()'},
-  ];
-  return '<div class="tab-row" style="margin-bottom:16px;flex-wrap:wrap">'+items.map(function(i){
-    return '<button class="tab'+(i.id===active?' active':'')+'" onclick="'+i.fn+'">'+i.icon+' '+i.label+'</button>';
-  }).join('')+'</div>';
+  return '';
 }
 
 function _kpiCard(label, value, color, hint) {
-  return '<div class="dash-card"><div class="value" style="color:'+color+'">'+value+'</div><div class="label">'+label+'</div>'+(hint?'<div style="font-size:10px;color:var(--text3)">'+hint+'</div>':'')+'</div>';
+  return '<div class="dash-card"><div class="value kpi-value" style="--kpi-color:'+color+'">'+value+'</div><div class="label">'+label+'</div>'+(hint?'<div class="kpi-hint">'+hint+'</div>':'')+'</div>';
 }
 
 function _kpiToggle(id, label, value, color, hint) {
-  return '<div class="dash-card" style="cursor:pointer" onclick="toggleKPIDetail(\''+id+'\')"><div class="value" style="color:'+color+'">'+value+'</div><div class="label">'+label+'</div>'+(hint?'<div style="font-size:10px;color:var(--text3)">'+hint+'</div>':'')+'</div><div class="kpi-panel" id="kpi-panel-'+id+'"></div>';
+  return '<div class="dash-card kpi-toggle" onclick="toggleKPIDetail(\''+id+'\')"><div class="value kpi-value" style="--kpi-color:'+color+'">'+value+'</div><div class="label">'+label+'</div>'+(hint?'<div class="kpi-hint">'+hint+'</div>':'')+'</div><div class="kpi-panel" id="kpi-panel-'+id+'"></div>';
 }
 
 function toggleKPIDetail(id) {
@@ -100,7 +93,7 @@ function knowledgeView() {
     setCategory: function(cat) { this.filterCategory = this.filterCategory === cat ? '' : cat; },
     setStatus: function(s) { this.filterStatus = this.filterStatus === s ? 'all' : s; },
     levelLabel: function(level) {
-      var m = {knowledge:'✅ 已验证', experience:'📝 经验', evidence:'📄 证据', preference:'💭 偏好', error:'❌ 已证伪'};
+      var m = {knowledge:'已验证', experience:'经验', evidence:'证据', preference:'偏好', error:'已证伪'};
       return m[level] || level;
     },
     levelColor: function(level) {
@@ -112,37 +105,50 @@ function knowledgeView() {
 
 // ── Views ─────────────────────────────────────────────
 
-function showDashboard() { if(window.__alpineReady) Alpine.store('nav').navigate('dashboard-view'); else switchMainView('dashboard-view'); document.getElementById('bar').style.display='none'; loadDashboard(); }
-function showGraphView() { if(window.__alpineReady) Alpine.store('nav').navigate('graph-view'); else switchMainView('graph-view'); document.getElementById('bar').style.display='none'; loadGraphView(); }
-function showJournalView() { if(window.__alpineReady) Alpine.store('nav').navigate('journal-view'); else switchMainView('journal-view'); document.getElementById('bar').style.display='none'; loadJournalView(); }
-function showKnowledgeView() { if(window.__alpineReady) Alpine.store('nav').navigate('knowledge-view'); else switchMainView('knowledge-view'); document.getElementById('bar').style.display='none'; loadKnowledgeView(); }
-function showLineageView() { if(window.__alpineReady) Alpine.store('nav').navigate('lineage-view'); else switchMainView('lineage-view'); document.getElementById('bar').style.display='none'; loadLineageView(); }
-function showPrecipitateView() { if(window.__alpineReady) Alpine.store('nav').navigate('precipitate-view'); else switchMainView('precipitate-view'); document.getElementById('bar').style.display='none'; loadPrecipitateView(); }
-function showReviewView() { if(window.__alpineReady) Alpine.store('nav').navigate('review-view'); else switchMainView('review-view'); document.getElementById('bar').style.display='none'; loadReviewView(); }
+function showDashboard() { showUnifiedKnowledge('dashboard'); }
+function showGraphView() { showUnifiedKnowledge('graph'); }
+function showJournalView() { showUnifiedKnowledge('journal'); }
+function showKnowledgeView() { showUnifiedKnowledge('knowledge'); }
+function showLineageView() { showUnifiedKnowledge('lineage'); }
+function showPrecipitateView() { showUnifiedKnowledge('precipitate'); }
+function showReviewView() { showUnifiedKnowledge('review'); }
 
 // Dashboard
 
 async function loadDashboard() {
   var el = document.getElementById('dash-content'); if (!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:60px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载仪表盘…</div></div>';
+  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>';
   try {
-    var statsR = await api('/api/knowledge/stats'), recentR = await api('/api/knowledge/recent?limit=10');
-    if (!statsR.ok && !recentR.ok) throw new Error('API unavailable');
-    var stats = statsR.ok ? await statsR.json() : {}, recent = recentR.ok ? (await recentR.json()).items||[] : [];
-    var h = _viewHeader('知识仪表盘','知识库总览') + _quickNav('dashboard') +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px">'+
-      _kpiCard('知识节点',stats.total_nodes||0,'var(--accent)','概念、事实、技能')+
-      _kpiCard('已验证',stats.verified||0,'#10b981','Plato 四条件通过')+
-      _kpiCard('待验证',stats.pending||0,'var(--warn)','经验、声明待审核')+
-      _kpiCard('图谱边',stats.edges||0,'var(--info)','关系连接')+'</div>'+
-      '<div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px">最近活动</div>';
-    var dh = h + (recent.length ? recent.map(function(e){
-      return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;gap:8px"><span>'+(e.type==='knowledge_ingested'?'📥':e.type==='claim_verified'?'✅':'📌')+'</span><span style="flex:1;color:var(--text2)">'+escHtml(e.summary||e.content||'')+'</span><span style="color:var(--text3);white-space:nowrap">'+_eventLabel(e.type)+'</span></div>';
-    }).join('') : '<div style="color:var(--text3);font-size:12px;padding:20px">暂无活动</div>') + '</div>';
-    el.innerHTML = dh;
+    var results = await Promise.all([
+      api('/api/knowledge/metrics').catch(function(){ return null; }),
+      api('/api/knowledge/journal?limit=15').catch(function(){ return null; }),
+      api('/api/knowledge/graph/clusters').catch(function(){ return null; }),
+    ]);
+    var metrics = results[0]&&results[0].ok ? await results[0].json() : {};
+    var journal = results[1]&&results[1].ok ? await results[1].json() : {};
+    var clusters = results[2]&&results[2].ok ? await results[2].json() : {};
+    var events = journal.events || [];
+    var h = '<div class="knowledge-kpi-grid">'+
+      _kpiCard('总节点',clusters.total_nodes||'—','var(--accent)','知识图谱节点')+
+      _kpiCard('总边',clusters.total_edges||'—','var(--info)','关系连接数')+
+      _kpiCard('知识簇',(clusters.clusters||[]).length||'—','var(--a3)','自动聚类')+
+      _kpiCard('覆盖率',metrics.lineage_coverage_pct ? Math.round(metrics.lineage_coverage_pct)+'%' : '—','var(--warn)','血缘覆盖率')+'</div>'+
+      '<div class="content-card"><div class="content-card-header">知识图谱概览</div>';
+    if (clusters.clusters && clusters.clusters.length) {
+      h += '<table class="knowledge-table"><thead><tr><th>簇ID</th><th>标签</th><th>节点</th><th>凝聚度</th></tr></thead><tbody>';
+      clusters.clusters.forEach(function(c){
+        h += '<tr><td>'+c.id+'</td><td>'+escHtml(c.label||'')+'</td><td>'+c.nodes+'</td><td>'+Math.round((c.cohesion||0)*100)+'%</td></tr>';
+      });
+      h += '</tbody></table>';
+    } else h += '<div class="content-empty">暂无知识簇<br><small>积累更多知识后系统会自动发现聚类关系</small></div>';
+    h += '</div>'+
+      '<div class="content-card"><div class="content-card-header">最近事件</div>';
+    h += (events.length ? '<table class="knowledge-table"><thead><tr><th>时间</th><th>类型</th><th>内容</th></tr></thead><tbody>' + events.slice(0,10).map(function(e){
+      return '<tr><td class="knowledge-td-time">'+(e.timestamp||'').slice(0,16)+'</td><td>'+_eventLabel(e.type)+'</td><td>'+escHtml((e.summary||e.content||'').slice(0,60))+'</td></tr>';
+    }).join('') + '</tbody></table>' : '<div class="content-empty">暂无事件</div>') + '</div>';
+    el.innerHTML = h;
   } catch(e) {
-    el.innerHTML = _viewHeader('知识仪表盘','')+_quickNav('dashboard')+
-      '<div class="empty-state"><div class="icon">📊</div><div class="title">仪表盘暂不可用</div><div class="hint">请启动后端服务后重试<br><code style=\"font-size:11px\">skillos --server-only</code></div><button class=\"action-btn\" onclick=\"loadDashboard()\">重试</button></div>';
+    el.innerHTML = '<div class="empty-state">'+_emptyIcon('chart')+'<div class="title">概览暂不可用</div><div class="hint">请确认后端服务已启动</div><button class="btn-primary" onclick="loadDashboard()">重试</button></div>';
   }
 }
 
@@ -150,51 +156,66 @@ async function loadDashboard() {
 
 async function loadGraphView() {
   var el = document.getElementById('graph-content'); if (!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
-  // Original loading placeholder removed — using animated dots now
-  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载知识图谱…</div>';
+  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   try {
-    var r = await api('/api/knowledge/graph'), d = await r.json();
-    if (d.mermaid) {
-      el.innerHTML = _viewHeader('知识图谱','概念与关系网络')+_quickNav('graph')+'<div style="overflow:auto;background:var(--srf);border-radius:8px;padding:12px"><pre class="mermaid" id="kg-mermaid" style="margin:0;background:transparent">'+escHtml(d.mermaid)+'</pre></div>';
-      setTimeout(function(){renderMermaidInto('kg-mermaid',d.mermaid);},50);
-    } else el.innerHTML = _viewHeader('知识图谱','')+_quickNav('graph')+'<div style="color:var(--text3);padding:20px">暂无图谱数据</div>';
-    el.innerHTML += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:12px">'+_kpiCard('节点',d.total_nodes||0,'var(--accent)')+_kpiCard('边',d.total_edges||0,'var(--info)')+_kpiCard('簇',d.clusters||0,'var(--warn)')+'</div>';
-  } catch(e) { el.innerHTML = _viewHeader('知识图谱','')+_quickNav('graph')+'<div style="color:var(--err)">加载失败</div>'; }
+    var r = await api('/api/knowledge/graph/clusters'), d = await r.json();
+    var clusters = d.clusters || [];
+    var totalNodes = d.total_nodes || 0, totalEdges = d.total_edges || 0;
+    var h = _viewHeader('知识图谱','概念与关系网络');
+    h += '<div class="knowledge-kpi-grid">'+_kpiCard('节点',totalNodes,'var(--accent)')+_kpiCard('边',totalEdges,'var(--info)')+_kpiCard('簇',clusters.length,'var(--warn)')+'</div>';
+    if (clusters.length) {
+      h += '<div class="content-card"><div class="content-card-header">知识簇 ('+clusters.length+')</div>';
+      clusters.forEach(function(c) {
+        h += '<div class="content-row knowledge-cluster-row"><span class="knowledge-cluster-id">簇 '+c.id+'</span><span class="content-row-value">'+escHtml(c.label||'')+'</span><span class="content-row-meta">'+c.nodes+' 节点 · 凝聚度 '+Math.round((c.cohesion||0)*100)+'%</span></div>';
+      });
+      h += '</div>';
+    } else h += '<div class="content-empty">暂无知识簇数据<br><small>积累更多知识后，系统会自动发现知识之间的聚类关系</small></div>';
+    el.innerHTML = h;
+  } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('graph')+'<div class="title">加载失败</div><button class="btn-primary" onclick="loadGraphView()">重试</button></div>'; }
 }
 
 // Journal
 
 async function loadJournalView() {
   var el = document.getElementById('journal-content'); if (!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
-  // Original loading placeholder removed — using animated dots now
-  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载事件日志…</div>';
+  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>';
   try {
     var r = await api('/api/knowledge/journal?limit=50'), d = await r.json(), events = d.events||[];
-    el.innerHTML = _viewHeader('事件日志','知识库变更记录')+_quickNav('journal')+(events.length?events.map(function(e){return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;gap:8px"><span style="color:var(--text3);white-space:nowrap">'+(e.timestamp||'').substring(0,16)+'</span><span style="color:var(--accent);white-space:nowrap">'+_eventLabel(e.type)+'</span><span style="flex:1;color:var(--text2)">'+escHtml(e.summary||e.content||'')+'</span></div>';}).join(''):'<div style="color:var(--text3);padding:20px">暂无事件</div>')+'</div>';
-  } catch(e) { el.innerHTML = _viewHeader('事件日志','')+_quickNav('journal')+'<div style="color:var(--err)">加载失败</div>'; }
+    var h = _viewHeader('事件日志','知识库变更记录')+'<div class="content-card">';
+    h += events.length ? '<table class="knowledge-table"><thead><tr><th>时间</th><th>类型</th><th>内容</th></tr></thead><tbody>' + events.map(function(e){
+      return '<tr><td class="knowledge-td-time">'+(e.timestamp||'').slice(0,16)+'</td><td class="knowledge-td-type">'+_eventLabel(e.type)+'</td><td>'+escHtml((e.summary||e.content||'').slice(0,80))+'</td></tr>';
+    }).join('') + '</tbody></table>' : '<div class="content-empty">暂无事件<br><small>创建技能、摄入知识、验证声明后会自动记录</small></div>';
+    el.innerHTML = h + '</div>';
+  } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('journal')+'<div class="title">加载失败</div></div>'; }
+}
+
+async function loadPrecipitateView() {
+  var el = document.getElementById('precipitate-content'); if (!el) return;
+  el.innerHTML = _viewHeader('后台摄入','异步资料消化与队列 — 喂大脑，不是做 Skill')+
+    '<div class="content-card"><div class="content-card-header">手动触发摄入循环</div><button type="button" class="btn-primary" onclick="submitKnowledgeCycle()">启动摄入循环</button><div id="precipitate-progress" class="precipitate-progress"></div></div>'+
+    '<div class="content-card"><div class="content-card-header">最近摄入任务</div><div id="recent-cycle-tasks"><div class="content-empty">加载中…</div></div></div>';
+  loadRecentCycleTasks(); loadIngestionQueuePanel();
 }
 
 // Knowledge Browser (Alpine mount)
 
 function loadKnowledgeView() {
   var el = document.getElementById('knowledge-content'); if (!el) return;
-  el.innerHTML = _viewHeader('知识库','已验证知识 + 待审核经验')+_quickNav('knowledge')+
+  el.innerHTML = _viewHeader('知识库','已验证知识 + 待审核经验')+
     '<div x-data="knowledgeView()" x-init="init()">'+
-    '<template x-if="loading"><div style="color:var(--text3);padding:20px">加载知识库…</div></template>'+
+    '<template x-if="loading"><div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div></template>'+
     '<template x-if="!loading"><div>'+
-    '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
+    '<div class="kb-filter-row">'+
     '<span class="kb-filter" :class="{\'active-kb-filter\':filterStatus===\'all\'}" @click="setStatus(\'all\')">全部 (<span x-text="kpiTotal"></span>)</span>'+
     '<span class="kb-filter" :class="{\'active-kb-filter\':filterStatus===\'knowledge\'}" @click="setStatus(\'knowledge\')">已验证 (<span x-text="kpiKnowledge"></span>)</span>'+
     '<span class="kb-filter" :class="{\'active-kb-filter\':filterStatus===\'experience\'}" @click="setStatus(\'experience\')">经验 (<span x-text="kpiExperience"></span>)</span>'+
     '<span class="kb-filter" :class="{\'active-kb-filter\':filterStatus===\'pending\'}" @click="setStatus(\'pending\')">待审核 (<span x-text="kpiPending"></span>)</span></div>'+
-    '<template x-if="categories.length"><div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">'+
+    '<template x-if="categories.length"><div class="kb-filter-row kb-filter-cats">'+
     '<template x-for="cat in categories" :key="cat"><span class="kb-filter" :class="{\'active-kb-filter\':filterCategory===cat}" @click="setCategory(cat)" x-text="cat"></span></template></div></template>'+
-    '<template x-if="!filteredItems.length"><div style="color:var(--text3);padding:20px">暂无匹配项</div></template>'+
-    '<template x-for="item in filteredItems" :key="item.id||item.content"><div style="padding:10px 0;border-bottom:1px solid var(--border)">'+
-    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span :style="\'color:\'+levelColor(item.level)" x-text="levelLabel(item.level)"></span><span style="font-size:11px;color:var(--text3)" x-text="item.category||\'\'"></span><span style="flex:1"></span><span style="font-size:10px;color:var(--text3)" x-text="(item.source||\'\').substring(0,30)"></span></div>'+
-    '<div style="font-size:13px;color:var(--text)" x-text="item.content||\'\'"></div></div></template></div></template></div>';
+    '<template x-if="!filteredItems.length"><div class="content-empty">暂无匹配项</div></template>'+
+    '<template x-for="item in filteredItems" :key="item.id||item.content"><div class="content-row kb-item-row">'+
+    '<span class="kb-level" :style="\'color:\'+levelColor(item.level)" x-text="levelLabel(item.level)"></span><span class="kb-cat" x-text="item.category||\'\'"></span><span class="kb-spacer"></span><span class="kb-source" x-text="(item.source||\'\').substring(0,30)"></span>'+
+    '<div class="kb-item-body" x-text="item.content||\'\'"></div></div></template></div></template></div>';
   setTimeout(function(){ var m = el.querySelector('[x-data]'); if (m && !m.__x && typeof Alpine!=='undefined') Alpine.initTree(m); }, 10);
 }
 
@@ -202,51 +223,45 @@ function loadKnowledgeView() {
 
 async function loadLineageView() {
   var el = document.getElementById('lineage-content'); if (!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
-  // Original loading placeholder removed — using animated dots now
-  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载数据血缘…</div>';
+  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   try {
     var r = await api('/api/knowledge/lineage'), d = await r.json();
+    var h = _viewHeader('数据血缘','从源头到知识的完整链路');
     if (d.mermaid) {
-      el.innerHTML = _viewHeader('数据血缘','从源头到知识的完整链路')+_quickNav('lineage')+'<div style="overflow:auto;background:var(--srf);border-radius:8px;padding:12px;margin-bottom:12px"><pre class="mermaid" id="lineage-mermaid" style="margin:0;background:transparent">'+escHtml(d.mermaid)+'</pre></div><div style="display:flex;gap:8px"><button class="nav-sm" onclick="handleLineageZoom(this)">🔍 全屏</button></div>';
+      h += '<div class="content-card lineage-card"><pre class="mermaid" id="lineage-mermaid">'+escHtml(d.mermaid)+'</pre></div><div class="lineage-actions"><button type="button" class="nav-sm lineage-zoom-btn" onclick="handleLineageZoom(this)"><span class="nav-icon" data-icon="zoom"></span>全屏</button></div>';
+      el.innerHTML = h;
+      if (typeof hydrateIcons === 'function') hydrateIcons(el);
       setTimeout(function(){renderMermaidInto('lineage-mermaid',d.mermaid);},50);
-    } else el.innerHTML = _viewHeader('数据血缘','')+_quickNav('lineage')+'<div style="color:var(--text3);padding:20px">暂无血缘数据</div>';
-  } catch(e) { el.innerHTML = _viewHeader('数据血缘','')+_quickNav('lineage')+'<div style="color:var(--err)">加载失败</div>'; }
+    } else {
+      el.innerHTML = h + '<div class="content-empty">暂无血缘数据</div>';
+    }
+  } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('link')+'<div class="title">加载失败</div></div>'; }
 }
 
 function loadLineageGraph(sessionId) {
   var el = document.getElementById('lineage-content'); if (!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
-  // Original loading placeholder removed — using animated dots now
-  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载会话血缘…</div>';
+  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   api('/api/knowledge/lineage?session_id='+encodeURIComponent(sessionId)).then(function(r){return r.json()}).then(function(d){
-    if (d.mermaid) { el.innerHTML = _viewHeader('数据血缘','会话: '+sessionId)+_quickNav('lineage')+'<div style="overflow:auto;background:var(--srf);border-radius:8px;padding:12px"><pre class="mermaid" id="lineage-mermaid">'+escHtml(d.mermaid)+'</pre></div>'; setTimeout(function(){renderMermaidInto('lineage-mermaid',d.mermaid);},50); }
+    if (d.mermaid) {
+      el.innerHTML = _viewHeader('数据血缘','会话: '+sessionId)+'<div class="content-card lineage-card"><pre class="mermaid" id="lineage-mermaid">'+escHtml(d.mermaid)+'</pre></div>';
+      setTimeout(function(){renderMermaidInto('lineage-mermaid',d.mermaid);},50);
+    }
   });
-}
-
-// Precipitate
-
-function loadPrecipitateView() {
-  var el = document.getElementById('precipitate-content'); if (!el) return;
-  el.innerHTML = _viewHeader('知识沉淀','异步摄入与消化循环')+_quickNav('precipitate')+
-    '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px"><div style="font-size:14px;font-weight:600;margin-bottom:8px">手动触发沉淀</div><button class="btn a" style="font-size:13px;padding:8px 20px" onclick="submitKnowledgeCycle()">▶ 启动知识沉淀循环</button><div id="precipitate-progress" style="margin-top:12px"></div></div>'+
-    '<div style="margin-top:16px"><div style="font-size:14px;font-weight:600;margin-bottom:8px">最近沉淀任务</div><div id="recent-cycle-tasks">加载中…</div></div>';
-  loadRecentCycleTasks(); loadIngestionQueuePanel();
 }
 
 // Review
 
 async function loadReviewView() {
   var el = document.getElementById('review-content'); if (!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:40px 0"><div class="typing-dots"><span></span><span></span><span></span></div><div style="font:400 11px/1.5 var(--font);color:var(--text3);margin-top:12px">加载中…</div></div>';
-  // Original loading placeholder removed — using animated dots now
-  if (false) el.innerHTML = '<div style="color:var(--text3);padding:20px">加载审核队列…</div>';
+  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>';
   try {
-    var r = await api('/api/knowledge/review-queue'), d = await r.json(), items = d.items||[];
-    el.innerHTML = _viewHeader('审核队列','待确认的经验与声明')+_quickNav('review')+(items.length?items.map(function(item){
-      return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px"><div style="font-size:13px;color:var(--text);margin-bottom:6px">'+escHtml(item.content||item.claim||'')+'</div><div style="font-size:11px;color:var(--text3);margin-bottom:8px">来源: '+escHtml(item.source||'')+' · 置信度: '+(item.confidence||0)+'</div><div style="display:flex;gap:6px"><button class="nav-sm" style="border-color:var(--accent);color:var(--accent);font-size:10px" onclick="confirmReviewItem(\''+(item.id||'')+'\',true)">确认</button><button class="nav-sm" style="color:var(--err);font-size:10px" onclick="confirmReviewItem(\''+(item.id||'')+'\',false)">驳回</button></div></div>';
-    }).join(''):'<div style="color:var(--text3);padding:20px">暂无待审核项</div>')+'</div>';
-  } catch(e) { el.innerHTML = _viewHeader('审核队列','')+_quickNav('review')+'<div style="color:var(--err)">加载失败</div>'; }
+    var r = await api('/api/knowledge/review'), d = await r.json(), items = d.items||[];
+    var h = _viewHeader('审核队列','待确认的经验与声明');
+    h += items.length ? items.map(function(item){
+      return '<div class="content-card review-card"><div class="review-card-body">'+escHtml(item.content||item.claim||'')+'</div><div class="review-card-meta"><span>来源: '+escHtml(item.source||'—')+'</span><span>置信度: '+(item.confidence||'—')+'</span></div><div class="review-card-actions"><button type="button" class="btn-primary btn-sm" onclick="confirmReviewItem(\''+(item.id||'')+'\',true)">确认</button><button type="button" class="btn-ghost btn-sm review-reject" onclick="confirmReviewItem(\''+(item.id||'')+'\',false)">驳回</button></div></div>';
+    }).join('') : '<div class="content-empty">暂无待审核项<br><small>知识摄入后，系统会自动生成审核项</small></div>';
+    el.innerHTML = h;
+  } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('review')+'<div class="title">加载失败</div></div>'; }
 }
 
 async function confirmReviewItem(id, approved) {
@@ -261,7 +276,7 @@ function _stopCyclePoll() { if (_cyclePollTimer) { clearInterval(_cyclePollTimer
 
 function _renderCycleProgress(task) {
   var pct = task.progress||0;
-  return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;font-weight:600">'+escHtml(task.label||task.task_id)+'</span><span style="font-size:11px;color:'+_cycleStatusColor(task.status)+'">'+(_CYCLE_STATUS_LABELS[task.status]||task.status)+'</span></div><div style="height:6px;background:#222;border-radius:3px;margin-bottom:4px"><div style="height:100%;background:var(--accent);border-radius:3px;width:'+pct+'%"></div></div><div style="font-size:10px;color:var(--text3)">'+escHtml(task.message||'')+'</div></div>';
+  return '<div class="content-card cycle-card"><div class="cycle-card-head"><span class="cycle-card-title">'+escHtml(task.label||task.task_id)+'</span><span class="cycle-card-status" style="color:'+_cycleStatusColor(task.status)+'">'+(_CYCLE_STATUS_LABELS[task.status]||task.status)+'</span></div><div class="cycle-progress-bar"><div class="cycle-progress-fill" style="width:'+pct+'%"></div></div><div class="cycle-card-msg">'+escHtml(task.message||'')+'</div></div>';
 }
 
 function pollKnowledgeCycle(taskId, onUpdate, onDone) {
@@ -283,7 +298,7 @@ async function submitKnowledgeCycle() {
     var progressEl = document.getElementById('precipitate-progress');
     if (progressEl) {
       pollKnowledgeCycle(taskId, function(task){ if(progressEl) progressEl.innerHTML = _renderCycleProgress(task); }, function(result){
-        if(progressEl) progressEl.innerHTML = (result.status==='completed'?'✅ 沉淀完成':'❌ 沉淀失败: '+escHtml(result.message||''))+'<br>'+_renderCycleProgress(result);
+        if(progressEl) progressEl.innerHTML = '<div class="cycle-result '+(result.status==='completed'?'ok':'err')+'">'+(result.status==='completed'?'沉淀完成':'沉淀失败: '+escHtml(result.message||''))+'</div>'+_renderCycleProgress(result);
         loadRecentCycleTasks();
       });
     }
@@ -295,8 +310,17 @@ async function loadRecentCycleTasks() {
   var el = document.getElementById('recent-cycle-tasks'); if (!el) return;
   try {
     var r = await api('/api/knowledge/cycle-tasks?limit=5'), d = await r.json(), tasks = d.tasks||[];
-    el.innerHTML = tasks.length ? tasks.map(function(t){return _renderCycleProgress(t);}).join('') : '<div style="color:var(--text3);font-size:12px">暂无沉淀任务</div>';
-  } catch(e) { el.innerHTML = '<div style="color:var(--err);font-size:12px">加载失败</div>'; }
+    el.innerHTML = tasks.length ? tasks.map(function(t){return _renderCycleProgress(t);}).join('') : '<div class="content-empty">暂无沉淀任务</div>';
+  } catch(e) { el.innerHTML = '<div class="content-empty content-empty-err">加载失败</div>'; }
+}
+
+async function loadIngestionQueuePanel() {
+  var el = document.getElementById('recent-cycle-tasks'); if (!el) return;
+  try {
+    var r = await api('/api/knowledge/ingestion-queue'), d = await r.json(), items = d.items||[];
+    if (items.length) el.innerHTML = (el.innerHTML||'')+'<div class="content-card ingest-queue-card"><div class="content-card-header">摄入队列 ('+items.length+')</div>'+items.map(function(i){return '<div class="ingest-queue-item"><span class="nav-icon" data-icon="file"></span>'+escHtml(i.source||i.url||'')+' <span class="ingest-queue-status">'+(i.status||'queued')+'</span></div>';}).join('')+'</div>';
+    if (typeof hydrateIcons === 'function') hydrateIcons(el);
+  } catch(e) {}
 }
 
 function resumeCycleTask(taskId) {
@@ -304,12 +328,85 @@ function resumeCycleTask(taskId) {
   api('/api/knowledge/cycle/'+encodeURIComponent(taskId)+'/resume',{method:'POST'}).then(function(){toast('任务已恢复','success');showPrecipitateView();});
 }
 
-async function loadIngestionQueuePanel() {
-  var el = document.getElementById('recent-cycle-tasks'); if (!el) return;
-  try {
-    var r = await api('/api/knowledge/ingestion-queue'), d = await r.json(), items = d.items||[];
-    if (items.length) el.innerHTML = (el.innerHTML||'')+'<div style="margin-top:16px"><div style="font-size:14px;font-weight:600;margin-bottom:8px">摄入队列 ('+items.length+')</div>'+items.map(function(i){return '<div style="padding:4px 0;font-size:11px;color:var(--text2)">📄 '+escHtml(i.source||i.url||'')+' <span style="color:var(--text3)">'+(i.status||'queued')+'</span></div>';}).join('')+'</div>';
-  } catch(e) {}
+// ── Unified Knowledge View ──────────────────────────────
+
+function showUnifiedKnowledge(tab) {
+  tab = tab || 'dashboard';
+  if (window.__alpineReady && typeof Alpine !== 'undefined' && Alpine.store('nav')) {
+    Alpine.store('nav').goTo('knowledge-unified-view');
+  } else if (typeof switchMainView === 'function') {
+    switchMainView('knowledge-unified-view');
+    var bar = document.getElementById('bar');
+    if (bar) bar.style.display = 'none';
+  }
+  switchKnowledgeTab(tab);
+}
+
+function switchKnowledgeTab(tab) {
+  if (window.__alpineReady && typeof Alpine !== 'undefined' && Alpine.store('nav')) {
+    Alpine.store('nav').knowledgeTab = tab;
+  }
+  document.querySelectorAll('#knowledge-tabs .kt').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-kt') === tab);
+  });
+  if (typeof hydrateIcons === 'function') hydrateIcons(document.getElementById('knowledge-tabs'));
+
+  var container = document.getElementById('knowledge-tab-content');
+  if (!container) return;
+
+  container.innerHTML = '<div class="knowledge-skeleton">' +
+    '<div class="skeleton skeleton-line w60"></div>' +
+    '<div class="skeleton skeleton-line w80"></div>' +
+    '<div class="skeleton skeleton-line w40"></div>' +
+    '<div class="skeleton skeleton-card"></div>' +
+    '</div>';
+
+  var contentIdMap = {
+    dashboard: 'dash-content', knowledge: 'knowledge-content', graph: 'graph-content',
+    lineage: 'lineage-content', precipitate: 'precipitate-content', review: 'review-content',
+    journal: 'journal-content'
+  };
+  var fnMap = {
+    dashboard: loadDashboard, knowledge: loadKnowledgeView, graph: loadGraphView,
+    lineage: loadLineageView, precipitate: loadPrecipitateView, review: loadReviewView,
+    journal: loadJournalView
+  };
+
+  var srcId = contentIdMap[tab];
+  var loadFn = typeof fnMap[tab] === 'function' ? fnMap[tab] : null;
+
+  if (tab === 'account') {
+    if (typeof showAccountWatcher === 'function') showAccountWatcher();
+    return;
+  }
+
+  if (!loadFn || !srcId) {
+    container.innerHTML = '<div class="empty-state"><div class="title">视图暂不可用</div></div>';
+    return;
+  }
+
+  var srcEl = document.getElementById(srcId);
+  if (!srcEl) { container.innerHTML = '<div class="empty-state"><div class="title">加载失败</div></div>'; return; }
+
+  // Use MutationObserver to detect when legacy loader writes content
+  var observer = new MutationObserver(function() {
+    if (srcEl.innerHTML && srcEl.innerHTML.indexOf('加载') < 0) {
+      container.innerHTML = srcEl.innerHTML;
+      if (typeof hydrateIcons === 'function') hydrateIcons(container);
+      observer.disconnect();
+    }
+  });
+  observer.observe(srcEl, { childList: true, characterData: true, subtree: true });
+  loadFn();
+
+  // Fallback timeout
+  setTimeout(function() {
+    observer.disconnect();
+    if (srcEl.innerHTML && container.innerHTML.indexOf('skeleton') >= 0) {
+      container.innerHTML = srcEl.innerHTML;
+      if (typeof hydrateIcons === 'function') hydrateIcons(container);
+    }
+  }, 3000);
 }
 
 // Legacy stubs

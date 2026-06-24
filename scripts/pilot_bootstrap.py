@@ -154,6 +154,7 @@ def bootstrap(*, org_name: str = "Pilot Corp", api_base: str = "http://127.0.0.1
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Bootstrap SkillOS org pilot")
+    parser.add_argument("--dry-run", action="store_true", help="Print bootstrap plan without creating data")
     parser.add_argument("--org-name", default="Pilot Corp", help="Organization display name")
     parser.add_argument("--admin-user", default="pilot_admin", help="Org admin username (default pilot_admin)")
     parser.add_argument("--batch1", action="store_true", help="Add Batch 1 departments (engineering, product)")

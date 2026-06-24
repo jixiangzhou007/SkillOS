@@ -94,10 +94,11 @@ class TestDispatchTenantAuth:
         mock_agent = MagicMock()
         mock_agent.is_active = False
         mock_agent.start.return_value = "开始。"
+        mock_agent.handle.return_value = ("开始。", None)
         shared_mgr = SessionManager()
 
         with patch("skillos.skills.agent.SkillExtractionAgent", return_value=mock_agent), patch(
-            "skillos.skills.session_manager.SessionManager", return_value=shared_mgr
+            "skillos.skills.session_manager.get_session_manager", return_value=shared_mgr
         ):
             resp = client.post(
                 "/api/skills/dispatch",

@@ -97,9 +97,9 @@ class TestAgentDispatchMode:
 
 class TestCreateModeSkillsList:
     def test_create_dispatch_passes_skill_creator_context(self):
-        from skillos.api.skills import _create_mode_skills_list
+        from skillos.api.skills_extract import _create_mode_skills_list
 
-        with patch("skillos.api.skills._skills_list", return_value=["合同审核"]):
+        with patch("skillos.api.skills_extract._skills_list", return_value=["合同审核"]):
             skills = _create_mode_skills_list(None)
         assert "skill-creator" in skills
         assert "合同审核" in skills

@@ -4,10 +4,43 @@
 
 // ── Utilities (keep global for backward compat) ──────
 
-function getModels() {
-  try { return JSON.parse(localStorage.getItem('sd_models') || '[]'); } catch (e) { return []; }
+function renderModelList(models, activeId) {
+  var container = document.getElementById('model-list-container');
+  if (!container) { console.warn('renderModelList: container not found'); return; }
+  if (!models || !models.length) { container.innerHTML = ''; return; }
+  container.innerHTML = models.map(function(m, i) {
+    var isActive = m.id === activeId;
+    return '<div class="model-card' + (isActive ? ' active' : '') + '">' +
+      '<div class="model-card-header">' +
+        '<span class="model-card-name">' + (m.label || '').replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</span>' +
+        '<span class="model-card-id">' + (m.id || '').replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</span>' +
+        (isActive ? '<span class="model-card-badge current">当前</span>' : '') +
+      '</div>' +
+      '<div class="model-card-url">' + (m.base_url || '').replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</div>' +
+      '<div class="model-card-actions">' +
+        '<button class="nav-sm" onclick="openModelModal(' + i + ')" type="button">编辑</button>' +
+        (!isActive ? '<button class="nav-sm" style="border-color:var(--accent);color:var(--accent)" onclick="activateModel(' + i + ')" type="button">启用</button>' : '') +
+        '<button class="nav-sm" style="color:var(--err)" onclick="openDeleteModal(' + i + ')" type="button">删除</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
-function saveModels(models) { localStorage.setItem('sd_models', JSON.stringify(models)); }
+
+function getModels() {
+  try { return JSON.parse(localStorage.getItem(StorageKeys.MODELS) || '[]'); } catch (e) { return []; }
+}
+function saveModels(models) { localStorage.setItem(StorageKeys.MODELS, JSON.stringify(models)); }
+
+function voiceStorageKey(key) {
+  var map = {
+    asr_engine: StorageKeys.ASR_ENGINE,
+    tts_backend: StorageKeys.TTS_BACKEND,
+    tts_voice: StorageKeys.TTS_VOICE,
+    tts_speed: StorageKeys.TTS_SPEED,
+    tts_emotion: StorageKeys.TTS_EMOTION
+  };
+  return map[key] || ('sd_' + key);
+}
 
 function getDefaultModels() {
   return [
@@ -70,7 +103,9 @@ function settingsView() {
       let models = getModels();
       if (!models.length) { models = getDefaultModels(); saveModels(models); }
       this.models = models;
-      this.activeModelId = localStorage.getItem('sd_model') || 'deepseek-v4-flash';
+      this.activeModelId = localStorage.getItem(StorageKeys.MODEL) || 'deepseek-v4-flash';
+      var self = this;
+      setTimeout(function() { renderModelList(self.models, self.activeModelId); }, 100);
     },
 
     openModelModal(index) {
@@ -87,7 +122,6 @@ function settingsView() {
         this.editUrl = m.base_url || '';
       }
       this.modelModalOpen = true;
-      this.$nextTick(() => { const el = this.$refs.modalLabel; if (el) el.focus(); });
     },
 
     testConnection() {
@@ -122,26 +156,28 @@ function settingsView() {
       } else {
         const oldId = models[this.editingIndex].id;
         models[this.editingIndex] = { id, label, base_url: url, api_key: '' };
-        if (localStorage.getItem('sd_model') === oldId) {
-          localStorage.setItem('sd_model', id);
+        if (localStorage.getItem(StorageKeys.MODEL) === oldId) {
+          localStorage.setItem(StorageKeys.MODEL, id);
           this.activeModelId = id;
         }
       }
       saveModels(models);
       refreshModelSelect();
-      this.loadModels();
+      this.models = models; this.activeModelId = localStorage.getItem(StorageKeys.MODEL) || models[0].id;
+      var self = this; setTimeout(function() { renderModelList(self.models, self.activeModelId); }, 100);
       this.closeModelModal();
     },
 
     activateModel(i) {
       const m = this.models[i];
       if (!m) return;
-      localStorage.setItem('sd_model', m.id);
+      localStorage.setItem(StorageKeys.MODEL, m.id);
       this.activeModelId = m.id;
       if (typeof _selectedModel !== 'undefined') _selectedModel = m.id;
       const sel = document.getElementById('model-select');
       if (sel) sel.value = m.id;
       refreshModelSelect();
+      var self = this; setTimeout(function() { renderModelList(self.models, self.activeModelId); }, 100);
       setStatus('model: ' + m.label);
     },
 
@@ -167,13 +203,14 @@ function settingsView() {
       models.splice(i, 1);
       if (!models.length) models = getDefaultModels();
       saveModels(models);
-      if (localStorage.getItem('sd_model') === m.id) {
-        localStorage.setItem('sd_model', models[0].id);
+      if (localStorage.getItem(StorageKeys.MODEL) === m.id) {
+        localStorage.setItem(StorageKeys.MODEL, models[0].id);
         this.activeModelId = models[0].id;
         if (typeof _selectedModel !== 'undefined') _selectedModel = models[0].id;
       }
       refreshModelSelect();
-      this.loadModels();
+      this.models = models; this.activeModelId = localStorage.getItem(StorageKeys.MODEL) || models[0].id;
+      var self = this; setTimeout(function() { renderModelList(self.models, self.activeModelId); }, 100);
     },
 
     // ── Usage ─────────────────────────────────
@@ -235,7 +272,7 @@ function settingsView() {
       try {
         const r = await api('/api/skills/');
         this.skills = await r.json();
-        this.disabledSkills = JSON.parse(localStorage.getItem('sd_disabled_skills') || '[]');
+        this.disabledSkills = JSON.parse(localStorage.getItem(StorageKeys.DISABLED_SKILLS) || '[]');
       } catch (e) {
         this.skills = [];
       }
@@ -244,13 +281,13 @@ function settingsView() {
     isSkillEnabled(name) { return !this.disabledSkills.includes(name); },
 
     toggleSkill(name) {
-      let disabled = JSON.parse(localStorage.getItem('sd_disabled_skills') || '[]');
+      let disabled = JSON.parse(localStorage.getItem(StorageKeys.DISABLED_SKILLS) || '[]');
       if (disabled.includes(name)) {
         disabled = disabled.filter(n => n !== name);
       } else {
         disabled.push(name);
       }
-      localStorage.setItem('sd_disabled_skills', JSON.stringify(disabled));
+      localStorage.setItem(StorageKeys.DISABLED_SKILLS, JSON.stringify(disabled));
       this.disabledSkills = disabled;
     },
 
@@ -270,11 +307,11 @@ function settingsView() {
     // ── Voice ─────────────────────────────────
 
     loadVoice() {
-      this.ttsBackend = localStorage.getItem('sd_tts_backend') || 'edge';
-      this.ttsVoice = localStorage.getItem('sd_tts_voice') || 'Xiaoxiao (Natural)';
-      this.ttsSpeed = localStorage.getItem('sd_tts_speed') || '1.1';
-      this.ttsEmotion = localStorage.getItem('sd_tts_emotion') || 'neutral';
-      this.asrEngine = localStorage.getItem('sd_asr_engine') || 'whisper';
+      this.ttsBackend = localStorage.getItem(StorageKeys.TTS_BACKEND) || 'edge';
+      this.ttsVoice = localStorage.getItem(StorageKeys.TTS_VOICE) || 'Xiaoxiao (Natural)';
+      this.ttsSpeed = localStorage.getItem(StorageKeys.TTS_SPEED) || '1.1';
+      this.ttsEmotion = localStorage.getItem(StorageKeys.TTS_EMOTION) || 'neutral';
+      this.asrEngine = localStorage.getItem(StorageKeys.ASR_ENGINE) || 'whisper';
     },
 
     get edgeVoices() { return ['Xiaoxiao (Natural)', 'Yunxi (Warm)', 'Yunyang (News)', 'Xiaoyi (Lively)']; },
@@ -282,11 +319,11 @@ function settingsView() {
     get voiceList() { return this.ttsBackend === 'omnivoice' ? this.omniVoices : this.edgeVoices; },
 
     saveVoiceSetting(key, value) {
-      localStorage.setItem('sd_' + key, value);
+      localStorage.setItem(voiceStorageKey(key), value);
     },
 
     onTTSBackendChange() {
-      localStorage.setItem('sd_tts_backend', this.ttsBackend);
+      localStorage.setItem(StorageKeys.TTS_BACKEND, this.ttsBackend);
     }
   };
 }
@@ -301,6 +338,7 @@ function switchSettings(t) {
     b.classList.toggle('active', b.getAttribute('data-tab') === t);
   });
   const content = document.getElementById('s-content');
+  if (!content) return;
   if (t === 'model') loadModelSettings(content);
   else if (t === 'usage') loadUsageSettings(content);
   else if (t === 'skills') loadSkillSettings(content);
@@ -309,9 +347,7 @@ function switchSettings(t) {
 
 function showSettings() {
   if (window.__alpineReady) {
-    Alpine.store('nav').navigate('settings-view');
-    Alpine.store('nav').barVisible = false;
-    document.getElementById('bar').style.display = 'none';
+    Alpine.store('nav').goTo('settings-view');
   } else {
     switchMainView('settings-view');
     document.getElementById('bar').style.display = 'none';
@@ -324,11 +360,15 @@ function refreshModelSelect() {
   if (!sel) return;
   let models = getModels();
   if (!models.length) models = getDefaultModels();
-  const current = localStorage.getItem('sd_model') || (typeof _selectedModel !== 'undefined' ? _selectedModel : '') || models[0].id;
+  var current = localStorage.getItem(StorageKeys.MODEL) || (typeof _selectedModel !== 'undefined' ? _selectedModel : '') || '';
+  // Ensure current model exists in list
+  var found = models.some(function(m) { return m.id === current; });
+  if (!found) current = models[0].id;
   sel.innerHTML = models.map(function (m) {
     const label = (m.label || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return '<option value="' + m.id + '"' + (m.id === current ? ' selected' : '') + '>' + label + '</option>';
   }).join('');
+  sel.value = current;
 }
 
 // ── Legacy loaders (keep for backward compat) ─────
@@ -345,18 +385,91 @@ function activateModel(i) {
   if (el && el.__x) { el.__x.$data.activateModel(i); return; }
   let models = getModels();
   if (i < 0 || i >= models.length) return;
-  localStorage.setItem('sd_model', models[i].id);
+  localStorage.setItem(StorageKeys.MODEL, models[i].id);
   if (typeof _selectedModel !== 'undefined') _selectedModel = models[i].id;
   document.getElementById('model-select').value = models[i].id;
   refreshModelSelect();
+  setTimeout(function() { renderModelList(models, models[i].id); }, 100);
 }
 
-function openModelModal(i) { const el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.openModelModal(i); }
-function closeModelModal() { const el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.closeModelModal(); }
-function saveModelFromModal() { const el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.saveModel(); }
+function openModelModal(i) {
+  // Try Alpine component first
+  var el = document.querySelector('[x-data="settingsView()"]');
+  if (el && el.__x && el.__x.$data) {
+    el.__x.$data.openModelModal(i);
+    return;
+  }
+  // Fallback: direct DOM manipulation
+  var models = getModels();
+  if (i < 0) {
+    // Add mode
+    var modal = document.querySelector('#settings-view .modal-overlay');
+    if (modal) modal.style.display = 'flex';
+  } else if (i >= 0 && i < models.length) {
+    var m = models[i];
+    // Set form fields manually
+    var labelInput = document.querySelector('#settings-view input[x-model=\"editLabel\"]');
+    var idInput = document.querySelector('#settings-view input[x-model=\"editId\"]');
+    var urlInput = document.querySelector('#settings-view input[x-model=\"editUrl\"]');
+    if (labelInput) labelInput.value = m.label || '';
+    if (idInput) idInput.value = m.id || '';
+    if (urlInput) urlInput.value = m.base_url || '';
+    var modalOverlay = document.querySelector('#settings-view .modal-overlay');
+    if (modalOverlay) modalOverlay.style.display = 'flex';
+  }
+}
+function closeModelModal() {
+  var el = document.querySelector('[x-data="settingsView()"]');
+  if (el && el.__x && el.__x.$data) { el.__x.$data.closeModelModal(); return; }
+  var modals = document.querySelectorAll('#settings-view .modal-overlay');
+  for (var i = 0; i < modals.length; i++) { modals[i].style.display = 'none'; }
+}
+function saveModelFromModal() {
+  var el = document.querySelector('[x-data="settingsView()"]');
+  if (el && el.__x && el.__x.$data) { el.__x.$data.saveModel(); return; }
+  // Fallback save
+  var label = (document.querySelector('#settings-view input[x-model=\"editLabel\"]')||{}).value || '';
+  var id = (document.querySelector('#settings-view input[x-model=\"editId\"]')||{}).value || '';
+  var url = (document.querySelector('#settings-view input[x-model=\"editUrl\"]')||{}).value || '';
+  if (!label || !id) return;
+  var models = getModels();
+  models.push({id:id, label:label, base_url:url, api_key:''});
+  saveModels(models);
+  refreshModelSelect();
+  renderModelList(models, localStorage.getItem(StorageKeys.MODEL)||models[0].id);
+  closeModelModal();
+}
 
-function editModel(i) { openModelModal(i); }
-function deleteModel(i) { const el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.openDeleteModal(i); }
+function _findModelIndex(btn) {
+  var cards = document.querySelectorAll('#settings-view .model-card');
+  var card = btn.closest('.model-card');
+  if (!card) return -1;
+  for (var i = 0; i < cards.length; i++) { if (cards[i] === card) return i; }
+  return -1;
+}
+function editModelByBtn(btn) { var i = _findModelIndex(btn); if (i >= 0) openModelModal(i); }
+function activateModelByBtn(btn) { var i = _findModelIndex(btn); if (i >= 0) activateModel(i); }
+function deleteModelByBtn(btn) { var i = _findModelIndex(btn); if (i >= 0) deleteModel(i); }
+
+function editModel(i) { if (typeof i === 'string') i = parseInt(i); if (isNaN(i)) return; openModelModal(i); }
+function deleteModel(i) { if (typeof i === 'string') i = parseInt(i); if (isNaN(i)) return; var el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.openDeleteModal(i); }
+
+function closeDeleteModal() {
+  var el = document.querySelector('[x-data="settingsView()"]');
+  if (el && el.__x && el.__x.$data) { el.__x.$data.closeDeleteModal(); return; }
+  var modals = document.querySelectorAll('#settings-view .modal-overlay');
+  for (var i = 0; i < modals.length; i++) { modals[i].style.display = 'none'; }
+}
+function confirmDelete() {
+  var el = document.querySelector('[x-data="settingsView()"]');
+  if (el && el.__x && el.__x.$data) { el.__x.$data.confirmDelete(); return; }
+  closeDeleteModal();
+}
+function testConnection() {
+  var el = document.querySelector('[x-data="settingsView()"]');
+  if (el && el.__x && el.__x.$data) { el.__x.$data.testConnection(); return; }
+  if (typeof toast === 'function') toast('连接测试需要 Alpine 支持', 'warn');
+}
 function addModel() { openModelModal(-1); }
 
 function toggleSkill(name) { const el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.toggleSkill(name); }
@@ -365,7 +478,7 @@ function deleteSkill(name) { const el = document.querySelector('[x-data="setting
 function saveByok(enabled) { const el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.saveByok(enabled); }
 function enableProPlan() { const el = document.querySelector('[x-data="settingsView()"]'); if (el && el.__x) el.__x.$data.enableProPlan(); }
 
-function saveVoiceSetting(key, value) { localStorage.setItem('sd_' + key, value); }
+function saveVoiceSetting(key, value) { localStorage.setItem(voiceStorageKey(key), value); }
 function onTTSBackendChange() {
   const el = document.querySelector('[x-data="settingsView()"]');
   if (el && el.__x) el.__x.$data.onTTSBackendChange();

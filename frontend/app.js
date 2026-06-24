@@ -12,45 +12,16 @@ function api(path, opts) {
 
 var _mode = 'create', _currentSkill = null, _currentTab = 'overview';
 var _settingsTab = 'model', _skillListTab = 'mine';
-var _selectedModel = localStorage.getItem('sd_model') || 'deepseek-v4-flash';
-var _autoMode = localStorage.getItem('sd_auto') === 'true';
-var _sessionId = localStorage.getItem('sd_session') || '';
+var _selectedModel = lsGet(StorageKeys.MODEL, 'deepseek-v4-flash');
+var _autoMode = localStorage.getItem(StorageKeys.AUTO) === 'true';
+var _sessionId = '';  // Start fresh each page load; resume only via explicit user action
 var _allSkillsCache = [];
 
 const SYSTEM_SKILLS = ['brainstorming', 'skill-creator', 'deep-digest', 'cold-start-interview'];
 
-// Onboarding wizard (Sprint 4 — 3 步引导)
-(function checkOnboarding() {
-  if (localStorage.getItem('skillos_onboarded')) return;
-  // Push onboarding message to Alpine store (reactive, won't break x-for)
-  try {
-    if (Alpine && Alpine.store('chat')) {
-      Alpine.store('chat').addMessage('sys',
-        '<div style="padding:40px 20px;text-align:center">' +
-        '<div style="font-size:48px;margin-bottom:16px">🚀</div>' +
-        '<div style="font-size:18px;font-weight:700;margin-bottom:8px">欢迎使用 SkillOS</div>' +
-        '<div style="font-size:13px;color:var(--text2);margin-bottom:20px">对话即沉淀 · 你的 AI 技能操作系统</div>' +
-        '<div style="text-align:left;max-width:520px;margin:0 auto 20px;font-size:13px;color:var(--text2);line-height:2.2">' +
-        '<b>第 1 步</b>：在对话区描述工作流程，或粘贴方法论链接 / 拖拽 PDF<br>' +
-        '<b>第 2 步</b>：多轮对话完善技能 → 打开技能详情「认识论」Tab 确认待审声明<br>' +
-        '<b>第 3 步</b>：Org 用户提交审批发布；Personal 用户可直接使用或导出 MCP 技能' +
-        '</div>' +
-        '<button class="action-btn" onclick="localStorage.setItem(\'skillos_onboarded\',\'1\');showChat()" style="font-size:14px;padding:10px 24px">开始体验</button>' +
-        '</div>'
-      );
-      return;
-    }
-  } catch(e) {}
-  // Legacy fallback: direct DOM (only if Alpine not available)
-  var msgs = document.getElementById('msgs');
-  if (!msgs) return;
-  msgs.innerHTML = '<div class="welcome"><div class="welcome-icon">🚀</div><div class="welcome-title">欢迎使用 SkillOS</div><div class="welcome-hint">对话即沉淀 · 你的 AI 技能操作系统</div><button class="action-btn" onclick="localStorage.setItem(\'skillos_onboarded\',\'1\');showChat()">开始体验</button></div>';
-})();
-
-
-
 refreshModelSelect();
-document.getElementById('model-select').value = _selectedModel;
+var ms = document.getElementById('model-select');
+if (ms && !ms.value) ms.value = _selectedModel || 'deepseek-v4-flash';
 if (_autoMode) {
   document.getElementById('auto-btn').classList.add('active');
   document.getElementById('auto-btn').textContent = '自动';
@@ -115,7 +86,7 @@ function pickGlobalSearchMarket(skillId) {
 
 function pickGlobalSearchKnowledge(content) {
   clearGlobalSearch();
-  if (typeof showKnowledgeView === 'function') showKnowledgeView();
+  if (typeof showUnifiedKnowledge === 'function') showUnifiedKnowledge('knowledge');
   toast((content || '').slice(0, 100) + (content && content.length > 100 ? '…' : ''), 'info');
 }
 
@@ -195,20 +166,32 @@ document.addEventListener('click', function(e) {
 // ── Keyboard Shortcuts ──
 document.addEventListener('keydown', function(e) {
   // Ctrl+K: focus global search
-  if (e.ctrlKey && e.key === 'k') { e.preventDefault(); document.getElementById('global-search').focus(); }
+  if (e.ctrlKey && e.key === 'k') { e.preventDefault(); document.getElementById('global-search').focus(); return; }
   // Ctrl+N: new chat
-  if (e.ctrlKey && e.key === 'n') { e.preventDefault(); showChat(); document.getElementById('input').focus(); }
+  if (e.ctrlKey && e.key === 'n') { e.preventDefault(); showChat(); document.getElementById('input').focus(); return; }
   // Ctrl+Enter: send message
-  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); if (typeof sendText === 'function') sendText(); }
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); if (typeof sendText === 'function') sendText(); return; }
   // / or \: focus chat input (skip if already in an input/textarea)
   if ((e.key === '/' || e.key === '\\') && document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-    e.preventDefault(); showChat(); document.getElementById('input').focus();
+    e.preventDefault(); showChat(); document.getElementById('input').focus(); return;
   }
-  // Escape: clear search
-  if (e.key === 'Escape') clearGlobalSearch();
+  // Escape: close dropdowns, modals, search
+  if (e.key === 'Escape') {
+    var drop = document.getElementById('user-drop');
+    if (drop && drop.classList.contains('open')) { drop.classList.remove('open'); return; }
+    if (typeof closeSourceMaterialModal === 'function') {
+      var sm = document.getElementById('source-material-modal');
+      if (sm && sm.classList.contains('open')) { closeSourceMaterialModal(); return; }
+    }
+    if (typeof hideGlobalSearchPanel === 'function') hideGlobalSearchPanel();
+    var inp = document.getElementById('global-search'); if (inp) inp.value = '';
+    return;
+  }
   // 1-9: switch detail tabs when in detail view
-  if (e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.metaKey && document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-    var tabs = ['overview','doc','kb','verify','epistemic','dna','official','evo','decisions'];
+  if (e.key >= '1' && e.key <= '4' && !e.ctrlKey && !e.metaKey && document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    var detailView = document.getElementById('detail-view');
+    if (!detailView || !detailView.classList.contains('active')) return;
+    var tabs = ['overview', 'doc', 'quality', 'evolution'];
     var idx = parseInt(e.key) - 1;
     if (idx < tabs.length && typeof switchTab === 'function') switchTab(tabs[idx]);
   }
@@ -218,25 +201,43 @@ document.addEventListener('keydown', function(e) {
 function toast(msg, type) {
   type = type || 'info';
   var container = document.getElementById('toast-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'toast-container';
-    container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none';
-    document.body.appendChild(container);
-  }
+  if (!container) return;
   var el = document.createElement('div');
   el.className = 'toast ' + type;
   el.textContent = msg;
-  el.style.cssText += ';pointer-events:auto;cursor:pointer';
   el.title = '点击关闭';
   el.onclick = function(){ el.classList.add('out'); setTimeout(function(){ el.remove(); }, 300); };
-  // Timeout proportional to message length (min 2s, max 8s)
   var duration = Math.max(2000, Math.min(8000, msg.length * 60));
   container.appendChild(el);
   setTimeout(function(){ if (el.parentNode) { el.classList.add('out'); setTimeout(function(){ el.remove(); }, 300); } }, duration);
 }
 
 initAuth();
+
+// Show chat input bar on initial load
+if (typeof showChat === 'function') showChat();
+
+// Check for active extraction session to resume
+(function checkResumeSession() {
+  var sid = localStorage.getItem(StorageKeys.SESSION);
+  if (!sid || typeof api !== 'function') return;
+  api('/api/skills/status?session_id=' + encodeURIComponent(sid))
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(d) {
+      if (d && d.active && d.can_resume) {
+        var name = d.skill_name || '技能';
+        var phaseLabel = d.phase || '';
+        setTimeout(function() {
+          if (typeof addMsg === 'function') {
+            addMsg('sys', '检测到进行中的萃取「<b>' + name + '</b>」(第 ' + (d.turn||0) + ' 轮' + (phaseLabel ? ', ' + phaseLabel : '') + ') <button class="nav-sm" style="font-size:11px;margin-left:6px;border-color:var(--accent);color:var(--accent)" onclick="resumeSession()">继续</button>');
+          }
+        }, 1000);
+      }
+    }).catch(function() {});
+})();
+
+// Load recent skills for welcome screen and sidebar
+if (typeof loadRecentSkills === 'function') { setTimeout(loadRecentSkills, 500); }
 
 // 预加载市场只读模式，隐藏发布按钮
 api('/api/marketplace/catalog?limit=1').then(function(r) {

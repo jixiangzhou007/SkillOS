@@ -266,48 +266,26 @@ def process_ingestion_task(task: IngestionTask, llm_args: tuple | None = None) -
             return f"skipped:unchanged:{task.source_path[:48]}"
         from skillos.knowledge.content_classify import classify_content
         if classify_content(content) == "actionable":
-            from skillos.skills.agent import SkillExtractionAgent
-            from skillos.skills.skill_store import list_skills
-            agent = SkillExtractionAgent()
-            _, doc = agent.learn_from_url(task.source_path, content, list_skills(), args)
-            if doc:
-                from skillos.knowledge.ingest_pipeline import finalize_ingest
-                fin = finalize_ingest(
-                    doc["content"],
-                    task.source_path,
-                    skill_name=doc["name"],
-                    skill_body=doc["content"],
-                    sync_graph=False,
-                    channel="ingestion_queue",
-                )
-                from skillos.knowledge.ingest_dedup import mark_ingest_complete
-                mark_ingest_complete(task.source_path, content)
-                lineage_ok = (fin.get("lineage") or {}).get("lineage_applied")
-                return f"skill:{doc['name']}:lineage={'yes' if lineage_ok else 'no'}"
-            return "skill:no_doc"
-        from skillos.knowledge.deep_digest import deep_digest, save_digest
-        dd = deep_digest(content, task.source_path, llm_args=args)
-        extracted_items: list = []
-        if dd.glossary or dd.patterns or dd.sections:
-            save_digest(dd)
-            try:
-                from skillos.knowledge.extractor import extract_knowledge, save_knowledge
-                extracted_items = extract_knowledge(content, task.source_path, args)
-                if extracted_items:
-                    save_knowledge(extracted_items)
-            except Exception:
-                pass
-        from skillos.knowledge.ingest_pipeline import finalize_ingest
-        fin = finalize_ingest(
-            content,
-            task.source_path,
-            source_title=dd.title,
-            digest_result=dd if (dd.glossary or dd.patterns or dd.sections) else None,
-            extractor_items=extracted_items or None,
-            channel="ingestion_queue",
+            from skillos.knowledge.precipitation import precipitate_actionable_source
+
+            prec = precipitate_actionable_source(
+                task.source_path,
+                content,
+                args,
+                channel="ingestion_queue",
+                team_context={"channel": "ingestion_queue", **(task.meta or {})},
+            )
+            from skillos.knowledge.ingest_dedup import mark_ingest_complete
+
+            mark_ingest_complete(task.source_path, content)
+            return prec.queue_message()
+        from skillos.knowledge.precipitation import precipitate_conceptual_source
+
+        digest_out = precipitate_conceptual_source(
+            content, task.source_path, args, channel="ingestion_queue",
         )
-        lineage_ok = (fin.get("lineage") or {}).get("lineage_applied")
-        return f"digest:{dd.title}:lineage={'yes' if lineage_ok else 'no'}"
+        lineage_ok = digest_out.get("lineage_applied")
+        return f"digest:{digest_out['title']}:lineage={'yes' if lineage_ok else 'no'}"
 
     if task.source_type == "file":
         from skillos.utils.file_ingest import ingest_and_learn
