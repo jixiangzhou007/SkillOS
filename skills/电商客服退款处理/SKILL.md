@@ -17,13 +17,20 @@ methodology_label: PDCA 循环
 dna_lineage:
   philosophical:
   - id: pdca
-    weight: 1.0
+    weight: 0.44
+  - id: ooda
+    weight: 0.22
+  - id: scientific-method
+    weight: 0.15
   domain:
   - id: workflow-refund
     version: 1.2.0
     weight: 1.0
     primary: true
-  detected_at: '2026-06-19T19:17:35Z'
+  detected_at: '2026-06-23T00:02:08Z'
+  conflicts:
+  - 'PDCA(标准化渐进) vs OODA(快速适应): 两者都是迭代循环，但节奏不同。请明确本流程偏向SOP化(PDCA)还是实时响应(OODA)。'
+  domain_key: computer-science
 domain_template: workflow-refund
 bench_categories:
 - documentation

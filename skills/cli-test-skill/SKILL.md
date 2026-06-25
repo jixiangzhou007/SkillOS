@@ -1,7 +1,7 @@
 ---
 name: cli-test-skill
 created_at: '2026-06-15T03:26:24Z'
-updated_at: '2026-06-19T19:23:38Z'
+updated_at: '2026-06-23T00:09:36Z'
 philosophical_dna: pragmatic
 philosophical_dna_label: 实用主义方法
 methodology: design-thinking
@@ -11,8 +11,8 @@ dna_lineage:
   - id: pragmatic
     weight: 1.0
   domain: []
-  detected_at: '2026-06-19T19:23:38Z'
-version: 43
+  detected_at: '2026-06-23T00:09:36Z'
+version: 45
 ---
 
 ## S_body
