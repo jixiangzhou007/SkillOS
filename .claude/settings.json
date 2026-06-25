@@ -1,0 +1,47 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -m ruff check --fix \"$CLAUDE_TOOL_INPUT_FILE_PATH\" && python -m ruff format \"$CLAUDE_TOOL_INPUT_FILE_PATH\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_TOOL_INPUT_FILE_PATH\" in *.env|*.env.*|*credentials*|*secret*) echo 'BLOCKED' && exit 1 ;; esac"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"if (Test-Path docs/AI_DEV_LOG.md) { Write-Host 'REMINDER: AI_DEV_LOG update needed' }\""
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(python -m ruff:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(python scripts/*:*)",
+      "Bash(python -m skillos.*:*)",
+      "Bash(git:*)",
+      "Bash(mkdir:*)"
+    ]
+  }
+}

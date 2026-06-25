@@ -1,0 +1,24 @@
+# Normalize line endings
+* text=auto
+
+# Python files
+*.py text diff=python
+*.pyi text diff=python
+
+# Markdown and text files
+*.md text
+*.txt text
+*.json text
+*.jsonl text
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# Binary files
+*.db binary
+*.png binary
+*.jpg binary
+*.pdf binary
