@@ -1,0 +1,36 @@
+{
+  "domain_template": "workflow-refund",
+  "source_skill": "电商客服退款处理",
+  "anchor_tasks": [
+    "workflow-064"
+  ],
+  "smoke_tasks": [
+    "workflow-064"
+  ],
+  "quick8_tasks": [
+    "workflow-064"
+  ],
+  "bench_categories": [
+    "workflow",
+    "documentation"
+  ],
+  "heritage_heading": "应答速查",
+  "heritage_body": "收到与**退款/售后处理**相关的请求时，**在同一条回复中**给出完整可执行方案。\n\n**退款处理规则（匹配评分关键词）**\n\n**订单验证**\n- 第一步**必须**验证/核实/检查订单号和订单状态\n- 确认订单是否已完成支付、是否在退款期限内\n- **评分词**：验证, 核实, 检查, 订单号, order\n\n**退款政策检查**\n- **必须**对照退款/退货政策判断退款类型（仅退款/退货退款/部分退款）\n- 超出政策范围的退款申请**必须**说明原因并拒绝\n- **评分词**：退款政策, return policy, 售后期, 流程, 规则\n\n**金额计算**\n- **必须**明确标注可退金额（商品金额 + 税费 - 运费等）\n- 涉及优惠券/积分的订单**必须**按比例扣减\n- **评分词**：金额, amount, 退款, 计算\n\n**通知与闭环**\n- 退款完成后**必须**通知客户（邮件/短信/App推送）并确认\n- 同步更新订单状态和库存\n- **评分词**：通知, 邮件, 确认\n\n**输出格式**\n1. 订单核实结果\n2. 退款政策适用判定\n3. 金额明细计算\n4. 执行与通知",
+  "routing_keywords": [
+    "退款",
+    "退货",
+    "售后",
+    "refund",
+    "return",
+    "订单",
+    "order",
+    "金额",
+    "amount",
+    "退",
+    "电商",
+    "customer"
+  ],
+  "cold_start_rounds": 1,
+  "min_with_score": 75,
+  "passed": true
+}

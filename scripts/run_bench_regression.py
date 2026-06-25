@@ -112,6 +112,10 @@ def main() -> int:
         print("ERROR: DEEPSEEK_API_KEY required")
         return 1
 
+    from scripts.repair_reference_packs import sync_reference_packs
+
+    sync_reference_packs()
+
     ts = int(time.time())
     quick8 = run_quick8_regression()
     generalize = run_generalize_domain_quick8()

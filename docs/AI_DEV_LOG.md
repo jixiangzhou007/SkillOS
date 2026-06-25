@@ -6,6 +6,32 @@
 
 ---
 
+## [2026-06-24] Reference domain pack 可复现 — configs + repair 脚本 — Cursor Agent
+
+**背景 / 触发**：用户「继续」；push 仍无 remote，pack 修复仅本地（`.gitignore`）。
+
+**修改思路**：
+- 将三门禁 reference pack 快照纳入 `configs/reference_domain_packs/`（可版本化）
+- `scripts/repair_reference_packs.py` 同步到 `data/domain_packs/`
+- `run_bench_regression.py` 跑回归前自动 sync
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `configs/reference_domain_packs/*.json` | 三门禁 pack 快照 |
+| `scripts/repair_reference_packs.py` | sync 脚本 |
+| `scripts/run_bench_regression.py` | 回归前 sync |
+| `tests/test_benchmark_local.py` | `test_sync_reference_packs` |
+
+**未修改 / 刻意不做**：`git push`（仍无 origin）；retag v0.3.3
+
+**验证**：`pytest tests/test_benchmark_local.py::test_sync_reference_packs` — passed；`repair_reference_packs.py` — 3/3 OK
+
+**开放问题 / 下一步**：提供 remote URL 完成 push；或 `git tag v0.3.4` 含 pack 可复现
+
+---
+
 ## [2026-06-24] Reference Quick8 修复 commit — push 阻塞（无 remote）— Cursor Agent
 
 **背景 / 触发**：用户「按顺序来」→ commit + push。

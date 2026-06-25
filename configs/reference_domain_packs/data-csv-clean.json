@@ -1,0 +1,46 @@
+{
+  "domain_template": "data-csv-clean",
+  "source_skill": "CSV数据清洗助手",
+  "anchor_tasks": [
+    "data-processing-013",
+    "data-processing-014",
+    "data-processing-015",
+    "data-processing-018",
+    "data-processing-029",
+    "documentation-049",
+    "documentation-050"
+  ],
+  "smoke_tasks": [
+    "data-processing-013",
+    "data-processing-014"
+  ],
+  "quick8_tasks": [
+    "data-processing-013",
+    "data-processing-014",
+    "data-processing-015",
+    "data-processing-018",
+    "data-processing-029"
+  ],
+  "bench_categories": [
+    "data-processing",
+    "documentation"
+  ],
+  "heritage_heading": "应答速查",
+  "heritage_body": "收到与 **运营级 CSV 清洗** 相关的请求时，**在同一条回复中**给出完整可执行方案。\n\n**核心步骤**\n- 1. 探测编码与分隔符；加载样本行校验 schema\n- 2. 标准化列名与类型（日期、金额、枚举）\n- 3. 去重（指定 key）、空值填充或剔除策略\n- 4. **模糊去重**：拼写近似值用 fuzzy/similarity/Levenshtein 归并（如 Bejing→Beijing）\n- 5. 异常值与跨列一致性校验\n- 6. 输出清洗后文件 + 质量报告（行数、丢弃原因统计）\n\n**决策路由**\n  - 缺必填列 → 中止并报告\n  - 重复率 > 阈值 → 去重并记录\n  - 编码无法识别 → 尝试 utf-8/gbk",
+  "routing_keywords": [
+    "csv",
+    "数据清洗",
+    "表格清洗",
+    "excel",
+    "去重",
+    "空值",
+    "etl",
+    "pandas",
+    "数据导出",
+    "fuzzy",
+    "similarity"
+  ],
+  "cold_start_rounds": 1,
+  "min_with_score": 75,
+  "passed": true
+}

@@ -68,6 +68,14 @@ def test_latest_post_extract_regression_optional():
     assert "all_pass" in reg or "report" in reg
 
 
+def test_sync_reference_packs():
+    from scripts.repair_reference_packs import REFERENCE_TEMPLATES, sync_reference_packs
+
+    rows = sync_reference_packs(dry_run=True)
+    assert len(rows) == len(REFERENCE_TEMPLATES)
+    assert all(r.get("ok") for r in rows)
+
+
 def test_select_domain_tasks_refund():
     from skillos.skillsbench_tasks import SKILLSBENCH_TASKS
     from skillos.knowledge.skill_routing import load_skill_routing_info

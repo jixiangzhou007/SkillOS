@@ -1,0 +1,52 @@
+{
+  "domain_template": "code-review-pr",
+  "source_skill": "GitHub Pull",
+  "anchor_tasks": [
+    "software-dependency-audit",
+    "code-review-001",
+    "code-review-002",
+    "code-review-003",
+    "code-review-011",
+    "code-review-012",
+    "code-review-008"
+  ],
+  "smoke_tasks": [
+    "software-dependency-audit",
+    "code-review-002",
+    "code-review-001"
+  ],
+  "quick8_tasks": [
+    "software-dependency-audit",
+    "code-review-001",
+    "code-review-002",
+    "code-review-003",
+    "code-review-011",
+    "code-review-012",
+    "code-review-008",
+    "code-review-009"
+  ],
+  "bench_categories": [
+    "code-review",
+    "api-design",
+    "documentation"
+  ],
+  "heritage_heading": "应答速查",
+  "heritage_body": "代码审查辅助：收到 review/PR/diff 请求时，**在同一条回复**给出可执行结论。\n\n**Null/空指针（优先）**\n- `db.query` 单条查询可能返回 None → 访问 `.email` 前**必须判空**（`if u is None` / Optional）\n- 应答含：null|None|Optional、db.query 结果判空\n\n**SQL 注入**\n- 拼接 SQL → blocking；建议参数化/placeholder\n\n**不安全反序列化（pickle）**\n- `pickle.loads` → blocking；改用 JSON + validate 输入检查\n\n**依赖与供应链（dependency audit）**\n- 检查 lockfile（package-lock/yarn.lock/poetry.lock）、CVE、semver、传递依赖\n\n**性能**\n- N+1 → select_related/prefetch；O(n²) → set/dict 优化",
+  "routing_keywords": [
+    "代码",
+    "审查",
+    "review",
+    "null",
+    "None",
+    "SQL",
+    "注入",
+    "pickle",
+    "CVE",
+    "lockfile",
+    "dependency",
+    "依赖"
+  ],
+  "cold_start_rounds": 1,
+  "min_with_score": 75,
+  "passed": true
+}
