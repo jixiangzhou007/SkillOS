@@ -6,6 +6,27 @@
 
 ---
 
+## [2026-06-24] Release v0.3.4 — Reference Quick8 回归 tag — Cursor Agent
+
+**背景 / 触发**：用户确认需要 `v0.3.4` tag（含 bench 修复 + pack 可复现）。
+
+**修改思路**：更新 CHANGELOG；在 `b3e29a4` 链上打 annotated tag。
+
+**修改内容**：
+
+| 项 | 结果 |
+|----|------|
+| CHANGELOG | v0.3.4 条目 |
+| Git tag | `v0.3.4` → bench 修复 + reference pack sync |
+
+**未修改 / 刻意不做**：`git push`（仍无 origin remote）
+
+**验证**：`git tag -l v0.3.4`
+
+**开放问题 / 下一步**：配置 remote 后 `git push && git push origin v0.3.4`
+
+---
+
 ## [2026-06-24] Reference domain pack 可复现 — configs + repair 脚本 — Cursor Agent
 
 **背景 / 触发**：用户「继续」；push 仍无 remote，pack 修复仅本地（`.gitignore`）。

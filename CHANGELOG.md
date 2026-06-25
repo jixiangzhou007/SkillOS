@@ -1,5 +1,19 @@
 # SkillOS Changelog
 
+## v0.3.4 (2026-06-24) — Reference Quick8 回归修复
+
+> 本地 bench 三门禁 + smoke 6/6 恢复；reference domain pack 可版本化同步
+
+### Bench 回归
+- **GitHub Pull** / **CSV 清洗助手**：应答速查补强（Null 判空、模糊去重）
+- **`configs/reference_domain_packs/`**：三门禁 pack 快照（workflow-refund / code-review-pr / data-csv-clean）
+- **`scripts/repair_reference_packs.py`**：`run_bench_regression.py` 跑前自动 sync 到 `data/domain_packs/`
+
+### 验证
+- `python scripts/run_bench_regression.py` — Reference Quick8 3/3 OK（+28 / +18.6 / +22 pp）
+
+---
+
 ## v0.3.3 (2026-06-24) — 前端 M0–M5 产品化批次
 
 > Verified Skill 验货控制台 · 三路径沉淀 · Cursor 导出优先
