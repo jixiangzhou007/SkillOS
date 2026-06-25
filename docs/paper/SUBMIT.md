@@ -1,6 +1,6 @@
 # arXiv 投稿 Checklist — Paper 1
 
-> **标题**：*Experience ≠ Knowledge: An Epistemology Engine for Agent Skill Quality*  
+> **标题**：*Experience ≠ Knowledge: An Epistemology Engine for Agent Skill Quality*
 > **源文件**：[`paper.tex`](paper.tex) · **实验数据**：[`experiments/epistemic_results.md`](experiments/epistemic_results.md)
 > **状态**：2026-06-20 更新（84 commits baseline）
 

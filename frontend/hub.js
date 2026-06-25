@@ -559,4 +559,3 @@ function adminChangeRole(userId, newRole) {
 function adminDeleteUser(userId) {
   if (hubDelegate('adminDeleteUser', userId)) return;
 }
-

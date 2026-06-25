@@ -1,5 +1,9 @@
 """50+ round extraction stress test — continuous refinement + mixed content."""
-import urllib.request, json, sys, io, time
+import urllib.request
+import json
+import sys
+import io
+import time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 API = 'http://127.0.0.1:8765/api/skills/dispatch'
 FINALIZE = 'http://127.0.0.1:8765/api/skills/finalize'

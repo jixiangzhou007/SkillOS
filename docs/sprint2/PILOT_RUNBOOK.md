@@ -1,7 +1,7 @@
 # Sprint 2 · 组织试点运行手册
 
-> **状态**：可执行 · W5–6  
-> **DoD**：5 人各创建 1 个技能草稿（org tenant 目录）  
+> **状态**：可执行 · W5–6
+> **DoD**：5 人各创建 1 个技能草稿（org tenant 目录）
 > **前置**：`SKILLOS_LEGACY_MODE=false`
 
 ---

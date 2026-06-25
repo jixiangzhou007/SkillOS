@@ -262,4 +262,3 @@ def get_session_manager() -> SessionManager:
     if _default_manager is None:
         _default_manager = SessionManager()
     return _default_manager
-

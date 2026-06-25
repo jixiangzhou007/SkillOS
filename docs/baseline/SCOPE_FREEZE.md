@@ -1,7 +1,7 @@
 # Phase 1–4 范围冻结
 
-> **生效**：2026-06-14（Phase 0 完成起）  
-> **解冻**：Phase 4 验收后由用户决定是否扩展  
+> **生效**：2026-06-14（Phase 0 完成起）
+> **解冻**：Phase 4 验收后由用户决定是否扩展
 > **目的**：防止「广而不深」— 先证明 Verified Skill，再扩商业与通道。
 
 ---
@@ -36,10 +36,10 @@
 
 ## 允许的小改动
 
-- 修 bug（如 `_list_skills_impl`）  
-- 为 Phase 1–2 增加的 **新文件**：`epistemic_bridge.py`、`benchmark_epistemic.py`、`data/benchmarks/epistemic/`  
-- 测试、文档、`AI_DEV_LOG.md`  
-- 依赖版本 pin（若测试需要）  
+- 修 bug（如 `_list_skills_impl`）
+- 为 Phase 1–2 增加的 **新文件**：`epistemic_bridge.py`、`benchmark_epistemic.py`、`data/benchmarks/epistemic/`
+- 测试、文档、`AI_DEV_LOG.md`
+- 依赖版本 pin（若测试需要）
 
 ---
 
@@ -47,9 +47,9 @@
 
 若 Phase 1–4 期间必须做 Out of Scope 项：
 
-1. 在 `AI_DEV_LOG.md` 记录理由  
-2. 更新本文件「例外」小节  
-3. 用户明确确认  
+1. 在 `AI_DEV_LOG.md` 记录理由
+2. 更新本文件「例外」小节
+3. 用户明确确认
 
 ---
 

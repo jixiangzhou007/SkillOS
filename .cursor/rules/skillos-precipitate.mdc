@@ -57,5 +57,5 @@ get_skill(name="技能名")
 
 ## 飞书群
 
-经 Hermes Gateway 接入，session 格式：`feishu:{chat_id}:{user_id}`。  
+经 Hermes Gateway 接入，session 格式：`feishu:{chat_id}:{user_id}`。
 端到端 checklist：`docs/channels/FEISHU_HERMES_CHECKLIST.md`。

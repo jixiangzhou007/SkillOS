@@ -1,6 +1,6 @@
 # 飞书 × Hermes × SkillOS 端到端 Checklist
 
-> Phase 4 M1/M2 · 路径 A（Hermes Gateway → MCP）  
+> Phase 4 M1/M2 · 路径 A（Hermes Gateway → MCP）
 > 用户话术见 [`docs/USER_GUIDE.md`](../USER_GUIDE.md)
 
 ---

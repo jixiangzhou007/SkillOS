@@ -1,6 +1,6 @@
 # SkillOS 项目思路（整理版）
 
-> 基于 Skill Distiller 原始设计（`PROJECT_DESIGN.md`）与 SkillOS 当前实现状态整理。  
+> 基于 Skill Distiller 原始设计（`PROJECT_DESIGN.md`）与 SkillOS 当前实现状态整理。
 > **最后更新**：2026-06-15
 
 ---
@@ -206,7 +206,7 @@ SkillOS 回答更上游的三问：
 
 ## 10. 给团队的一句话备忘
 
-> 任何 PR 先问：**它是否让「对话 → 可安装 SKILL.md」更快、更准、更简单？**  
+> 任何 PR 先问：**它是否让「对话 → 可安装 SKILL.md」更快、更准、更简单？**
 > 若是认识论/进化/图谱，问第二句：**是否阻塞或不伤害主路径？**
 
 ---

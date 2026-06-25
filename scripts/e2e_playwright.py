@@ -1,5 +1,7 @@
 """SkillOS E2E test — Playwright automated testing."""
-import sys, os, time
+import sys
+import os
+import time
 from playwright.sync_api import sync_playwright
 
 BASE = 'http://127.0.0.1:8765'

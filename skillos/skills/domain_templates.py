@@ -711,5 +711,3 @@ def taxonomy_meta_for_template(tmpl: DomainTemplate) -> dict:
         "bench_categories": list(tmpl.bench_categories),
         "domain_template": tmpl.template_id,
     }
-
-

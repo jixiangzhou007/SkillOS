@@ -1,7 +1,7 @@
 # SkillOS AI 协作开发日志
 
-> **用途**：记录由 AI 编程助手（Cursor、Claude Code 等）对 SkillOS 的修改过程。  
-> **读者**：切换开发工具时的下一个 AI / 人类开发者。  
+> **用途**：记录由 AI 编程助手（Cursor、Claude Code 等）对 SkillOS 的修改过程。
+> **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
 ---

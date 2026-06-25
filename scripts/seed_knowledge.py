@@ -1,5 +1,7 @@
 """Seed knowledge data for UI testing. Run after server starts."""
-import requests, json, time
+import requests
+import json
+import time
 
 BASE = 'http://127.0.0.1:8765'
 

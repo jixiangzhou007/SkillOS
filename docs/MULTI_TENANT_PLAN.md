@@ -1,7 +1,7 @@
 # SkillOS 多租户架构规划：个人用户 × 企业组织
 
-> **版本**：v1.0 · 2026-06-14  
-> **⚠️ 执行总纲**：[`PRODUCT_ROLLOUT_PLAN.md`](PRODUCT_ROLLOUT_PLAN.md) v2.0（组织优先 + 个人 Free 同期）  
+> **版本**：v1.0 · 2026-06-14
+> **⚠️ 执行总纲**：[`PRODUCT_ROLLOUT_PLAN.md`](PRODUCT_ROLLOUT_PLAN.md) v2.0（组织优先 + 个人 Free 同期）
 > **本文档定位**：多租户 **架构与数据模型** 技术附录
 
 ---

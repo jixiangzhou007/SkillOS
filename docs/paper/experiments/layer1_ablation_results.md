@@ -1,7 +1,7 @@
 # Layer 1 Ablation — HERITAGE × Pack-Scoped Inject
 
-> **日期**：2026-06-18  
-> **产物**：`data/benchmarks/ablation_1781759573.json`  
+> **日期**：2026-06-18
+> **产物**：`data/benchmarks/ablation_1781759573.json`
 > **代码**：`skillos/evaluation/ablation.py` · `python scripts/archive/run_ablation.py`
 
 ## 设计

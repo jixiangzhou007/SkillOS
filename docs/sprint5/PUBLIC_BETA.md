@@ -1,6 +1,6 @@
 # Sprint 5 · Personal Free 公测
 
-> **状态**：可发布 · M3  
+> **状态**：可发布 · M3
 > **DoD**：公测公告就绪；cross-tenant 测试 0 漏洞
 
 ---

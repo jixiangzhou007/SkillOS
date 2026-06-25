@@ -1,7 +1,7 @@
 # SkillOS 基线快照
 
-> **冻结日期**：2026-06-14  
-> **环境**：Windows · Python 3.14 · `D:\SkillOS`  
+> **冻结日期**：2026-06-14
+> **环境**：Windows · Python 3.14 · `D:\SkillOS`
 > **用途**：Phase 1+ 改进的「改前数字」；复现命令见下文。
 
 ---
@@ -24,7 +24,7 @@
 python -m pytest tests/ -v --tb=short
 ```
 
-**结果**：`118 passed · 3 failed · 2 skipped · 103.38s`  
+**结果**：`118 passed · 3 failed · 2 skipped · 103.38s`
 **Phase 0.5 后**：`122 passed · 0 failed · 2 skipped · 124 collected · ~119s`（见 [`pytest_20260614_phase05.txt`](pytest_20260614_phase05.txt)）
 
 **完整日志**：[`pytest_20260614.txt`](pytest_20260614.txt)
@@ -45,8 +45,8 @@ python -m pytest tests/ -v --tb=short
 
 ### 警告
 
-- `websockets.legacy` / `uvicorn` DeprecationWarning  
-- `speech_recognition` / `aifc` Python 3.13+ 兼容警告  
+- `websockets.legacy` / `uvicorn` DeprecationWarning
+- `speech_recognition` / `aifc` Python 3.13+ 兼容警告
 
 ---
 
@@ -57,8 +57,8 @@ python -m pytest tests/ -v --tb=short
 python -m skillos.benchmark --full
 ```
 
-**模型**：`deepseek-v4-flash`  
-**完整输出**：[`benchmark_20260614.txt`](benchmark_20260614.txt)  
+**模型**：`deepseek-v4-flash`
+**完整输出**：[`benchmark_20260614.txt`](benchmark_20260614.txt)
 **JSON**：[`../../data/benchmarks/benchmark_20260614_105554.json`](../../data/benchmarks/benchmark_20260614_105554.json)
 
 ### 对比摘要（3 用例）
@@ -72,9 +72,9 @@ python -m skillos.benchmark --full
 
 ### 已知 benchmark 局限
 
-1. **审计解析失败**：3/3 用例 `audit.summary = "审计解析失败，降级放行"`，score 均为 60，**无法区分质量差异**。  
-2. **仅结构指标**：无 claim-level 真/假标注，无人工可执行性评分。  
-3. **样本量**：N=3，不足以支撑论文或对外 PR。  
+1. **审计解析失败**：3/3 用例 `audit.summary = "审计解析失败，降级放行"`，score 均为 60，**无法区分质量差异**。
+2. **仅结构指标**：无 claim-level 真/假标注，无人工可执行性评分。
+3. **样本量**：N=3，不足以支撑论文或对外 PR。
 
 ---
 
@@ -93,10 +93,10 @@ grep -i epistemic skillos/skills/agent.py  → 无匹配
 
 ## Phase 0 验收状态
 
-- [x] pytest 运行并存档  
-- [x] benchmark `--full` 运行并存档  
-- [x] GAP_ANALYSIS 完成 → [`GAP_ANALYSIS.md`](GAP_ANALYSIS.md)  
-- [x] 范围冻结 → [`SCOPE_FREEZE.md`](SCOPE_FREEZE.md)  
+- [x] pytest 运行并存档
+- [x] benchmark `--full` 运行并存档
+- [x] GAP_ANALYSIS 完成 → [`GAP_ANALYSIS.md`](GAP_ANALYSIS.md)
+- [x] 范围冻结 → [`SCOPE_FREEZE.md`](SCOPE_FREEZE.md)
 
 **Phase 0 出口条件**：进入 Phase 1 前，建议先修 P0 `_list_skills_impl`（1 行级修复，非 Phase 1 范围）。
 

@@ -1321,4 +1321,3 @@ async def ingest_file(
             os.unlink(tmp_path)
         except Exception:
             _log.debug("Non-critical operation skipped", exc_info=True)
-

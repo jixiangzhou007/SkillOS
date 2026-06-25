@@ -1,6 +1,6 @@
 # SkillOS 用户话术指南 / User Phrase Guide
 
-> 飞书、微信、Cursor MCP、SkillOS 桌面/API 共用同一套「沉淀协议」。  
+> 飞书、微信、Cursor MCP、SkillOS 桌面/API 共用同一套「沉淀协议」。
 > 技术实现：`skillos/skills/intent_router.py` · API：`POST /api/skills/dispatch`
 
 ---

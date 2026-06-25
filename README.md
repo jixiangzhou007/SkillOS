@@ -1,6 +1,6 @@
 # SkillOS — AI Skill Operating System
 
-> **SkillOS**：在飞书、Cursor 里对话，沉淀**可验证**的 Agent Skills — 不是又一份 AI 生成的 markdown。  
+> **SkillOS**：在飞书、Cursor 里对话，沉淀**可验证**的 Agent Skills — 不是又一份 AI 生成的 markdown。
 > 认识论引擎 + 7 步萃取管线 + **三层 DNA** + 本地 SkillsBench 闭环；证据见 [Epistemic Benchmark](docs/paper/experiments/epistemic_results.md)、[Layer 1 Ablation](docs/paper/experiments/layer1_ablation_results.md)、[本地 Bench 指南](docs/BENCHMARK_LOCAL.md)。
 
 给 AI Agent 造子弹的兵工厂。基于 Hermes Agent 底座，通过 MCP 协议接入 Claude Code、Cursor、飞书/微信（Hermes Gateway）。
@@ -122,8 +122,8 @@ open http://127.0.0.1:9876/docs               # OpenAPI 文档
 
 所有 AI 编程工具在本仓库工作时须遵守 **[`AGENTS.md`](AGENTS.md)**：
 
-1. **改代码前** — 读 [`docs/AI_DEV_LOG.md`](docs/AI_DEV_LOG.md) 最新一条  
-2. **改代码后** — 按模板追加协作记录  
+1. **改代码前** — 读 [`docs/AI_DEV_LOG.md`](docs/AI_DEV_LOG.md) 最新一条
+2. **改代码后** — 按模板追加协作记录
 
 Cursor 自动加载 `.cursor/rules/`；Claude Code 读 `CLAUDE.md`。
 

@@ -1,6 +1,6 @@
 # Sprint 4 · 试点 Go/No-Go 评审清单
 
-> **时机**：M2 末 / Sprint 4 W9–10  
+> **时机**：M2 末 / Sprint 4 W9–10
 > **输入**：[`PILOT_SCENARIOS.md`](../sprint0/PILOT_SCENARIOS.md)、[`PILOT_RUNBOOK.md`](../sprint2/PILOT_RUNBOOK.md)
 
 ---
@@ -37,8 +37,8 @@
 | **Extend** | 60–80% 通过，延长试点 2 周 |
 | **No-Go** | <60% 或存在 cross-tenant / 数据丢失 P0 |
 
-**评审人**：_产品负责人_ · _Champion 代表_ · _信安_  
-**日期**：________  
+**评审人**：_产品负责人_ · _Champion 代表_ · _信安_
+**日期**：________
 **结论**：Go / Extend / No-Go
 
 ---

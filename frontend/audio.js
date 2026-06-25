@@ -156,4 +156,3 @@ function _playNextInQueue(allowInterrupt) {
   a.onerror = () => _playNextInQueue(allowInterrupt);
   a.play();
 }
-

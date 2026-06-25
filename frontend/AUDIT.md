@@ -131,4 +131,3 @@
 | KPI 面板 ID 冲突 | 改用 `kpi-*-panel` + `.kpi-panel` |
 | 技能名含引号点击崩溃 | `JSON.stringify` 安全 onclick |
 | 日志事件英文标识 | `_eventLabel` 中文映射 |
-

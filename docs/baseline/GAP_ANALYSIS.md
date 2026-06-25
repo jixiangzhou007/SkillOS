@@ -1,7 +1,7 @@
 # SkillOS 差距分析（设计声称 vs 运行时现状）
 
-> **基线日期**：2026-06-14 · **更新**：2026-06-18（Layer 1 bench 闭合）  
-> **依据**：`DESIGN.md`、`docs/PAPERS.md`、pytest、benchmark、源码 grep  
+> **基线日期**：2026-06-14 · **更新**：2026-06-18（Layer 1 bench 闭合）
+> **依据**：`DESIGN.md`、`docs/PAPERS.md`、pytest、benchmark、源码 grep
 > **优先级**：P0 阻塞产品/API · P1 Phase 1–2 核心 · P2 Phase 3+ · P3 延后
 
 ---
@@ -101,7 +101,7 @@
 
 ## Phase 0 发现的可立即修复项
 
-1. ~~**P0** `_list_skills_impl`~~ → **Phase 0.5 已完成**（2026-06-14）  
+1. ~~**P0** `_list_skills_impl`~~ → **Phase 0.5 已完成**（2026-06-14）
 2. ~~**P1** `test_consolidate` timeout~~ → **Phase 0.5 已完成**（120s）
 
 ---
