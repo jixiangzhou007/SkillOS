@@ -54,7 +54,7 @@ docs/AI_DEV_LOG.md
 
 ```bash
 pip install -e .
-python -m pytest tests/ --ignore=tests/test_feasibility_eval.py -v
+python -m pytest tests/ -v
 skillos --server-only          # API http://127.0.0.1:9876
 python -m skillos.mcp_server   # MCP
 ```

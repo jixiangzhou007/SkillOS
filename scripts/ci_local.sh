@@ -38,7 +38,7 @@ echo ""
 
 # Stage 6: Full test suite + import verification
 echo "=== [6/6] Full test suite ==="
-python -m pytest tests/ --ignore=tests/test_feasibility_eval.py -v --tb=short
+python -m pytest tests/ -v --tb=short
 echo ""
 
 echo "=== Import verification ==="
