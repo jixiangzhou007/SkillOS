@@ -86,3 +86,4 @@ skills/skill-*/
 
 # User-generated skill content (keep system skills in git)
 # skills/ is version-controlled for built-in system skills and test fixtures
+scripts/verify_*_output.txt
