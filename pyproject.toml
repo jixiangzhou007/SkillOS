@@ -84,6 +84,6 @@ disable_error_code = [
     "var-annotated",   # type inference is sufficient for most local vars
     "union-attr",      # list|bool|None patterns in hermes_bridge are intentional
     "arg-type",        # overloaded max() key functions
-    "assignment",      # legacy code type assignment issues
-    "index",           # skillopt/benchmark indexable checks
+    "assignment",      # legacy code type assignment issues (6 errors — needs deeper refactor)
+    "index",           # skillopt/benchmark indexable checks (11 errors — needs None guards)
 ]
