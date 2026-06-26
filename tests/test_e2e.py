@@ -120,12 +120,18 @@ class TestE2EPipeline:
         assert "total_items" in result
 
     def test_07_dispatch_chat(self):
-        """Send a chat message — should get a reply."""
-        r = _post("/api/skills/dispatch", {
-            "message": "你好，请简单介绍一下自己",
-            "history": [], "mode": "chat", "model": "deepseek-v4-flash"
-        })
-        assert "reply" in r
+        """Send a chat message — should get a reply (retry on LLM timeout)."""
+        import time
+        for attempt in range(3):
+            try:
+                r = _post("/api/skills/dispatch", {
+                    "message": "你好", "history": [], "mode": "chat", "model": "deepseek-v4-flash"
+                })
+                assert "reply" in r
+                break
+            except (AssertionError, TimeoutError):
+                if attempt == 2: raise
+                time.sleep(2 ** attempt)
 
     def test_08_mcp_tools_work(self):
         """All 10 MCP tools should be callable."""

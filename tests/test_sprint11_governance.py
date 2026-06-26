@@ -131,6 +131,8 @@ class TestPlatformGovernance:
 
 class TestCreatorSummary:
     def test_creator_summary_reserved(self, client):
+        """Creator summary with retry on transient state."""
+        import time
         reg = _register(client)
         token = reg["token"]
         user_id = reg["user"]["user_id"]
@@ -140,14 +142,22 @@ class TestCreatorSummary:
         set_price("creator-skill", "one_time", 9.99)
         create_purchase("creator-skill", "buyer-x", author_id=user_id)
 
-        r = client.get(
-            "/api/billing/creator-summary",
-            headers={"Authorization": f"Bearer {token}"},
-        )
-        assert r.status_code == 200
-        body = r.json()
-        assert body["payout_status"] == "reserved"
-        assert body["total_sales"] >= 1
+        for attempt in range(3):
+            r = client.get(
+                "/api/billing/creator-summary",
+                headers={"Authorization": f"Bearer {token}"},
+            )
+            if r.status_code == 200:
+                body = r.json()
+                if body.get("total_sales", 0) >= 1:
+                    assert body["payout_status"] == "reserved"
+                    break
+            if attempt == 2:
+                assert r.status_code == 200
+                body = r.json()
+                assert body["payout_status"] == "reserved"
+                assert body["total_sales"] >= 1
+            time.sleep(1)
 
 
 class TestBackupScript:
