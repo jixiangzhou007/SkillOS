@@ -1,0 +1,58 @@
+=== SkillOS SD Knowledge Closure Verification ===
+
+--- Imports ---
+  [OK] import skillos.knowledge.incremental_store
+  [OK] import skillos.knowledge.ingest_pipeline
+  [OK] import skillos.knowledge.knowledge_context
+  [OK] import skillos.knowledge.lineage
+  [OK] import skillos.knowledge.cycle_tasks
+  [OK] import skillos.knowledge.ingest_metrics
+
+--- IncrementalStore ---
+  [OK] IncrementalStore file + source hash
+
+--- Lineage 4-signal ---
+  [OK] 4-signal build_cross_references
+
+--- post_ingest ---
+  [OK] post_ingest → lineage persistence
+
+--- PURPOSE context ---
+  [OK] get_ingest_context (empty or populated)
+
+--- learn_knowledge ---
+  [OK] learn_knowledge import + empty path
+
+--- full_knowledge_cycle ---
+  [OK] run_full_knowledge_cycle wrapper
+
+--- pytest subset ---
+......................................F..FF......................        [100%]
+================================== FAILURES ===================================
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+D:\SkillOS\tests\test_learn_knowledge_cycle.py:135: assert 401 == 200
+E   assert 401 == 200
+     +  where 401 = <Response [401 Unauthorized]>.status_code
+D:\SkillOS\tests\test_cycle_tasks.py:97: assert 401 == 200
+E   KeyError: 'task_id'
+D:\SkillOS\tests\test_cycle_tasks.py:126: KeyError: 'task_id'
+============================== warnings summary ===============================
+tests/test_ingest_pipeline.py::TestFileIngestLineageHook::test_ingest_and_learn_records_lineage
+  D:\Python\Python314\Lib\site-packages\speech_recognition\__init__.py:7: DeprecationWarning: aifc was removed in Python 3.13. Please be aware that you are currently NOT using standard 'aifc', but instead a separately installed 'standard-aifc'.
+    import aifc
+
+tests/test_learn_knowledge_cycle.py::TestKnowledgeCycleAPI::test_post_cycle_endpoint
+  D:\Python\Python314\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_learn_knowledge_cycle.py::TestKnowledgeCycleAPI::test_post_cycle_endpoint
+FAILED tests/test_cycle_tasks.py::TestKnowledgeCycleAPI::test_post_cycle_returns_task_id
+FAILED tests/test_cycle_tasks.py::TestKnowledgeCycleAPI::test_get_cycle_status_poll
+3 failed, 62 passed, 2 warnings in 9.58s
+  [FAIL] pytest subset exit=1
+
+=== RESULT: 7/8 passed ===
+FAIL
