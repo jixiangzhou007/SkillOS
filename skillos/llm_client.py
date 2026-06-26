@@ -168,7 +168,7 @@ def call_with_tools(
 
     create_kwargs = cfg.to_llm_args()[3]
 
-    resp = client.chat.completions.create(
+    resp = client.chat.completions.create(  # type: ignore[call-overload]
         model=model_name,
         messages=msgs,
         temperature=temperature,

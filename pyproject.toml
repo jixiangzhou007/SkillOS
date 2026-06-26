@@ -78,8 +78,6 @@ warn_return_any = false
 warn_unused_ignores = false
 show_error_codes = true
 disable_error_code = [
-    "call-overload",   # sqlite3.Row supports string-key access, but mypy sees tuple
-    "no-redef",        # re-export pattern intentionally redefines names
     "attr-defined",    # dynamic attributes on dict proxies
     "var-annotated",   # type inference is sufficient for most local vars
     "union-attr",      # list|bool|None patterns in hermes_bridge are intentional

@@ -72,16 +72,6 @@ class KnowledgeEdge:
     contribution_score: float = 0.0  # How much this edge helps (0-1)
     times_used: int = 0              # How many times it was traversed
     times_helped: int = 0            # How many times it led to good answers
-    """A typed, directed relationship between two knowledge nodes."""
-
-    source_id: str
-    target_id: str
-    relation_type: str          # one of RELATION_TYPES
-    weight: float = 0.5         # strength of this relationship (grows with use)
-    evidence: str = ""          # why this relationship exists
-    created_at: float = 0.0
-
-
 @dataclass
 class KnowledgeCluster:
     """An emergent grouping of related nodes (like a Zettelkasten topic cluster)."""

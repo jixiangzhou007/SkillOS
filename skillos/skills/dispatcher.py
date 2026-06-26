@@ -234,7 +234,7 @@ def dispatch(
         from skillos.utils.web_search import get_tool_definition as _ws_tool
         no_skill_tools = [_ws_tool(), _wf_tool()]
 
-        response = client.chat.completions.create(
+        response = client.chat.completions.create(  # type: ignore[call-overload]
             model=selected_model,
             messages=messages,
             tools=no_skill_tools,
@@ -315,7 +315,7 @@ def dispatch(
     messages.append({"role": "user", "content": user_message})
 
     # First LLM call: routing decision
-    response = client.chat.completions.create(
+    response = client.chat.completions.create(  # type: ignore[call-overload]
         model=selected_model,
         messages=messages,
         tools=tools,

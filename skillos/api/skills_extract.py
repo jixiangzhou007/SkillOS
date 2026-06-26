@@ -418,7 +418,7 @@ def _team_context_from_auth(
     }
 
 
-def _tenant_context_from_auth(auth: AuthContext | None):
+def _tenant_context_from_auth(auth: AuthContext | None):  # type: ignore[no-redef]
     """Set thread-local tenant for quota / path resolution within request."""
     if not auth:
         return None
@@ -426,7 +426,7 @@ def _tenant_context_from_auth(auth: AuthContext | None):
     return set_tenant_context(auth.tenant_context())
 
 
-def _reset_tenant(token) -> None:
+def _reset_tenant(token) -> None:  # type: ignore[no-redef]
     if token is None:
         return
     from skillos.identity.context import reset_tenant_context
@@ -447,7 +447,7 @@ def _dispatch_identity(req: DispatchRequest, auth: AuthContext | None) -> tuple[
     return ctx["tenant_id"], ctx["org_id"], ctx["user_id"], ctx["dept_id"]
 
 
-def _skills_list(auth: AuthContext | None = None):
+def _skills_list(auth: AuthContext | None = None):  # type: ignore[no-redef]
     from skillos.skills.skill_store import list_skills
     tenant = auth.tenant_context() if auth else None
     return list_skills(tenant=tenant)
@@ -460,7 +460,7 @@ def _create_mode_skills_list(auth: AuthContext | None = None) -> list[str]:
     return create_mode_skills(_skills_list(auth))
 
 
-def _tenant_from_context(ctx: dict):
+def _tenant_from_context(ctx: dict):  # type: ignore[no-redef]
     from skillos.identity.resolver import tenant_from_context
     return tenant_from_context(ctx)
 
@@ -914,14 +914,14 @@ PURPOSE.md 定义了这个知识体系要解决什么核心问题、为谁服务
         reply = dispatch_result.reply or ""
         session.add_turn("user", msg)
         session.add_turn("assistant", reply)
-        out: dict = {
+        resp: dict = {
             "reply": reply,
             "mode": "agent",
             "session_id": session.id,
         }
         if dispatch_result.skill_used:
-            out["skill_used"] = dispatch_result.skill_used
-        return out
+            resp["skill_used"] = dispatch_result.skill_used
+        return resp
 
     # ── Skill extraction — SD create-mode: handle() + Socratic + [选项] buttons ──
     if req.mode == "create" or agent.is_active or intent == DispatchIntent.EXTRACT:
