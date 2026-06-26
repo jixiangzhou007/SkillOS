@@ -77,7 +77,7 @@ function knowledgeView() {
         this.kpiKnowledge = this.items.filter(function(i){return i.level==='knowledge'}).length;
         this.kpiExperience = this.items.filter(function(i){return i.level==='experience'}).length;
         this.kpiPending = this.items.filter(function(i){return i.status==='pending'||i.level==='experience'}).length;
-      } catch(e) {}
+      } catch(e) { console.warn('epistemic load failed:', e); }
       this.loading = false;
     },
 
@@ -320,7 +320,7 @@ async function loadIngestionQueuePanel() {
     var r = await api('/api/knowledge/ingestion-queue'), d = await r.json(), items = d.items||[];
     if (items.length) el.innerHTML = (el.innerHTML||'')+'<div class="content-card ingest-queue-card"><div class="content-card-header">摄入队列 ('+items.length+')</div>'+items.map(function(i){return '<div class="ingest-queue-item"><span class="nav-icon" data-icon="file"></span>'+escHtml(i.source||i.url||'')+' <span class="ingest-queue-status">'+(i.status||'queued')+'</span></div>';}).join('')+'</div>';
     if (typeof hydrateIcons === 'function') hydrateIcons(el);
-  } catch(e) {}
+  } catch(e) { console.warn('ingest queue render failed:', e); }
 }
 
 function resumeCycleTask(taskId) {

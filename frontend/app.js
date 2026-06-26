@@ -233,7 +233,7 @@ if (typeof showChat === 'function') showChat();
           }
         }, 1000);
       }
-    }).catch(function() {});
+    }).catch(function(e) { console.warn('resume check failed:', e); });
 })();
 
 // Load recent skills for welcome screen and sidebar
@@ -244,4 +244,4 @@ api('/api/marketplace/catalog?limit=1').then(function(r) {
   return r.ok ? r.json() : null;
 }).then(function(d) {
   if (d && typeof applyMarketplaceMode === 'function') applyMarketplaceMode(d);
-}).catch(function() {});
+}).catch(function(e) { console.warn('marketplace catalog check failed:', e); });

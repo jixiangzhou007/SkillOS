@@ -33,7 +33,7 @@ function loadRecentSkills() {
   api('/api/skills/').then(function(r) { return r.json(); }).then(function(skills) {
     if (!Array.isArray(skills) || !skills.length) return;
     renderSidebarWorkspace(skills);
-  }).catch(function() {});
+  }).catch(function(e) { console.warn('chat fetch failed:', e); });
 }
 
 function apiErrorMessage(r, body) {
@@ -651,7 +651,7 @@ function resumeSession() {
         setDot('on');
         addMsg('sys', '已恢复萃取「' + (d.skill_name || '技能') + '」，继续对话即可');
       }
-    }).catch(function() {});
+    }).catch(function(e) { console.warn('chat fetch failed:', e); });
 }
 
 function newSession() {
