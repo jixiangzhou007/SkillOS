@@ -614,6 +614,8 @@ function switchMainView(id) {
     }
   } catch(e) {}
 
+  var bar = document.getElementById('bar');
+  if (bar) bar.style.display = (id === 'chat-view') ? 'flex' : 'none';
 }
 
 function showChat() {

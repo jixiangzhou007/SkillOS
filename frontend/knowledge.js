@@ -336,8 +336,6 @@ function showUnifiedKnowledge(tab) {
     Alpine.store('nav').goTo('knowledge-unified-view');
   } else if (typeof switchMainView === 'function') {
     switchMainView('knowledge-unified-view');
-    var bar = document.getElementById('bar');
-    if (bar) bar.style.display = 'none';
   }
   switchKnowledgeTab(tab);
 }

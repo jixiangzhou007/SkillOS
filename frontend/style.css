@@ -868,4 +868,21 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .u-row{display:flex;justify-content:space-between;align-items:center;gap:var(--s-2)}
 .u-card-hover{cursor:pointer;transition:background var(--t)}
 .u-card-hover:hover{background:var(--surface2)}
+
+/* ── Button states ─────────────────────────────────── */
+.btn:disabled,.btn-primary:disabled,.btn-secondary:disabled,.btn-ghost:disabled,
+.bar-action:disabled,#send-btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none;transform:none!important;box-shadow:none!important}
+.btn.loading,.btn-primary.loading,#send-btn.loading{position:relative;color:transparent!important;pointer-events:none}
+.btn.loading::after,.btn-primary.loading::after,#send-btn.loading::after{content:'';position:absolute;inset:0;margin:auto;width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:btn-spin .6s linear infinite}
+@keyframes btn-spin{to{transform:rotate(360deg)}}
+
+/* ── View transitions ──────────────────────────────── */
+.main-view{opacity:0;transform:translateY(6px);transition:opacity var(--t),transform var(--t);pointer-events:none}
+.main-view.active{opacity:1;transform:translateY(0);pointer-events:auto}
+
+/* ── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(var(--text-rgb),.12);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(var(--text-rgb),.22)}
 @media(min-width:1400px){.ws-draft{width:440px}.msg{max-width:62%}}
