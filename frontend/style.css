@@ -90,7 +90,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .gs-loading{padding:var(--s-4);text-align:center;font:400 var(--t-sm)/1.4 var(--font);color:var(--text3)}
 
 /* ── Sidebar ────────────────────────────────────────── */
-#sidebar{width:252px;min-width:252px;background:rgba(var(--surface-rgb),.72);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;backdrop-filter:blur(12px)}
+#sidebar{width:272px;min-width:252px;background:rgba(var(--surface-rgb),.72);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;backdrop-filter:blur(12px)}
 .sb-section-header{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-3) var(--s-4);cursor:pointer;font:700 var(--t-xs)/1 var(--font);color:var(--text3);text-transform:uppercase;letter-spacing:.07em;border-left:2px solid transparent;transition:all var(--t)}
 .sb-section-header:hover{color:var(--text2);background:rgba(var(--text-rgb),.03);border-left-color:var(--a3)}
 .sb-count{font:700 var(--t-xs)/1 var(--font);padding:2px 8px;border-radius:10px;background:var(--accent-bg);color:var(--a2);border:1px solid rgba(var(--accent-rgb),.12)}

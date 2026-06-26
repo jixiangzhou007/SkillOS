@@ -217,6 +217,36 @@ initAuth();
 // Show chat input bar on initial load
 if (typeof showChat === 'function') showChat();
 
+// ── Global keyboard shortcuts ──────────────────────
+document.addEventListener('keydown', function(e) {
+  // Ctrl+K / Cmd+K — focus global search
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    var gs = document.getElementById('global-search');
+    if (gs) gs.focus();
+    return;
+  }
+  // Ctrl+N / Cmd+N — new extraction session
+  if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+    e.preventDefault();
+    if (typeof showChat === 'function') showChat();
+    if (typeof setStatus === 'function') setStatus('');
+    if (typeof newSession === 'function') newSession();
+    var inp = document.getElementById('input');
+    if (inp) inp.focus();
+    return;
+  }
+  // Escape — close overlays
+  if (e.key === 'Escape') {
+    var src = document.getElementById('source-material-modal');
+    if (src && src.style.display !== 'none') { closeSourceMaterialModal(); return; }
+    var model = document.getElementById('model-modal');
+    if (model && model.style.display !== 'none') { closeModelModal(); return; }
+    var del = document.getElementById('delete-modal');
+    if (del && del.style.display !== 'none') { closeDeleteModal(); return; }
+  }
+});
+
 // Check for active extraction session to resume
 (function checkResumeSession() {
   var sid = localStorage.getItem(StorageKeys.SESSION);
