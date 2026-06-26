@@ -452,6 +452,8 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .error-state-icon{font-size:48px;margin-bottom:var(--s-4);opacity:.3}
 .error-state-title{font:600 var(--t-lg)/1.4 var(--font);color:var(--text2);margin-bottom:var(--s-1)}
 .error-state-hint{font:400 var(--t-base)/1.6 var(--font);color:var(--text3);max-width:380px;margin:0 auto}
+.offline-banner{position:fixed;top:0;left:0;right:0;z-index:999;padding:var(--s-2) var(--s-4);background:var(--red);color:#fff;font:600 var(--t-sm)/1 var(--font);display:flex;align-items:center;justify-content:center;gap:var(--s-4);animation:offline-in .3s ease}.offline-banner .nav-sm{border-color:rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.1);font-size:var(--t-xs);padding:2px 10px}.offline-banner .nav-sm:hover{background:rgba(255,255,255,.2)}
+@keyframes offline-in{from{transform:translateY(-100%)}to{transform:translateY(0)}}
 
 /* ── Skeleton Loading ──────────────────────────────── */
 @keyframes skeleton-pulse{0%,100%{opacity:.3}50%{opacity:.6}}
