@@ -836,7 +836,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .admin-org-id{font:400 var(--t-sm)/1 var(--font);color:var(--text3);margin-top:var(--s-1)}
 .admin-org-actions{display:flex;gap:var(--s-2);flex-wrap:wrap}
 .admin-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--s-3)}
-.admin-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:var(--s-4)}
+.admin-card{background:rgba(var(--surface-rgb),.45);border:1px solid var(--border);border-radius:var(--r);padding:var(--s-4);backdrop-filter:blur(8px)}
 .admin-card-title{margin-bottom:var(--s-3)!important}
 .admin-form-row{display:flex;gap:var(--s-2);flex-wrap:wrap;align-items:center}
 .admin-form-row-top{margin-top:var(--s-2)}
