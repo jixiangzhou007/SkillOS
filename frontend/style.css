@@ -855,6 +855,16 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .admin-skill-name{flex:1;font:400 var(--t-sm)/1 var(--font);color:var(--accent);cursor:pointer}
 .admin-checkbox{accent-color:var(--accent)}
 
+/* ── Docs page ──────────────────────────────────────── */
+.docs-page{max-width:780px}
+.docs-page-title{margin-top:var(--s-3)}
+.docs-loading{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-8);color:var(--text3);font:400 var(--t-sm)/1 var(--font)}
+.typing-dots{display:flex;gap:4px}.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:dot-pulse 1.4s infinite ease-in-out}.typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot-pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.docs-loading-text{font:400 var(--t-sm)/1 var(--font);color:var(--text3)}
+.docs-error{padding:var(--s-8)}
+.docs-offline-badge{display:inline-block;padding:var(--s-1) var(--s-3);font:400 var(--t-xs)/1 var(--font);color:var(--amber-bright);background:rgba(var(--amber-rgb),.1);border:1px solid rgba(var(--amber-rgb),.15);border-radius:var(--r-xl);margin-top:var(--s-5)}
+
 /* ── Settings fields ───────────────────────────────── */
 .settings-field{margin:var(--s-2) 0 var(--s-3)}
 .settings-select-full{width:100%;margin-top:4px}
