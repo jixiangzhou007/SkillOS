@@ -766,7 +766,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .workspace-phase.ingest{background:rgba(var(--blue-rgb),.06);border-bottom-color:rgba(var(--blue-rgb),.15)}
 .wp-badge.ingest{background:rgba(var(--blue-rgb),.15);color:var(--info-blue)}
 #chat-view.extraction-strip-active #status-bar{display:none!important}
-.precipitation-result{margin:var(--s-2) 0;padding:var(--s-4);background:var(--surface);border:1px solid rgba(var(--accent-rgb),.22);border-radius:var(--r-lg);box-shadow:var(--shadow-xs);text-align:left;max-width:520px}
+.precipitation-result{margin:var(--s-2) 0;padding:var(--s-4);background:rgba(var(--surface-rgb),.5);border:1px solid rgba(var(--accent-rgb),.18);border-radius:var(--r-lg);box-shadow:var(--shadow-xs);text-align:left;max-width:520px;backdrop-filter:blur(8px)}
 .precipitation-result-digest{border-color:rgba(var(--blue-rgb),.25)}
 .pr-header{display:flex;align-items:flex-start;gap:var(--s-3);margin-bottom:var(--s-3)}
 .pr-icon{display:inline-flex;color:var(--a3);align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0}
