@@ -823,9 +823,9 @@ async def dispatch_message(
             "reply": reply,
             "session_id": session.id,
             "intent": "confirm_claims",
-            "promoted": result.promoted,
-            "synced_skills": result.synced_skills,
-            "claim_ids": result.claim_ids,
+            "promoted": confirm_result.promoted,
+            "synced_skills": confirm_result.synced_skills,
+            "claim_ids": confirm_result.claim_ids,
         }
 
     # ── Cold-start interview: guided playbook creation ──

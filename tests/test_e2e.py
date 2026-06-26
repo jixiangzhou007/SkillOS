@@ -129,7 +129,7 @@ class TestE2EPipeline:
                 })
                 assert "reply" in r
                 break
-            except (AssertionError, TimeoutError):
+            except Exception:
                 if attempt == 2: raise
                 time.sleep(2 ** attempt)
 

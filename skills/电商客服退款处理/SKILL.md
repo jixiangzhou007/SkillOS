@@ -27,7 +27,7 @@ dna_lineage:
     version: 1.2.0
     weight: 1.0
     primary: true
-  detected_at: '2026-06-26T03:51:43Z'
+  detected_at: '2026-06-26T05:15:35Z'
   conflicts:
   - 'PDCA(标准化渐进) vs OODA(快速适应): 两者都是迭代循环，但节奏不同。请明确本流程偏向SOP化(PDCA)还是实时响应(OODA)。'
   domain_key: computer-science

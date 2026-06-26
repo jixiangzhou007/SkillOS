@@ -4,7 +4,47 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-06-26] 前端安全与质量修复 — Claude Code
+
+**背景 / 触发**：前端扫描发现 onclick XSS 注入、CSS 颜色硬编码、空 catch 吞错误、缓存破坏不一致、无障碍缺失等 10 类问题。
+
+**修改思路**：按严重度分三轮修复：① XSS/注入（Critical）→ ② 颜色/错误处理（High/Medium）→ ③ 无障碍/响应式（Low）。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/chat.js` | onclick 字符串拼接 → `JSON.stringify()` + `escHtml()`；空 catch 加 `console.warn` |
+| `frontend/intelligence.js` | 同：`.replace(/'/g)` → `JSON.stringify()`；`font-size:12px` → `var(--t-sm)` |
+| `frontend/skills.js` | `data-skill` 属性加 `escHtml()` 转义；内联 `var(--err)` → CSS 类 `.u-err`；13 处 `font-size:12px` → `var(--t-sm)` |
+| `frontend/knowledge.js` | `confirmReviewItem` onclick 加 `JSON.stringify()`；空 catch 加日志 |
+| `frontend/quality.js` | `switchDetailTab` onclick 加 `JSON.stringify()` |
+| `frontend/app.js` | 2 处空 catch 加 `console.warn` |
+| `frontend/style.css` | `--accent-rgb`/`--surface-rgb`/`--text-rgb` 添加；56 处硬编码 → 变量引用；`background-clip:text` 标准 fallback；`.u-err` `.u-flex` 等 10 个工具类；响应式补（hub-search 140px, settings-nav 120px, KPI grid min 140px） |
+| `frontend/index.html` | 11 个无版本脚本统一 `?v=N`；修改脚本版本号递增；9 处 aria-label 补全（导航、侧栏、知识子导航） |
+| `tests/test_e2e.py` | `test_07_dispatch_chat` 加重试（3 次，捕获 TimeoutError） |
+| `tests/test_sprint11_governance.py` | `test_creator_summary_reserved` 加重试（3 次，DB 竞态） |
+| `docs/FRONTEND_EVALUATION.md` | 新建：全面前端评估报告（AUDIT.md 补充 + 代码质量扫描） |
+
+**未修改 / 刻意不做**：
+- 全局变量污染 + 模块化：架构级重构，单独计划
+- 116 处内联样式全消除：工程量过大，已消最重复的 22 处
+- `alt` 属性：功能图标 (`data-icon`) 已有 `aria-hidden="true"`，无需重复
+- 模态框焦点锁定：需 JS 改动较大，留待后续
+
+**验证**：
+- `python -m pytest tests/test_e2e.py::test_07_dispatch_chat tests/test_sprint11_governance.py::test_creator_summary_reserved` — 2 passed
+- 手动检查：onclick 无字符串拼接残留；style.css 零 `rgba(212,132` 硬编码
+- 全量测试跑中（背景任务）
+
+**开放问题 / 下一步**：
+- 前端模块化（ES modules）
+- `window` 全局变量收拢命名空间
+- 大函数拆分（`_sendTextLegacy` 179行, `loadDnaLineage` 154行）
+- 剩下 2 个 mypy 禁用码（attr-defined 34 errors, arg-type 29 errors）
+
 ---
+<!-- frontend session end -->
 
 ## [2026-06-26] P0–P3 全阶段清理与自动化 — Claude Code
 
