@@ -506,9 +506,14 @@ def ingest_file(file_path: str) -> str:
         Digestion result with extracted knowledge
     """
     from pathlib import Path
-    p = Path(file_path)
+    p = Path(file_path).resolve()
     if not p.exists():
         return f"File not found: {file_path}"
+    # Basic path traversal check — must be under a common workspace dir
+    cwd = Path.cwd().resolve()
+    home = Path.home().resolve()
+    if not (str(p).startswith(str(cwd)) or str(p).startswith(str(home)) or str(p).startswith(str(Path.home() / "Downloads"))):
+        return json.dumps({"error": "File must be under workspace, home, or Downloads", "path": str(p)}, ensure_ascii=False)
 
     try:
         from skillos.config import get_config
@@ -549,6 +554,11 @@ def fetch_url(url: str) -> str:
     Returns:
         Extracted content and knowledge
     """
+    # Block internal/loopback URLs to prevent SSRF
+    import urllib.parse
+    host = urllib.parse.urlparse(url).hostname or ""
+    if host in ("localhost", "127.0.0.1", "0.0.0.0", "::1") or host.startswith("192.168.") or host.startswith("10."):
+        return json.dumps({"error": "Internal URLs are not allowed", "url": url}, ensure_ascii=False)
     try:
         from skillos.utils.wechat_fetch import needs_cdp
 
