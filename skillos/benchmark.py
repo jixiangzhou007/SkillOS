@@ -10,7 +10,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 _log = logging.getLogger(__name__)
 
@@ -177,7 +177,7 @@ Output format:
     }
 
 
-def run_full_benchmark(test_cases: list[dict] = None):
+def run_full_benchmark(test_cases: list[dict] | None = None):
     """Run full benchmark: pipeline vs bare LLM on all test cases."""
     if test_cases is None:
         test_cases = SELF_TEST_CASES
@@ -246,7 +246,7 @@ def run_full_benchmark(test_cases: list[dict] = None):
         "baseline_has_route_rate": len([r for r in results["baseline"] if r["has_route"]]) / len(results["baseline"]),
     }
 
-    c = results["comparison"]
+    c: Any = results["comparison"]
     print(f"\n{'='*60}")
     print("COMPARISON SUMMARY")
     print(f"{'='*60}")

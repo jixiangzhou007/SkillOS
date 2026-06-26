@@ -78,8 +78,8 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
         if dept_id and tenant and tenant.tenant_id.startswith("org:"):
             from skillos.skills.skill_store import _slugify
             slug = _slugify(name)
-            row = meta_by_slug.get(slug)
-            skill_dept = (row or {}).get("dept_id", "")
+            skill_meta = meta_by_slug.get(slug)
+            skill_dept = (skill_meta or {}).get("dept_id", "")
             if skill_dept != dept_id:
                 continue
         stats = {"version": 1, "runs": 0, "avg_score": 0.0, "failure_rate": 0.0}

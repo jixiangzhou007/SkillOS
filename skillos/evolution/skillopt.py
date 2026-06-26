@@ -708,6 +708,8 @@ class ElitePool:
 
         # Tournament: pool full, must beat the weakest
         weakest = self.weakest
+        if weakest is None:
+            return True, f"入池（池空，自动通过）"
         if candidate_score > weakest["score"]:
             eliminated = self.members.pop()  # Remove weakest
             self.eliminated.append({

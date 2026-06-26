@@ -92,7 +92,7 @@ def check_compatibility() -> dict:
     """
     import json
 
-    result = {
+    result: dict[str, object] = {
         "compatible": True,
         "hermes_installed": HERMES_INSTALLED,
         "hermes_version": None,

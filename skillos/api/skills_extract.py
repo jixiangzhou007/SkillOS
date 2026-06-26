@@ -733,7 +733,7 @@ async def dispatch_message(
                 reply, doc = agent2.learn_from_url(url, content, _skills_list(auth), llm_args)
                 session.add_turn("user", msg)
                 session.add_turn("assistant", reply)
-                result = {"reply": reply, "session_id": session.id}
+                result: dict[str, object] = {"reply": reply, "session_id": session.id}
                 if doc:
                     try:
                         ep = _persist_created_skill(
@@ -813,10 +813,10 @@ async def dispatch_message(
 
         from skillos.knowledge.epistemic_bridge import confirm_claims_detailed
 
-        result = confirm_claims_detailed(selected, llm_args)
-        reply = f"✅ 已晋升 **{result.promoted}** 条声明为已验证知识。"
-        if result.synced_skills:
-            reply += f"\n已同步技能：{', '.join(result.synced_skills)}"
+        confirm_result = confirm_claims_detailed(selected, llm_args)
+        reply = f"✅ 已晋升 **{confirm_result.promoted}** 条声明为已验证知识。"
+        if confirm_result.synced_skills:
+            reply += f"\n已同步技能：{', '.join(confirm_result.synced_skills)}"
         session.add_turn("user", msg)
         session.add_turn("assistant", reply)
         return {
@@ -904,14 +904,14 @@ PURPOSE.md 定义了这个知识体系要解决什么核心问题、为谁服务
             system_extra = methodology_paste_instruction()
 
         history = session.history if session.history else req.history
-        result = dispatcher.dispatch(
+        dispatch_result = dispatcher.dispatch(
             msg,
             history,
             agent_skills,
             model=req.model or cfg.model,
             system_extra=system_extra,
         )
-        reply = result.reply or ""
+        reply = dispatch_result.reply or ""
         session.add_turn("user", msg)
         session.add_turn("assistant", reply)
         out: dict = {
@@ -919,8 +919,8 @@ PURPOSE.md 定义了这个知识体系要解决什么核心问题、为谁服务
             "mode": "agent",
             "session_id": session.id,
         }
-        if result.skill_used:
-            out["skill_used"] = result.skill_used
+        if dispatch_result.skill_used:
+            out["skill_used"] = dispatch_result.skill_used
         return out
 
     # ── Skill extraction — SD create-mode: handle() + Socratic + [选项] buttons ──
