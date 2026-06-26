@@ -28,7 +28,7 @@ async function fetchHubRoleTemplatesHtml() {
     var h = '<div style="margin:20px 0 12px;font-size:13px;font-weight:600;color:var(--text2)">🏢 岗位技能模板</div>';
     h += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">';
     templates.forEach(function (t) {
-      h += '<button class="btn" style="font-size:12px;padding:6px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2)" ';
+      h += '<button class="btn" style="font-size:var(--t-sm);padding:6px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2)" ';
       h += 'onclick="showRoleTemplate(' + JSON.stringify(t.role_id) + ')">' + escHtml(t.title) + '</button>';
     });
     h += '</div>';
@@ -42,33 +42,33 @@ async function fetchHubRoleTemplatesHtml() {
 async function showRoleTemplate(roleId) {
   var el = document.getElementById('role-template-detail');
   if (!el) return;
-  el.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:8px">加载岗位推荐…</div>';
+  el.innerHTML = '<div style="color:var(--text3);font-size:var(--t-sm);padding:8px">加载岗位推荐…</div>';
   try {
     var r = await api('/api/intelligence/role-templates/' + encodeURIComponent(roleId) + '/recommendations?limit=6');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     var d = await r.json();
     var h = '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">';
     h += '<div style="font-weight:600;margin-bottom:6px">' + escHtml(d.title) + '</div>';
-    h += '<div style="font-size:12px;color:var(--text3);margin-bottom:12px">' + escHtml(d.description) + '</div>';
+    h += '<div style="font-size:var(--t-sm);color:var(--text3);margin-bottom:12px">' + escHtml(d.description) + '</div>';
 
     if (d.metaskill_blueprint && d.metaskill_blueprint.mermaid) {
       var mid = 'role-dag-' + roleId.replace(/[^a-z0-9]/gi, '');
-      h += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">MetaSkill 蓝图 · ' + escHtml(d.metaskill_blueprint.name) + '</div>';
+      h += '<div style="font-size:var(--t-sm);font-weight:600;color:var(--text2);margin-bottom:8px">MetaSkill 蓝图 · ' + escHtml(d.metaskill_blueprint.name) + '</div>';
       h += '<div style="overflow:auto;background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:12px">';
       h += '<pre class="mermaid" id="' + mid + '" style="margin:0;background:transparent"></pre></div>';
     }
 
     if (d.catalog_skills && d.catalog_skills.length) {
-      h += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">市场推荐</div>';
+      h += '<div style="font-size:var(--t-sm);font-weight:600;color:var(--text2);margin-bottom:6px">市场推荐</div>';
       d.catalog_skills.forEach(function (s) {
-        h += '<div style="font-size:12px;padding:4px 0;color:var(--text2);cursor:pointer" onclick="showHubSkill(' + JSON.stringify(s.skill_id || s.name || '') + ')">';
+        h += '<div style="font-size:var(--t-sm);padding:4px 0;color:var(--text2);cursor:pointer" onclick="showHubSkill(' + JSON.stringify(s.skill_id || s.name || '') + ')">';
         h += escHtml(s.name || s.skill_id) + ' · ' + (s.match_score || '') + '</div>';
       });
     }
     if (d.tenant_skills && d.tenant_skills.length) {
-      h += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin:10px 0 6px">工作区已有</div>';
+      h += '<div style="font-size:var(--t-sm);font-weight:600;color:var(--text2);margin:10px 0 6px">工作区已有</div>';
       d.tenant_skills.forEach(function (s) {
-        h += '<div style="font-size:12px;padding:4px 0;color:var(--accent);cursor:pointer" onclick="showDetail(' + JSON.stringify(s.name) + ')">';
+        h += '<div style="font-size:var(--t-sm);padding:4px 0;color:var(--accent);cursor:pointer" onclick="showDetail(' + JSON.stringify(s.name) + ')">';
         h += escHtml(s.name) + (s.type === 'metaskill' ? ' 🔗' : '') + '</div>';
       });
     }
@@ -80,7 +80,7 @@ async function showRoleTemplate(roleId) {
       setTimeout(function () { renderMermaidInto(mid2, d.metaskill_blueprint.mermaid); }, 30);
     }
   } catch (e) {
-    el.innerHTML = '<div style="color:var(--err);font-size:12px">' + escHtml(e.message) + '</div>';
+    el.innerHTML = '<div style="color:var(--err);font-size:var(--t-sm)">' + escHtml(e.message) + '</div>';
   }
 }
 

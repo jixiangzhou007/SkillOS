@@ -857,4 +857,15 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 
 /* ── Responsive ─────────────────────────────────────── */
 @media(max-width:768px){#sidebar{display:none;position:fixed;z-index:200;top:0;left:0;height:100vh;overflow-y:auto;background:var(--bg);box-shadow:2px 0 24px rgba(0,0,0,.7)}#sidebar.open{display:block;width:280px}.sidebar-toggle{display:block!important}#global-search{width:120px}#global-search:focus{width:160px}.msg{max-width:88%}.header-nav{display:none}.detail-tabs{overflow-x:auto;flex-wrap:nowrap}.mobile-nav{display:flex}.extract-fab{display:flex}#body-wrap{padding-bottom:52px}#bar{margin-bottom:52px}#main{padding-bottom:0}.view-scroll,.page-body,.knowledge-content{padding-bottom:var(--s-4)}.knowledge-shell .knowledge-page-body{padding:var(--s-4)}.detail-body{padding:var(--s-4)}}
+
+/* ── Utility classes ────────────────────────────────── */
+.u-err{color:var(--err);padding:20px}
+.u-section{border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:var(--s-3)}
+.u-flex{display:flex;gap:8px;align-items:center}
+.u-flex-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.u-muted{font-size:12px;color:var(--text3)}
+.u-subtle{color:var(--text2);font-size:12px}
+.u-row{display:flex;justify-content:space-between;align-items:center;gap:var(--s-2)}
+.u-card-hover{cursor:pointer;transition:background var(--t)}
+.u-card-hover:hover{background:var(--surface2)}
 @media(min-width:1400px){.ws-draft{width:440px}.msg{max-width:62%}}

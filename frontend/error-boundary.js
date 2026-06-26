@@ -33,7 +33,7 @@ function renderErrorState(message, retryFn) {
     '<div class="error-state-icon">⚠️</div>' +
     '<div class="error-state-title">加载失败</div>' +
     '<div class="error-state-hint">' + (message || '请检查网络连接后重试') + '</div>' +
-    (retryFn ? '<button class="action-btn" onclick="(' + retryFn.toString() + ')()" style="font-size:12px;padding:8px 20px;margin-top:12px">重试</button>' : '') +
+    (retryFn ? '<button class="action-btn" onclick="(' + retryFn.toString() + ')()" style="font-size:var(--t-sm);padding:8px 20px;margin-top:12px">重试</button>' : '') +
     '</div>';
 }
 

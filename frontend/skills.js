@@ -65,7 +65,7 @@ function skillView() {
       } catch (e) {
         this.tabContent = typeof renderErrorState === 'function'
           ? renderErrorState(e.message, function() { this.loadTabContent(this.tab); }.bind(this))
-          : '<div style="color:var(--err);padding:20px">加载失败: ' + escHtml(e.message) + '</div>';
+          : '<div class="u-err">加载失败: ' + escHtml(e.message) + '</div>';
       }
       this.loading = false;
       requestAnimationFrame(function() {
@@ -672,7 +672,7 @@ async function loadDnaLineage() {
       var dc = dnaCheck.dna_compliance;
       var dcOk = dc.all_passed || (dc.passed >= 5);
       h += '<div class="dna-layer"><div class="dna-layer-title"><span>DNA 合规</span><span class="dna-layer-badge">' + escHtml(dc.score || '') + '</span></div>';
-      h += '<div style="font-size:12px;color:' + (dcOk ? 'var(--accent)' : 'var(--warn)') + ';margin-bottom:8px">';
+      h += '<div style="font-size:var(--t-sm);color:' + (dcOk ? 'var(--accent)' : 'var(--warn)') + ';margin-bottom:8px">';
       h += dcOk ? '✓ 合规通过' : '⚠ 待改进（目标 ≥5/6）';
       h += '</div>';
       (dc.checks || []).forEach(function (c) {
@@ -686,7 +686,7 @@ async function loadDnaLineage() {
     if (meta.bench_quality && meta.bench_quality.moe) {
       var moe = meta.bench_quality.moe;
       h += '<div class="dna-layer"><div class="dna-layer-title"><span>MoE 评分</span><span class="dna-layer-badge">' + escHtml(String(moe.overall_score || '—')) + '</span></div>';
-      h += '<div style="font-size:12px;color:var(--text2)">';
+      h += '<div style="font-size:var(--t-sm);color:var(--text2)">';
       h += '通过 ' + (moe.passed ? '✓' : '✗');
       if (moe.confidence != null) h += ' · 置信度 ' + Math.round(moe.confidence * 100) + '%';
       if (moe.boost_rounds && moe.boost_rounds.length) h += ' · 补强 ' + moe.boost_rounds.length + ' 轮';
@@ -695,7 +695,7 @@ async function loadDnaLineage() {
 
     if (smoke && smoke.suite && smoke.suite.length) {
       h += '<div class="dna-layer"><div class="dna-layer-title"><span>域内烟测</span><span class="dna-layer-badge">Save Gate</span></div>';
-      h += '<div style="font-size:12px;color:' + (smoke.smoke_pass ? 'var(--accent)' : 'var(--err)') + ';margin-bottom:8px">';
+      h += '<div style="font-size:var(--t-sm);color:' + (smoke.smoke_pass ? 'var(--accent)' : 'var(--err)') + ';margin-bottom:8px">';
       h += smoke.smoke_pass ? '✓ 烟测通过（min≥80）' : '✗ 烟测未达标 min=' + smoke.min_with_score;
       h += '</div>';
       smoke.suite.forEach(function (row) {
@@ -706,7 +706,7 @@ async function loadDnaLineage() {
     } else if (meta.bench_quality && meta.bench_quality.save_gate) {
       var g = meta.bench_quality.save_gate;
       h += '<div class="dna-layer"><div class="dna-layer-title"><span>域内烟测</span><span class="dna-layer-badge">已持久化</span></div>';
-      h += '<div style="font-size:12px;color:' + (g.smoke_pass ? 'var(--accent)' : 'var(--err)') + '">';
+      h += '<div style="font-size:var(--t-sm);color:' + (g.smoke_pass ? 'var(--accent)' : 'var(--err)') + '">';
       h += g.smoke_pass ? '✓ 烟测通过' : '✗ 烟测未达标 min=' + (g.min_with_score || '—');
       if (g.tasks && g.tasks.length) {
         h += '<div style="font-size:11px;color:var(--text3);margin-top:4px">任务: ' + g.tasks.map(function (t) { return '<code>' + escHtml(t) + '</code>'; }).join(' ') + '</div>';
@@ -1001,7 +1001,7 @@ async function runMetaSkill(name, dryRun) {
     if (resultEl) resultEl.innerHTML = h;
     else toast(d.success ? 'MetaSkill 运行完成' : 'MetaSkill 运行失败', d.success ? 'success' : 'error');
   } catch (e) {
-    if (resultEl) resultEl.innerHTML = '<div style="color:var(--err);font-size:12px">' + escHtml(e.message) + '</div>';
+    if (resultEl) resultEl.innerHTML = '<div style="color:var(--err);font-size:var(--t-sm)">' + escHtml(e.message) + '</div>';
     toast('MetaSkill 运行失败: ' + e.message, 'error');
   }
 }
@@ -1114,14 +1114,14 @@ async function loadEvo() {
       });
     }
   } catch (e) {
-    el.innerHTML = (typeof renderErrorState === 'function' ? renderErrorState(e.message) : '<div style="color:var(--err);padding:20px">加载失败: ' + escHtml(e.message) + '</div>');
+    el.innerHTML = (typeof renderErrorState === 'function' ? renderErrorState(e.message) : '<div class="u-err">加载失败: ' + escHtml(e.message) + '</div>');
   }
 }
 
 async function runEvolutionOptimize(name) {
   if (!name) return;
   var resultEl = document.getElementById('evo-result');
-  if (resultEl) resultEl.innerHTML = '<div style="color:var(--text3);font-size:12px">MoE 优化中…</div>';
+  if (resultEl) resultEl.innerHTML = '<div style="color:var(--text3);font-size:var(--t-sm)">MoE 优化中…</div>';
   toast('MoE 优化运行中…');
   try {
     var r = await api('/api/evolution/' + encodeURIComponent(name) + '/optimize', {
@@ -1130,11 +1130,11 @@ async function runEvolutionOptimize(name) {
     });
     var d = await r.json();
     var msg = (d.accepted ? '✅ 优化已接受' : '⚠ 未接受变更') + ' · 专家 ' + (d.expert || '—') + ' · ' + escHtml(d.detail || d.improvement || '');
-    if (resultEl) resultEl.innerHTML = '<div style="font-size:12px;padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">' + msg + '</div>';
+    if (resultEl) resultEl.innerHTML = '<div style="font-size:var(--t-sm);padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">' + msg + '</div>';
     toast(d.accepted ? '优化已接受' : '优化未接受变更', d.accepted ? 'success' : 'warn');
     loadEvo();
   } catch (e) {
-    if (resultEl) resultEl.innerHTML = '<div style="color:var(--err);font-size:12px">' + escHtml(e.message) + '</div>';
+    if (resultEl) resultEl.innerHTML = '<div style="color:var(--err);font-size:var(--t-sm)">' + escHtml(e.message) + '</div>';
     toast('优化失败: ' + e.message, 'error');
   }
 }
@@ -1163,7 +1163,7 @@ async function runSkillOptCli(name) {
     var cliEl = document.getElementById('evo-cli-block');
     var msg = (d.ok ? '✅ 导出验证通过' : '⚠ 验证失败') + (d.cli_hint ? ' · ' + d.cli_hint : '');
     if (d.external_command) msg += '<br><code style="color:var(--accent)">' + escHtml(d.external_command) + '</code>';
-    if (cliEl) cliEl.innerHTML = '<div style="font-size:12px;padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">' + msg + '</div>';
+    if (cliEl) cliEl.innerHTML = '<div style="font-size:var(--t-sm);padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">' + msg + '</div>';
     toast(d.ok ? 'CLI dry-run 完成' : 'CLI 失败', d.ok ? 'success' : 'error');
   } catch (e) {
     toast('CLI 失败: ' + e.message, 'error');
@@ -1244,7 +1244,7 @@ function uploadTemplate(ev) {
       });
       var d = await r.json();
       var el = document.getElementById('kb-status');
-      if (el) el.innerHTML = '<pre style="white-space:pre-wrap;font-size:12px;color:var(--text)">' + escHtml(JSON.stringify(d, null, 2)) + '</pre>';
+      if (el) el.innerHTML = '<pre style="white-space:pre-wrap;font-size:var(--t-sm);color:var(--text)">' + escHtml(JSON.stringify(d, null, 2)) + '</pre>';
       toast('模板对比完成');
     } catch (e) {
       toast('对比失败: ' + e.message, 'error');
@@ -1313,7 +1313,7 @@ function compareTemplate() {
 
   let btn = document.createElement('button');
 
-  btn.className = 'btn a'; btn.textContent = '对比'; btn.style.cssText = 'font-size:12px;padding:5px 14px';
+  btn.className = 'btn a'; btn.textContent = '对比'; btn.style.cssText = 'font-size:var(--t-sm);padding:5px 14px';
 
   btn.onclick = async () => {
 
@@ -1335,7 +1335,7 @@ function compareTemplate() {
 
       let d = await r.json();
 
-      document.getElementById('kb-status').innerHTML = '<pre style=\"white-space:pre-wrap;font-size:12px;color:var(--text)\">' + JSON.stringify(d,null,2) + '</pre>';
+      document.getElementById('kb-status').innerHTML = '<pre style=\"white-space:pre-wrap;font-size:var(--t-sm);color:var(--text)\">' + JSON.stringify(d,null,2) + '</pre>';
 
       setStatus('对比完成');
 
