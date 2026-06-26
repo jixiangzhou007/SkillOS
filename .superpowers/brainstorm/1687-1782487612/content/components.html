@@ -1,0 +1,37 @@
+<h2>第五步：组件语言</h2>
+<p class="subtitle">B 方向「精准专业」— 组件应该干净、扁平、让内容说话</p>
+
+<div class="section">
+  <h3>当前状态</h3>
+  <ul>
+    <li>我们有磨砂玻璃（backdrop-filter blur）卡片，但也有纯色 surface 卡片</li>
+    <li>按钮 6 种变体但 hover/active/focus 状态不统一</li>
+    <li>边框粗细、圆角大小在不同组件间不一致</li>
+  </ul>
+</div>
+
+<h3>选择组件风格</h3>
+
+<div class="options">
+  <div class="option" data-choice="flat" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>扁平干净</h3>
+      <p>去掉磨砂玻璃效果（backdrop-filter），回归纯色 surface 卡片。用微妙的 1px 边框 + 0 阴影区分层级。参考：Linear 的极简风格。组件更"安静"。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="glass" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>保留玻璃</h3>
+      <p>保持当前磨砂玻璃方向，但统一 blur 值（12px 所有卡片、20px 弹窗、8px 输入框）。增加半透明边框替代实色边框。参考：Apple VisionOS 风格。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="elevated" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>微阴影层级</h3>
+      <p>用极微妙的阴影（而不是 blur）区分层级。1px 卡片 shadow、2px 悬浮卡片、4px 弹窗。干净但比 A 多一点深度感。参考：Stripe Dashboard。</p>
+    </div>
+  </div>
+</div>

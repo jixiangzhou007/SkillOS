@@ -1,0 +1,39 @@
+<h2>第一步：设计方向</h2>
+<p class="subtitle">SkillOS 当前是暗色技术风，我们要往哪个方向升级？</p>
+
+<div class="section">
+  <h3>当前状态</h3>
+  <ul>
+    <li>暗色主题，暖炭灰 + 铜色 accent</li>
+    <li>Syne（标题）+ DM Sans（正文）+ IBM Plex Mono（代码）</li>
+    <li>CSS 变量体系完整，但组件风格碎片化</li>
+    <li>24 个 JS 文件全局命名，无模块系统</li>
+    <li>Alpine.js 渐进迁移中</li>
+  </ul>
+</div>
+
+<h3>选择设计气质</h3>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="craft" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>匠人工坊</h3>
+      <p>温暖、手工感、铜金属质感为主。强调"技能工厂"的工匠精神。暖色系为主，铜色大面积使用。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="sharp" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>精准专业</h3>
+      <p>冷静、克制、信息密度高。暗色调为主，铜色仅作点缀。强调"可验证"的数据感。参考 Linear / Vercel 风格。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="warm-pro" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>温润专业</h3>
+      <p>在 A 和 B 之间取平衡。暗色基底保持专业感，铜色在关键交互处做温暖点缀。强调"AI 与人协作"的柔和感。</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<h2>第四步：布局语言</h2>
+<p class="subtitle">B 方向「精准专业」— 布局应该传达秩序感和呼吸感</p>
+
+<div class="section">
+  <h3>当前问题</h3>
+  <ul>
+    <li>页面内容从 960px 居中改为全宽后，知识/市场页缺乏视觉锚点</li>
+    <li>卡片密度不一致，有的 12px gap 有的 16px</li>
+    <li>缺少"内容区"和"操作区"的明确边界</li>
+  </ul>
+</div>
+
+<h3>选择布局策略</h3>
+
+<div class="options">
+  <div class="option" data-choice="contained" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>宽屏约束</h3>
+      <p>内容区固定最大宽度（知识页 900px，市场页 1100px），居中显示。两侧留白形成"画布感"。卡片间距统一 16px。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="fluid" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>自适应流式</h3>
+      <p>内容区填充可用宽度，用 grid 自适应列数。卡片间距 16px。通过内容密度（而非固定宽度）控制视觉节奏。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>混合策略</h3>
+      <p>仪表盘/市场页用自适应流式（信息密度高），文档/设置页用宽屏约束（阅读体验优先）。不同场景不同策略。</p>
+    </div>
+  </div>
+</div>

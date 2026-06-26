@@ -1,0 +1,37 @@
+<h2>第三步：字体体系</h2>
+<p class="subtitle">B 方向「精准专业」— 字体应该传达效率感和信任感</p>
+
+<div class="section">
+  <h3>当前问题</h3>
+  <ul>
+    <li>Syne（标题）个性太强，字母宽大，中文环境下显得突兀</li>
+    <li>DM Sans（正文）在中文混排时中文字重偏轻</li>
+    <li>数字使用 DM Sans，但缺少等宽数字的"数据感"</li>
+  </ul>
+</div>
+
+<h3>选择标题字体</h3>
+
+<div class="options">
+  <div class="option" data-choice="inter" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inter Display</h3>
+      <p>现代经典。x-height 高，可读性强。600/700 字重做标题，400/500 做正文。Linear 的选择。中英文混排和谐。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="dm-sans" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>DM Sans 全家桶</h3>
+      <p>标题正文全用 DM Sans。统一性强，减少字体加载。中文用系统字体 fallback。当前最接近的方案。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="geist" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Geist</h3>
+      <p>Vercel 出品，专为暗色 UI 优化。几何感强，自带 mono 变体。和 B 方向"精准专业"气质最匹配。</p>
+    </div>
+  </div>
+</div>
