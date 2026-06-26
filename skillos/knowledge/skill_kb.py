@@ -351,6 +351,7 @@ def enrich_skill_with_kb(
     all_skills = [s for s in skill_store.list_skills() if s != skill_name]
     shared = find_shared_knowledge(skill_name, all_skills)
     result["shared"] = shared
+    return result
 
 
 

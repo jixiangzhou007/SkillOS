@@ -203,7 +203,10 @@ def create_purchase(
     _log.info("Purchase: %s skill=%s buyer=%s amount=%.2f status=%s",
               purchase_id, skill_id, buyer_id, amount, "completed" if payment_ref else "pending")
 
-    return get_purchase(purchase_id)
+    purchase = get_purchase(purchase_id)
+    if purchase is None:
+        raise RuntimeError(f"Purchase {purchase_id} not found after insert")
+    return purchase
 
 
 def get_purchase(purchase_id: str) -> Purchase | None:

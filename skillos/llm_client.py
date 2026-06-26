@@ -134,6 +134,7 @@ def call(
                     _log.error("Ollama fallback also failed: %s", fb_e)
             _log.error("LLM call failed (model=%s, attempt=%d): %s", model_name, attempt, e)
             return "<SkillOS: LLM unavailable. Check your API key or install Ollama for local mode.>"
+    return "<SkillOS: LLM unavailable.>"
 
 
 def call_with_tools(

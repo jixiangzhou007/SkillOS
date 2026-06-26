@@ -307,7 +307,7 @@ def build_playbook_check_prompt() -> str:
 
 以下是你团队的共享上下文（PLAYBOOK.md）。生成的技能必须符合这些标准。
 
-{playbook[:1500]}
+{get_playbook_context(max_chars=1500)}
 
 ### 检查清单
 在输出最终技能文档前，逐条对照：

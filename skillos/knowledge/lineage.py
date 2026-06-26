@@ -728,8 +728,8 @@ def trigger_pattern_mining(llm_args: tuple) -> dict:
                 patterns.append({
                     "type": "validated_skill",
                     "skill": p.name,
-                    "avg_score": p.avg_score,
-                    "runs": p.total_runs,
+                    "avg_score": str(p.avg_score),
+                    "runs": str(p.total_runs),
                     "signal": "This skill consistently performs well",
                 })
 

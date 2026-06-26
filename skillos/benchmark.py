@@ -242,8 +242,8 @@ def run_full_benchmark(test_cases: list[dict] = None):
         "pipeline_total_time_s": round(pipe_time, 1),
         "baseline_total_time_s": round(base_time, 1),
         "pipeline_slower_x": round(pipe_time / base_time, 1) if base_time > 0 else 0,
-        "pipeline_has_route_rate": sum(1 for r in results["pipeline"] if r["has_route"]) / len(results["pipeline"]),
-        "baseline_has_route_rate": sum(1 for r in results["baseline"] if r["has_route"]) / len(results["baseline"]),
+        "pipeline_has_route_rate": len([r for r in results["pipeline"] if r["has_route"]]) / len(results["pipeline"]),
+        "baseline_has_route_rate": len([r for r in results["baseline"] if r["has_route"]]) / len(results["baseline"]),
     }
 
     c = results["comparison"]

@@ -737,7 +737,7 @@ class SkillExtractionAgent:
         if len(text.strip()) > 30:
             try:
                 reply = self._refine(text, existing_skills, llm_args)
-                return reply, None
+                return reply
             except Exception:
                 pass
 
