@@ -29,7 +29,7 @@ async function fetchHubRoleTemplatesHtml() {
     h += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">';
     templates.forEach(function (t) {
       h += '<button class="btn" style="font-size:12px;padding:6px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2)" ';
-      h += 'onclick="showRoleTemplate(\'' + t.role_id.replace(/'/g, "\\'") + '\')">' + escHtml(t.title) + '</button>';
+      h += 'onclick="showRoleTemplate(' + JSON.stringify(t.role_id) + ')">' + escHtml(t.title) + '</button>';
     });
     h += '</div>';
     h += '<div id="role-template-detail"></div>';
@@ -61,14 +61,14 @@ async function showRoleTemplate(roleId) {
     if (d.catalog_skills && d.catalog_skills.length) {
       h += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">市场推荐</div>';
       d.catalog_skills.forEach(function (s) {
-        h += '<div style="font-size:12px;padding:4px 0;color:var(--text2);cursor:pointer" onclick="showHubSkill(\'' + (s.skill_id || s.name || '').replace(/'/g, "\\'") + '\')">';
+        h += '<div style="font-size:12px;padding:4px 0;color:var(--text2);cursor:pointer" onclick="showHubSkill(' + JSON.stringify(s.skill_id || s.name || '') + ')">';
         h += escHtml(s.name || s.skill_id) + ' · ' + (s.match_score || '') + '</div>';
       });
     }
     if (d.tenant_skills && d.tenant_skills.length) {
       h += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin:10px 0 6px">工作区已有</div>';
       d.tenant_skills.forEach(function (s) {
-        h += '<div style="font-size:12px;padding:4px 0;color:var(--accent);cursor:pointer" onclick="showDetail(\'' + s.name.replace(/'/g, "\\'") + '\')">';
+        h += '<div style="font-size:12px;padding:4px 0;color:var(--accent);cursor:pointer" onclick="showDetail(' + JSON.stringify(s.name) + ')">';
         h += escHtml(s.name) + (s.type === 'metaskill' ? ' 🔗' : '') + '</div>';
       });
     }

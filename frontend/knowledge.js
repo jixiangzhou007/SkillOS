@@ -258,7 +258,7 @@ async function loadReviewView() {
     var r = await api('/api/knowledge/review'), d = await r.json(), items = d.items||[];
     var h = _viewHeader('审核队列','待确认的经验与声明');
     h += items.length ? items.map(function(item){
-      return '<div class="content-card review-card"><div class="review-card-body">'+escHtml(item.content||item.claim||'')+'</div><div class="review-card-meta"><span>来源: '+escHtml(item.source||'—')+'</span><span>置信度: '+(item.confidence||'—')+'</span></div><div class="review-card-actions"><button type="button" class="btn-primary btn-sm" onclick="confirmReviewItem(\''+(item.id||'')+'\',true)">确认</button><button type="button" class="btn-ghost btn-sm review-reject" onclick="confirmReviewItem(\''+(item.id||'')+'\',false)">驳回</button></div></div>';
+      return '<div class="content-card review-card"><div class="review-card-body">'+escHtml(item.content||item.claim||'')+'</div><div class="review-card-meta"><span>来源: '+escHtml(item.source||'—')+'</span><span>置信度: '+(item.confidence||'—')+'</span></div><div class="review-card-actions"><button type="button" class="btn-primary btn-sm" onclick="confirmReviewItem(' + JSON.stringify(item.id||'') + ',true)">确认</button><button type="button" class="btn-ghost btn-sm review-reject" onclick="confirmReviewItem(' + JSON.stringify(item.id||'') + ',false)">驳回</button></div></div>';
     }).join('') : '<div class="content-empty">暂无待审核项<br><small>知识摄入后，系统会自动生成审核项</small></div>';
     el.innerHTML = h;
   } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('review')+'<div class="title">加载失败</div></div>'; }

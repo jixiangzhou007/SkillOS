@@ -1459,7 +1459,7 @@ function renderSkillCards(skills) {
         (qualityBadges ? '<span style="display:flex;gap:3px;align-items:center;flex-shrink:0">' + qualityBadges + '</span>' : '') +
         '<span class="tree-meta">' + metaLine + '</span>' +
 
-        (_skillListTab === 'mine' ? '<button class="opt-btn" style="margin-left:auto" onclick="event.stopPropagation();optimizeSkill(this.dataset.skill)" data-skill="' + s.name + '">⚡</button>' : '') +
+        (_skillListTab === 'mine' ? '<button class="opt-btn" style="margin-left:auto" onclick="event.stopPropagation();optimizeSkill(this.dataset.skill)" data-skill="' + escHtml(s.name) + '">⚡</button>' : '') +
 
         '</div>' +
 

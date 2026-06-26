@@ -10,7 +10,7 @@ function renderSidebarWorkspace(skills) {
   if (welcomeEl && recent.length) {
     welcomeEl.innerHTML = '<div style="font-size:var(--t-xs);color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">最近技能</div>' +
       recent.map(function(s) {
-        return '<span class="welcome-skill-chip" onclick="showDetail(\'' + s.name + '\')">' + s.name + '</span>';
+        return '<span class="welcome-skill-chip" onclick="showDetail(' + JSON.stringify(s.name) + ')">' + escHtml(s.name) + '</span>';
       }).join('');
   }
 
@@ -20,8 +20,8 @@ function renderSidebarWorkspace(skills) {
       var badge = s.avg_score >= 4 ? '<span style="color:var(--a3);font-size:9px">●</span>' :
                   s.avg_score >= 2 ? '<span style="color:var(--amber);font-size:9px">●</span>' :
                   '<span style="color:var(--text3);font-size:9px">●</span>';
-      return '<div class="sb-ws-item" onclick="showDetail(\'' + s.name + '\')" style="cursor:pointer;display:flex;align-items:center;gap:6px">' +
-        badge + '<span style="font-size:var(--t-sm);color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + s.name + '</span>' +
+      return '<div class="sb-ws-item" onclick="showDetail(' + JSON.stringify(s.name) + ')" style="cursor:pointer;display:flex;align-items:center;gap:6px">' +
+        badge + '<span style="font-size:var(--t-sm);color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(s.name) + '</span>' +
         '<span style="font-size:var(--t-xs);color:var(--text3)">v' + s.version + '</span>' +
         '</div>';
     }).join('')) : '<div style="padding:var(--s-2) var(--s-3);font-size:var(--t-xs);color:var(--text3);text-align:center">开始对话萃取新技能</div>';

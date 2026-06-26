@@ -78,7 +78,7 @@ function renderQualityStrip(ep) {
   items.forEach(function(item) {
     var color = qualityColor(item.score, item.type);
     var label = qualityLabel(item.type, item.score);
-    h += '<span class="quality-strip-item" onclick="switchDetailTab(\'' + item.tab + '\')" title="点击查看详情" style="cursor:pointer;font-size:11px;padding:3px 8px;border-radius:4px;color:' + color + ';background:' + color.replace(')', ',.1)').replace('rgb', 'rgba').replace('var(--a3)', 'rgba(52,211,153,.12)').replace('var(--amber)', 'rgba(245,158,11,.12)').replace('var(--red)', 'rgba(239,68,68,.12)').replace('var(--text3)', 'rgba(255,255,255,.06)') + ';white-space:nowrap;font-weight:600;margin-right:4px">' + label + '</span>';
+    h += '<span class="quality-strip-item" onclick="switchDetailTab(' + JSON.stringify(item.tab) + ')" title="点击查看详情" style="cursor:pointer;font-size:11px;padding:3px 8px;border-radius:4px;color:' + color + ';background:' + color.replace(')', ',.1)').replace('rgb', 'rgba').replace('var(--a3)', 'rgba(52,211,153,.12)').replace('var(--amber)', 'rgba(245,158,11,.12)').replace('var(--red)', 'rgba(239,68,68,.12)').replace('var(--text3)', 'rgba(255,255,255,.06)') + ';white-space:nowrap;font-weight:600;margin-right:4px">' + label + '</span>';
   });
   h += '</div>';
   return h;
