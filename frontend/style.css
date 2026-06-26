@@ -887,3 +887,26 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 ::-webkit-scrollbar-thumb{background:rgba(var(--text-rgb),.12);border-radius:var(--r-xs)}
 ::-webkit-scrollbar-thumb:hover{background:rgba(var(--text-rgb),.22)}
 @media(min-width:1400px){.ws-draft{width:440px}.msg{max-width:62%}}
+
+/* ── Visual polish ──────────────────────────────────── */
+/* Cards: consistent surfaces with subtle border glow on hover */
+.content-card,.detail-section,.review-card{border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-5);background:rgba(var(--surface-rgb),.45);backdrop-filter:blur(8px);transition:border-color var(--t),box-shadow var(--t)}
+.content-card:hover,.review-card:hover{border-color:rgba(var(--accent-rgb),.08);box-shadow:0 0 0 1px rgba(var(--accent-rgb),.04)}
+
+/* Welcome area: refined empty state */
+#welcome-recent-skills{margin-top:var(--s-2)}
+.welcome-skill-chip{display:inline-block;padding:var(--s-1) var(--s-3);margin:2px 4px 2px 0;font:500 var(--t-sm)/1.4 var(--font);color:var(--a2);background:var(--accent-bg);border:1px solid rgba(var(--accent-rgb),.08);border-radius:var(--r-xl);cursor:pointer;transition:all var(--t)}
+.welcome-skill-chip:hover{background:rgba(var(--accent-rgb),.18);border-color:rgba(var(--accent-rgb),.18);transform:translateY(-1px)}
+
+/* Input area: refined focus ring */
+#input{transition:border-color var(--t),box-shadow var(--t)}
+#input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+
+/* Sidebar: subtle refinement */
+#sidebar{transition:box-shadow .3s}
+.sb-ws-item{border:1px solid transparent;transition:all var(--t)}
+.sb-ws-item:hover{border-color:rgba(var(--accent-rgb),.06);background:rgba(var(--accent-rgb),.04)}
+
+/* Subtle surface treatments */
+#bar{border-top:1px solid var(--border);background:rgba(var(--surface-rgb),.92);backdrop-filter:blur(20px)}
+#header{border-bottom:1px solid var(--border);background:rgba(var(--surface-rgb),.88);backdrop-filter:blur(16px)}
