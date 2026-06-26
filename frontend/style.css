@@ -283,7 +283,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .detail-section+.detail-section{padding-top:var(--s-2)}
 .wp-finalize-muted{background:var(--surface2)!important;color:var(--text2)!important;box-shadow:none!important}
 .onboarding-overlay{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:var(--s-6)}
-.onboarding-card{width:min(440px,100%);padding:var(--s-8);background:rgba(var(--surface-rgb),.95);border:1px solid var(--border2);border-radius:var(--r-lg);box-shadow:var(--shadow-lg)}
+.onboarding-card{width:min(440px,100%);padding:var(--s-8);background:rgba(var(--surface-rgb),.96);border:1px solid var(--border2);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);backdrop-filter:blur(24px)}
 .onboarding-step-indicator{display:flex;gap:var(--s-2);justify-content:center;margin-bottom:var(--s-5)}
 .onboarding-dot{width:8px;height:8px;border-radius:50%;background:var(--surface2);border:1px solid var(--border)}
 .onboarding-dot.active{background:var(--a3);border-color:var(--a3);box-shadow:0 0 12px var(--accent-glow)}
