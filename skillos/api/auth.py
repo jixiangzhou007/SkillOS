@@ -197,12 +197,13 @@ async def github_login(req: GitHubAuthRequest):
         user = create_user(username, password, "member", email)
         if not user:
             raise HTTPException(status_code=500, detail="Failed to provision GitHub user")
+    assert user is not None
 
     from skillos.identity.middleware import issue_auth_token
     from skillos.identity.workspaces import ensure_personal_workspace
 
     ws = ensure_personal_workspace(user.user_id, display_name=gh_login)
-    token = issue_auth_token(user, tenant_id=ws.tenant_id)
+    token = issue_auth_token(user, tenant_id=ws.tenant_id if ws else "default")
     return {
         "token": token,
         "token_type": "Bearer",
@@ -332,8 +333,9 @@ async def feishu_login(req: FeishuAuthRequest):
     from skillos.identity.middleware import issue_auth_token
     from skillos.identity.workspaces import ensure_personal_workspace
 
+    assert user is not None
     ws = ensure_personal_workspace(user.user_id, display_name=feishu_name)
-    token = issue_auth_token(user, tenant_id=ws.tenant_id)
+    token = issue_auth_token(user, tenant_id=ws.tenant_id if ws else "default")
     return {
         "token": token,
         "token_type": "Bearer",

@@ -286,6 +286,7 @@ def require_role(min_role: str, request_headers: dict) -> tuple[User | None, str
     user, err = require_auth(request_headers, "subscribe")
     if err:
         return None, err
+    assert user is not None
     if user.role.level < Role(min_role).level:
         return None, f"Requires {min_role}+ role, you are {user.role.value}"
     return user, None

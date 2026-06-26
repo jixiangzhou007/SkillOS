@@ -95,7 +95,7 @@ def issue_auth_token(user, *, tenant_id: str | None = None) -> str:
     from skillos.identity.workspaces import get_default_workspace
 
     ws = get_default_workspace(user.user_id) if not tenant_id else None
-    tid = tenant_id or ws.tenant_id
+    tid = tenant_id or (ws.tenant_id if ws else "default")
     ctx = tenant_context_for_user(user.user_id, tid)
     return issue_jwt({
         "sub": user.user_id,

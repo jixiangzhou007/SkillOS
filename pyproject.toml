@@ -79,6 +79,5 @@ warn_unused_ignores = false
 show_error_codes = true
 disable_error_code = [
     "attr-defined",    # dynamic attributes on dict proxies
-    "union-attr",      # list|bool|None patterns in hermes_bridge are intentional
     "arg-type",        # overloaded max() key functions
 ]
