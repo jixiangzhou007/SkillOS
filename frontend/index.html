@@ -72,16 +72,19 @@
     </button>
     <div class="user-dropdown" id="user-drop">
       <div class="user-drop-info">
-        <span x-text="$store.auth.user || '用户'">用户</span>
-        <span x-text="$store.auth.workspaceLabel || '个人'">个人</span>
+        <div class="user-drop-avatar" x-text="$store.auth.avatarLetter">?</div>
+        <div class="user-drop-meta">
+          <div class="user-drop-name" x-text="$store.auth.user || '用户'">用户</div>
+          <div class="user-drop-role" x-text="$store.auth.workspaceLabel || '个人工作区'">个人工作区</div>
+        </div>
       </div>
       <hr>
-      <button @click="showDocs()"><span class="user-drop-ico" data-icon="file"></span> 文档</button>
-      <button @click="showSettings()"><span class="user-drop-ico" data-icon="settings"></span> 设置</button>
-      <button @click="createTeam()"><span class="user-drop-ico" data-icon="users"></span> 创建团队</button>
-      <button id="admin-nav-btn" @click="showAdmin()" style="display:none"><span class="user-drop-ico" data-icon="shield"></span> 管理</button>
+      <button @click="showDocs()"><span class="user-drop-ico" data-icon="file"></span>文档</button>
+      <button @click="showSettings()"><span class="user-drop-ico" data-icon="settings"></span>设置</button>
+      <button @click="createTeam()"><span class="user-drop-ico" data-icon="users"></span>创建团队</button>
+      <button id="admin-nav-btn" @click="showAdmin()" style="display:none"><span class="user-drop-ico" data-icon="shield"></span>组织管理</button>
       <hr>
-      <button @click="doLogout()">退出</button>
+      <button @click="doLogout()"><span class="user-drop-ico" data-icon="logout"></span>退出登录</button>
     </div>
   </div>
 </header>
