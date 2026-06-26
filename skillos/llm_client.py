@@ -125,7 +125,7 @@ def call(
                 _log.warning("Primary model failed, trying Ollama fallback...")
                 try:
                     fallback = OpenAI(api_key="ollama", base_url="http://localhost:11434/v1")
-                    fb_resp = fallback.chat.completions.create(
+                    fb_resp = fallback.chat.completions.create(  # type: ignore[call-overload,arg-type]
                         model="llama3.2", messages=msgs,
                         max_tokens=max_tokens, temperature=temperature,
                     )
@@ -168,7 +168,7 @@ def call_with_tools(
 
     create_kwargs = cfg.to_llm_args()[3]
 
-    resp = client.chat.completions.create(  # type: ignore[call-overload]
+    resp = client.chat.completions.create(  # type: ignore[call-overload,arg-type]
         model=model_name,
         messages=msgs,
         temperature=temperature,

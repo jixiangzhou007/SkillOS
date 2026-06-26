@@ -407,7 +407,7 @@ def dispatch(
                     }],
                 })
                 messages.append({"role": "tool", "tool_call_id": tool_call.id, "content": skill_result})
-                final_response = client.chat.completions.create(
+                final_response = client.chat.completions.create(  # type: ignore[call-overload,arg-type]
                     model=selected_model, messages=messages, temperature=0.7, **get_config().to_llm_args()[3],
                 )
                 return DispatchResult(
