@@ -1,7 +1,7 @@
 ---
 name: phase-a-export-test
 created_at: '2026-06-15T07:37:16Z'
-updated_at: '2026-06-25T02:14:56Z'
+updated_at: '2026-06-26T03:56:45Z'
 draft: false
 domain: computer-science
 domain_label: 计算机科学
@@ -29,10 +29,10 @@ dna_lineage:
     version: 1.1.0
     weight: 0.5
     primary: false
-  detected_at: '2026-06-25T02:14:56Z'
+  detected_at: '2026-06-26T03:56:45Z'
   domain_key: computer-science
   domain_ambiguous: true
-version: 42
+version: 43
 ---
 
 # 技能名称：测试导出

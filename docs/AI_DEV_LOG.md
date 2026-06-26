@@ -6,6 +6,61 @@
 
 ---
 
+## [2026-06-26] P0–P3 全阶段清理与自动化 — Claude Code
+
+**背景 / 触发**：分析 SkillOS 项目后推荐并实施 Claude Code 自动化配置（hooks/skills/agents），随后按 OPTIMIZATION_PLAN 执行 P0–P3 全阶段清理优化。
+
+**修改思路**：
+- P0：配置 `.claude/settings.json`（3 hooks + 权限规则）、创建 ai-dev-log + bench-regression skills、security-reviewer + test-writer agents；安装 MCP（context7, GitHub）；120 个脏文件清理 → 0；创建 `.gitattributes` 修复 CRLF 换行符问题；安装 pre-commit hooks
+- P1：跑 Quick8 bench regression（ALL PASS）；修复 2 个真实测试失败（restore_skips DONE 逻辑、quickstart_doc 中文断言）；创建 ci_local.sh 六阶段 CI 管道；识别 2 个一过性失败（并发超时）
+- P2：零裸异常、零技术债审计；mypy 13 禁用码分析（163 errors 来源明确）；10 个废弃脚本归档到 `scripts/archive/`
+- P3：修复 test_feasibility_eval.py（4/4 pass），移除所有 `--ignore`；更新 DESIGN.md 快照；论文 Layer 1 ablation 确认已完整
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `.claude/settings.json` | 3 hooks（ruff auto-fix, .env 保护, AI_DEV_LOG 提醒）+ 权限 |
+| `.claude/skills/ai-dev-log/SKILL.md` | AI 开发日志写入技能 |
+| `.claude/skills/bench-regression/SKILL.md` | SkillsBench 回归测试技能 |
+| `.claude/agents/security-reviewer.md` | 安全审查代理（FastAPI 认证/租户/SQL 注入） |
+| `.claude/agents/test-writer.md` | pytest 测试生成代理 |
+| `.gitignore` | 新增运行时数据规则（lineage, evolution, skill_dna/variants 等） |
+| `.gitattributes` | 新建，换行符标准化（* text=auto） |
+| `docs/OPTIMIZATION_PLAN.md` | 新建，P0–P3 全阶段优化计划 |
+| `scripts/ci_local.sh` | 新建，GitHub Actions 六阶段 CI 本地复现 |
+| `scripts/e2e_playwright.py` | 从根目录移入（原 test_e2e.py） |
+| `scripts/archive/` | 10 个废弃脚本/输出文件归档 |
+| `skillos/skills/agent.py` | `restore_from_history`：Phase.DONE 检查提前到 extraction markers 之前 |
+| `tests/test_sprint7_stability.py` | quickstart_doc 断言更新为中文 `"快速开始"` |
+| `tests/test_feasibility_eval.py` | 已通过（4/4），从 `--ignore` 移除 |
+| `CLAUDE.md` | 移除 `--ignore=test_feasibility_eval.py` |
+| `AGENTS.md` | 同上 |
+| `DESIGN.md` | 快照更新：613 tests, 99.7%, 107 commits, v0.3.4 |
+| `pyproject.toml` | mypy 禁用码分析（保留原配置，渐进攻路径已明确） |
+| `data/benchmarks/bench_regression_1782444554.json` | Quick8 ALL PASS（Reference +28/+18.6/+22） |
+
+**未修改 / 刻意不做**：
+- mypy 13 禁用码：分析后确认每个都压制真实错误（1–36 个），渐进修复路径已明确：name-defined(1)→return/return-value(4)→dict-item/misc(4)→...，不在本次一次性移除
+- 费曼+类比实证对比：需要受控 bench 实验设计，代码已接入（Sprint 11），实证工作待后续
+- push 到 GitHub：网络不通，7 个 commits 已在本地就绪
+
+**验证**：
+- `python -m pytest tests/ -v` — 606 passed / 2 一过性失败 / 5 skipped（99.7%）
+- `python -m mypy skillos/ --no-error-summary` — 0 errors（含 13 禁用码）
+- `python scripts/run_bench_regression.py` — Quick8 ALL PASS
+- `pre-commit run --all-files` — check-yaml/json/toml 全通过（ruff 有 35 个已有错误，非本次引入）
+- `git status` — clean（0 dirty files）
+
+**开放问题 / 下一步**：
+- 网络恢复后 `git push` 推送 7 个 commits
+- P2.3 mypy 渐进修复：按 name-defined→return→dict-item→misc 顺序逐个移除禁用码
+- P3 费曼+类比 bench 实证：需设计受控实验（with/without recursive_feynman+find_analogies）
+- 2 个一过性测试失败（test_07_dispatch_chat, test_creator_summary_reserved）——并发 LLM 超时，建议加 retry 或标记 flaky
+
+---
+<!-- P0-P3 session end -->
+
 ## [2026-06-24] Release v0.3.4 — Reference Quick8 回归 tag — Cursor Agent
 
 **背景 / 触发**：用户确认需要 `v0.3.4` tag（含 bench 修复 + pack 可复现）。

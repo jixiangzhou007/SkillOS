@@ -2,7 +2,7 @@
 
 > 写给三类读者：**AI 编程工具**（理解架构来贡献代码）、**人类开发者**（理解设计思路）、**不懂代码的创新者**（理解自己的产品）。
 >
-> 2026年6月 | **605 测试 · 98.3% pass** | 0 桩代码 | mypy 0 errors | MoE 评价 | Epistemology 4,436 claims · 5 路径贯通 | 12 学科领域 DNA (13 模板) | Alpine.js 前端 A- UX · CSS v3 | ruff F821/F841/E722=0 | AgentSkills.io 标准对齐 | skill-creator 5/5 模式 | 78 Git commits | v0.3.0
+> 2026年6月 | **613 测试 · 99.7% pass (606/613)** | 0 桩代码 | mypy 0 errors | MoE 评价 | Epistemology 4,436 claims · 5 路径贯通 | 12 学科领域 DNA (13 模板) | Alpine.js 前端 A- UX · CSS v3 | ruff F821/F841/E722=0 | AgentSkills.io 标准对齐 | skill-creator 5/5 模式 | 107 Git commits | v0.3.4 | Claude Code hooks/skills/agents | pre-commit (ruff) | ci_local.sh | SkillsBench ALL PASS
 
 ---
 

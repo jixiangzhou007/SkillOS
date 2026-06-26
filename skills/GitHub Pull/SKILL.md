@@ -96,15 +96,15 @@ epistemic:
   processed_at: 1781740763.0896068
 version: 3
 bench_quality:
-  checked_at: 1782173269
+  checked_at: 1782446330
   dna_compliance:
     score: 6/6
     passed: 6
     total: 6
     all_passed: true
   save_gate:
-    smoke_pass: false
-    min_with_score: 50
+    smoke_pass: true
+    min_with_score: 100
     tasks:
     - software-dependency-audit
     - code-review-002

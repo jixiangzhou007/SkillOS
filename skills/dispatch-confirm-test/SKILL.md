@@ -1,7 +1,7 @@
 ---
 name: dispatch-confirm-test
 created_at: '2026-06-14T03:25:31Z'
-updated_at: '2026-06-22T23:44:11Z'
+updated_at: '2026-06-26T03:51:36Z'
 epistemic:
   source: test://dispatch
   source_type: test_result
@@ -11,10 +11,10 @@ epistemic:
   preferences: 0
   errors: 0
   claim_ids:
-  - ec_1782171843_9e251a
-  - ec_1782171843_9c54af
+  - ec_1782445891_e07aa1
+  - ec_1782445891_d81e34
   pending_ids: []
-  processed_at: 1782171851.3844476
+  processed_at: 1782445896.2377408
 domain: management-science
 domain_label: 管理学
 philosophical_dna: pdca
@@ -41,11 +41,11 @@ dna_lineage:
     version: 1.1.0
     weight: 0.2
     primary: false
-  detected_at: '2026-06-22T23:44:03Z'
+  detected_at: '2026-06-26T03:51:32Z'
   conflicts:
   - 'PDCA(标准化渐进) vs OODA(快速适应): 两者都是迭代循环，但节奏不同。请明确本流程偏向SOP化(PDCA)还是实时响应(OODA)。'
   domain_key: management-science
-version: 71
+version: 73
 ---
 
 ## S_body
