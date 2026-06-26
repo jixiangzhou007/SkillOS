@@ -16,7 +16,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 
   <style>
 
@@ -24,7 +24,7 @@
 
     .login-wrap{width:100%;max-width:400px;position:relative;z-index:1}
 
-    .login-card{padding:40px 36px;background:rgba(26,25,23,.75);border:1px solid var(--border);border-radius:var(--r-lg);text-align:center;backdrop-filter:blur(20px);box-shadow:var(--shadow-lg)}
+    .login-card{padding:40px 36px;background:rgba(var(--surface-rgb),.75);border:1px solid var(--border);border-radius:var(--r-lg);text-align:center;backdrop-filter:blur(20px);box-shadow:var(--shadow-lg)}
 
     .login-card .tag{font:600 var(--t-xs)/1 var(--font);color:var(--a2);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
 
@@ -38,13 +38,13 @@
 
     .login-card button{width:100%;padding:11px;font:600 var(--t-md)/1 var(--font);border:none;border-radius:var(--r-sm);cursor:pointer;margin-bottom:8px;font-family:var(--font);transition:all var(--t)}
 
-    .login-card .btn-primary{background:linear-gradient(135deg,var(--a3),var(--a5));color:#fff;box-shadow:0 4px 16px rgba(212,132,95,.2)}
+    .login-card .btn-primary{background:linear-gradient(135deg,var(--a3),var(--a5));color:#fff;box-shadow:0 4px 16px rgba(var(--accent-rgb),.2)}
 
-    .login-card .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,132,95,.28)}
+    .login-card .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(var(--accent-rgb),.28)}.login-card .btn-primary:disabled{opacity:.5;cursor:wait;transform:none}
 
     .login-card .btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border)}
 
-    .login-card .btn-secondary:hover{border-color:rgba(212,132,95,.3);color:var(--a2)}
+    .login-card .btn-secondary:hover{border-color:rgba(var(--accent-rgb),.3);color:var(--a2)}
 
     .login-card .error{font:400 var(--t-sm)/1.4 var(--font);color:var(--red);margin-top:8px;min-height:18px}
 
@@ -70,9 +70,9 @@
 
       <p>对话即沉淀 · 技能工厂</p>
 
-      <input id="user" placeholder="用户名" autofocus>
+      <input id="user" placeholder="用户名" autocomplete="username" autofocus>
 
-      <input id="pass" type="password" placeholder="密码" onkeydown="if(event.key==='Enter')doLogin()">
+      <input id="pass" type="password" placeholder="密码" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
 
       <button class="btn-primary" onclick="doLogin()">登录</button>
 
@@ -114,6 +114,10 @@
 
       if (!u || !p) return;
 
+      var btns = document.querySelectorAll('.login-card button');
+
+      btns.forEach(function(b){ b.disabled = true; });
+
       document.getElementById('error').textContent = '';
 
       try {
@@ -148,6 +152,8 @@
 
       }
 
+      btns.forEach(function(b){ b.disabled = false; });
+
     }
 
 
@@ -167,6 +173,10 @@
         return;
 
       }
+
+      var btns = document.querySelectorAll('.login-card button');
+
+      btns.forEach(function(b){ b.disabled = true; });
 
       document.getElementById('error').textContent = '';
 
@@ -201,6 +211,8 @@
         document.getElementById('error').textContent = '无法连接服务器';
 
       }
+
+      btns.forEach(function(b){ b.disabled = false; });
 
     }
 
