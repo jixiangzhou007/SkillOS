@@ -539,13 +539,15 @@ class SkillExtractionAgent:
         if not user_msgs:
             return False
 
+        # Already completed — never re-extract
+        if self._phase == Phase.DONE:
+            return False
+
         extraction_markers = ("沉淀", "技能萃取", "我们来沉淀", "萃取助手", "好的，我们来", "聊聊「")
         in_extraction = any(
             any(m in a for m in extraction_markers) for a in assistant_msgs
         )
         if not in_extraction:
-            if self._phase == Phase.DONE:
-                return False
             from skillos.skills.intent_router import DispatchIntent, classify_message_intent
             if classify_message_intent(user_msgs[0]) != DispatchIntent.EXTRACT:
                 return False

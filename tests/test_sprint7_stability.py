@@ -105,7 +105,7 @@ class TestDocs:
     def test_quickstart_doc(self, client):
         r = client.get("/api/docs/quickstart")
         assert r.status_code == 200
-        assert "Personal Free" in r.json()["content"]
+        assert "快速开始" in r.json()["content"]
 
     def test_graph_clusters_schema(self, client):
         r = client.get("/api/knowledge/graph/clusters")
