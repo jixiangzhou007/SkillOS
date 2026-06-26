@@ -1,7 +1,9 @@
 """Knowledge ingestion, retrieval, lineage, and wisdom endpoints."""
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
+
+from skillos.identity.middleware import AuthContext, get_optional_auth, require_auth
 
 router = APIRouter()
 
@@ -16,6 +18,7 @@ async def list_knowledge(
     category: str = Query("", description="Filter by category"),
     show: str = Query("valid", description="valid | all | superseded"),
     q: str = Query("", description="Search content or id"),
+    auth: AuthContext | None = Depends(get_optional_auth),
 ):
     """List global knowledge items with validity filtering."""
     try:
@@ -60,7 +63,7 @@ async def list_knowledge(
 
 
 @router.get("/lineage")
-async def list_lineages():
+async def list_lineages(auth: AuthContext | None = Depends(get_optional_auth)):
     """List all knowledge lineage sessions."""
     try:
         from skillos.knowledge.lineage import list_lineages
@@ -71,7 +74,7 @@ async def list_lineages():
 
 
 @router.post("/cycle")
-async def run_knowledge_cycle(req: KnowledgeCycleRequest):
+async def run_knowledge_cycle(req: KnowledgeCycleRequest, auth: AuthContext = Depends(require_auth)):
     """Enqueue full knowledge internalization (digest → lineage → graph → wisdom).
 
     Returns immediately with task_id; poll GET /cycle/{task_id} for result.
@@ -88,7 +91,7 @@ async def run_knowledge_cycle(req: KnowledgeCycleRequest):
 
 
 @router.get("/cycle/recent")
-async def list_recent_knowledge_cycles(limit: int = Query(10, ge=1, le=50)):
+async def list_recent_knowledge_cycles(auth: AuthContext | None = Depends(get_optional_auth),limit: int = Query(10, ge=1, le=50)):
     """List recent async knowledge cycle tasks."""
     try:
         from skillos.knowledge.cycle_tasks import list_cycle_tasks
@@ -99,7 +102,7 @@ async def list_recent_knowledge_cycles(limit: int = Query(10, ge=1, le=50)):
 
 
 @router.get("/cycle/{task_id}")
-async def get_knowledge_cycle_status(task_id: str):
+async def get_knowledge_cycle_status(task_id: str, auth: AuthContext | None = Depends(get_optional_auth)):
     """Poll async knowledge cycle task status and result."""
     try:
         from skillos.knowledge.cycle_tasks import get_cycle_task
@@ -113,7 +116,7 @@ async def get_knowledge_cycle_status(task_id: str):
 
 
 @router.get("/queue")
-async def get_ingestion_queue_status(limit: int = Query(10, ge=1, le=50)):
+async def get_ingestion_queue_status(auth: AuthContext | None = Depends(get_optional_auth),limit: int = Query(10, ge=1, le=50)):
     """Persistent ingestion queue stats and recent tasks."""
     try:
         from skillos.knowledge.ingestion_queue import list_recent_queue_tasks, queue_stats
@@ -127,7 +130,7 @@ async def get_ingestion_queue_status(limit: int = Query(10, ge=1, le=50)):
 
 
 @router.get("/skill-lineage")
-async def skill_precipitation_lineage(
+async def skill_precipitation_lineage(auth: AuthContext | None = Depends(get_optional_auth),
     skill_name: str = Query("", description="Filter by skill name"),
     chat_id: str = Query("", description="Filter by chat/group id"),
     user_id: str = Query("", description="Filter by user id"),
@@ -148,7 +151,7 @@ async def skill_precipitation_lineage(
 
 
 @router.get("/lineage/{session_id}")
-async def get_lineage(session_id: str):
+async def get_lineage(session_id: str, auth: AuthContext | None = Depends(get_optional_auth)):
     """Get a specific lineage session with its knowledge items."""
     try:
         from skillos.knowledge.lineage import load_lineage
@@ -169,7 +172,7 @@ async def get_lineage(session_id: str):
 
 
 @router.get("/lineage/{session_id}/graph")
-async def get_lineage_graph(session_id: str):
+async def get_lineage_graph(session_id: str, auth: AuthContext | None = Depends(get_optional_auth)):
     """Get lineage graph in cytoscape and mermaid formats."""
     try:
         from skillos.knowledge.lineage import load_lineage
@@ -209,7 +212,7 @@ async def get_lineage_graph(session_id: str):
 
 
 @router.get("/graph/clusters")
-async def get_graph_clusters():
+async def get_graph_clusters(auth: AuthContext | None = Depends(get_optional_auth)):
     """Get knowledge graph community clusters."""
     try:
         from skillos.knowledge.graph import get_graph
@@ -234,7 +237,7 @@ async def get_graph_clusters():
 
 
 @router.get("/metrics")
-async def get_knowledge_metrics(
+async def get_knowledge_metrics(auth: AuthContext | None = Depends(get_optional_auth),
     window_hours: float = Query(168, ge=1, le=720, description="Aggregation window in hours"),
 ):
     """Precipitation success rate, lineage coverage, and refresher status."""
@@ -246,7 +249,7 @@ async def get_knowledge_metrics(
 
 
 @router.get("/wisdom")
-async def get_wisdom():
+async def get_wisdom(auth: AuthContext | None = Depends(get_optional_auth)):
     """Get cross-lineage meta-patterns and insights."""
     try:
         from skillos.knowledge.lineage import extract_wisdom
@@ -257,7 +260,7 @@ async def get_wisdom():
 
 
 @router.get("/journal")
-async def get_journal(limit: int = Query(50, description="Max entries to return")):
+async def get_journal(auth: AuthContext | None = Depends(get_optional_auth),limit: int = Query(50, description="Max entries to return")):
     """Get learning journal entries."""
     try:
         from skillos.evolution.learning_theory import read_journal
@@ -268,7 +271,7 @@ async def get_journal(limit: int = Query(50, description="Max entries to return"
 
 
 @router.get("/review")
-async def get_review_queue():
+async def get_review_queue(auth: AuthContext | None = Depends(get_optional_auth)):
     """Get knowledge items flagged for human review."""
     try:
         from skillos.knowledge.epistemology import get_store
@@ -315,7 +318,7 @@ async def get_review_queue():
 # ── Account Watcher ──────────────────────────────────────────
 
 @router.get("/accounts")
-async def list_watched_accounts():
+async def list_watched_accounts(auth: AuthContext | None = Depends(get_optional_auth)):
     """List all watched WeChat accounts."""
     from skillos.knowledge.incremental_store import get_incremental_store
     accounts = get_incremental_store().list_accounts()
