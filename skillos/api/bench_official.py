@@ -1,8 +1,9 @@
 """Official SkillsBench API — plans and results (eval runs via CLI/CI)."""
 
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from skillos.identity.middleware import AuthContext, require_auth
 from skillos.benchmark_local import (
     latest_bench_regression,
     latest_post_extract_regression,
@@ -57,7 +58,7 @@ async def get_latest_post_extract_regression():
 
 
 @router.post("/regression/run")
-async def trigger_regression(background: bool = True):
+async def trigger_regression(background: bool = True, auth: AuthContext = Depends(require_auth)):
     """Run local Quick8 + smoke regression (reference skills gate)."""
     import threading
 
@@ -152,7 +153,7 @@ async def run_skill_quick8(name: str, domain_only: bool = False):
 
 
 @router.post("/skills/{name}/trigger-ci")
-async def trigger_skill_official_ci(name: str, preset: str = ""):
+async def trigger_skill_official_ci(name: str, preset: str = "", auth: AuthContext = Depends(require_auth)):
     """Request GitHub Actions official bench run (needs GITHUB_TOKEN + GITHUB_REPOSITORY)."""
     try:
         return trigger_official_ci(name, preset=preset or None)
