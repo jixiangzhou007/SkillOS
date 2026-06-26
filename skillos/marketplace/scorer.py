@@ -23,6 +23,7 @@ import logging
 import os
 import time
 from dataclasses import dataclass, field
+from typing import Any
 
 _log = logging.getLogger(__name__)
 
@@ -270,7 +271,7 @@ def get_available_models() -> list[tuple[str, tuple]]:
     Checks common environment configs for secondary API endpoints.
     Returns list of (model_name, llm_args).
     """
-    models = []
+    models: list[Any] = []
 
     # Check for Hunyuan/other providers
     key2 = os.environ.get("SECONDARY_API_KEY", "")

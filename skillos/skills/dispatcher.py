@@ -136,7 +136,7 @@ def _extract_description(body: str, max_len: int = 300) -> str:
     lines = [l.strip() for l in body.split("\n") if l.strip()]
 
     # Skip headings to find first real content
-    content_lines = []
+    content_lines: list[str] = []
     for line in lines:
         if line.startswith("#"):
             # Use the heading itself as a fallback, but keep looking

@@ -17,6 +17,7 @@ import logging
 import re
 import time
 import uuid
+from typing import Any
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -142,14 +143,14 @@ class LineageGraph:
 
     @property
     def by_category(self) -> dict[str, int]:
-        cats = {}
+        cats: dict[str, int] = {}
         for item in self.items:
             cats[item.category] = cats.get(item.category, 0) + 1
         return cats
 
     @property
     def by_epistemic_level(self) -> dict[str, int]:
-        levels = {}
+        levels: dict[str, int] = {}
         for item in self.items:
             levels[item.epistemic_level] = levels.get(item.epistemic_level, 0) + 1
         return levels
@@ -762,7 +763,7 @@ def extract_wisdom() -> dict:
     total_affected = 0
     total_surprises = 0
     domains = set()
-    categories = {}
+    categories: dict[str, Any] = {}
 
     for session in all_sessions:
         graph = load_lineage(session["session_id"])
@@ -788,7 +789,7 @@ def extract_wisdom() -> dict:
     insights = []
 
     # Which category of knowledge most often improves skills?
-    cat_impact = {}
+    cat_impact: dict[str, Any] = {}
     for item in all_items:
         if item.affected_skills:
             cat_impact[item.category] = cat_impact.get(item.category, 0) + len(item.affected_skills)

@@ -251,7 +251,7 @@ def _parse_sections(content: str) -> dict[str, str]:
     """Parse skill content into named sections."""
     sections = {}
     current_name = "header"
-    current_lines = []
+    current_lines: list[str] = []
 
     for line in content.split("\n"):
         if re.match(r'^##\s+\S', line):

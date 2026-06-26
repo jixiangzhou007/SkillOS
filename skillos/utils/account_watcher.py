@@ -64,7 +64,7 @@ def fetch_account_articles(account_name: str, max_articles: int = 10) -> list[di
 
     time.sleep(2)
 
-    articles = []
+    articles: list[dict[str, str]] = []
     try:
         # Extract article list from Sogou search results
         js = """

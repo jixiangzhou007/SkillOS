@@ -605,7 +605,7 @@ def _parse_skill_sections(content: str) -> list[dict]:
     """Parse a skill document into named sections."""
     sections = []
     current_name = "header"
-    current_lines = []
+    current_lines: list[str] = []
 
     for line in content.split("\n"):
         if line.startswith("## ") and not line.startswith("### "):

@@ -329,7 +329,7 @@ def _extract_sections(content: str) -> dict[str, str]:
     """Parse a markdown document into ##-headed sections."""
     sections = {}
     current_name = ""
-    current_lines = []
+    current_lines: list[str] = []
 
     for line in content.split("\n"):
         if line.startswith("## ") and not line.startswith("### "):

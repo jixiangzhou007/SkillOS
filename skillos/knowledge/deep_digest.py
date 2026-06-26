@@ -236,7 +236,7 @@ def load_digest(slug: str) -> DigestResult | None:
     content = manifest_path.read_text(encoding="utf-8")
     # Parse manifest YAML frontmatter
     m = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
-    meta = {}
+    meta: dict[str, str] = {}
     if m:
         import yaml
         meta = yaml.safe_load(m.group(1)) or {}

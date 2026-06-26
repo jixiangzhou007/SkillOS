@@ -385,7 +385,7 @@ class KnowledgeGraph:
 
     def get_cluster_tree(self) -> dict:
         """Return hierarchical view: clusters → their nodes → their connections."""
-        tree = {"clusters": []}
+        tree: dict[str, list[dict[str, object]]] = {"clusters": []}
         for cluster in self.clusters:
             cdata = {
                 "label": cluster.label,
