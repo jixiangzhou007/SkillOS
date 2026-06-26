@@ -833,14 +833,17 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .admin-org-name{font:600 var(--t-lg)/1.3 var(--font);color:var(--text)}
 .admin-org-id{font:400 var(--t-sm)/1 var(--font);color:var(--text3);margin-top:var(--s-1)}
 .admin-org-actions{display:flex;gap:var(--s-2);flex-wrap:wrap}
-.admin-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--s-3)}
-.admin-card{background:rgba(var(--surface-rgb),.45);border:1px solid var(--border);border-radius:var(--r);padding:var(--s-4);backdrop-filter:blur(8px)}
+.admin-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--s-3)}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-4)}@media(max-width:860px){.admin-grid{grid-template-columns:1fr}}
+.admin-grid-col{display:flex;flex-direction:column;gap:var(--s-4)}
+.admin-card{background:rgba(var(--surface-rgb),.45);border:1px solid var(--border);border-radius:var(--r);padding:var(--s-5);backdrop-filter:blur(10px)}
 .admin-card-title{margin-bottom:var(--s-3)!important}
 .admin-form-row{display:flex;gap:var(--s-2);flex-wrap:wrap;align-items:center}
-.admin-form-row-top{margin-top:var(--s-2)}
+.admin-form-row-top{margin-top:var(--s-3)}
 .admin-input-narrow{width:100px}
-.admin-dept-input{flex:1;min-width:160px}
-.admin-dept-row{padding:var(--s-1) 0;font:400 var(--t-sm)/1.4 var(--font);color:var(--text2)}
+.admin-dept-input{flex:1;min-width:120px}
+.admin-dept-row{display:flex;align-items:center;justify-content:space-between;gap:var(--s-2);padding:var(--s-2) var(--s-3);margin-bottom:2px;border-radius:var(--r-sm);font:400 var(--t-sm)/1.4 var(--font);color:var(--text2);transition:background var(--t)}.admin-dept-row:hover{background:rgba(var(--text-rgb),.02)}
+.admin-dept-name{font-weight:500;color:var(--text)}.admin-dept-quota{font:400 var(--t-xs)/1 var(--font);color:var(--text3)}
 .admin-progress-row{margin-bottom:var(--s-2)}
 .admin-progress-label{display:flex;justify-content:space-between;font:400 var(--t-sm)/1 var(--font);color:var(--text2);margin-bottom:var(--s-1)}
 .admin-progress-track{height:6px;background:var(--surface);border-radius:3px;overflow:hidden}

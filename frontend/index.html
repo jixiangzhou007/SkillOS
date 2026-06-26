@@ -772,7 +772,7 @@
             </div>
             <div class="admin-org-actions">
               <button type="button" class="btn-primary btn-sm" @click="loadAll()">刷新</button>
-              <button type="button" class="btn-secondary btn-sm" @click="exportAuditCsv()">导出审计 CSV</button>
+              <button type="button" class="btn-secondary btn-sm" @click="exportAuditCsv()">导出审计</button>
             </div>
           </div>
 
@@ -783,59 +783,58 @@
             <div class="dash-card"><div class="value" x-text="(overview.usage.llm_calls.used || 0) + '/' + (overview.usage.llm_calls.limit || '∞')"></div><div class="label">LLM 本月</div></div>
           </div>
 
-          <template x-if="governance">
-            <div class="admin-card">
-              <div class="section-heading admin-card-title">治理合规</div>
-              <template x-for="c in complianceRates" :key="c.label">
-                <div class="admin-progress-row">
-                  <div class="admin-progress-label">
-                    <span x-text="c.label"></span><span x-text="c.pct + '%'"></span>
-                  </div>
-                  <div class="admin-progress-track">
-                    <div class="admin-progress-fill" :style="'width:' + c.pct + '%'"></div>
-                  </div>
+          <div class="admin-grid">
+            <!-- 左栏：治理 + 部门列表 -->
+            <div class="admin-grid-col">
+              <template x-if="governance">
+                <div class="admin-card">
+                  <div class="section-heading admin-card-title">治理合规</div>
+                  <template x-for="c in complianceRates" :key="c.label">
+                    <div class="admin-progress-row">
+                      <div class="admin-progress-label"><span x-text="c.label"></span><span x-text="c.pct + '%'"></span></div>
+                      <div class="admin-progress-track"><div class="admin-progress-fill" :style="'width:' + c.pct + '%'"></div></div>
+                    </div>
+                  </template>
                 </div>
               </template>
-            </div>
-          </template>
 
-          <div class="admin-card">
-            <div class="section-heading admin-card-title">部门配额</div>
-            <div class="admin-form-row">
-              <select x-model="quotaDept" class="form-select">
-                <option value="">全部</option>
+              <div class="admin-card">
+                <div class="section-heading admin-card-title">部门列表</div>
                 <template x-for="d in departments" :key="d.id">
-                  <option :value="d.id" x-text="d.name"></option>
+                  <div class="admin-dept-row"><span class="admin-dept-name" x-text="d.name"></span><span class="admin-dept-quota" x-show="d.quota" x-text="d.quota.skills + '技能 / ' + d.quota.llm_calls + 'LLM'"></span></div>
                 </template>
-              </select>
-              <input x-model="quotaSkills" type="number" placeholder="技能上限" class="form-inline admin-input-narrow">
-              <input x-model="quotaLLM" type="number" placeholder="LLM 上限" class="form-inline admin-input-narrow">
-              <button type="button" class="btn-primary btn-sm" @click="saveQuota()">保存配额</button>
+                <div class="admin-form-row admin-form-row-top">
+                  <input x-model="newDeptName" placeholder="新部门名称" class="form-input admin-dept-input">
+                  <button type="button" class="btn-primary btn-sm" @click="addDepartment()">添加</button>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="admin-card">
-            <div class="section-heading admin-card-title">部门</div>
-            <template x-for="d in departments" :key="d.id">
-              <div class="admin-dept-row" x-text="d.name + (d.quota ? ' (配额: ' + d.quota.skills + '技能 / ' + d.quota.llm_calls + 'LLM)' : '')"></div>
-            </template>
-            <div class="admin-form-row admin-form-row-top">
-              <input x-model="newDeptName" placeholder="新部门名称" class="form-input admin-dept-input">
-              <button type="button" class="btn-primary btn-sm" @click="addDepartment()">添加部门</button>
-            </div>
-          </div>
+            <!-- 右栏：配额 + 技能管理 -->
+            <div class="admin-grid-col">
+              <div class="admin-card">
+                <div class="section-heading admin-card-title">部门配额</div>
+                <div class="admin-form-row">
+                  <select x-model="quotaDept" class="form-select"><option value="">选择部门</option><template x-for="d in departments" :key="d.id"><option :value="d.id" x-text="d.name"></option></template></select>
+                </div>
+                <div class="admin-form-row admin-form-row-top">
+                  <input x-model="quotaSkills" type="number" placeholder="技能上限" class="form-inline admin-input-narrow">
+                  <input x-model="quotaLLM" type="number" placeholder="LLM 上限" class="form-inline admin-input-narrow">
+                  <button type="button" class="btn-primary btn-sm" @click="saveQuota()">保存</button>
+                </div>
+              </div>
 
-          <div class="admin-card">
-            <div class="section-heading admin-card-title">技能搜索 & 导入</div>
-            <div class="admin-form-row">
-              <input x-model="skillSearch" placeholder="搜索技能名称" @keydown.enter="searchOrgSkills()" class="form-input admin-search-input">
-              <button type="button" class="btn-primary btn-sm" @click="searchOrgSkills()">搜索</button>
-            </div>
-            <template x-if="skillResults.length">
-              <div class="admin-skill-results">
-                <div class="admin-skill-toolbar">
-                  <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" class="admin-checkbox">
-                  <span class="admin-skill-count" x-text="'全选 (' + skillResults.length + ')'"></span>
+              <div class="admin-card">
+                <div class="section-heading admin-card-title">技能治理</div>
+                <div class="admin-form-row">
+                  <input x-model="skillSearch" placeholder="搜索技能名称" @keydown.enter="searchOrgSkills()" class="form-input admin-search-input">
+                  <button type="button" class="btn-primary btn-sm" @click="searchOrgSkills()">搜索</button>
+                </div>
+                <template x-if="skillResults.length">
+                  <div class="admin-skill-results">
+                    <div class="admin-skill-toolbar">
+                      <input type="checkbox" x-model="selectAll" @change="toggleSelectAll()" class="admin-checkbox">
+                      <span class="admin-skill-count" x-text="'全选 (' + skillResults.length + ')'"></span>
                   <span style="flex:1"></span>
                   <button type="button" class="nav-sm nav-sm-active"
                     @click="batchCopyToOrg()" x-show="selectedSkills.length > 0"
