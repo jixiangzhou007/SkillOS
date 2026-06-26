@@ -1,6 +1,6 @@
 [project]
 name = "skillos"
-version = "0.3.0"
+version = "0.3.5"
 description = "SkillOS — AI Skill Operating System. Create, evolve, and distribute AI agent skills."
 requires-python = ">=3.11"
 license = { text = "MIT" }
