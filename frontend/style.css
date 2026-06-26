@@ -728,7 +728,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .nav-sm-danger:hover{background:rgba(var(--red-rgb),.08)!important}
 
 /* ── Docs page (page-shell) ─────────────────────────── */
-.docs-page{max-width:780px}.docs-page-title{margin-top:var(--s-3)}
+.docs-page{max-width:780px;margin:0 auto}.docs-page-title{margin-top:var(--s-3)}
 .docs-loading{display:flex;align-items:center;gap:var(--s-3);padding:var(--s-5);color:var(--text3);font:400 var(--t-sm)/1 var(--font)}
 .docs-loading-text{font:400 var(--t-sm)/1 var(--font);color:var(--text3)}
 .docs-error{padding:var(--s-5)}
@@ -824,8 +824,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .source-result-btn{margin-left:4px}
 
 /* ── Admin layout ──────────────────────────────────── */
-.admin-page{max-width:900px}
-.admin-page-title{margin-top:var(--s-3)}
+.admin-page{max-width:900px;margin:0 auto}.admin-page-title{margin-top:var(--s-3)}
 .admin-loading{color:var(--text3);padding:var(--s-5)}
 .admin-alert{padding:var(--s-5);border-radius:var(--r);border:1px solid var(--border);margin-bottom:var(--s-4)}
 .admin-alert-warn{color:var(--warn);background:rgba(var(--amber-rgb),.08);border-color:rgba(var(--amber-rgb),.2)}
