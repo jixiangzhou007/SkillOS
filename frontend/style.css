@@ -59,7 +59,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 
 input::placeholder,textarea::placeholder{color:var(--text3)}
 textarea{resize:vertical;min-height:36px}
 select{appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
-button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t)}button:active{transform:scale(.97)}
+button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t)}button:active{transform:translateY(0)}
 
 /* ── Layout ─────────────────────────────────────────── */
 #body-wrap{flex:1;display:flex;overflow:hidden;min-height:0}
@@ -425,7 +425,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 
 /* ── Components ─────────────────────────────────────── */
 /* Button system: primary / secondary / ghost / danger */
-.btn{padding:0 var(--s-5);height:36px;border-radius:var(--r-sm);font:600 var(--t-md)/1 var(--font);height:36px;display:inline-flex;align-items:center;gap:5px;letter-spacing:-.01em;transition:all var(--t)}.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}
+.btn{padding:0 var(--s-5);height:36px;border-radius:var(--r-sm);font:600 var(--t-md)/1 var(--font);height:36px;display:inline-flex;align-items:center;gap:5px;letter-spacing:-.01em;transition:all var(--t)}.btn:hover,.nav-sm:hover,.bar-action:hover,.action-btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(0)}
 .btn-primary{background:linear-gradient(135deg,var(--a3),var(--a5));color:#fff;box-shadow:0 2px 8px rgba(var(--accent-rgb),.1);border:none}.btn-primary:hover{box-shadow:0 4px 16px rgba(var(--accent-rgb),.2)}
 .btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text2)}.btn-secondary:hover{border-color:var(--border2);color:var(--text);background:var(--surface2)}
 .btn-ghost{background:transparent;border:1px solid transparent;color:var(--text3)}.btn-ghost:hover{background:var(--surface);color:var(--text2)}
