@@ -1157,37 +1157,62 @@ class SkillExtractionAgent:
         if draft:
             self._save_draft(draft[0], draft[1])
 
-        # Progress hint: show draft stats
-        draft = self._draft_content or ""
-        steps_n = len(re.findall(r'(?m)^\s*(\d+[\.\)、]|[-*])\s+\S', draft))
-        routes_n = len(re.findall(r'(?i)(if.*then|如果|条件|→)', draft))
-        has_trig = bool(re.search(r'(?i)(trigger|触发|关键词)', draft))
-        if steps_n > 0:
-            reply += f"\n\n> 草稿：{steps_n}步骤 · {'有' if has_trig else '待补'}触发 · {'有' if routes_n else '待补'}分支"
-
-        # Auto-complete gate
-        if self._draft_ready_for_completion():
-            reply += " · 回复「**可以了**」生成"
+        # Progress hint: show draft quality assessment
+        q = self._assess_draft_quality()
+        if q["score"] > 0:
+            detail_str = " · ".join(q["details"])
+            reply += f"\n\n> 📋 {detail_str}"
+            if q["ready"]:
+                reply += " · ✅ 回复「**可以了**」生成"
+            elif q["gaps"]:
+                reply += f"\n> ⚠️ 还缺：{'、'.join(q['gaps'])}"
 
         return reply, None
 
+    def _assess_draft_quality(self) -> dict:
+        import re
+        draft = self._draft_content or ""
+        if not draft or len(draft) < 100:
+            return {"ready": False, "score": 0, "gaps": ["empty draft"], "details": []}
+
+        checks = {}
+        # 1. Steps: numbered items or bullets with content
+        steps = re.findall(r'(?m)^\s*(\d+[.\)]|[-*])\s+\S+', draft)
+        checks["steps"] = {"ok": len(steps) >= 3, "value": len(steps), "label": "Steps"}
+
+        # 2. Branches: any conditional logic (table, if-then, or branching)
+        has_branch = bool(re.search(r'(\|.+\|)|(if.*then)|(when)|(condition)|(case)', draft, re.I))
+        checks["branches"] = {"ok": has_branch, "value": "yes" if has_branch else "missing",
+                             "label": "Branches"}
+
+        # 3. Trigger: any kind of activation context
+        has_trigger = bool(re.search(r'(trigger|keyword|activate|when to use|适用|场景)', draft, re.I))
+        checks["trigger"] = {"ok": has_trigger, "value": "yes" if has_trigger else "missing",
+                            "label": "Trigger"}
+
+        # 4. Detail quality: average step description length > 20 chars
+        step_texts = [s[0] + s[1] if isinstance(s, tuple) else s for s in steps]
+        avg_len = sum(len(t) for t in step_texts) / max(len(step_texts), 1)
+        checks["detail"] = {"ok": avg_len > 25, "value": int(avg_len),
+                           "label": "Detail"}
+
+        # 5. Gotchas/pitfalls mentioned
+        has_gotchas = bool(re.search(r'(pitfall|gotcha|edge.?case|坑|易错|陷阱|注意)', draft, re.I))
+        checks["gotchas"] = {"ok": has_gotchas, "value": "yes" if has_gotchas else "missing",
+                            "label": "Gotchas"}
+
+        ok_count = sum(1 for c in checks.values() if c["ok"])
+        gaps = [c["label"] for c in checks.values() if not c["ok"]]
+        return {
+            "ready": ok_count >= 3 and checks["steps"]["ok"],
+            "score": ok_count,
+            "gaps": gaps,
+            "details": [f'{c["label"]}:{c["value"]}' for c in checks.values()],
+        }
+
     def _draft_ready_for_completion(self) -> bool:
         """Check if draft meets minimum quality bar to suggest completion."""
-        draft = self._draft_content or ""
-        if not draft or len(draft) < 200:
-            return False
-        import re
-        # Count steps (numbered items or bullet points)
-        steps = len(re.findall(r'(?m)^\s*(\d+[\.\)、]|[-*])\s+\S', draft))
-        # Count branching (if-then patterns, table rows, or conditional lists)
-        branches = len(re.findall(r'(?i)(if.*then|如果|条件.*动作|→|=>)|(\|.+\|.+\|)', draft))
-        # Check trigger
-        has_trigger = bool(re.search(r'(?i)(trigger|触发|keywords|关键词|场景)', draft))
-        # Check params or parameters section
-        has_params = bool(re.search(r'(?i)(S_param|参数|输入|param)', draft))
-        # Gate: steps>=5 AND (branches>=1 or trigger) AND total score >= 2
-        score = sum([steps >= 5, branches >= 1, has_trigger, has_params])
-        return steps >= 5 and score >= 2
+        return self._assess_draft_quality()["ready"]
 
     def _fallback_refine(self) -> str:
         """Static fallback for refinement."""
