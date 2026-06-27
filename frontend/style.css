@@ -710,7 +710,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .detail-actions-trigger{min-width:72px}
 
 /* ── Account Watcher ───────────────────────────────── */
-.aw-page{max-width:720px}
+.aw-page{max-width:720px;margin:0 auto}
 .aw-loading{padding:var(--s-8);text-align:center;color:var(--text3);font:400 var(--t-sm)/1 var(--font)}
 .aw-panel{display:flex;flex-direction:column;gap:var(--s-4)}
 .aw-status-row{display:flex;align-items:center;gap:var(--s-2);flex-wrap:wrap}
