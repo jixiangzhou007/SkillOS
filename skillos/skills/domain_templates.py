@@ -104,6 +104,46 @@ DOMAIN_TEMPLATES: tuple[DomainTemplate, ...] = (
 """,
     ),
     DomainTemplate(
+        template_id="devops-cicd",
+        title="CI/CD DevOps 流水线",
+        domain="computer-science",
+        bench_categories=["workflow", "security-audit"],
+        keywords=(
+            "CI/CD", "pipeline", "deploy", "deployment", "docker", "kubernetes", "k8s",
+            "容器", "部署", "流水线", "devops", "cicd", "ci/cd", "持续集成", "持续部署",
+            "github actions", "jenkins", "gitlab ci", "argocd", "helm", "terraform",
+        ),
+        tool_name_hint="ci-cd-pipeline",
+        opening=(
+            "已匹配 **CI/CD DevOps** 模板。请补充：\n"
+            "1. 触发条件（push/tag/schedule/manual）\n"
+            "2. 各阶段门禁条件（测试覆盖率/lint/安全扫描）\n"
+            "3. 部署策略（滚动/蓝绿/金丝雀）\n\n"
+            "流程清楚后回复「可以了」即可生成。"
+        ),
+        skeleton="""## S_trigger
+- keywords: deploy, pipeline, CI/CD, release
+- context: 代码合并后需要构建、测试、部署到目标环境
+
+## S_body
+1. 代码检查（lint + type check）
+2. 单元测试（coverage >= 80%）
+3. 安全扫描（Trivy/SAST）
+4. 构建镜像（多阶段构建，基于alpine）
+5. 推送容器仓库（tag = git SHA）
+6. 部署staging（滚动更新）
+7. 冒烟测试（health check + API < 500ms）
+8. 生产审批（manager approve）
+9. 部署生产（监控告警配置）
+10. 回滚预案（kubectl rollout undo）
+
+## S_params
+- service_name: 服务名称
+- dockerfile_path: Dockerfile路径
+- k8s_namespace: K8s命名空间
+- slack_channel: 通知频道""",
+    ),
+    DomainTemplate(
         template_id="code-review-pr",
         title="GitHub PR 代码审查",
         domain="computer-science",
