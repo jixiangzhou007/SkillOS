@@ -160,6 +160,7 @@ async function loadGraphView(container) {
   try {
     var r = await api('/api/knowledge/graph/clusters'), d = await r.json();
     var clusters = d.clusters || [];
+    var orphans = d.orphan_nodes || [];
     var totalNodes = d.total_nodes || 0, totalEdges = d.total_edges || 0;
     var h = _viewHeader('知识图谱','概念与关系网络');
     h += '<div class="knowledge-kpi-grid">'+_kpiCard('节点',totalNodes,'var(--accent)')+_kpiCard('边',totalEdges,'var(--info)')+_kpiCard('簇',clusters.length,'var(--warn)')+'</div>';
@@ -169,7 +170,16 @@ async function loadGraphView(container) {
         h += '<div class="content-row knowledge-cluster-row"><span class="knowledge-cluster-id">簇 '+c.id+'</span><span class="content-row-value">'+escHtml(c.label||'')+'</span><span class="content-row-meta">'+c.nodes+' 节点 · 凝聚度 '+Math.round((c.cohesion||0)*100)+'%</span></div>';
       });
       h += '</div>';
-    } else h += '<div class="content-empty">暂无知识簇数据<br><small>积累更多知识后，系统会自动发现知识之间的聚类关系</small></div>';
+    }
+    if (orphans.length) {
+      h += '<div class="content-card"><div class="content-card-header">知识节点 ('+orphans.length+')</div>';
+      h += '<table class="knowledge-table"><thead><tr><th>ID</th><th>标签</th></tr></thead><tbody>';
+      orphans.forEach(function(n) {
+        h += '<tr><td>'+escHtml(n.id||'')+'</td><td>'+escHtml(n.label||'')+'</td></tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+    if (!clusters.length && !orphans.length) h += '<div class="content-empty">暂无知识数据<br><small>摄入知识后系统会自动构建知识图谱</small></div>';
     el.innerHTML = h;
   } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('graph')+'<div class="title">加载失败</div><button class="btn-primary" onclick="loadGraphView()">重试</button></div>'; }
 }

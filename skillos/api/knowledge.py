@@ -213,11 +213,15 @@ async def get_lineage_graph(session_id: str, auth: AuthContext | None = Depends(
 
 @router.get("/graph/clusters")
 async def get_graph_clusters(auth: AuthContext | None = Depends(get_optional_auth)):
-    """Get knowledge graph community clusters."""
+    """Get knowledge graph community clusters + orphan nodes."""
     try:
         from skillos.knowledge.graph import get_graph
         g = get_graph()
         clusters = g.detect_clusters(min_cluster_size=2)
+        clustered_ids = set()
+        for c in clusters:
+            clustered_ids.update(c.node_ids)
+        orphan_nodes = [n for n in g.nodes.values() if n.id not in clustered_ids]
         return {
             "clusters": [
                 {
@@ -229,11 +233,15 @@ async def get_graph_clusters(auth: AuthContext | None = Depends(get_optional_aut
                 }
                 for c in clusters
             ],
+            "orphan_nodes": [
+                {"id": n.id, "label": n.label or n.id, "properties": getattr(n, "properties", {})}
+                for n in orphan_nodes[:50]
+            ],
             "total_nodes": len(g.nodes),
             "total_edges": len(g.edges),
         }
     except Exception as e:
-        return {"clusters": [], "total_nodes": 0, "total_edges": 0, "error": str(e)}
+        return {"clusters": [], "orphan_nodes": [], "total_nodes": 0, "total_edges": 0, "error": str(e)}
 
 
 @router.get("/metrics")
