@@ -234,7 +234,7 @@ async def get_graph_clusters(auth: AuthContext | None = Depends(get_optional_aut
                 for c in clusters
             ],
             "orphan_nodes": [
-                {"id": n.id, "label": n.label or n.id, "properties": getattr(n, "properties", {})}
+                {"id": n.id, "label": getattr(n, "name", n.id) or n.id}
                 for n in orphan_nodes[:50]
             ],
             "total_nodes": len(g.nodes),
