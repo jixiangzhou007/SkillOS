@@ -373,6 +373,15 @@ function switchKnowledgeTab(tab) {
   var srcId = contentIdMap[tab];
   var loadFn = typeof fnMap[tab] === 'function' ? fnMap[tab] : null;
 
+  // review/journal render directly, no MutationObserver needed
+  if (tab === 'review' || tab === 'journal') {
+    loadFn().then(function() {
+      var srcEl = document.getElementById(srcId);
+      if (srcEl && srcEl.innerHTML) { container.innerHTML = srcEl.innerHTML; }
+    });
+    return;
+  }
+
   if (tab === 'account') {
     if (typeof showAccountWatcher === 'function') showAccountWatcher();
     return;
