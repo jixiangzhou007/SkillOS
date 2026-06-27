@@ -388,8 +388,10 @@ function switchKnowledgeTab(tab) {
 
   // Use MutationObserver to detect when legacy loader writes content
   var observer = new MutationObserver(function() {
-    if (srcEl.innerHTML && srcEl.innerHTML.indexOf('加载') < 0) {
-      container.innerHTML = srcEl.innerHTML;
+    var html = srcEl.innerHTML || '';
+    // Skip skeleton/loading states — only copy when real content arrives
+    if (html && html.indexOf('skeleton') < 0 && html.indexOf('加载') < 0) {
+      container.innerHTML = html;
       if (typeof hydrateIcons === 'function') hydrateIcons(container);
       observer.disconnect();
     }
@@ -404,7 +406,7 @@ function switchKnowledgeTab(tab) {
       container.innerHTML = srcEl.innerHTML;
       if (typeof hydrateIcons === 'function') hydrateIcons(container);
     }
-  }, 3000);
+  }, 4000);
 }
 
 // Legacy stubs
