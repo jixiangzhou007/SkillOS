@@ -115,8 +115,8 @@ function showReviewView() { showUnifiedKnowledge('review'); }
 
 // Dashboard
 
-async function loadDashboard() {
-  var el = document.getElementById('dash-content'); if (!el) return;
+async function loadDashboard(container) {
+  var el = container || document.getElementById('dash-content'); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>';
   try {
     var results = await Promise.all([
@@ -154,8 +154,8 @@ async function loadDashboard() {
 
 // Graph
 
-async function loadGraphView() {
-  var el = document.getElementById('graph-content'); if (!el) return;
+async function loadGraphView(container) {
+  var el = container || document.getElementById("graph-content"); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   try {
     var r = await api('/api/knowledge/graph/clusters'), d = await r.json();
@@ -176,8 +176,8 @@ async function loadGraphView() {
 
 // Journal
 
-async function loadJournalView() {
-  var el = document.getElementById('journal-content'); if (!el) return;
+async function loadJournalView(container) {
+  var el = container || document.getElementById("journal-content"); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>';
   try {
     var r = await api('/api/knowledge/journal?limit=50'), d = await r.json(), events = d.events||[];
@@ -189,8 +189,8 @@ async function loadJournalView() {
   } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('journal')+'<div class="title">加载失败</div></div>'; }
 }
 
-async function loadPrecipitateView() {
-  var el = document.getElementById('precipitate-content'); if (!el) return;
+async function loadPrecipitateView(container) {
+  var el = container || document.getElementById("precipitate-content"); if (!el) return;
   el.innerHTML = _viewHeader('后台摄入','异步资料消化与队列 — 喂大脑，不是做 Skill')+
     '<div class="content-card"><div class="content-card-header">手动触发摄入循环</div><button type="button" class="btn-primary" onclick="submitKnowledgeCycle()">启动摄入循环</button><div id="precipitate-progress" class="precipitate-progress"></div></div>'+
     '<div class="content-card"><div class="content-card-header">最近摄入任务</div><div id="recent-cycle-tasks"><div class="content-empty">加载中…</div></div></div>';
@@ -199,8 +199,8 @@ async function loadPrecipitateView() {
 
 // Knowledge Browser (Alpine mount)
 
-function loadKnowledgeView() {
-  var el = document.getElementById('knowledge-content'); if (!el) return;
+function loadKnowledgeView(container) {
+  var el = container || document.getElementById("knowledge-content"); if (!el) return;
   el.innerHTML = _viewHeader('知识库','已验证知识 + 待审核经验')+
     '<div x-data="knowledgeView()" x-init="init()">'+
     '<template x-if="loading"><div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div></template>'+
@@ -221,8 +221,8 @@ function loadKnowledgeView() {
 
 // Lineage
 
-async function loadLineageView() {
-  var el = document.getElementById('lineage-content'); if (!el) return;
+async function loadLineageView(container) {
+  var el = container || document.getElementById("lineage-content"); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   try {
     var r = await api('/api/knowledge/lineage'), d = await r.json();
@@ -239,7 +239,7 @@ async function loadLineageView() {
 }
 
 function loadLineageGraph(sessionId) {
-  var el = document.getElementById('lineage-content'); if (!el) return;
+  var el = container || document.getElementById("lineage-content"); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   api('/api/knowledge/lineage?session_id='+encodeURIComponent(sessionId)).then(function(r){return r.json()}).then(function(d){
     if (d.mermaid) {
@@ -251,8 +251,8 @@ function loadLineageGraph(sessionId) {
 
 // Review
 
-async function loadReviewView() {
-  var el = document.getElementById('review-content'); if (!el) return;
+async function loadReviewView(container) {
+  var el = container || document.getElementById("review-content"); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>';
   try {
     var r = await api('/api/knowledge/review'), d = await r.json(), items = d.items||[];
@@ -370,52 +370,20 @@ function switchKnowledgeTab(tab) {
     journal: loadJournalView
   };
 
-  var srcId = contentIdMap[tab];
   var loadFn = typeof fnMap[tab] === 'function' ? fnMap[tab] : null;
-
-  // review/journal render directly, no MutationObserver needed
-  if (tab === 'review' || tab === 'journal') {
-    loadFn().then(function() {
-      var srcEl = document.getElementById(srcId);
-      if (srcEl && srcEl.innerHTML) { container.innerHTML = srcEl.innerHTML; }
-    });
-    return;
-  }
 
   if (tab === 'account') {
     if (typeof showAccountWatcher === 'function') showAccountWatcher();
     return;
   }
 
-  if (!loadFn || !srcId) {
+  if (!loadFn) {
     container.innerHTML = '<div class="empty-state"><div class="title">视图暂不可用</div></div>';
     return;
   }
 
-  var srcEl = document.getElementById(srcId);
-  if (!srcEl) { container.innerHTML = '<div class="empty-state"><div class="title">加载失败</div></div>'; return; }
-
-  // Use MutationObserver to detect when legacy loader writes content
-  var observer = new MutationObserver(function() {
-    var html = srcEl.innerHTML || '';
-    // Skip skeleton/loading states — only copy when real content arrives
-    if (html && html.indexOf('skeleton') < 0 && html.indexOf('加载') < 0) {
-      container.innerHTML = html;
-      if (typeof hydrateIcons === 'function') hydrateIcons(container);
-      observer.disconnect();
-    }
-  });
-  observer.observe(srcEl, { childList: true, characterData: true, subtree: true });
-  loadFn();
-
-  // Fallback timeout
-  setTimeout(function() {
-    observer.disconnect();
-    if (srcEl.innerHTML && container.innerHTML.indexOf('skeleton') >= 0) {
-      container.innerHTML = srcEl.innerHTML;
-      if (typeof hydrateIcons === 'function') hydrateIcons(container);
-    }
-  }, 4000);
+  // All loaders receive visible container — render directly, no staging div
+  loadFn(container);
 }
 
 // Legacy stubs
