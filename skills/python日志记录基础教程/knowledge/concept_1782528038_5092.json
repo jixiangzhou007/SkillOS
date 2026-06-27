@@ -1,0 +1,16 @@
+{
+  "id": "concept_1782528038_5092",
+  "content": "根日志记录器: 默认的日志记录器，当未显式创建 Logger 对象时使用。其默认级别为 WARNING。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "Logger",
+    "日志级别"
+  ],
+  "created_at": 1782528038.3556387,
+  "updated_at": 1782528038.3559525
+}

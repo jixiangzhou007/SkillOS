@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_2852",
+  "content": "避免依赖根日志记录器: 在大型或生产级程序中直接使用默认的根日志记录器，而不显式创建和配置Logger对象",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1782528038.4257362,
+  "updated_at": 1782528038.4260385
+}

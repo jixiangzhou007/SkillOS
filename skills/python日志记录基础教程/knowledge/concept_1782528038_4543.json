@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782528038_4543",
+  "content": "WARNING: 日志级别之一，表示发生了意外情况，或暗示即将出现问题（例如“磁盘空间低”），但软件仍按预期工作。默认的日志级别为 WARNING，意味着只有此级别及更严重的事件会被跟踪。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "日志级别"
+  ],
+  "created_at": 1782528038.3140507,
+  "updated_at": 1782528038.3143175
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_8124",
+  "content": "日志是跟踪软件运行时事件的手段",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "日志记录的基本概念与用途"
+  ],
+  "created_at": 1782528038.440573,
+  "updated_at": 1782528038.4409938
+}

@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_7954",
+  "content": "日志级别分级: 将事件按严重程度分为DEBUG、INFO、WARNING、ERROR、CRITICAL五个级别，每个级别对应不同的使用场景和处理方式",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782528038.363329,
+  "updated_at": 1782528038.363627
+}

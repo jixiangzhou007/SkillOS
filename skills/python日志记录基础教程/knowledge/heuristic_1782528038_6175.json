@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_6175",
+  "content": "避免滥用print()做日志: 使用print()代替logging进行状态监控或故障排查，导致无法分级、格式化或持久化日志",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1782528038.4184113,
+  "updated_at": 1782528038.4187467
+}

@@ -1,0 +1,17 @@
+{
+  "id": "concept_1782528038_4396",
+  "content": "日志级别: 开发者赋予事件的严重程度等级，用于区分事件的重要性。标准级别从低到高包括 DEBUG、INFO、WARNING、ERROR、CRITICAL。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "DEBUG",
+    "INFO",
+    "WARNING"
+  ],
+  "created_at": 1782528038.2909133,
+  "updated_at": 1782528038.2912261
+}

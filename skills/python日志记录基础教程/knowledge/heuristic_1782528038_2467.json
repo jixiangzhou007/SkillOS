@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_2467",
+  "content": "默认级别过滤: 默认日志级别为WARNING，意味着只有WARNING及以上级别的事件会被跟踪，除非显式配置",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1782528038.386692,
+  "updated_at": 1782528038.3870156
+}

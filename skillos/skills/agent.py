@@ -995,6 +995,13 @@ class SkillExtractionAgent:
         if self._turn >= 2 and len(self._context) >= 3:
             self._phase = Phase.REFINING
 
+        # Active gotcha probing: if draft has steps but no pitfalls yet, ask
+        draft = self._draft_content or ""
+        has_steps = len(re.findall(r'(?m)^\s*(\d+[\.\)、]|[-*])\s+\S', draft)) >= 3
+        has_gotchas = bool(re.search(r'(?i)(gotcha|坑|陷阱|易错|注意|小心|容易|出错|问题)', draft))
+        if self._turn >= 3 and has_steps and not has_gotchas:
+            reply += "\n\n💡 顺便问一下：这个流程中最容易出错的三个地方是什么？有没有新人常踩的坑？"
+
         return reply, None
 
     def _fallback_explore(self) -> str:
@@ -1150,7 +1157,37 @@ class SkillExtractionAgent:
         if draft:
             self._save_draft(draft[0], draft[1])
 
+        # Progress hint: show draft stats
+        draft = self._draft_content or ""
+        steps_n = len(re.findall(r'(?m)^\s*(\d+[\.\)、]|[-*])\s+\S', draft))
+        routes_n = len(re.findall(r'(?i)(if.*then|如果|条件|→)', draft))
+        has_trig = bool(re.search(r'(?i)(trigger|触发|关键词)', draft))
+        if steps_n > 0:
+            reply += f"\n\n> 草稿：{steps_n}步骤 · {'有' if has_trig else '待补'}触发 · {'有' if routes_n else '待补'}分支"
+
+        # Auto-complete gate
+        if self._draft_ready_for_completion():
+            reply += " · 回复「**可以了**」生成"
+
         return reply, None
+
+    def _draft_ready_for_completion(self) -> bool:
+        """Check if draft meets minimum quality bar to suggest completion."""
+        draft = self._draft_content or ""
+        if not draft or len(draft) < 200:
+            return False
+        import re
+        # Count steps (numbered items or bullet points)
+        steps = len(re.findall(r'(?m)^\s*(\d+[\.\)、]|[-*])\s+\S', draft))
+        # Count branching (if-then patterns, table rows, or conditional lists)
+        branches = len(re.findall(r'(?i)(if.*then|如果|条件.*动作|→|=>)|(\|.+\|.+\|)', draft))
+        # Check trigger
+        has_trigger = bool(re.search(r'(?i)(trigger|触发|keywords|关键词|场景)', draft))
+        # Check params or parameters section
+        has_params = bool(re.search(r'(?i)(S_param|参数|输入|param)', draft))
+        # Gate: steps>=5 AND (branches>=1 or trigger) AND total score >= 2
+        score = sum([steps >= 5, branches >= 1, has_trigger, has_params])
+        return steps >= 5 and score >= 2
 
     def _fallback_refine(self) -> str:
         """Static fallback for refinement."""

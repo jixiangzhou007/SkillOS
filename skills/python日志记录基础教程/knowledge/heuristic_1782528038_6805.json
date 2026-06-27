@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_6805",
+  "content": "持久化存储: 将日志事件写入磁盘文件而非仅输出到控制台，便于事后分析和故障排查",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782528038.4096453,
+  "updated_at": 1782528038.4101057
+}

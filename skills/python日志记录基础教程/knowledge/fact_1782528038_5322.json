@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_5322",
+  "content": "DEBUG：诊断问题的详细信息",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "标准日志级别及其含义"
+  ],
+  "created_at": 1782528038.4897885,
+  "updated_at": 1782528038.4900844
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_7612",
+  "content": "事件由描述性消息和严重级别（level/severity）组成",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "日志记录的基本概念与用途"
+  ],
+  "created_at": 1782528038.4487615,
+  "updated_at": 1782528038.4490688
+}

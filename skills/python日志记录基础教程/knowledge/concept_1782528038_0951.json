@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782528038_0951",
+  "content": "ERROR: 日志级别之一，表示由于更严重的问题，软件无法执行某些功能。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "日志级别"
+  ],
+  "created_at": 1782528038.321813,
+  "updated_at": 1782528038.3222246
+}

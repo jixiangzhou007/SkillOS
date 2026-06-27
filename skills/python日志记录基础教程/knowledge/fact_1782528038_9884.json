@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_9884",
+  "content": "使用 basicConfig(filename=..., encoding=..., level=...) 配置文件输出",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "日志记录到文件"
+  ],
+  "created_at": 1782528038.5363503,
+  "updated_at": 1782528038.5366294
+}

@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_7874",
+  "content": "工具选择矩阵: 根据任务类型选择最佳工具：普通输出用print()，可避免的警告用warnings.warn()，运行时事件用logging，错误用异常",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1782528038.378238,
+  "updated_at": 1782528038.3785105
+}

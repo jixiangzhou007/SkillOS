@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_4129",
+  "content": "日志级别与异常分离: 报告运行时错误时，如果应该中断程序则抛出异常；如果只是记录错误而不中断（如长运行服务器），则使用logger.error()",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782528038.3944807,
+  "updated_at": 1782528038.3947592
+}

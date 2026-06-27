@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_6565",
+  "content": "设置 level=logging.DEBUG 可捕获所有级别的消息",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "日志记录到文件"
+  ],
+  "created_at": 1782528038.5436528,
+  "updated_at": 1782528038.543923
+}

@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782528038_4831",
+  "content": "warnings.warn(): 用于在库代码中发出可避免的运行时警告，提示客户端应用程序应修改以消除该警告。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "logging"
+  ],
+  "created_at": 1782528038.3473551,
+  "updated_at": 1782528038.3476753
+}

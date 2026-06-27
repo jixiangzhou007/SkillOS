@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782528038_7984",
+  "content": "DEBUG: 最低的日志级别，用于提供详细信息，通常仅在诊断问题时有用。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "日志级别"
+  ],
+  "created_at": 1782528038.2985036,
+  "updated_at": 1782528038.2987783
+}

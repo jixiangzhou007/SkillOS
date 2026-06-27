@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782528038_2248",
+  "content": "INFO: 日志级别之一，用于确认程序按预期运行。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "日志级别"
+  ],
+  "created_at": 1782528038.306003,
+  "updated_at": 1782528038.3062773
+}

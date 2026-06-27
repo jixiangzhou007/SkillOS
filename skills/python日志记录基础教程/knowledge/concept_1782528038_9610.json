@@ -1,0 +1,16 @@
+{
+  "id": "concept_1782528038_9610",
+  "content": "logging: 一种跟踪软件运行时事件的手段，开发者通过添加日志调用来记录事件的发生。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "Logger",
+    "日志级别"
+  ],
+  "created_at": 1782528038.272385,
+  "updated_at": 1782528038.2743652
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_5686",
+  "content": "库中可避免的警告应使用 warnings.warn()",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "何时使用日志记录（与 print() 的对比）"
+  ],
+  "created_at": 1782528038.472289,
+  "updated_at": 1782528038.4725957
+}

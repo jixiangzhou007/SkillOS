@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_5863",
+  "content": "格式化输出配置: 日志输出可以灵活格式化，包含级别、时间、消息等字段，而非固定格式",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782528038.4024513,
+  "updated_at": 1782528038.4027324
+}

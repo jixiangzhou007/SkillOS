@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_7946",
+  "content": "普通控制台输出应使用 print()",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "何时使用日志记录（与 print() 的对比）"
+  ],
+  "created_at": 1782528038.4646664,
+  "updated_at": 1782528038.464945
+}

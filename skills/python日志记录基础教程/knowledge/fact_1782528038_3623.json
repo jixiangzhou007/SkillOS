@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_3623",
+  "content": "WARNING：表示意外或潜在问题，软件仍正常工作",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "标准日志级别及其含义"
+  ],
+  "created_at": 1782528038.5057144,
+  "updated_at": 1782528038.5060036
+}

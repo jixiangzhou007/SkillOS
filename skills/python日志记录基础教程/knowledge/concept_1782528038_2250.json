@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782528038_2250",
+  "content": "CRITICAL: 最高的日志级别，表示严重错误，表明程序本身可能无法继续运行。",
+  "type": "concept",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "日志级别"
+  ],
+  "created_at": 1782528038.329623,
+  "updated_at": 1782528038.3299067
+}

@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_1961",
+  "content": "显式Logger创建: 通过logging.getLogger(__name__)显式创建Logger对象，而非使用默认的根日志记录器",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782528038.371095,
+  "updated_at": 1782528038.3713713
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_2955",
+  "content": "输出格式包含级别（如 WARNING）和事件描述",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "简单示例：使用根日志记录器"
+  ],
+  "created_at": 1782528038.528756,
+  "updated_at": 1782528038.5290456
+}

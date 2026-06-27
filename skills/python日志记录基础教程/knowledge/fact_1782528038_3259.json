@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_3259",
+  "content": "正常操作事件、错误报告等应使用 logger 的 info()、error() 等方法",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "何时使用日志记录（与 print() 的对比）"
+  ],
+  "created_at": 1782528038.4811537,
+  "updated_at": 1782528038.4815114
+}

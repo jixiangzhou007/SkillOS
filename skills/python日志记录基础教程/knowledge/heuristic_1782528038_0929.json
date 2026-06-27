@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782528038_0929",
+  "content": "警告场景区分: 对于可避免的运行时警告（客户端可修改消除），使用warnings.warn()；对于客户端无法处理但需记录的事件，使用logger.warning()",
+  "type": "heuristic",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1782528038.4334939,
+  "updated_at": 1782528038.4337726
+}

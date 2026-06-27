@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782528038_0151",
+  "content": "在大型程序中应显式创建 Logger 对象而非依赖根日志记录器",
+  "type": "fact",
+  "source": "https://docs.python.org/3/howto/logging.html",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "日志记录到文件"
+  ],
+  "created_at": 1782528038.5517244,
+  "updated_at": 1782528038.5520377
+}
