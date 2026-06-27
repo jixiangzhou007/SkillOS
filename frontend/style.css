@@ -925,3 +925,8 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 /* Subtle surface treatments */
 #bar{border-top:1px solid var(--border);background:rgba(var(--surface-rgb),.92);backdrop-filter:blur(20px)}
 #header{border-bottom:1px solid var(--border);background:rgba(var(--surface-rgb),.88);backdrop-filter:blur(16px)}
+
+.review-pagination{display:flex;align-items:center;justify-content:center;gap:var(--s-1);margin-top:var(--s-4);flex-wrap:wrap}
+.review-pagination .nav-sm{min-width:32px;text-align:center}
+.review-page-info{font:400 var(--t-xs)/1 var(--font);color:var(--text3);margin-left:var(--s-3)}
+

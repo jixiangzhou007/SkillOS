@@ -279,8 +279,12 @@ async def get_journal(auth: AuthContext | None = Depends(get_optional_auth),limi
 
 
 @router.get("/review")
-async def get_review_queue(auth: AuthContext | None = Depends(get_optional_auth)):
-    """Get knowledge items flagged for human review."""
+async def get_review_queue(
+    offset: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    auth: AuthContext | None = Depends(get_optional_auth),
+):
+    """Get knowledge items flagged for human review, paginated."""
     try:
         from skillos.knowledge.epistemology import get_store
         from skillos.knowledge.extractor import load_all_knowledge
@@ -318,9 +322,11 @@ async def get_review_queue(auth: AuthContext | None = Depends(get_optional_auth)
             })
 
         items.sort(key=lambda x: x.get("created_at") or 0, reverse=True)
-        return {"count": len(items), "items": items[:50]}
+        total = len(items)
+        page = items[offset:offset + limit]
+        return {"count": total, "items": page, "offset": offset, "limit": limit}
     except Exception as e:
-        return {"count": 0, "items": [], "error": str(e)}
+        return {"count": 0, "items": [], "offset": 0, "limit": limit, "error": str(e)}
 
 
 # ── Account Watcher ──────────────────────────────────────────
