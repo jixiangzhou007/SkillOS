@@ -255,7 +255,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 /* legacy action rows */
 .msg{padding:var(--s-1) 0;font:400 var(--t-base)/1.55 var(--font);max-width:min(78%,360px);word-break:break-word;animation:msgIn .25s ease}
 .msg.user{align-self:flex-end;padding:var(--s-2) var(--s-3);background:linear-gradient(135deg,var(--a4),var(--a5));color:#fff;border-radius:var(--r) var(--r) 2px var(--r);box-shadow:0 2px 8px rgba(var(--accent-rgb),.12)}
-.msg.ai{align-self:flex-start;padding:var(--s-2) var(--s-3);background:rgba(var(--surface-rgb),.6);border:1px solid var(--border);border-radius:var(--r) var(--r) var(--r) 2px);backdrop-filter:blur(12px)}
+.msg.ai{align-self:flex-start;padding:var(--s-2) var(--s-3);background:rgba(var(--surface-rgb),.5);border:1px solid var(--border);border-radius:var(--r) var(--r) var(--r) var(--r-xs);backdrop-filter:blur(12px)}
 .msg.ai .msg-body{color:var(--text)}
 .msg.sys{align-self:center;font:400 var(--t-xs)/1.35 var(--font);color:var(--text3);max-width:90%;text-align:center}
 .msg-time{font:400 var(--t-xs)/1 var(--font);color:var(--text3);opacity:.35;margin-left:6px;white-space:nowrap}

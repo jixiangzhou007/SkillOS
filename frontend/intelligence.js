@@ -25,7 +25,7 @@ async function fetchHubRoleTemplatesHtml() {
     var templates = data.templates || [];
     if (!templates.length) return '';
 
-    var h = '<div style="margin:20px 0 12px;font-size:13px;font-weight:600;color:var(--text2)">🏢 岗位技能模板</div>';
+    var h = '<div style="margin:20px 0 12px;font-size:13px;font-weight:600;color:var(--text2)">岗位技能模板</div>';
     h += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">';
     templates.forEach(function (t) {
       h += '<button class="btn" style="font-size:var(--t-sm);padding:6px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2)" ';
