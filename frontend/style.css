@@ -906,7 +906,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 /* ── Visual polish ──────────────────────────────────── */
 /* Additional card surfaces */
 .detail-section,.review-card{border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-5);background:rgba(var(--surface-rgb),.45);backdrop-filter:blur(12px);transition:border-color var(--t),box-shadow var(--t)}
-.review-card:hover{border-color:var(--border2);box-shadow:0 0 0 1px rgba(var(--accent-rgb),.04)}
+.review-card{cursor:pointer}.review-card:hover{border-color:var(--border2);box-shadow:0 0 0 1px rgba(var(--accent-rgb),.04)}
 
 /* Welcome area: refined empty state */
 #welcome-recent-skills{margin-top:var(--s-2)}
