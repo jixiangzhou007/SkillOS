@@ -237,6 +237,7 @@ class SkillExtractionAgent:
         self._draft_name = ""
         self._draft_content = ""
         self._team_context: dict[str, str] = {}
+        self._asked_probes: set[str] = set()  # track asked questions to avoid repeats
         # New fields for progressive exploration
         self._probes_completed: set[str] = set()
         self._refinement_rounds: int = 0
@@ -502,7 +503,8 @@ class SkillExtractionAgent:
         if topic:
             self._goal = topic
             self._lock_skill_name(topic)
-            # Domain template detection (internal, not shown to user)
+            # Domain template detection
+            domain_hint = ""
             try:
                 from skillos.skills.domain_templates import resolve_domain_competition
                 comp = resolve_domain_competition(goal or topic, top_k=3)
@@ -512,12 +514,14 @@ class SkillExtractionAgent:
                         s.template.template_id for s in comp.secondary
                     ]
                     self._context.append(f"[domain:{comp.primary.template_id}]")
+                    domain_label = comp.primary.template_id.replace('-', ' ').title()
+                    domain_hint = f"\n\n> 🧬 已匹配领域知识：**{domain_label}**"
             except Exception:
                 pass
             # Research silently — shown naturally in follow-ups, not in opening
             self._research_cache = _research_topic(topic)
             opening = _domain_opening_for_topic(topic)
-            return f"好的，聊聊「**{topic}**」这个流程——{opening}"
+            return f"好的，聊聊「**{topic}**」这个流程——{opening}{domain_hint}"
             return (
                 f"好的，我们来沉淀「**{topic}**」的技能。\n\n"
                 f"{opening}"
@@ -995,11 +999,13 @@ class SkillExtractionAgent:
         if self._turn >= 2 and len(self._context) >= 3:
             self._phase = Phase.REFINING
 
-        # Active gotcha probing: if draft has steps but no pitfalls yet, ask
+        # Active gotcha probing: if draft has steps but no pitfalls yet, ask (dedup)
         draft = self._draft_content or ""
         has_steps = len(re.findall(r'(?m)^\s*(\d+[\.\)、]|[-*])\s+\S', draft)) >= 3
         has_gotchas = bool(re.search(r'(?i)(gotcha|坑|陷阱|易错|注意|小心|容易|出错|问题)', draft))
-        if self._turn >= 3 and has_steps and not has_gotchas:
+        probe_key = "gotcha_probe"
+        if self._turn >= 3 and has_steps and not has_gotchas and probe_key not in self._asked_probes:
+            self._asked_probes.add(probe_key)
             reply += "\n\n💡 顺便问一下：这个流程中最容易出错的三个地方是什么？有没有新人常踩的坑？"
 
         return reply, None
