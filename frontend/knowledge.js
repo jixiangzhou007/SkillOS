@@ -69,7 +69,7 @@ function knowledgeView() {
     async init() {
       this.loading = true;
       try {
-        var r = await api('/api/knowledge/'); if (!r.ok) { this.loading=false; return; }
+        var r = await api('/api/knowledge/?show=all'); if (!r.ok) { this.loading=false; return; }
         var d = await r.json(); this.items = d.items || [];
         var cats = new Set(); this.items.forEach(function(i){ if(i.category) cats.add(i.category); });
         this.categories = Array.from(cats);
