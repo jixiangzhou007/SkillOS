@@ -898,6 +898,7 @@ class SkillExtractionAgent:
                     source_type="user_feedback",
                     skill_name=name,
                 )
+                self._knowledge_items += 1
             except Exception:
                 _log.debug("Epistemic recording skipped in _explore", exc_info=True)
 
@@ -1086,6 +1087,7 @@ class SkillExtractionAgent:
                     source_type="user_feedback",
                     skill_name=name,
                 )
+                self._knowledge_items += 1
             except Exception:
                 _log.debug("Epistemic recording skipped in _refine", exc_info=True)
 
@@ -1454,6 +1456,7 @@ class SkillExtractionAgent:
                         source_type="conversation",
                         skill_name=name,
                     )
+                    self._knowledge_items += 1
                 _log.info("Recorded claims from _confirm() for '%s'", name)
             except Exception:
                 _log.debug("Epistemic recording skipped in _confirm", exc_info=True)
