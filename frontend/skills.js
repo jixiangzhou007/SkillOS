@@ -392,6 +392,9 @@ async function loadOverview() {
     h += _detailKpi('技能版本', 'v' + skill.version, 'muted', '迭代 ' + skill.runs + ' 次');
     h += _detailKpi('验证得分', skill.avg_score + '/5', _detailAvgTone(skill.avg_score), '自动测试通过率');
     h += _detailKpi('历史版本', String((skill.versions || []).length), 'muted', '版本数量');
+    var ds = skill.dir_stats || {};
+    var dirCount = (ds.knowledge||0) + (ds.scripts||0) + (ds.references||0);
+    if (dirCount > 0) h += _detailKpi('目录文件', String(dirCount), 'mid', 'knowledge/scripts/references');
     h += '</div>';
 
     h += await renderSimilarSkillsBanner(_currentSkill);

@@ -254,6 +254,21 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
             pass
         from skillos.skills.skill_store import get_skill_versions
         versions = get_skill_versions(name, tenant=tenant)
+        # Directory enrichment stats
+        dir_stats = {}
+        try:
+            from pathlib import Path as _Path
+            from skillos.skills.portable_skill import tool_slug
+            skill_dir = _Path(__file__).parent.parent.parent / "skills" / tool_slug(name)
+            if skill_dir.is_dir():
+                for sub in ['knowledge', 'scripts', 'references', 'examples', 'assets']:
+                    sp = skill_dir / sub
+                    dir_stats[sub] = len(list(sp.iterdir())) if sp.is_dir() else 0
+                for f in ['cheatsheet.md', 'glossary.md', 'patterns.md', 'overview.md']:
+                    if (skill_dir / f).is_file():
+                        dir_stats[f.replace('.md', '')] = 1
+        except Exception:
+            pass
         return {
             "name": name,
             "content": doc,
@@ -266,6 +281,7 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
             "kb_items": _kb_items_count(name),
             "versions": versions,
             "epistemic_summary": format_epistemic_api_payload(meta),
+            "dir_stats": dir_stats,
         }
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail=f"Skill '{name}' not found")
