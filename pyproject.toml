@@ -78,6 +78,5 @@ warn_return_any = false
 warn_unused_ignores = false
 show_error_codes = true
 disable_error_code = [
-    "attr-defined",    # dynamic attrs on dict proxies + SkillDNA/StepConfidence refactoring needed
-    "arg-type",        # 29 type mismatches across OpenAI SDK, max() key, cold_start, etc.
+    "attr-defined",    # dynamic attrs on dict proxies — needs class restructuring (33 errors)
 ]
