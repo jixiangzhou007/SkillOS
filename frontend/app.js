@@ -46,6 +46,13 @@ document.addEventListener('drop', function(e) {
 });
 
 // ── Global Search ──
+
+function _highlightMatch(text, query) {
+  if (!query || query.length < 2) return escHtml(text);
+  var safe = escHtml(text);
+  var qe = escHtml(query).replace(/[.*+?^${}()|[]\/g, "\$&");
+  return safe.replace(new RegExp("(" + qe + ")", "gi"), "<mark class=gs-highlight>$1</mark>");
+}
 var _searchTimer = null, _searchSeq = 0;
 
 function onGlobalSearchFocus() {
@@ -100,12 +107,13 @@ function renderGlobalSearchResults(q, skills, kItems, mSkills) {
     return;
   }
 
+  var hl = _highlightMatch;
   var h = '';
   if (skills.length) {
     h += '<div class="gs-section"><div class="gs-label">我的技能 (' + skills.length + ')</div>';
     skills.slice(0, 8).forEach(function(s) {
       h += '<button type="button" class="gs-item" onclick="pickGlobalSearchSkill(' + JSON.stringify(s.name) + ')">';
-      h += '<span class="gs-icon">📁</span><span class="gs-title">' + escHtml(s.name) + '</span>';
+      h += '<span class="gs-icon">📁</span><span class="gs-title">' + hl(s.name, q) + '</span>';
       h += '<span class="gs-meta">v' + (s.version || 1) + '</span></button>';
     });
     if (skills.length > 8) h += '<div class="gs-empty">还有 ' + (skills.length - 8) + ' 个技能…</div>';
@@ -114,9 +122,9 @@ function renderGlobalSearchResults(q, skills, kItems, mSkills) {
   if (kItems.length) {
     h += '<div class="gs-section"><div class="gs-label">知识条目 (' + kItems.length + ')</div>';
     kItems.slice(0, 6).forEach(function(i) {
-      var preview = (i.content || '').slice(0, 60);
+      var preview = (i.content || '').slice(0, 80);
       h += '<button type="button" class="gs-item" onclick="pickGlobalSearchKnowledge(' + JSON.stringify(i.content || '') + ')">';
-      h += '<span class="gs-icon">📚</span><span class="gs-title">' + escHtml(preview || i.id || '知识条目') + '</span>';
+      h += '<span class="gs-icon">📚</span><span class="gs-title">' + hl(preview || i.id, q) + '</span>';
       h += '<span class="gs-meta">' + escHtml(i.category || '') + '</span></button>';
     });
     h += '</div>';
@@ -126,7 +134,7 @@ function renderGlobalSearchResults(q, skills, kItems, mSkills) {
     mSkills.slice(0, 6).forEach(function(s) {
       var sid = s.id || s.skill_id || s.name;
       h += '<button type="button" class="gs-item" onclick="pickGlobalSearchMarket(' + JSON.stringify(String(sid)) + ')">';
-      h += '<span class="gs-icon">🏪</span><span class="gs-title">' + escHtml(s.name || sid) + '</span>';
+      h += '<span class="gs-icon">🏪</span><span class="gs-title">' + hl(s.name || sid, q) + '</span>';
       h += '<span class="gs-meta">' + (s.score != null ? s.score + ' 分' : '') + '</span></button>';
     });
     h += '</div>';
