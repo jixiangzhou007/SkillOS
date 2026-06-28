@@ -1163,57 +1163,72 @@ class SkillExtractionAgent:
         if draft:
             self._save_draft(draft[0], draft[1])
 
-        # Progress hint: show draft quality assessment
+        # Progress hint: show completion percentage
         q = self._assess_draft_quality()
-        if q["score"] > 0:
-            detail_str = " · ".join(q["details"])
-            reply += f"\n\n> 📋 {detail_str}"
-            if q["ready"]:
-                reply += " · ✅ 回复「**可以了**」生成"
+        if q["pct"] > 0:
+            bar = "█" * int(q["pct"] / 10) + "░" * (10 - int(q["pct"] / 10))
+            reply += f"\n\n> 📋 完整度 {q['pct']}% {bar}"
+            if q["pct"] >= 80:
+                reply += "\n> ✅ 已达到可生成水平。回复「**可以了**」生成，或继续完善细节。"
             elif q["gaps"]:
-                reply += f"\n> ⚠️ 还缺：{'、'.join(q['gaps'])}"
+                reply += f"\n> ⚠️ 可加强：{'、'.join(q['gaps'])}"
 
         return reply, None
 
     def _assess_draft_quality(self) -> dict:
+        """Assess draft completeness as a percentage (0-100).
+
+        Weighted across 5 dimensions:
+        - Steps (30%): count of numbered/bulleted steps
+        - Branches (20%): conditional logic present
+        - Trigger (20%): activation context
+        - Detail (15%): step description depth
+        - Gotchas (15%): pitfalls documented
+
+        Returns percentage and list of improvement suggestions.
+        """
         import re
         draft = self._draft_content or ""
-        if not draft or len(draft) < 100:
-            return {"ready": False, "score": 0, "gaps": ["empty draft"], "details": []}
+        if not draft or len(draft) < 80:
+            return {"pct": 0, "gaps": ["内容太少"], "details": []}
 
-        checks = {}
-        # 1. Steps: numbered items or bullets with content
+        # 1. Steps (30% weight)
         steps = re.findall(r'(?m)^\s*(\d+[.\)]|[-*])\s+\S+', draft)
-        checks["steps"] = {"ok": len(steps) >= 3, "value": len(steps), "label": "Steps"}
+        step_score = min(len(steps) / 5.0, 1.0) * 30
 
-        # 2. Branches: any conditional logic (table, if-then, or branching)
-        has_branch = bool(re.search(r'(\|.+\|)|(if.*then)|(when)|(condition)|(case)', draft, re.I))
-        checks["branches"] = {"ok": has_branch, "value": "yes" if has_branch else "missing",
-                             "label": "Branches"}
+        # 2. Branches (20% weight) — route table, if-then, or conditional mentions
+        has_branch = bool(re.search(r'(\|.+\|)|(if.*then)|(when.*do)|(case)|(分支)|(条件)|(情况)|(场景)|(route)', draft, re.I))
+        branch_score = 20 if has_branch else 0
 
-        # 3. Trigger: any kind of activation context
-        has_trigger = bool(re.search(r'(trigger|keyword|activate|when to use|适用|场景)', draft, re.I))
-        checks["trigger"] = {"ok": has_trigger, "value": "yes" if has_trigger else "missing",
-                            "label": "Trigger"}
+        # 3. Trigger (20% weight)
+        has_trigger = bool(re.search(r'(trigger|keyword|activate|when to use|适用|场景|触发|何时|启动|条件)', draft, re.I))
+        trigger_score = 20 if has_trigger else 0
 
-        # 4. Detail quality: average step description length > 20 chars
+        # 4. Detail (15% weight) — avg step description length
         step_texts = [s[0] + s[1] if isinstance(s, tuple) else s for s in steps]
         avg_len = sum(len(t) for t in step_texts) / max(len(step_texts), 1)
-        checks["detail"] = {"ok": avg_len > 25, "value": int(avg_len),
-                           "label": "Detail"}
+        detail_score = min(avg_len / 40.0, 1.0) * 15
 
-        # 5. Gotchas/pitfalls mentioned
+        # 5. Gotchas (15% weight)
         has_gotchas = bool(re.search(r'(pitfall|gotcha|edge.?case|坑|易错|陷阱|注意)', draft, re.I))
-        checks["gotchas"] = {"ok": has_gotchas, "value": "yes" if has_gotchas else "missing",
-                            "label": "Gotchas"}
+        gotcha_score = 15 if has_gotchas else 0
 
-        ok_count = sum(1 for c in checks.values() if c["ok"])
-        gaps = [c["label"] for c in checks.values() if not c["ok"]]
+        pct = int(step_score + branch_score + trigger_score + detail_score + gotcha_score)
+        gaps = []
+        if step_score < 15: gaps.append("步骤(建议>=3步)")
+        if branch_score == 0: gaps.append("分支条件")
+        if trigger_score == 0: gaps.append("触发条件")
+        if detail_score < 8: gaps.append("步骤描述")
+        if gotcha_score == 0: gaps.append("易错点")
+
         return {
-            "ready": ok_count >= 3 and checks["steps"]["ok"],
-            "score": ok_count,
+            "pct": pct,
             "gaps": gaps,
-            "details": [f'{c["label"]}:{c["value"]}' for c in checks.values()],
+            "details": [
+                f"Steps:{min(len(steps),5)}/5", f"Branch:{'Y' if has_branch else 'N'}",
+                f"Trigger:{'Y' if has_trigger else 'N'}", f"Detail:{int(avg_len)}c",
+                f"Gotchas:{'Y' if has_gotchas else 'N'}"
+            ],
         }
 
     def _draft_ready_for_completion(self) -> bool:
