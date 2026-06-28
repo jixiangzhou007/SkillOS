@@ -108,10 +108,13 @@ function updateWorkspace(meta) {
   var nameEl = document.getElementById('wp-name');
   if (nameEl) nameEl.textContent = name || '新技能';
 
-  // Turn count
+  // Turn count + completion percentage
   var turnEl = document.getElementById('wp-turn');
   if (turnEl) {
-    turnEl.textContent = meta.extraction_turn ? '第 ' + meta.extraction_turn + ' 轮' : '';
+    var parts = [];
+    if (meta.extraction_turn) parts.push('第 ' + meta.extraction_turn + ' 轮');
+    if (meta.completion_pct > 0) parts.push('完整度 ' + meta.completion_pct + '%');
+    turnEl.textContent = parts.join(' · ');
   }
 
   // Quality mini-badges

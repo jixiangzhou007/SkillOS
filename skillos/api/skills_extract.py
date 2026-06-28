@@ -504,8 +504,10 @@ def _finalize_extraction_response(
     from skillos.skills.agent import Phase
 
     phase = agent._phase.name if isinstance(getattr(agent, "_phase", None), Phase) else str(getattr(agent, "_phase", ""))
+    q = agent._assess_draft_quality() if hasattr(agent, '_assess_draft_quality') else {}
     result: dict = {"reply": reply, "session_id": session.id, **(extra or {}),
-                     "extraction_phase": phase, "extraction_turn": agent._turn}
+                     "extraction_phase": phase, "extraction_turn": agent._turn,
+                     "completion_pct": q.get("pct", 0)}
     if doc:
         result["skill_saved"] = doc["name"]
         result["draft_saved"] = doc["name"]
