@@ -930,3 +930,4 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .review-pagination .nav-sm{min-width:32px;text-align:center}
 .review-page-info{font:400 var(--t-xs)/1 var(--font);color:var(--text3);margin-left:var(--s-3)}
 
+.tree-score{font:600 var(--t-xs)/1 var(--font);flex-shrink:0;min-width:28px;text-align:right}

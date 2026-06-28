@@ -1445,7 +1445,9 @@ function renderSkillCards(skills) {
         let treeId = 'tree-' + s.name.replace(/[^a-zA-Z0-9]/g, '');
         let icon = isMeta ? '🔗 ' : '';
         let qualityBadges = typeof renderQualityMiniBadges === 'function' ? renderQualityMiniBadges(s) : '';
-        let metaLine = 'v' + s.version + ' · ' + s.runs + ' 次';
+        var score = s.avg_score || 0;
+        var scoreColor = score >= 4 ? 'var(--a2)' : score >= 2 ? 'var(--amber)' : 'var(--text3)';
+        var metaLine = 'v' + s.version + ' · ' + s.runs + ' exec';
 
         return '<div class="skill-tree-node">' +
 
@@ -1456,7 +1458,7 @@ function renderSkillCards(skills) {
         '<span class="health ' + health + '"></span>' +
 
         '<span class="tree-name">' + icon + s.name.replace('[Meta] ', '') + '</span>' +
-        (qualityBadges ? '<span style="display:flex;gap:3px;align-items:center;flex-shrink:0">' + qualityBadges + '</span>' : '') +
+        '<span class="tree-score" style="color:' + scoreColor + '">' + (s.avg_score ? s.avg_score.toFixed(1) : '—') + '</span>' +
         '<span class="tree-meta">' + metaLine + '</span>' +
 
         (_skillListTab === 'mine' ? '<button class="opt-btn" style="margin-left:auto" onclick="event.stopPropagation();optimizeSkill(this.dataset.skill)" data-skill="' + escHtml(s.name) + '">⚡</button>' : '') +
