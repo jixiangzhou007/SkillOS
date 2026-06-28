@@ -520,10 +520,12 @@ async function uploadFile(file) {
   document.getElementById('bar').style.display = 'flex';
   if (typeof maybeBeginSourceProgress === 'function') maybeBeginSourceProgress('', 'file');
 
-  addMsg('sys', '📎 上传中：' + file.name + ' (' + (file.size/1024).toFixed(0) + 'KB)…');
+  var sizeKB = (file.size/1024).toFixed(0);
+  var sizeStr = sizeKB > 1024 ? (file.size/1024/1024).toFixed(2) + 'MB' : sizeKB + 'KB';
+  var warn = file.size > 20*1024*1024 ? ' ⚠️ 文件较大，请耐心等待' : '';
+  addMsg('sys', '⬆️ 上传中：' + file.name + ' (' + sizeStr + ')...' + warn);
 
-  setStatus('uploading');
-
+  setStatus('uploading ' + sizeStr);
   setDot('blue');
 
   let form = new FormData();
