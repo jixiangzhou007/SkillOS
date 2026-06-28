@@ -11,194 +11,19 @@ deeply understanding domain knowledge.
 import json
 import logging
 import re
-from enum import Enum, auto
+from pathlib import Path
 from typing import Optional
 
+from skillos.skills.agent_data import (
+    _EXAMPLES,
+    SKILL_EXIT,
+    SKILL_START,
+    Phase,
+    _domain_opening_for_topic,
+    _research_topic,
+)
+
 _log = logging.getLogger(__name__)
-
-URL_RE = re.compile(r'https?://[^\s，。！？、；：""''《》<>]+')
-
-SKILL_START = ["技能", "skill", "工作流", "流程", "沉淀", "创建skill", "新建技能",
-               "总结", "整理成", "提炼", "萃取", "写下来", "记下来", "帮我创建", "帮我写", "帮我整理"]
-SKILL_EXIT = ["不做了", "取消", "算了", "不用了", "跳过全部", "换个话题", "聊别的"]
-
-# ── Static examples shown in start() when topic is unknown ──
-_EXAMPLES = [
-    ("合同审核流程", "接收→条款检查→风险标记→修订→确认"),
-    ("代码审查规范", "PR提交→静态检查→人工审查→合并"),
-    ("数据报表生成", "数据获取→清洗→分析→可视化→交付"),
-    ("故障排查流程", "告警接收→分级→定位→修复→复盘"),
-]
-
-# Domain-aware first-turn hints (keyword groups → natural storytelling invitation)
-_DOMAIN_OPENINGS: list[tuple[tuple[str, ...], str]] = [
-    (
-        ("合同审核", "合同审查", "审合同", "合同合规", "合同", "协议", "条款", "法务", "合规"),
-        "收到一份采购合同后，从初审到出具意见，你的标准流程是什么？请按步骤描述——触发条件、检查点、常见风险条款。",
-    ),
-    (
-        ("投诉", "退款", "售后", "客服", "工单"),
-        "处理一个客户投诉或退款请求，你通常经过哪些环节？从接收问题到最终解决，每一步的决策依据是什么？",
-    ),
-    (
-        ("代码", "审查", "PR", "发布", "CI", "测试"),
-        "进行一次代码审查时，你的检查清单是什么？先看什么，后看什么，什么情况下需要驳回？",
-    ),
-    (
-        ("报销", "审批", "发票", "财务", "对账"),
-        "你们公司的报销审批链路是怎样的？从提交到到账，经过哪些节点？有哪些容易卡住的环节？",
-    ),
-    (
-        ("报表", "数据分析", "指标", "可视化"),
-        "制作一份数据报表，从取数到交付，你的标准流程是什么？有哪些质量检查点？",
-    ),
-]
-
-
-def _research_topic(topic: str, existing_skills: list[str] | None = None) -> str:
-    """Search for industry best practices before starting extraction.
-
-    Multi-source research:
-    1. Web search for best practices
-    2. GitHub AgentSkills libraries (community skills)
-    3. Existing local skills (same domain)
-    4. Precipitated knowledge (verified claims + knowledge graph + deep-digested patterns)
-
-    Returns condensed research findings. Standalone function.
-    """
-    if not topic:
-        return ""
-    import re
-    research_parts: list[str] = []
-
-    # 1. Web search for best practices
-    try:
-        from skillos.utils.web_search import search
-        q = f"{topic[:40]} 最佳实践 方法论 流程 步骤"
-        raw = search(q, 2)
-        if raw and "No results" not in raw:
-            research_parts.append(f"### 网络搜索\n{raw[:400]}")
-    except Exception:
-        pass
-
-    # 2. GitHub AgentSkills library search — community-curated skills
-    try:
-        from skillos.utils.web_search import search
-        gh_q = f"site:github.com agentskills.io SKILL.md {topic[:30]}"
-        gh_raw = search(gh_q, 2)
-        if gh_raw and "No results" not in gh_raw:
-            # Extract repo names from search results
-            repos = re.findall(r'github\.com/([\w.-]+/[\w.-]+)', gh_raw)
-            if repos:
-                research_parts.append(f"### GitHub 社区技能库\n{', '.join(list(dict.fromkeys(repos))[:5])}")
-    except Exception:
-        pass
-
-    # 3. Local existing skills
-    try:
-        from skillos.skills import skill_store
-        existing = existing_skills or skill_store.list_skills()
-        goal_words = set(re.findall(r'[\w一-鿿]{2,}', topic))
-        related = []
-        for sk in existing[:30]:
-            sk_words = set(re.findall(r'[\w一-鿿]{2,}', sk))
-            if len(goal_words & sk_words) >= 2 and sk not in ('brainstorming', 'skill-creator'):
-                related.append(sk)
-        if related:
-            research_parts.append(f"### 本地已有技能\n{', '.join(related[:5])}")
-    except Exception:
-        pass
-
-    # 4. Precipitated knowledge — verified claims from past extractions
-    try:
-        knowledge_parts = []
-        # 4a. Verified knowledge claims on this topic
-        from skillos.knowledge.epistemology import get_store
-        store = get_store()
-        verified = [c for c in store.get_knowledge() if any(
-            kw in c.content for kw in re.findall(r'[\w一-鿿]{2,}', topic)
-        )]
-        if verified:
-            knowledge_parts.append(
-                "**已验证知识**（来自历史沉淀）：\n" +
-                "\n".join(f"- {c.content[:120]}" for c in verified[:5])
-            )
-        # 4b. Knowledge graph — related nodes
-        try:
-            from skillos.knowledge.graph import get_graph
-            g = get_graph()
-            for _nid, node in list(g.nodes.items())[:50]:
-                if any(kw in node.name for kw in re.findall(r'[\w一-鿿]{2,}', topic)):
-                    knowledge_parts.append(f"📊 知识图谱节点: {node.name}")
-        except Exception:
-            pass
-        # 4c. Deep-digested patterns from knowledge packages
-        try:
-            from skillos.knowledge.deep_digest import SKILLS_DIR
-            for digest_dir in sorted(SKILLS_DIR.glob("*/patterns.md")):
-                try:
-                    pat_content = digest_dir.read_text(encoding="utf-8")[:1000]
-                    if any(kw in pat_content for kw in re.findall(r'[\w一-鿿]{2,}', topic)):
-                        name = digest_dir.parent.name
-                        # Extract pattern names
-                        patterns = re.findall(r'^## (.+)$', pat_content, re.MULTILINE)
-                        if patterns:
-                            knowledge_parts.append(f"📖 知识包「{name}」模式: {', '.join(patterns[:5])}")
-                except Exception:
-                    pass
-        except Exception:
-            pass
-        if knowledge_parts:
-            research_parts.append("### 🧠 历史沉淀知识\n" + "\n".join(knowledge_parts))
-    except Exception:
-        pass
-
-    # 5–6. Unified DNA context (domain + philosophical methodology)
-    try:
-        from skillos.knowledge.dna_context import build_dna_context, build_domain_template_context
-        dna_ctx = build_dna_context(topic)
-        if dna_ctx:
-            research_parts.append(dna_ctx)
-        tpl_ctx = build_domain_template_context(topic)
-        if tpl_ctx:
-            research_parts.append(tpl_ctx)
-    except Exception:
-        pass
-
-    return "\n\n".join(research_parts) if research_parts else ""
-
-def _build_taxonomy_hint(topic: str) -> str:
-    """Compact domain + methodology hint for explore/refine prompts."""
-    try:
-        from skillos.knowledge.dna_context import build_dna_hint
-        return build_dna_hint(topic)
-    except Exception:
-        return ""
-
-def _domain_opening_for_topic(topic: str) -> str:
-    """First-turn reply tailored to the extracted topic (no generic template picker)."""
-    for keywords, body in _DOMAIN_OPENINGS:
-        if any(kw in topic for kw in keywords):
-            return body
-    try:
-        from skillos.intelligence.role_templates import ROLE_TEMPLATES
-
-        best, best_score = None, 0.0
-        for role in ROLE_TEMPLATES:
-            score = sum(1.5 for kw in role.keywords if kw in topic)
-            if score > best_score:
-                best_score = score
-                best = role
-        if best and best_score >= 1.5:
-            return (
-                f"听起来和 **{best.title}** 场景相关（{best.description}）。\n\n"
-                f"请描述「{topic}」的 **触发场景**、**主要步骤** 和 **交付结果**。"
-            )
-    except Exception:
-        pass
-    return (
-        f"你平时做「{topic}」的时候，是怎么一步步搞定的？不用列提纲，就当跟朋友聊天——随便说说都行。"
-    )
 
 # ── Probe order for progressive exploration ──
 _PROBE_ORDER = ["trigger", "input", "steps", "output", "edge_cases", "gotchas"]
@@ -211,17 +36,6 @@ _PROBE_DESCRIPTIONS = {
     "edge_cases": "边界情况（特殊情况、异常怎么处理）",
     "gotchas": "常见坑点（容易出错的地方、看起来对但实际错的）",
 }
-
-
-class Phase(Enum):
-    IDLE = auto()
-    EXPLORING = auto()
-    REFINING = auto()
-    OPTIMIZING = auto()
-    METASKILL = auto()
-    CONFIRMING = auto()
-    GENERATING = auto()
-    DONE = auto()
 
 
 class SkillExtractionAgent:
@@ -239,10 +53,10 @@ class SkillExtractionAgent:
         self._team_context: dict[str, str] = {}
         self._asked_probes: set[str] = set()  # track asked questions to avoid repeats
         # Skill directory enrichment tracking
-        self._knowledge_items: int = 0       # concepts/facts/heuristics recorded
-        self._scripts_found: int = 0         # executable scripts identified
-        self._references_found: int = 0      # reference materials/templates
-        self._examples_mentioned: int = 0     # real-world examples mentioned
+        self._knowledge_items: int = 0  # concepts/facts/heuristics recorded
+        self._scripts_found: int = 0  # executable scripts identified
+        self._references_found: int = 0  # reference materials/templates
+        self._examples_mentioned: int = 0  # real-world examples mentioned
         # New fields for progressive exploration
         self._probes_completed: set[str] = set()
         self._refinement_rounds: int = 0
@@ -328,6 +142,7 @@ class SkillExtractionAgent:
     def _ingest_ctx(self) -> str:
         try:
             from skillos.knowledge.knowledge_context import get_ingest_context
+
             return get_ingest_context(
                 chat_id=self._team_context.get("chat_id", ""),
                 session_id=self._team_context.get("session_id", ""),
@@ -354,8 +169,7 @@ class SkillExtractionAgent:
             "probes_total": len(_PROBE_ORDER),
             "probes_done": len(self._probes_completed),
             "probe_dimensions": [
-                {"key": k, "label": _PROBE_DESCRIPTIONS.get(k, k),
-                 "covered": k in self._probes_completed}
+                {"key": k, "label": _PROBE_DESCRIPTIONS.get(k, k), "covered": k in self._probes_completed}
                 for k in _PROBE_ORDER
             ],
             "saturated": self._context_saturated(),
@@ -402,6 +216,7 @@ class SkillExtractionAgent:
             return
         try:
             from skillos.skills.session_draft import save_session_draft
+
             save_session_draft(
                 sid,
                 self._resolve_skill_name(self._draft_name),
@@ -417,6 +232,7 @@ class SkillExtractionAgent:
             return
         try:
             from skillos.skills.session_draft import clear_session_draft
+
             clear_session_draft(sid)
         except Exception:
             _log.debug("Session draft clear skipped", exc_info=True)
@@ -434,7 +250,11 @@ class SkillExtractionAgent:
             return
         try:
             from skillos.llm_client import call
-            prompt = "将以下对话要点压缩成一段简短摘要，保留所有涉及流程步骤、触发条件、边界情况、参数格式的关键信息：\n\n" + "\n".join(old[-15:])
+
+            prompt = (
+                "将以下对话要点压缩成一段简短摘要，保留所有涉及流程步骤、触发条件、边界情况、参数格式的关键信息：\n\n"
+                + "\n".join(old[-15:])
+            )
             summary = call(prompt, max_tokens=200, temperature=0.1)
             if summary and len(summary) > 20:
                 self._context = [f"[摘要] {summary}"] + self._context[-10:]
@@ -448,8 +268,17 @@ class SkillExtractionAgent:
             return False
         # Confirmation / finalize phrases must not restart an active extraction.
         finalize_kw = (
-            "可以了", "确认", "生成吧", "保存", "没问题", "就这样", "开始生成",
-            "直接生成", "生成文档", "生成最终", "够了",
+            "可以了",
+            "确认",
+            "生成吧",
+            "保存",
+            "没问题",
+            "就这样",
+            "开始生成",
+            "直接生成",
+            "生成文档",
+            "生成最终",
+            "够了",
         )
         if any(kw in msg for kw in finalize_kw):
             return False
@@ -500,10 +329,7 @@ class SkillExtractionAgent:
         self._phase = Phase.EXPLORING
         self._turn = 1
 
-        examples_text = "\n".join(
-            f"  {i}. **{name}**：{desc}"
-            for i, (name, desc) in enumerate(_EXAMPLES, 1)
-        )
+        examples_text = "\n".join(f"  {i}. **{name}**：{desc}" for i, (name, desc) in enumerate(_EXAMPLES, 1))
 
         if topic:
             self._goal = topic
@@ -512,6 +338,7 @@ class SkillExtractionAgent:
             domain_hint = ""
             try:
                 from skillos.skills.domain_templates import resolve_domain_competition
+
                 comp = resolve_domain_competition(goal or topic, top_k=3)
                 if comp and comp.primary:
                     self._domain_template_id = comp.primary.template_id
@@ -519,7 +346,7 @@ class SkillExtractionAgent:
                         s.template.template_id for s in comp.secondary
                     ]
                     self._context.append(f"[domain:{comp.primary.template_id}]")
-                    domain_label = comp.primary.template_id.replace('-', ' ').title()
+                    domain_label = comp.primary.template_id.replace("-", " ").title()
                     domain_hint = f"\n\n> 🧬 已匹配领域知识：**{domain_label}**"
             except Exception:
                 pass
@@ -527,10 +354,7 @@ class SkillExtractionAgent:
             self._research_cache = _research_topic(topic)
             opening = _domain_opening_for_topic(topic)
             return f"好的，聊聊「**{topic}**」这个流程——{opening}{domain_hint}"
-            return (
-                f"好的，我们来沉淀「**{topic}**」的技能。\n\n"
-                f"{opening}"
-            )
+            return f"好的，我们来沉淀「**{topic}**」的技能。\n\n{opening}"
 
         return (
             f"请描述你工作中一个可按固定流程处理的任务——每次遇到它，你都会按照相似的步骤来推进。\n\n"
@@ -553,11 +377,10 @@ class SkillExtractionAgent:
             return False
 
         extraction_markers = ("沉淀", "技能萃取", "我们来沉淀", "萃取助手", "好的，我们来", "聊聊「")
-        in_extraction = any(
-            any(m in a for m in extraction_markers) for a in assistant_msgs
-        )
+        in_extraction = any(any(m in a for m in extraction_markers) for a in assistant_msgs)
         if not in_extraction:
             from skillos.skills.intent_router import DispatchIntent, classify_message_intent
+
             if classify_message_intent(user_msgs[0]) != DispatchIntent.EXTRACT:
                 return False
 
@@ -572,6 +395,7 @@ class SkillExtractionAgent:
         if sid:
             try:
                 from skillos.skills.session_draft import load_session_draft
+
                 sd = load_session_draft(sid)
                 if sd and sd.get("content"):
                     self._draft_content = sd["content"]
@@ -609,8 +433,7 @@ class SkillExtractionAgent:
 
         if self._wants_to_finalize(message):
             if self._should_block_finalize(message):
-                return ("信息还太少，请再多描述一下这个流程。"
-                        "至少说出：什么时候触发？需要什么输入？分几步？"), None
+                return ("信息还太少，请再多描述一下这个流程。至少说出：什么时候触发？需要什么输入？分几步？"), None
             if self._phase in (Phase.EXPLORING, Phase.REFINING, Phase.CONFIRMING, Phase.OPTIMIZING):
                 return self._generate(existing_skills, llm_args)
 
@@ -643,7 +466,10 @@ class SkillExtractionAgent:
         return self._explore(message, existing_skills, llm_args)
 
     def _confirm_turn(
-        self, text: str, existing_skills: list[str], llm_args: tuple,
+        self,
+        text: str,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         if self._is_gap_question(text):
             self._phase = Phase.CONFIRMING
@@ -687,7 +513,10 @@ class SkillExtractionAgent:
         )
 
     def _post_done_turn(
-        self, text: str, existing_skills: list[str], llm_args: tuple,
+        self,
+        text: str,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         """After final skill saved — continuous refinement mode.
 
@@ -698,20 +527,24 @@ class SkillExtractionAgent:
 
         # URL/file reference during refinement: inject and continue
         import re
-        urls = re.findall(r'https?://[^\s]+', text)
+
+        urls = re.findall(r"https?://[^\s]+", text)
         if urls:
             try:
                 from skillos.utils.web_fetch import fetch
+
                 content = fetch(urls[0])
                 if content and len(content) > 100:
                     self._context.append(f"[参考资料] {urls[0]}: {content[:500]}")
                     self._research_cache = (self._research_cache or "") + f"\n用户补充参考: {content[:300]}"
                     # Queue URL content as a reference for the skill directory
-                    self._pending_resources.append({
-                        "type": "reference",
-                        "text": content[:2000],
-                        "source_url": urls[0],
-                    })
+                    self._pending_resources.append(
+                        {
+                            "type": "reference",
+                            "text": content[:2000],
+                            "source_url": urls[0],
+                        }
+                    )
                     return (
                         f"📖 已读取这篇资料，我会对照里面的做法来优化「**{label}**」。"
                         f"请继续说你的想法，或者回复「生成」更新技能文档。",
@@ -731,8 +564,7 @@ class SkillExtractionAgent:
         # New topic request
         if self.should_start(text) and not self._wants_to_finalize(text):
             return (
-                f"当前技能「**{label}**」还在优化中。"
-                f"若要沉淀新主题，请说「新建xxx技能」或发送 __reset__ 开始新会话。",
+                f"当前技能「**{label}**」还在优化中。若要沉淀新主题，请说「新建xxx技能」或发送 __reset__ 开始新会话。",
                 None,
             )
 
@@ -756,7 +588,10 @@ class SkillExtractionAgent:
         )
 
     def _optimize_turn(
-        self, text: str, existing_skills: list[str], llm_args: tuple,
+        self,
+        text: str,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         report = self._optimize(existing_skills, llm_args)
         self._phase = Phase.CONFIRMING
@@ -764,7 +599,10 @@ class SkillExtractionAgent:
         return f"{report}\n\n---\n\n{confirm}", None
 
     def _metaskill_turn(
-        self, text: str, existing_skills: list[str], llm_args: tuple,
+        self,
+        text: str,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         if self._turn >= 4 or any(kw in text for kw in ["生成", "够了", "可以了", "保存"]):
             return self._generate_metaskill(existing_skills, llm_args)
@@ -786,21 +624,27 @@ class SkillExtractionAgent:
 请用3-5句话概括这个技能的核心设计，然后询问是否可以生成文档。"""
         try:
             from skillos.llm_client import call
+
             return call(prompt, model=model, max_tokens=300, temperature=0.7).strip()
         except Exception as e:
             _log.warning("Summarize failed: %s", e)
             return "我已经了解了这个技能的核心设计。要生成技能文档吗？"
 
-    def learn_from_url(self, url: str, page_content: str, existing_skills: list[str], llm_args: tuple) -> tuple[str, Optional[dict]]:
+    def learn_from_url(
+        self, url: str, page_content: str, existing_skills: list[str], llm_args: tuple
+    ) -> tuple[str, Optional[dict]]:
         """7-step cognitive learning pipeline: 初识→理解→拆解→重构→验证→内化→沉淀→扩散.
 
         Delegates to agent_learning.run_learning_pipeline().
         """
         from skillos.skills.agent_learning import run_learning_pipeline
+
         return run_learning_pipeline(self, url, page_content, existing_skills, llm_args)
 
     def _test_skill_turn(
-        self, existing_skills: list[str], llm_args: tuple,
+        self,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         """Post-generation: run test-driven iteration loop."""
         if not self._draft_content or not self._draft_name:
@@ -813,7 +657,10 @@ class SkillExtractionAgent:
 
         try:
             result = run_test_loop(
-                self._draft_name, self._draft_content, llm_args, test_count=4,
+                self._draft_name,
+                self._draft_content,
+                llm_args,
+                test_count=4,
             )
 
             reply += f"**{self._draft_name}** 测试结果（{len(result.tests)} 个用例）:\n\n"
@@ -843,7 +690,9 @@ class SkillExtractionAgent:
         return reply, None
 
     def _optimize_description_turn(
-        self, existing_skills: list[str], llm_args: tuple,
+        self,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         """Post-generation: run description optimization loop."""
         if not self._draft_content or not self._draft_name:
@@ -859,7 +708,10 @@ class SkillExtractionAgent:
 
         try:
             result = optimize_description(
-                self._draft_name, self._draft_content, llm_args, max_iterations=5,
+                self._draft_name,
+                self._draft_content,
+                llm_args,
+                max_iterations=5,
             )
             reply += f"✅ 优化完成（{result.iterations} 轮）\n\n"
             if result.train_scores:
@@ -880,17 +732,40 @@ class SkillExtractionAgent:
     # ── EXPLORING phase ──
 
     def _explore(
-        self, message: str, existing_skills: list[str], llm_args: tuple,
+        self,
+        message: str,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         """Deep-dive into user's need. Research + Socratic question + progressive draft."""
         self._context.append(f"用户说：{message[:200]}")
 
         # Epistemic recording: substantive user statements become experience claims
-        _SKIP_MSG = {"是", "否", "对", "好", "可以", "行", "嗯", "继续", "是的", "对的",
-                     "好的", "可以的", "还行", "没错", "ok", "yes", "no", "y", "n"}
+        _SKIP_MSG = {
+            "是",
+            "否",
+            "对",
+            "好",
+            "可以",
+            "行",
+            "嗯",
+            "继续",
+            "是的",
+            "对的",
+            "好的",
+            "可以的",
+            "还行",
+            "没错",
+            "ok",
+            "yes",
+            "no",
+            "y",
+            "n",
+        }
         if len(message.strip()) > 30 and message.strip().lower() not in _SKIP_MSG:
             try:
                 from skillos.knowledge.epistemology import record_claim
+
                 name = self._draft_name or self._goal or "未命名"
                 record_claim(
                     content=message.strip()[:500],
@@ -905,11 +780,16 @@ class SkillExtractionAgent:
         # Resource capture: detect scripts, templates, references in user message
         try:
             from skillos.skills.resource_capture import classify_resource_type
+
             rtype = classify_resource_type(message)
             if rtype:
-                self._pending_resources.append({
-                    "type": rtype, "text": message, "source_url": "",
-                })
+                self._pending_resources.append(
+                    {
+                        "type": rtype,
+                        "text": message,
+                        "source_url": "",
+                    }
+                )
                 _log.info("Queued resource type=%s from _explore", rtype)
         except Exception:
             _log.debug("Resource capture skipped in _explore", exc_info=True)
@@ -917,6 +797,7 @@ class SkillExtractionAgent:
         if self._name:
             try:
                 from skillos.knowledge.memory import record_conversation
+
                 record_conversation(self._name, "user", message)
             except Exception:
                 _log.debug("Non-critical operation skipped", exc_info=True)
@@ -936,15 +817,15 @@ class SkillExtractionAgent:
 
         similar_hint = ""
         if existing_skills and self._turn <= 2:
-            goal_words = set(re.findall(r'[\w一-鿿]{2,}', self._goal))
+            goal_words = set(re.findall(r"[\w一-鿿]{2,}", self._goal))
             similar = []
             for sk in existing_skills[:20]:
-                sk_words = set(re.findall(r'[\w一-鿿]{2,}', sk))
+                sk_words = set(re.findall(r"[\w一-鿿]{2,}", sk))
                 if len(goal_words & sk_words) >= 2:
                     similar.append(sk)
             if similar:
                 similar_hint = f"""\n## 🔗 可参考的已有技能
-检测到以下技能可能与当前目标相关：{', '.join(similar[:5])}
+检测到以下技能可能与当前目标相关：{", ".join(similar[:5])}
 如果它们的某些步骤或模式可以复用，主动向用户建议。\n"""
 
         model = llm_args[2] if len(llm_args) > 2 else ""
@@ -988,6 +869,7 @@ class SkillExtractionAgent:
 
         try:
             from skillos.llm_client import call
+
             raw = call(prompt, model=model, max_tokens=1200, temperature=0.7)
             question, draft = self._parse_dual_response(raw)
             reply = question.strip()
@@ -1007,8 +889,8 @@ class SkillExtractionAgent:
 
         # Active gotcha probing: if draft has steps but no pitfalls yet, ask (dedup)
         draft = self._draft_content or ""
-        has_steps = len(re.findall(r'(?m)^\s*(\d+[\.\)、]|[-*])\s+\S', draft)) >= 3
-        has_gotchas = bool(re.search(r'(?i)(gotcha|坑|陷阱|易错|注意|小心|容易|出错|问题)', draft))
+        has_steps = len(re.findall(r"(?m)^\s*(\d+[\.\)、]|[-*])\s+\S", draft)) >= 3
+        has_gotchas = bool(re.search(r"(?i)(gotcha|坑|陷阱|易错|注意|小心|容易|出错|问题)", draft))
         probe_key = "gotcha_probe"
         if self._turn >= 3 and has_steps and not has_gotchas and probe_key not in self._asked_probes:
             self._asked_probes.add(probe_key)
@@ -1041,13 +923,7 @@ class SkillExtractionAgent:
                 "3. 7步以上的复杂流程\n"
                 "4. 我自己描述"
             ),
-            "output": (
-                "流程结束后产出什么？\n\n"
-                "1. 文字报告/文档\n"
-                "2. 结构化数据/表格\n"
-                "3. 代码/配置文件\n"
-                "4. 我自己描述"
-            ),
+            "output": ("流程结束后产出什么？\n\n1. 文字报告/文档\n2. 结构化数据/表格\n3. 代码/配置文件\n4. 我自己描述"),
             "edge_cases": (
                 "有没有需要特别注意的边界情况？\n\n"
                 "1. 数据异常或缺失怎么处理\n"
@@ -1065,7 +941,10 @@ class SkillExtractionAgent:
     # ── REFINING phase ──
 
     def _refine(
-        self, text: str, existing_skills: list[str], llm_args: tuple,
+        self,
+        text: str,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> tuple[str, Optional[dict]]:
         """Help user refine details — steps, params, edge cases + update draft (SD-style).
 
@@ -1075,11 +954,31 @@ class SkillExtractionAgent:
         self._context.append(f"用户说：{text[:200]}")
 
         # Epistemic recording: user refinements contain valuable domain knowledge
-        _SKIP_MSG = {"是", "否", "对", "好", "可以", "行", "嗯", "继续", "是的", "对的",
-                     "好的", "可以的", "还行", "没错", "ok", "yes", "no", "y", "n"}
+        _SKIP_MSG = {
+            "是",
+            "否",
+            "对",
+            "好",
+            "可以",
+            "行",
+            "嗯",
+            "继续",
+            "是的",
+            "对的",
+            "好的",
+            "可以的",
+            "还行",
+            "没错",
+            "ok",
+            "yes",
+            "no",
+            "y",
+            "n",
+        }
         if len(text.strip()) > 30 and text.strip().lower() not in _SKIP_MSG:
             try:
                 from skillos.knowledge.epistemology import record_claim
+
                 name = self._draft_name or self._goal or "未命名"
                 record_claim(
                     content=text.strip()[:500],
@@ -1094,11 +993,16 @@ class SkillExtractionAgent:
         # Resource capture: detect scripts, templates, references in user refinement
         try:
             from skillos.skills.resource_capture import classify_resource_type
+
             rtype = classify_resource_type(text)
             if rtype:
-                self._pending_resources.append({
-                    "type": rtype, "text": text, "source_url": "",
-                })
+                self._pending_resources.append(
+                    {
+                        "type": rtype,
+                        "text": text,
+                        "source_url": "",
+                    }
+                )
                 _log.info("Queued resource type=%s from _refine", rtype)
         except Exception:
             _log.debug("Resource capture skipped in _refine", exc_info=True)
@@ -1143,7 +1047,7 @@ class SkillExtractionAgent:
 {draft_ctx}
 {quality_hint}
 📚 背景参考：
-{self._research_cache or '（暂无）'}
+{self._research_cache or "（暂无）"}
 
 ## 任务
 做两件事：① 用"我理一下"的方式自然确认+追问一个缺口 ② 后台增量更新草稿。
@@ -1159,6 +1063,7 @@ class SkillExtractionAgent:
 
         try:
             from skillos.llm_client import call
+
             raw = call(prompt, model=model, max_tokens=1200, temperature=0.7)
             question, draft = self._parse_dual_response(raw)
             reply = question.strip()
@@ -1185,53 +1090,70 @@ class SkillExtractionAgent:
     def _assess_draft_quality(self) -> dict:
         """Assess skill completeness (0-100) across MD content + directory enrichment.
         A skill is NOT just SKILL.md — it has knowledge/, scripts/, references/, assets/."""
-        import re, os
+        import os
+        import re
+
         draft = self._draft_content or ""
-        skill_dir = getattr(self, '_skill_dir', None)
+        skill_dir = getattr(self, "_skill_dir", None)
 
         # MD Content (60%)
         md_score = 0
         steps = []
         if draft and len(draft) >= 80:
-            steps = re.findall(r'(?m)^\s*(\d+[.\)]|[-*])\s+\S+', draft)
+            steps = re.findall(r"(?m)^\s*(\d+[.\)]|[-*])\s+\S+", draft)
             step_score = min(len(steps) / 5.0, 1.0) * 18
-            has_branch = bool(re.search(r'(\|.+\|)|(if.*then)|(when.*do)|(case)|(分支)|(条件)|(情况)|(场景)|(route)', draft, re.I))
+            has_branch = bool(
+                re.search(r"(\|.+\|)|(if.*then)|(when.*do)|(case)|(分支)|(条件)|(情况)|(场景)|(route)", draft, re.I)
+            )
             branch_score = 12 if has_branch else 0
-            has_trigger = bool(re.search(r'(trigger|keyword|activate|when to use|适用|场景|触发|何时|启动)', draft, re.I))
+            has_trigger = bool(
+                re.search(r"(trigger|keyword|activate|when to use|适用|场景|触发|何时|启动)", draft, re.I)
+            )
             trigger_score = 12 if has_trigger else 0
             step_texts = [s[0] + s[1] if isinstance(s, tuple) else s for s in steps]
             avg_len = sum(len(t) for t in step_texts) / max(len(step_texts), 1)
             detail_score = min(avg_len / 40.0, 1.0) * 9
-            has_gotchas = bool(re.search(r'(pitfall|gotcha|edge.?case|坑|易错|陷阱|注意)', draft, re.I))
+            has_gotchas = bool(re.search(r"(pitfall|gotcha|edge.?case|坑|易错|陷阱|注意)", draft, re.I))
             gotcha_score = 9 if has_gotchas else 0
             md_score = int(step_score + branch_score + trigger_score + detail_score + gotcha_score)
 
         # Directory Enrichment (40%)
         dir_score = 0
         if skill_dir and os.path.isdir(skill_dir):
-            for subdir, w in [('knowledge',12),('scripts',10),('references',8),('examples',5),('assets',5)]:
+            for subdir, w in [("knowledge", 12), ("scripts", 10), ("references", 8), ("examples", 5), ("assets", 5)]:
                 p = os.path.join(skill_dir, subdir)
                 if os.path.isdir(p) and os.listdir(p):
                     dir_score += w
-            for f in ['cheatsheet.md','glossary.md','patterns.md','overview.md']:
+            for f in ["cheatsheet.md", "glossary.md", "patterns.md", "overview.md"]:
                 if os.path.isfile(os.path.join(skill_dir, f)):
                     dir_score += 4
 
         pct = min(md_score + min(dir_score, 40), 100)
         gaps = []
-        if not draft or len(draft) < 80: gaps.append("SKILL.md")
+        if not draft or len(draft) < 80:
+            gaps.append("SKILL.md")
         else:
-            if len(steps) < 3: gaps.append("步骤")
-            if not has_branch: gaps.append("分支条件")
-            if not has_trigger: gaps.append("触发条件")
-            if not has_gotchas: gaps.append("易错点")
-        if dir_score < 20: gaps.append("目录(知识/脚本/参考)")
+            if len(steps) < 3:
+                gaps.append("步骤")
+            if not has_branch:
+                gaps.append("分支条件")
+            if not has_trigger:
+                gaps.append("触发条件")
+            if not has_gotchas:
+                gaps.append("易错点")
+        if dir_score < 20:
+            gaps.append("目录(知识/脚本/参考)")
 
         return {
-            "pct": pct, "gaps": gaps, "md_pct": md_score, "dir_pct": min(dir_score,40),
+            "pct": pct,
+            "gaps": gaps,
+            "md_pct": md_score,
+            "dir_pct": min(dir_score, 40),
             "details": [
-                f"MD:{md_score}%", f"Dir:{min(dir_score,40)}%",
-                f"Steps:{min(len(steps),5)}", f"Know:{self._knowledge_items}",
+                f"MD:{md_score}%",
+                f"Dir:{min(dir_score, 40)}%",
+                f"Steps:{min(len(steps), 5)}",
+                f"Know:{self._knowledge_items}",
             ],
         }
 
@@ -1288,8 +1210,13 @@ class SkillExtractionAgent:
         return any(
             p in msg
             for p in (
-                "还需什么", "还要什么", "需要什么信息", "缺什么",
-                "还需要什么", "还要补充", "还缺什么",
+                "还需什么",
+                "还要什么",
+                "需要什么信息",
+                "缺什么",
+                "还需要什么",
+                "还要补充",
+                "还缺什么",
             )
         )
 
@@ -1298,9 +1225,22 @@ class SkillExtractionAgent:
         """Strong generate/save intent — not a bare 「好/行/确认」."""
         msg = message.strip()
         explicit = (
-            "可以了", "就这样", "没问题", "确认生成", "生成吧", "生成技能",
-            "生成文档", "开始生成", "直接生成", "保存吧", "保存技能",
-            "够了", "不要再问", "不要继续问", "直接保存", "不要再提问",
+            "可以了",
+            "就这样",
+            "没问题",
+            "确认生成",
+            "生成吧",
+            "生成技能",
+            "生成文档",
+            "开始生成",
+            "直接生成",
+            "保存吧",
+            "保存技能",
+            "够了",
+            "不要再问",
+            "不要继续问",
+            "直接保存",
+            "不要再提问",
         )
         if any(p in msg for p in explicit):
             return True
@@ -1327,9 +1267,19 @@ class SkillExtractionAgent:
         """Explicit user intent to produce the final SKILL.md."""
         msg = message.strip()
         phrases = (
-            "可以了", "就这样", "没问题", "确认生成", "生成吧", "生成技能",
-            "生成文档", "开始生成", "直接生成", "保存吧", "保存技能",
-            "生成", "够了",  # SD original finish keywords that were missing
+            "可以了",
+            "就这样",
+            "没问题",
+            "确认生成",
+            "生成吧",
+            "生成技能",
+            "生成文档",
+            "开始生成",
+            "直接生成",
+            "保存吧",
+            "保存技能",
+            "生成",
+            "够了",  # SD original finish keywords that were missing
         )
         if any(p in msg for p in phrases):
             return True
@@ -1372,6 +1322,7 @@ class SkillExtractionAgent:
         # 3. DNA context (if available)
         try:
             from skillos.skills.pattern_miner import get_skill_dna_context
+
             dna_ctx = get_skill_dna_context()
             if dna_ctx:
                 report_parts.append("\n### 🧬 Skill DNA 已加载")
@@ -1443,11 +1394,13 @@ class SkillExtractionAgent:
 
         try:
             from skillos.llm_client import call
+
             raw = call(prompt, model=model, max_tokens=900, temperature=0.3)
 
             # Epistemic recording: extract claims from confirmation draft
             try:
                 from skillos.knowledge.epistemology import record_claim
+
                 name = self._draft_name or self._goal
                 for claim_text in self._extract_claims_from_skill(raw):
                     record_claim(
@@ -1469,12 +1422,7 @@ class SkillExtractionAgent:
     def _fallback_confirm(self) -> str:
         """Static fallback for confirmation."""
         summary = "\n".join(f"- {c[:120]}" for c in self._context[-4:])
-        return (
-            f"根据对话提取的技能概要：\n\n{summary}\n\n"
-            "是否确认生成最终版本？\n"
-            "1. ✅ 确认，生成\n"
-            "2. ✏️ 需要补充修改"
-        )
+        return f"根据对话提取的技能概要：\n\n{summary}\n\n是否确认生成最终版本？\n1. ✅ 确认，生成\n2. ✏️ 需要补充修改"
 
     # ── GENERATING phase ──
 
@@ -1500,6 +1448,7 @@ class SkillExtractionAgent:
 至少 2 行，每行对应 S_body 中一个主要分支。"""
         try:
             from skillos.llm_client import call
+
             raw = call(prompt, model=model, max_tokens=400, temperature=0.2)
             route_m = re.search(r"(## S_route\s*\n(?:\|.*\n)+)", raw, re.MULTILINE)
             if route_m:
@@ -1517,10 +1466,7 @@ class SkillExtractionAgent:
         """Assemble full extraction context for final SKILL.md generation."""
         parts: list[str] = []
         if self._draft_content.strip():
-            parts.append(
-                "## 渐进草稿（优先保留其中已确认内容）\n"
-                f"```skill_doc\n{self._draft_content[:6000]}\n```"
-            )
+            parts.append(f"## 渐进草稿（优先保留其中已确认内容）\n```skill_doc\n{self._draft_content[:6000]}\n```")
         if self._context:
             full = "\n".join(self._context)
             if len(full) <= max_chars:
@@ -1534,6 +1480,7 @@ class SkillExtractionAgent:
     def _generate(self, existing_skills: list[str], llm_args: tuple) -> tuple[str, Optional[dict]]:
         """Generate final installable SKILL.md — delegates to agent_generation."""
         from skillos.skills.agent_generation import run_skill_generation
+
         return run_skill_generation(self, existing_skills, llm_args)
 
     @staticmethod
@@ -1549,19 +1496,14 @@ class SkillExtractionAgent:
         # 1. Word count — warn if SKILL.md body > 3000 chars
         if len(content) > 3000:
             issues.append(
-                f"SKILL.md 正文 {len(content)} 字（建议 <3000 字）。"
-                "长内容考虑拆分到 references/ 目录，保持主体精简。"
+                f"SKILL.md 正文 {len(content)} 字（建议 <3000 字）。长内容考虑拆分到 references/ 目录，保持主体精简。"
             )
 
         # 2. S_route decision table — required for discoverability
-        has_route = bool(
-            re.search(r'##\s*S_route', content) or
-            re.search(r'##\s*Decision routes', content)
-        )
+        has_route = bool(re.search(r"##\s*S_route", content) or re.search(r"##\s*Decision routes", content))
         if not has_route:
             issues.append(
-                "缺少 S_route 决策表——AI 不知道 references/ 下有什么、该读哪个文件。"
-                "建议添加至少 2 行路由规则。"
+                "缺少 S_route 决策表——AI 不知道 references/ 下有什么、该读哪个文件。建议添加至少 2 行路由规则。"
             )
 
         # 3. Description quality — check for vague terms
@@ -1570,14 +1512,14 @@ class SkillExtractionAgent:
         found_vague = [t for t in vague_terms if t in desc and len(desc) < 80]
         if found_vague:
             issues.append(
-                f"description 较短且包含泛词（{', '.join(found_vague)}），"
-                "建议添加具体触发词和边界条件（何时不触发）。"
+                f"description 较短且包含泛词（{', '.join(found_vague)}），建议添加具体触发词和边界条件（何时不触发）。"
             )
 
         # 4. File reference validity
-        refs = re.findall(r'references/(\S+\.\w+)', content)
+        refs = re.findall(r"references/(\S+\.\w+)", content)
         if refs:
             from pathlib import Path as _Path
+
             slug = finalized.get("slug", "")
             if slug:
                 skills_root = _Path(__file__).parent.parent.parent / "skills"
@@ -1585,22 +1527,20 @@ class SkillExtractionAgent:
                 missing = [r for r in refs if not (skill_dir / "references" / r).exists()]
                 if missing:
                     issues.append(
-                        f"引用了 {len(missing)} 个不存在的文件: "
-                        f"{', '.join(missing[:3])}。生成后请确认文件已就位。"
+                        f"引用了 {len(missing)} 个不存在的文件: {', '.join(missing[:3])}。生成后请确认文件已就位。"
                     )
 
         # 5. Trigger keyword specificity
         trigger_section = ""
-        tm = re.search(r'##\s*S_trigger\s*\n(.*?)(?=\n##|\Z)', content, re.DOTALL)
+        tm = re.search(r"##\s*S_trigger\s*\n(.*?)(?=\n##|\Z)", content, re.DOTALL)
         if tm:
             trigger_section = tm.group(1)
-        kw_match = re.search(r'keywords?\s*[:：]\s*(.+)', trigger_section or "", re.IGNORECASE)
+        kw_match = re.search(r"keywords?\s*[:：]\s*(.+)", trigger_section or "", re.IGNORECASE)
         if kw_match:
-            keywords = [k.strip() for k in re.split(r'[,，、\s]+', kw_match.group(1)) if k.strip()]
+            keywords = [k.strip() for k in re.split(r"[,，、\s]+", kw_match.group(1)) if k.strip()]
             if len(keywords) < 3:
                 issues.append(
-                    f"触发词只有 {len(keywords)} 个（建议 ≥3 个），"
-                    "太少可能导致 skill 不被触发（undertrigger）。"
+                    f"触发词只有 {len(keywords)} 个（建议 ≥3 个），太少可能导致 skill 不被触发（undertrigger）。"
                 )
 
         return issues
@@ -1618,8 +1558,12 @@ class SkillExtractionAgent:
         min_passed: int = 5,
     ) -> str:
         from skillos.skills.pattern_miner import apply_dna_compliance_fix
+
         return apply_dna_compliance_fix(
-            content, llm_args, max_rounds=max_rounds, min_passed=min_passed,
+            content,
+            llm_args,
+            max_rounds=max_rounds,
+            min_passed=min_passed,
         )
 
     @staticmethod
@@ -1629,21 +1573,54 @@ class SkillExtractionAgent:
         if not goal or not goal.strip():
             return ""
         from skillos.skills.intent_router import is_meta_extraction_question
+
         if is_meta_extraction_question(goal):
             return ""
         topic = goal
         for prefix in [
-            "帮我创建一个", "帮我创建", "我想创建一个", "我想创建",
-            "创建一个", "创建", "帮我写一个", "帮我写", "写一个", "写",
-            "新建一个", "新建", "做一个", "做", "生成一个", "生成",
-            "帮我沉淀一套", "帮我沉淀一下", "帮我沉淀", "沉淀一下", "沉淀一套", "沉淀一个", "沉淀",
-            "萃取一个", "萃取", "提炼一个", "提炼",
-            "帮我整理一套", "帮我整理一个", "帮我整理", "整理一个", "整理",
-            "我想做一个", "我想做", "我想弄一个", "我想弄",
-            "帮我弄一个", "帮我弄", "弄一个", "弄",
+            "帮我创建一个",
+            "帮我创建",
+            "我想创建一个",
+            "我想创建",
+            "创建一个",
+            "创建",
+            "帮我写一个",
+            "帮我写",
+            "写一个",
+            "写",
+            "新建一个",
+            "新建",
+            "做一个",
+            "做",
+            "生成一个",
+            "生成",
+            "帮我沉淀一套",
+            "帮我沉淀一下",
+            "帮我沉淀",
+            "沉淀一下",
+            "沉淀一套",
+            "沉淀一个",
+            "沉淀",
+            "萃取一个",
+            "萃取",
+            "提炼一个",
+            "提炼",
+            "帮我整理一套",
+            "帮我整理一个",
+            "帮我整理",
+            "整理一个",
+            "整理",
+            "我想做一个",
+            "我想做",
+            "我想弄一个",
+            "我想弄",
+            "帮我弄一个",
+            "帮我弄",
+            "弄一个",
+            "弄",
         ]:
             if topic.startswith(prefix):
-                topic = topic[len(prefix):]
+                topic = topic[len(prefix) :]
                 break
         # Truncate at first sentence-ending punctuation (user added details after the topic)
         for sep in ("。", "？", "！", "，", ".", "?", "!"):
@@ -1651,10 +1628,22 @@ class SkillExtractionAgent:
             if pos > 0:
                 topic = topic[:pos]
                 break
-        for suffix in ["的操作指南", "的指南", "的技能", "的skill", "的流程", "的方法", "的方案",
-                       "指南", "技能", "skill", "流程", "工作流"]:
+        for suffix in [
+            "的操作指南",
+            "的指南",
+            "的技能",
+            "的skill",
+            "的流程",
+            "的方法",
+            "的方案",
+            "指南",
+            "技能",
+            "skill",
+            "流程",
+            "工作流",
+        ]:
             if topic.endswith(suffix):
-                topic = topic[:-len(suffix)]
+                topic = topic[: -len(suffix)]
                 break
         topic = topic.strip("的个一个一下。！？ ")
         if topic.startswith("一套"):
@@ -1671,8 +1660,11 @@ class SkillExtractionAgent:
         edges = ["异常", "错误", "边界", "特殊", "失败", "超时", "意外", "兜底"]
 
         for dim, kws in [
-            ("trigger", triggers), ("input", inputs), ("steps", steps),
-            ("output", outputs), ("edge_cases", edges),
+            ("trigger", triggers),
+            ("input", inputs),
+            ("steps", steps),
+            ("output", outputs),
+            ("edge_cases", edges),
         ]:
             if any(kw in message for kw in kws):
                 return dim
@@ -1692,10 +1684,24 @@ class SkillExtractionAgent:
         """Detect if the user confirms (vs requests changes)."""
         msg = message.lower().strip()
 
-        confirm_kw = ["确认", "可以", "生成", "好的", "是", "对", "yes", "y",
-                       "confirm", "没错", "就这样", "可以了", "没问题", "行", "保存"]
-        change_kw = ["修改", "补充", "添加", "改一下", "不对", "错了", "缺少",
-                      "漏了", "调整", "重做", "重新", "改改"]
+        confirm_kw = [
+            "确认",
+            "可以",
+            "生成",
+            "好的",
+            "是",
+            "对",
+            "yes",
+            "y",
+            "confirm",
+            "没错",
+            "就这样",
+            "可以了",
+            "没问题",
+            "行",
+            "保存",
+        ]
+        change_kw = ["修改", "补充", "添加", "改一下", "不对", "错了", "缺少", "漏了", "调整", "重做", "重新", "改改"]
 
         # Changes take priority
         if any(kw in msg for kw in change_kw):
@@ -1717,11 +1723,11 @@ class SkillExtractionAgent:
         """Parse combined LLM response into (question, optional (name, content))."""
         question = raw
         draft = None
-        qm = re.search(r'<QUESTION>\s*\n?(.*?)\n?\s*</QUESTION>', raw, re.DOTALL | re.IGNORECASE)
+        qm = re.search(r"<QUESTION>\s*\n?(.*?)\n?\s*</QUESTION>", raw, re.DOTALL | re.IGNORECASE)
         if qm:
             question = qm.group(1).strip()
-        sm = re.search(r'<SKILL_DRAFT>\s*\n?(.*?)\n?\s*</SKILL_DRAFT>', raw, re.DOTALL | re.IGNORECASE)
-        if sm and sm.group(1).strip().lower() != 'none':
+        sm = re.search(r"<SKILL_DRAFT>\s*\n?(.*?)\n?\s*</SKILL_DRAFT>", raw, re.DOTALL | re.IGNORECASE)
+        if sm and sm.group(1).strip().lower() != "none":
             draft_raw = sm.group(1).strip()
             dm = re.search(r"```skill_doc\s*\n(.*?)```", draft_raw, re.DOTALL | re.IGNORECASE)
             content = dm.group(1).strip() if dm else draft_raw
@@ -1756,6 +1762,7 @@ class SkillExtractionAgent:
         if self._draft_name:
             try:
                 from skillos.knowledge.memory import record_conversation
+
                 record_conversation(self._draft_name, "system", f"外部资料注入: {source} ({len(content)} chars)")
             except Exception:
                 _log.debug("Non-critical operation skipped", exc_info=True)
@@ -1768,6 +1775,7 @@ class SkillExtractionAgent:
         # Existing skills
         try:
             from skillos.skills import skill_store
+
             refs = []
             for sk in existing[:5]:
                 try:
@@ -1783,6 +1791,7 @@ class SkillExtractionAgent:
         # Web search
         try:
             from skillos.utils.web_search import search as ws
+
             r = ws(f"{goal[:60]} 最佳实践 方法论 怎么做", 2)
             if r and "No results" not in r:
                 parts.append(f"## 网络搜索\n{r[:600]}")
@@ -1791,14 +1800,18 @@ class SkillExtractionAgent:
         return "\n\n".join(parts) if parts else ""
 
     def _diffuse_knowledge(
-        self, new_skill_name: str, new_content: str,
-        existing_skills: list[str], llm_args: tuple,
+        self,
+        new_skill_name: str,
+        new_content: str,
+        existing_skills: list[str],
+        llm_args: tuple,
     ) -> list[str]:
         """Step 8: Cross-pollinate learned knowledge to existing skills.
 
         Delegates to agent_learning.diffuse_knowledge().
         """
         from skillos.skills.agent_learning import diffuse_knowledge
+
         return diffuse_knowledge(new_skill_name, new_content, existing_skills, llm_args)
 
     # ── MetaSkill pipeline creation ──
@@ -1833,10 +1846,12 @@ class SkillExtractionAgent:
 
         try:
             from skillos.llm_client import call
+
             raw = call(prompt, model=model, max_tokens=400, temperature=0.7)
             return raw.strip()
         except Exception as e:
-            _log.warning("MetaSkill LLM failed: %s", e); return f"你的流程包含多个独立步骤，适合用 MetaSkill 流水线来编排。\n\n可用技能：{skills_str}\n\n请描述你的管道，例如：\n`代码扫描: 代码安全扫描  # output_key: scan_result`\n`报告生成: 安全报告生成  # depends_on: [代码扫描]`"
+            _log.warning("MetaSkill LLM failed: %s", e)
+            return f"你的流程包含多个独立步骤，适合用 MetaSkill 流水线来编排。\n\n可用技能：{skills_str}\n\n请描述你的管道，例如：\n`代码扫描: 代码安全扫描  # output_key: scan_result`\n`报告生成: 安全报告生成  # depends_on: [代码扫描]`"
 
     def _generate_metaskill(self, existing_skills: list[str], llm_args: tuple) -> tuple[str, dict | None]:
         """Generate the MetaSkill pipeline document."""
@@ -1880,11 +1895,13 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
 
         try:
             from skillos.llm_client import call
+
             raw = call(prompt, model=model, max_tokens=800, temperature=0.3)
             m = re.search(r"```(?:markdown)?\s*\n(.*?)```", raw, re.DOTALL | re.IGNORECASE)
             content = m.group(1).strip() if m else raw.strip()
         except Exception as e:
-            _log.warning("MetaSkill generation failed: %s", e); return "MetaSkill 生成失败。", None
+            _log.warning("MetaSkill generation failed: %s", e)
+            return "MetaSkill 生成失败。", None
 
         # Parse and validate
         ms = parse_metaskill(content)
@@ -1900,7 +1917,10 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
                 self._draft_name = name
                 self._draft_content = content
                 self._phase = Phase.DONE
-                return f"✅ MetaSkill 管道「{name}」已生成（{len(ms.steps)}个步骤）！\n\n```\n{content[:500]}\n```", {"name": name, "content": content}
+                return f"✅ MetaSkill 管道「{name}」已生成（{len(ms.steps)}个步骤）！\n\n```\n{content[:500]}\n```", {
+                    "name": name,
+                    "content": content,
+                }
 
         save_skill(name, content)
         self._draft_name = name
@@ -1908,6 +1928,7 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
         self._finalized_name = name
         # Set skill_dir so _flush_pending_resources knows where to write
         from skillos.skills.portable_skill import tool_slug
+
         self._skill_dir = str(Path(__file__).parent.parent.parent / "skills" / tool_slug(name))
         written = self._flush_pending_resources()
         if written:
@@ -1919,20 +1940,22 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
         """Get ZPD learning records context for the current skill."""
         try:
             from skillos.evolution.learning_records import get_zpd_context
+
             return get_zpd_context(self._draft_name) if self._draft_name else ""
         except Exception as e:
-            _log.debug("ZPD context unavailable: %s", e); return ""
+            _log.debug("ZPD context unavailable: %s", e)
+            return ""
 
     @staticmethod
     def _parse_json(raw: str) -> dict:
         """Parse JSON from LLM response (may be in markdown code block or raw)."""
-        m = re.search(r'```(?:json)?\s*\n(.*?)```', raw, re.DOTALL | re.IGNORECASE)
+        m = re.search(r"```(?:json)?\s*\n(.*?)```", raw, re.DOTALL | re.IGNORECASE)
         text = m.group(1) if m else raw
         # Find the first { ... } block
-        start = text.find('{')
-        end = text.rfind('}')
+        start = text.find("{")
+        end = text.rfind("}")
         if start >= 0 and end > start:
-            text = text[start:end+1]
+            text = text[start : end + 1]
         return json.loads(text)
 
     @staticmethod
@@ -1945,28 +1968,29 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
         - Remove filler words like 指南/教程/入门 unless essential
         """
         import re
+
         name = raw_name.strip()
-        name = re.sub(r'^#\s*技能名称[：:]\s*', '', name)
-        name = re.sub(r'[*_#~`]', '', name)
+        name = re.sub(r"^#\s*技能名称[：:]\s*", "", name)
+        name = re.sub(r"[*_#~`]", "", name)
         # Remove trailing punctuation fragments (e.g. "流程。收集各部门数据" → "流程")
-        name = re.sub(r'[。．.！!？?，,、；;：:]+.*$', '', name)
-        name = re.sub(r'\s*[。．.！!？?，,、；;：:]\s*$', '', name)
-        for q in ['"', '"', '"', '"', ''', ''', '「', '」']:
-            name = name.replace(q, '')
-        name = re.sub(r'[（(]\s*[A-Za-z0-9\s]+\s*[)）]', '', name)
-        name = re.sub(r'\s*[（(][^)）]*[)）]\s*$', '', name)
-        name = re.sub(r'\s*[\[【][^\]]*[\]】]\s*$', '', name)
-        for filler in ['指南', '教程', '入门', '详解', '完全指南', '使用说明', '操作手册', '流程', '自动化']:
+        name = re.sub(r"[。．.！!？?，,、；;：:]+.*$", "", name)
+        name = re.sub(r"\s*[。．.！!？?，,、；;：:]\s*$", "", name)
+        for q in ['"', '"', '"', '"', """, """, "「", "」"]:
+            name = name.replace(q, "")
+        name = re.sub(r"[（(]\s*[A-Za-z0-9\s]+\s*[)）]", "", name)
+        name = re.sub(r"\s*[（(][^)）]*[)）]\s*$", "", name)
+        name = re.sub(r"\s*[\[【][^\]]*[\]】]\s*$", "", name)
+        for filler in ["指南", "教程", "入门", "详解", "完全指南", "使用说明", "操作手册", "流程", "自动化"]:
             if name.endswith(filler) and len(name) > len(filler) + 1:
-                name = name[:-len(filler)]
-        name = re.sub(r'^[A-Za-z0-9\s]+[-—–]\s*', '', name)
-        name = re.sub(r'\s+Skill\s*$', '', name, flags=re.IGNORECASE)
-        name = re.sub(r'\s*[-—–]\s*$', '', name)
-        name = re.sub(r'[-—–]{2,}', '', name)
-        name = name.strip().strip('。．.，, -—–-')
+                name = name[: -len(filler)]
+        name = re.sub(r"^[A-Za-z0-9\s]+[-—–]\s*", "", name)
+        name = re.sub(r"\s+Skill\s*$", "", name, flags=re.IGNORECASE)
+        name = re.sub(r"\s*[-—–]\s*$", "", name)
+        name = re.sub(r"[-—–]{2,}", "", name)
+        name = name.strip().strip("。．.，, -—–-")
         if len(name) > max_len:
             cut = max_len
-            for sep in ['——', '—', '，', '、', ' ', '·']:
+            for sep in ["——", "—", "，", "、", " ", "·"]:
                 pos = name[:max_len].rfind(sep)
                 if pos > max_len // 2:
                     cut = pos
@@ -1981,4 +2005,5 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
         Delegates to agent_learning.extract_claims_from_skill().
         """
         from skillos.skills.agent_learning import _extract_claims_from_skill as extract_claims_from_skill
+
         return extract_claims_from_skill(content)

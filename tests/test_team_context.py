@@ -1,14 +1,14 @@
 """Phase 5 — team context: playbook bindings, lineage, variants."""
 
+from skillos.knowledge.lineage import (
+    format_skill_lineage,
+    query_skill_precipitations,
+    record_skill_precipitation,
+)
 from skillos.knowledge.playbook import (
     bind_chat_playbook,
     get_playbook_context,
     load_playbook_for_chat,
-)
-from skillos.knowledge.lineage import (
-    record_skill_precipitation,
-    query_skill_precipitations,
-    format_skill_lineage,
 )
 from skillos.skills.variants import find_archetype_for_skill, register_precipitation_variant
 
@@ -52,6 +52,7 @@ class TestSkillLineage:
     def test_record_and_query(self, tmp_path, monkeypatch):
         events_path = tmp_path / "events.jsonl"
         monkeypatch.setattr("skillos.knowledge.lineage.SKILL_EVENTS_PATH", events_path)
+        monkeypatch.setattr("skillos.knowledge.lineage_precip.SKILL_EVENTS_PATH", events_path)
 
         record_skill_precipitation(
             "退款流程",

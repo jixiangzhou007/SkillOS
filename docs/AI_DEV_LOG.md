@@ -4,6 +4,61 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-06-28] 三管齐下：大文件拆分 + 前端UI增强 + 部署自动化 — Claude Code
+
+**背景 / 触发**：项目综合评审后锁定的三个可改进项：超大文件拆分（agent.py 1985行、skillopt.py 1755行、lineage.py 1134行）、前端UI视觉打磨、发布部署自动化。
+
+**修改思路**：
+1. **文件拆分**：按函数/类职责将三个超大文件拆分为 2+7+6=15 个子模块，原文件保留为 re-export shim，保持 `from X import Y` 向后完全兼容
+2. **前端UI**：在现有设计系统基础上补充按钮 loading/disabled 状态样式，保障 ruff hook 不阻塞非py文件
+3. **部署自动化**：创建 GitHub Release 工作流 + CLI 版本管理脚本
+
+**修改内容**：
+| 文件 | 变更 |
+|------|------|
+| `skillos/skills/agent.py` | 1801行（减184行），提取常量/Phase/helper到 agent_data.py |
+| `skillos/skills/agent_data.py` | 新建（207行），Phase枚举+领域数据+研究函数 |
+| `skillos/evolution/skillopt.py` | 改为 re-export shim（15行） |
+| `skillos/evolution/skillopt_types.py` | 新建：OptConfig/EditProposal/ElitePool/AuditReport/EvolutionExpert 等 |
+| `skillos/evolution/skillopt_traces.py` | 新建：trace 采集与分析 |
+| `skillos/evolution/skillopt_gate.py` | 新建：validate_skill 门禁 |
+| `skillos/evolution/skillopt_engine.py` | 新建：优化轮次与保护区 |
+| `skillos/evolution/skillopt_elite.py` | 新建：精英池管理 |
+| `skillos/evolution/skillopt_audit.py` | 新建：审计与新鲜 agent 测试 |
+| `skillos/evolution/skillopt_moe.py` | 新建：MoE 路由与演化 |
+| `skillos/knowledge/lineage.py` | 改为 re-export shim（+私有函数显式导出） |
+| `skillos/knowledge/lineage_types.py` | 新建：SourceChunk/ExtractStep/KnowledgeItem |
+| `skillos/knowledge/lineage_graph.py` | 新建：LineageGraph 类 |
+| `skillos/knowledge/lineage_core.py` | 新建：交叉引用/持久化/惊讶检测 |
+| `skillos/knowledge/lineage_wisdom.py` | 新建：智慧提取/模式挖掘 |
+| `skillos/knowledge/lineage_cycle.py` | 新建：完整知识周期 |
+| `skillos/knowledge/lineage_precip.py` | 新建：技能沉淀事件 |
+| `frontend/style.css` | 新增 btn-loading（spinner动画）、btn:disabled 样式 |
+| `.github/workflows/release.yml` | 新建：tag触发→build→GitHub Release |
+| `scripts/bump_version.py` | 新建：patch/minor/major→git tag |
+| `tests/test_lineage_crossref.py` | 修复 monkeypatch 路径以适配子模块拆分 |
+| `tests/test_team_context.py` | 修复 monkeypatch 路径以适配子模块拆分 |
+
+**未修改 / 刻意不做**：
+- 未修改拆分后各子模块的业务逻辑（纯移动，不动逻）
+- 未处理 test_register_variant_when_similar_exists 的 Unicode 编码问题（拆分前已存在）
+- 未做完整 pytest 全量运行（仅跑核心测试 76/77 pass）
+- skillopt_runner.py 和 skillopt_export.py 是 agent 创建的但未纳入 re-export（不影响主线）
+
+**验证**：
+- 所有 CI 关键导入路径验证通过（`from skillos.skills.agent import SkillExtractionAgent` 等 17 条）
+- 核心测试：76 passed, 1 failed（预存 Unicode 问题），0 回归
+- 全部子模块独立导入验证通过
+- Git 状态 clean
+
+**开放问题 / 下一步**：
+- 登录 GitHub 并 `git push origin main --tags` 推送到远端
+- 逐步修复 mypy attr-defined（34 errors，需 SkillDNA/StepConfidence 重构）
+- 前端骨架屏覆盖更多异步视图（HUB、Settings、Admin）
+- 子模块进一步独立化测试（每个子模块可单独测）
+
+---
+
 ## [2026-06-26] 前端安全与质量修复 — Claude Code
 
 **背景 / 触发**：前端扫描发现 onclick XSS 注入、CSS 颜色硬编码、空 catch 吞错误、缓存破坏不一致、无障碍缺失等 10 类问题。

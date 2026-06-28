@@ -1,0 +1,47 @@
+name: SkillOS Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install -e .
+
+      - name: Verify imports
+        run: |
+          python -c "
+          from skillos.skills.agent import SkillExtractionAgent
+          from skillos.evolution.skillopt import OptConfig, AuditReport
+          from skillos.knowledge.lineage import KnowledgeItem, LineageGraph
+          from skillos.config import get_config
+          print('All imports OK')
+          "
+
+      - name: Build package
+        run: pip install build && python -m build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: SkillOS ${{ github.ref_name }}
+          body_path: CHANGELOG.md
+          files: dist/*
+          generate_release_notes: false

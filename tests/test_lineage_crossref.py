@@ -1,9 +1,6 @@
 """Phase 3 — 4-signal lineage cross-reference engine."""
 
 import json
-from pathlib import Path
-
-import pytest
 
 from skillos.knowledge.lineage import (
     KnowledgeItem,
@@ -98,6 +95,8 @@ class TestAppendItemsToLineage:
         lineage_dir = tmp_path / "lineage"
         lineage_dir.mkdir()
         monkeypatch.setattr("skillos.knowledge.lineage.LINEAGE_DIR", lineage_dir)
+        monkeypatch.setattr("skillos.knowledge.lineage_core.LINEAGE_DIR", lineage_dir)
+        monkeypatch.setattr("skillos.knowledge.lineage_wisdom.LINEAGE_DIR", lineage_dir)
         monkeypatch.setattr(
             "skillos.knowledge.lineage.sync_lineage_to_graph",
             lambda session_id: {"synced": True, "session_id": session_id},
@@ -132,6 +131,8 @@ class TestAppendItemsToLineage:
         lineage_dir = tmp_path / "lineage"
         lineage_dir.mkdir()
         monkeypatch.setattr("skillos.knowledge.lineage.LINEAGE_DIR", lineage_dir)
+        monkeypatch.setattr("skillos.knowledge.lineage_core.LINEAGE_DIR", lineage_dir)
+        monkeypatch.setattr("skillos.knowledge.lineage_wisdom.LINEAGE_DIR", lineage_dir)
         monkeypatch.setattr(
             "skillos.knowledge.lineage.sync_lineage_to_graph",
             lambda session_id: {"synced": False},

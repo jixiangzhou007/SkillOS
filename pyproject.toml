@@ -62,6 +62,11 @@ extend-ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["F811"]  # allow fixture redefinition
 "scripts/*" = ["F841"] # allow unused vars in scripts
+"skillos/evolution/skillopt.py" = ["F403", "F405"]  # re-export shim: star imports are intentional
+"skillos/evolution/skillopt_engine.py" = ["F403", "F405"]  # star import from types
+"skillos/evolution/skillopt_moe.py" = ["F403", "F405"]  # star import from types
+"skillos/evolution/skillopt_elite.py" = ["F403", "F405"]  # star import from types
+"skillos/knowledge/lineage.py" = ["F403"]  # re-export shim: star imports are intentional
 
 [tool.mypy]
 python_version = "3.11"
