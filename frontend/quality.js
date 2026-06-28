@@ -23,11 +23,10 @@ function renderQualityBadge(type, score, size) {
   size = size || 'sm';
   var color = qualityColor(score, type);
   var label = qualityLabel(type, score);
-  var fontSize = size === 'sm' ? '9px' : size === 'md' ? '10px' : '11px';
-  var padding = size === 'sm' ? '1px 5px' : size === 'md' ? '2px 6px' : '3px 8px';
-  return '<span style="font-size:' + fontSize + ';padding:' + padding + ';border-radius:3px;' +
-    'color:' + color + ';background:' + color.replace(')', ',.1)').replace('rgb', 'rgba').replace('var(--a3)', 'rgba(52,211,153,.12)').replace('var(--amber)', 'rgba(245,158,11,.12)').replace('var(--red)', 'rgba(239,68,68,.12)').replace('var(--text3)', 'rgba(255,255,255,.06)') + ';' +
-    'white-space:nowrap;font-weight:600;font-family:var(--font)">' + label + '</span>';
+  var tone = score >= 4 ? 'good' : score >= 2 ? 'mid' : 'low';
+  if (type === 'dna') tone = score >= 4 ? 'good' : score >= 2 ? 'mid' : 'low';
+  if (type === 'smoke') tone = score === 'pass' || score === true ? 'good' : 'low';
+  return '<span class="qbadge qbadge-' + size + ' qbadge-' + tone + '" style="color:' + color + '">' + label + '</span>';
 }
 
 function renderQualityMiniBadges(meta, size) {
