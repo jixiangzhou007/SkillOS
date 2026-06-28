@@ -84,6 +84,8 @@ async def _lifespan(app):
 
 app = FastAPI(title="SkillOS API", version="0.2.1", lifespan=_lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+from fastapi.middleware.gzip import GZipMiddleware
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 
 @app.exception_handler(HTTPException)
