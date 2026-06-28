@@ -317,14 +317,14 @@ def _make_skill_md(name: str, domain: str, template: dict, quality: str) -> str:
     return "\n".join(lines)
 
 
-def seed_skills(skill_store, count: int = None):
+def seed_skills(skill_store, count: int = None, tenant=None):
     """Create test skills."""
     templates = SKILL_TEMPLATES[:count] if count else SKILL_TEMPLATES
     created = []
     for tmpl in templates:
         content = _make_skill_md(tmpl["name"], tmpl["domain"], tmpl, tmpl["quality"])
         try:
-            skill_store.save_skill(tmpl["name"], content, epistemic=False)
+            skill_store.save_skill(tmpl["name"], content, epistemic=False, tenant=tenant)
             _log.info("  ✅ %s (domain=%s, quality=%s)", tmpl["name"], tmpl["domain"], tmpl["quality"])
             created.append(tmpl["name"])
         except Exception as e:
@@ -386,15 +386,27 @@ def main():
     parser = argparse.ArgumentParser(description="Seed test data for SkillOS")
     parser.add_argument("--admin", action="store_true", help="Also create admin/org data")
     parser.add_argument("--count", type=int, default=None, help="Number of skills (default: all)")
+    parser.add_argument("--tenant-id", type=str, default="", help="Tenant ID for multi-tenant seeding")
     args = parser.parse_args()
 
     _log.info("=== Seeding test data ===")
+
+    # Resolve tenant context if specified
+    tenant = None
+    if args.tenant_id:
+        from skillos.identity.context import TenantContext
+
+        tenant = TenantContext(
+            tenant_id=args.tenant_id,
+            tenant_type="personal",
+            user_id=args.tenant_id.split(":")[-1] if ":" in args.tenant_id else "",
+        )
 
     # 1. Skills
     _log.info("\n📦 Creating skills...")
     from skillos.skills import skill_store
 
-    skills = seed_skills(skill_store, count=args.count)
+    skills = seed_skills(skill_store, count=args.count, tenant=tenant)
 
     if not skills:
         _log.warning("No skills created — check if they already exist or error above")
