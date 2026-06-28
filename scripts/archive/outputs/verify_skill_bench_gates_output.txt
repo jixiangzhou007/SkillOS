@@ -23,6 +23,7 @@ SkillOS skill bench gates (offline)
   [OK] template match healthcare-triage
   [OK] template match social-survey
   [OK] template match media-publish
+  [OK] template match agriculture-crop-management
   [OK] security audit disambiguation (no finance false match)
 
 == DNA evolution semver ==
