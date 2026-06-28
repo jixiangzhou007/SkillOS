@@ -3,28 +3,27 @@
 var ONBOARDING_KEY = typeof StorageKeys !== 'undefined' ? StorageKeys.ONBOARDING_DONE : 'skillos_onboarding_done';
 var _ONBOARDING_STEPS = [
   {
-    title: '① 配置模型',
-    body: '在「设置 → 模型」确认 LLM 已选；API Key 写在服务端 .env（DEEPSEEK_API_KEY）。',
-    action: function() {
-      if (typeof showSettings === 'function') showSettings();
-    },
-    actionLabel: '打开设置'
+    title: '可验证的技能工厂',
+    body: 'SkillOS 不是又一个 AI 工具。它帮你把工作经验萃取成 Verified Skill——经过认识论验证、可以持续进化的技能文档。输出 AgentSkills.io 标准，Claude Code / Cursor 直接加载。',
+    action: function() {},
+    actionLabel: '开始了解'
   },
   {
-    title: '② 三种方式沉淀',
-    body: '对话萃取（苏格拉底追问）、粘贴链接、或上传 PDF/Word。三种输入，同一种 Verified Skill 终点。',
+    title: '三种输入，一种输出',
+    body: '在对话中描述流程（苏格拉底式追问帮你理清思路）、粘贴网页链接自动学习、上传 PDF/Word 自动消化——最终都输出为标准 SKILL.md，附带验证数据和进化轨迹。',
     action: function() {
       if (typeof showChat === 'function') showChat();
     },
-    actionLabel: '开始'
+    actionLabel: '试一下'
   },
   {
-    title: '③ 验货并装进 Cursor',
-    body: '沉淀完成后会看到「已验证 / 待审」摘要。复制 Cursor 安装路径或下载 Zip — 在 Cursor 里验货，在这里导出。',
+    title: '越用越好',
+    body: '每个 skill 都有版本历史、MoE 质量评分、SkillsBench 回归测试。改进了某个 skill，相关 skill 会自动受益。在 Cursor / Codex 里用得越多，SkillOS 后台进化得越好。',
     action: function() {
-      if (typeof showChat === 'function') showChat();
+      closeOnboarding(true);
+      if (typeof toast === 'function') toast('开始萃取你的第一个 Verified Skill', 'success');
     },
-    actionLabel: '知道了'
+    actionLabel: '开始使用'
   }
 ];
 
