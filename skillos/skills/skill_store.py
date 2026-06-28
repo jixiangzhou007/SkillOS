@@ -355,9 +355,16 @@ def list_skills(*, tenant: TenantContext | None = None) -> list[str]:
     root.mkdir(parents=True, exist_ok=True)
     names: list[str] = []
     for p in sorted(root.glob("*/SKILL.md")):
-        content = p.read_text(encoding="utf-8")
-        meta, _ = _split_front_matter(content)
-        name = meta.get("name") or p.parent.name
+        # Fast path: use directory name (avoids reading every file)
+        name = p.parent.name
+        # Only read YAML if dir name looks like a slug (no CJK characters)
+        if not name or any('一' <= c <= '鿿' for c in name):
+            try:
+                content = p.read_text(encoding="utf-8")
+                meta, _ = _split_front_matter(content)
+                name = meta.get("name") or name
+            except Exception:
+                pass
         if name not in names:
             names.append(name)
     return names

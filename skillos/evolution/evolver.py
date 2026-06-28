@@ -190,19 +190,31 @@ def get_recent_traces(skill_name: str, limit: int = 20) -> list[dict]:
     ]
 
 
+# Simple LRU cache for skill stats to speed up list endpoints
+_stats_cache: dict[str, tuple[float, dict]] = {}
+_STATS_CACHE_TTL = 30.0  # seconds
+
 def get_skill_stats(skill_name: str) -> dict:
-    """Get evolution stats for a skill."""
+    """Get evolution stats for a skill (cached 30s for list performance)."""
+    import time
+    now = time.time()
+    if skill_name in _stats_cache:
+        ts, cached = _stats_cache[skill_name]
+        if now - ts < _STATS_CACHE_TTL:
+            return cached.copy()
     traces = _load_traces(skill_name)
     if not traces:
         return {"total": 0, "avg_score": 0, "failure_rate": 0, "version": 1}
     scores = [t.judge_score for t in traces if t.judge_score > 0]
     failures = sum(1 for t in traces if 0 < t.judge_score < MIN_JUDGE_SCORE)
-    return {
+    result = {
         "total": len(traces),
         "avg_score": round(sum(scores) / len(scores), 1) if scores else 0,
         "failure_rate": round(failures / len(traces) * 100, 1) if traces else 0,
         "version": _current_version(skill_name),
     }
+    _stats_cache[skill_name] = (now, result)
+    return result.copy()
 
 
 # ═══════════════════════════════════════════════════════════════
