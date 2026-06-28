@@ -87,6 +87,18 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 from fastapi.middleware.gzip import GZipMiddleware
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
+# Cache static assets with version query strings for 1 year
+from starlette.middleware.base import BaseHTTPMiddleware
+class CacheStaticMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        path = request.url.path
+        if any(path.endswith(ext) for ext in ('.css','.js','.html','.svg','.png','.ico')):
+            if '?v=' in str(request.url.query) or path.endswith(('.png','.ico','.svg')):
+                response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+        return response
+app.add_middleware(CacheStaticMiddleware)
+
 
 @app.exception_handler(HTTPException)
 async def _http_exception_handler(request, exc: HTTPException):
