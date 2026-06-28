@@ -82,7 +82,12 @@ async def _lifespan(app):
     except Exception: pass
 
 
-app = FastAPI(title="SkillOS API", version="0.2.1", lifespan=_lifespan)
+app = FastAPI(
+    title="SkillOS API",
+    version="0.3.5",
+    description="AI Skill Operating System — extract, verify, evolve Agent Skills. OpenAPI docs for MCP integration.",
+    lifespan=_lifespan,
+)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 from fastapi.middleware.gzip import GZipMiddleware
 app.add_middleware(GZipMiddleware, minimum_size=500)
@@ -148,6 +153,13 @@ app.include_router(evolution.router, prefix="/api/evolution", tags=["Evolution"]
 app.include_router(intelligence.router, prefix="/api/intelligence", tags=["Intelligence"])
 app.include_router(marketplace.router, prefix="/api/marketplace", tags=["Marketplace"])
 app.include_router(voice.router, prefix="/voice", tags=["Voice"])
+
+
+@app.get("/favicon.ico")
+async def favicon():
+    from fastapi.responses import Response
+    # Minimal 1x1 transparent ico to avoid 404 in browser console
+    return Response(content=b'\x00\x00\x01\x00\x01\x00\x01\x01\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', media_type='image/x-icon')
 
 
 @app.get("/health")
