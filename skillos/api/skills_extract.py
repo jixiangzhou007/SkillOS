@@ -991,9 +991,11 @@ async def dispatch_message_stream(
                 yield _sse_event("token", char)
                 await asyncio.sleep(0.015)  # ~60 chars/sec, natural reading speed
 
+            qm = session.agent._assess_draft_quality() if hasattr(session.agent, '_assess_draft_quality') else {}
             meta = {"session_id": session.id, "skill_active": session.agent.is_active,
                     "extraction_phase": session.agent._phase.name,
-                    "extraction_turn": session.agent._turn}
+                    "extraction_turn": session.agent._turn,
+                    "completion_pct": qm.get("pct", 0)}
             dc = getattr(session.agent, '_draft_content', '') or ''
             if dc:
                 meta["draft_content"] = dc[:3000]
@@ -1113,11 +1115,13 @@ async def extraction_status(session_id: str = ""):
     if not session or not session.agent:
         return {"active": False, "reason": "session not found"}
     agent = session.agent
+    q = agent._assess_draft_quality() if hasattr(agent, '_assess_draft_quality') else {}
     return {
         "active": agent.is_active,
         "skill_name": agent.draft_name or agent.locked_name or "",
         "turn": agent._turn if hasattr(agent, '_turn') else 0,
         "phase": agent._phase.name if hasattr(agent, '_phase') else "unknown",
+        "completion_pct": q.get("pct", 0),
         "context_turns": len(agent._context) if hasattr(agent, '_context') else 0,
         "draft_length": len(agent._draft_content) if hasattr(agent, '_draft_content') and agent._draft_content else 0,
         "can_resume": bool(agent._context) if hasattr(agent, '_context') else False,
