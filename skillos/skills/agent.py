@@ -1905,6 +1905,13 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
         save_skill(name, content)
         self._draft_name = name
         self._draft_content = content
+        self._finalized_name = name
+        # Set skill_dir so _flush_pending_resources knows where to write
+        from skillos.skills.portable_skill import tool_slug
+        self._skill_dir = str(Path(__file__).parent.parent.parent / "skills" / tool_slug(name))
+        written = self._flush_pending_resources()
+        if written:
+            _log.info("Flushed %d resources to skill directory", written)
         self._phase = Phase.DONE
         return f"✅ MetaSkill「{name}」已生成！", {"name": name, "content": content}
 
