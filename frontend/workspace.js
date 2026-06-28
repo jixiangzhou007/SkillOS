@@ -123,12 +123,18 @@ function updateWorkspace(meta) {
     qualityEl.innerHTML = renderQualityMiniBadges(meta, 'md');
   }
 
-  // Sidebar CTA area — show active extraction status
+  // Sidebar CTA area — show active extraction with completion
   var sbWs = document.getElementById('sb-workspace-content');
   if (sbWs && name) {
-    sbWs.innerHTML = '<div class="sb-ws-item" onclick="showChat()" style="cursor:pointer;padding:var(--s-2);border-radius:var(--r-sm);background:var(--accent-bg);text-align:center">' +
-      '<span class="wp-badge ' + (_PHASE_CSS[phase] || '') + '" style="display:inline-block">' + (_PHASE_LABELS[phase] || phase) + '</span>' +
-      '<div style="font-size:var(--t-sm);color:var(--text);margin-top:4px;font-weight:500">' + name + '</div>' +
+    var pct = meta.completion_pct || 0;
+    var pctBar = pct > 0 ? '<div class="sb-pct-bar"><div class="sb-pct-fill" style="width:' + pct + '%"></div></div>' : '';
+    sbWs.innerHTML = '<div class="sb-ws-item" onclick="showChat()" style="cursor:pointer;padding:var(--s-2) var(--s-3);border-radius:var(--r-sm);background:var(--accent-bg)">' +
+      '<div style="display:flex;align-items:center;gap:var(--s-2);margin-bottom:4px">' +
+      '<span class="wp-badge ' + (_PHASE_CSS[phase] || '') + '" style="display:inline-block;font-size:10px">' + (_PHASE_LABELS[phase] || phase) + '</span>' +
+      '<span style="font-size:var(--t-xs);color:var(--a3);font-weight:600">' + (pct > 0 ? pct + '%' : '') + '</span>' +
+      '</div>' +
+      '<div style="font-size:var(--t-sm);color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + name + '</div>' +
+      pctBar +
       '</div>';
   }
 

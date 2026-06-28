@@ -931,3 +931,4 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .review-page-info{font:400 var(--t-xs)/1 var(--font);color:var(--text3);margin-left:var(--s-3)}
 
 .tree-score{font:600 var(--t-xs)/1 var(--font);flex-shrink:0;min-width:28px;text-align:right}
+.sb-pct-bar{height:3px;background:rgba(var(--accent-rgb),.15);border-radius:2px;overflow:hidden;margin-top:var(--s-1)}.sb-pct-fill{height:100%;background:linear-gradient(90deg,var(--a4),var(--a3));border-radius:2px;transition:width .5s ease}
