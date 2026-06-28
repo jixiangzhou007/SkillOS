@@ -1024,8 +1024,8 @@
       <div class="modal-overlay" x-show="deleteModalOpen" x-transition @click.self="closeDeleteModal()" @keydown.escape.window="closeDeleteModal()">
         <div class="modal-box">
           <h3>删除模型</h3>
-          <p style="color:var(--text2);font-size:14px;margin-bottom:4px">移除 <strong style="color:var(--err)" x-text="deleteTargetIndex >= 0 && models[deleteTargetIndex] ? models[deleteTargetIndex].label + ' (' + models[deleteTargetIndex].id + ')' : ''"></strong>？</p>
-          <p style="color:var(--text3);font-size:14px">此操作不可撤销，模型将从选择器中移除。</p>
+          <p class="modal-delete-title">移除 <strong x-text="deleteTargetIndex >= 0 && models[deleteTargetIndex] ? models[deleteTargetIndex].label + ' (' + models[deleteTargetIndex].id + ')' : ''"></strong>？</p>
+          <p class="modal-delete-hint">此操作不可撤销，模型将从选择器中移除。</p>
           <div class="modal-actions">
             <button class="btn-secondary" onclick="closeDeleteModal()">取消</button>
             <button class="btn-danger" onclick="confirmDelete()">删除</button>
