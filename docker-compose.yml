@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  skillos:
+    build: .
+    ports:
+      - "8765:8765"
+    volumes:
+      - skillos_data:/app/data
+      - skillos_skills:/app/skills
+      - ./.env:/app/.env:ro
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - SKILLOS_DATA_DIR=/app/data
+    restart: unless-stopped
+
+volumes:
+  skillos_data:
+  skillos_skills:
