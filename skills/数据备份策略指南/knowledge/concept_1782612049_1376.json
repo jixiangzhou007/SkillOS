@@ -1,0 +1,17 @@
+{
+  "id": "concept_1782612049_1376",
+  "content": "数据备份策略: 本文档核心主张的构建可靠数据备份的系统性方法，涵盖范围界定、压缩、加密、传输、验证和清理六个关键环节。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "备份范围",
+    "压缩",
+    "加密"
+  ],
+  "created_at": 1782612049.3993335,
+  "updated_at": 1782612049.4001467
+}

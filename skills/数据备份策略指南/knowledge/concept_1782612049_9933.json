@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782612049_9933",
+  "content": "zstd: 一种用于压缩备份数据的工具，本文档中指定使用级别3进行压缩。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "压缩"
+  ],
+  "created_at": 1782612049.416751,
+  "updated_at": 1782612049.4170597
+}

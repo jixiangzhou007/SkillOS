@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_5322",
+  "content": "密钥外部化管理: 加密密钥不存储在备份脚本或配置文件中，而是从专门的密钥管理服务（如Vault）动态获取，降低密钥泄露风险。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782612049.5364904,
+  "updated_at": 1782612049.536787
+}

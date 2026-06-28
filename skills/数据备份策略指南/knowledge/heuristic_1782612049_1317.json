@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_1317",
+  "content": "先压缩后加密: 在加密之前先对数据进行压缩，可以显著减少加密和传输的数据量，同时避免加密后压缩效果差的问题。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782612049.5119884,
+  "updated_at": 1782612049.5125158
+}

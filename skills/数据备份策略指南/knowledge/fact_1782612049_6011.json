@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_6011",
+  "content": "明确排除项：日志文件（可滚动或丢弃）和缓存数据（可重新生成）。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "备份范围界定与排除规则"
+  ],
+  "created_at": 1782612049.5982773,
+  "updated_at": 1782612049.5985765
+}

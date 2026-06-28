@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_9574",
+  "content": "备份六步流程: 将备份过程系统性地拆分为范围界定、压缩、加密、传输、验证和清理六个连续环节，确保每个步骤都有明确的操作和验证点。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782612049.503772,
+  "updated_at": 1782612049.5040781
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_3294",
+  "content": "上传完成后执行二次校验，比对本地与远程的校验值。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "传输与完整性验证流程"
+  ],
+  "created_at": 1782612049.6529307,
+  "updated_at": 1782612049.6533518
+}

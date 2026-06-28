@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_1251",
+  "content": "未加密传输风险: 在传输备份数据时不进行加密，导致数据在网络上以明文形式传输，容易被截获或篡改。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1782612049.5653539,
+  "updated_at": 1782612049.5656855
+}

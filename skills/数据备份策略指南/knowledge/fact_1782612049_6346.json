@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_6346",
+  "content": "AES-256-GCM提供强加密并内置完整性校验（认证标签）。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "压缩与加密技术选型"
+  ],
+  "created_at": 1782612049.6258574,
+  "updated_at": 1782612049.626216
+}

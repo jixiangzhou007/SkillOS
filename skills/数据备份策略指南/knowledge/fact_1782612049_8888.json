@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_8888",
+  "content": "策略自动执行清理，无需人工干预。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "基于时间窗口的保留策略"
+  ],
+  "created_at": 1782612049.680666,
+  "updated_at": 1782612049.680951
+}

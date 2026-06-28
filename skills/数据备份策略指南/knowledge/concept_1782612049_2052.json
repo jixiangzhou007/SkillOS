@@ -1,0 +1,16 @@
+{
+  "id": "concept_1782612049_2052",
+  "content": "Vault: 用于提供AES-256-GCM加密密钥的工具或服务。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "AES-256-GCM",
+    "加密"
+  ],
+  "created_at": 1782612049.43607,
+  "updated_at": 1782612049.4366324
+}

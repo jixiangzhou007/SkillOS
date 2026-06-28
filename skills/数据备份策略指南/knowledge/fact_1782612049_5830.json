@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_5830",
+  "content": "日备份保留7天，周备份保留4周，月备份保留12个月。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "基于时间窗口的保留策略"
+  ],
+  "created_at": 1782612049.6709394,
+  "updated_at": 1782612049.6714053
+}

@@ -564,9 +564,10 @@ def _stage_crossref(
     existing_skills: list[str], llm_args: tuple, ingest_ctx: str = "",
 ) -> list[dict]:
     gloss_summary = ", ".join(g.get("term", "") for g in glossary[:8]) if glossary else ""
+    skill_names = [s if isinstance(s, str) else (s.get(\"name\", \"\") if isinstance(s, dict) else str(s)) for s in existing_skills[:20]]
     prompt = _CROSSREF_PROMPT.format(
         overview=overview[:800], glossary_summary=gloss_summary,
-        skills_list=", ".join(existing_skills[:20]),
+        skills_list=", ".join(skill_names),
     )
     raw = _call_llm(prompt, llm_args, max_tokens=500, temperature=0.2, ingest_ctx=ingest_ctx)
     try:

@@ -1,0 +1,16 @@
+{
+  "id": "concept_1782612049_3350",
+  "content": "未加密传输风险: 备份数据在传输过程中未加密可能带来的安全风险。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "传输",
+    "加密"
+  ],
+  "created_at": 1782612049.4873939,
+  "updated_at": 1782612049.4877286
+}

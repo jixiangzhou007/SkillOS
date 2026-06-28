@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_1560",
+  "content": "所有传输链路（包括内部网络）必须使用加密通道（如HTTPS）。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "常见陷阱与规避建议"
+  ],
+  "created_at": 1782612049.7074175,
+  "updated_at": 1782612049.7078729
+}

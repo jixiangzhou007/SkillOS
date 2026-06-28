@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_0117",
+  "content": "传输完整性校验: 在上传数据时附带校验和（如MD5），并在传输完成后进行完整性验证，发现失败时触发告警。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782612049.5201163,
+  "updated_at": 1782612049.5204136
+}

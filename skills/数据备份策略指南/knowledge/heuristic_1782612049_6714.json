@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_6714",
+  "content": "备份后验证缺失: 完成备份上传后不进行完整性验证，导致损坏或不完整的备份未被及时发现，在真正需要恢复时无法使用。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1782612049.5819547,
+  "updated_at": 1782612049.5822546
+}

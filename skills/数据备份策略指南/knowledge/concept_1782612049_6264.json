@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782612049_6264",
+  "content": "AES-256-GCM: 一种加密算法，用于对备份数据进行加密，密钥从Vault获取。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "加密"
+  ],
+  "created_at": 1782612049.4257798,
+  "updated_at": 1782612049.4261308
+}

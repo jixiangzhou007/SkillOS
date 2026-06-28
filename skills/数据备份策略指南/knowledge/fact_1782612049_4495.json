@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_4495",
+  "content": "避免在业务高峰期执行数据库备份，可设置低优先级或限流。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "常见陷阱与规避建议"
+  ],
+  "created_at": 1782612049.6980371,
+  "updated_at": 1782612049.6983786
+}

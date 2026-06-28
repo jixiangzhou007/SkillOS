@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_0550",
+  "content": "排除非必要数据: 当定义备份范围时，优先排除日志、缓存等可重建或临时性数据，只备份数据库转储、配置文件和用户上传等核心数据。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1782612049.545555,
+  "updated_at": 1782612049.5460641
+}

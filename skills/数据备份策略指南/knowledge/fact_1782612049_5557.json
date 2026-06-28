@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_5557",
+  "content": "上传时附带MD5校验和，S3可自动验证数据完整性。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "传输与完整性验证流程"
+  ],
+  "created_at": 1782612049.6434953,
+  "updated_at": 1782612049.6437953
+}

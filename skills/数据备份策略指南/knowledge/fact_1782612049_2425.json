@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_2425",
+  "content": "建立配置文件清单，确保所有关键配置被纳入备份范围。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "常见陷阱与规避建议"
+  ],
+  "created_at": 1782612049.7168448,
+  "updated_at": 1782612049.7172055
+}

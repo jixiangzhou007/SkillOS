@@ -1,0 +1,16 @@
+{
+  "id": "concept_1782612049_3823",
+  "content": "MD5校验和: 上传备份数据到S3时附带的校验值，用于验证数据传输的完整性。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "S3",
+    "验证"
+  ],
+  "created_at": 1782612049.459778,
+  "updated_at": 1782612049.4602497
+}

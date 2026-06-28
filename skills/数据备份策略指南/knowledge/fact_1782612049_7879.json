@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_7879",
+  "content": "密钥管理依赖Vault，避免硬编码或明文存储密钥。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "压缩与加密技术选型"
+  ],
+  "created_at": 1782612049.6350775,
+  "updated_at": 1782612049.6353958
+}

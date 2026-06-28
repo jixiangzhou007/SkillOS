@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_7557",
+  "content": "避开高峰时段执行备份: 当备份操作可能对数据库或系统产生性能影响时，应安排在业务低峰时段执行，避免影响正常服务。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "heuristic"
+  ],
+  "created_at": 1782612049.5560167,
+  "updated_at": 1782612049.5563846
+}

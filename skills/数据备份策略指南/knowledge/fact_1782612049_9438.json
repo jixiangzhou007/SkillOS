@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_9438",
+  "content": "范围界定直接影响备份的存储成本和恢复时的完整性。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "备份范围界定与排除规则"
+  ],
+  "created_at": 1782612049.6068816,
+  "updated_at": 1782612049.6072817
+}

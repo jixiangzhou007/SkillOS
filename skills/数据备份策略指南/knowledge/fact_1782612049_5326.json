@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_5326",
+  "content": "zstd level 3在压缩比与处理速度之间取得良好平衡，适合频繁备份。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "压缩与加密技术选型"
+  ],
+  "created_at": 1782612049.6155276,
+  "updated_at": 1782612049.6158423
+}

@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_4701",
+  "content": "分层保留策略: 按时间粒度设置不同的保留周期：每日备份保留较短时间（如7天），每周备份保留中等时间（如4周），每月备份保留较长时间（如12个月），平衡存储成本与恢复需求。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "pattern"
+  ],
+  "created_at": 1782612049.528231,
+  "updated_at": 1782612049.5285852
+}

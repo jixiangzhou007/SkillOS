@@ -1,0 +1,14 @@
+{
+  "id": "heuristic_1782612049_9951",
+  "content": "配置文件遗漏: 在定义备份范围时，只关注数据库和用户数据，而遗漏了应用配置文件、环境变量等关键配置，导致恢复后系统无法正常运行。",
+  "type": "heuristic",
+  "source": "file://backup-guide.md",
+  "confidence": 0.7,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "anti_pattern"
+  ],
+  "created_at": 1782612049.574001,
+  "updated_at": 1782612049.5742981
+}

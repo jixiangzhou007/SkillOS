@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782612049_9623",
+  "content": "保留策略: 定义备份数据保留时长的规则，包括每日保留7天、每周保留4周、每月保留12个月。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "清理"
+  ],
+  "created_at": 1782612049.4695802,
+  "updated_at": 1782612049.4699743
+}

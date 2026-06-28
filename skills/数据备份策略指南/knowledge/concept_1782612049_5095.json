@@ -1,0 +1,15 @@
+{
+  "id": "concept_1782612049_5095",
+  "content": "性能影响: 备份过程中可能对数据库造成的性能影响，尤其是在高峰时段。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "数据备份策略"
+  ],
+  "created_at": 1782612049.4784226,
+  "updated_at": 1782612049.478723
+}

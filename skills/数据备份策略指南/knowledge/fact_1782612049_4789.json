@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_4789",
+  "content": "核心备份对象：数据库导出文件、系统配置文件、用户上传的媒体或文档。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "备份范围界定与排除规则"
+  ],
+  "created_at": 1782612049.5902169,
+  "updated_at": 1782612049.5905957
+}

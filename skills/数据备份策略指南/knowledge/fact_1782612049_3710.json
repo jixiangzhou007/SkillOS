@@ -1,0 +1,14 @@
+{
+  "id": "fact_1782612049_3710",
+  "content": "校验失败时通过告警机制通知运维人员，实现快速响应。",
+  "type": "fact",
+  "source": "file://backup-guide.md",
+  "confidence": 0.6,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "传输与完整性验证流程"
+  ],
+  "created_at": 1782612049.6616735,
+  "updated_at": 1782612049.661997
+}

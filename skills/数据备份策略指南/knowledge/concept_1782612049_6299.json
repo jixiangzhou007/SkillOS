@@ -1,0 +1,16 @@
+{
+  "id": "concept_1782612049_6299",
+  "content": "S3: 用于存储加密后备份数据的云存储服务，上传时附带MD5校验和。",
+  "type": "concept",
+  "source": "file://backup-guide.md",
+  "confidence": 0.8,
+  "used_by_steps": [],
+  "shared_with": [],
+  "tags": [
+    "glossary",
+    "传输",
+    "MD5校验和"
+  ],
+  "created_at": 1782612049.449127,
+  "updated_at": 1782612049.449624
+}
