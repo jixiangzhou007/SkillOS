@@ -223,7 +223,7 @@ button{cursor:pointer;font-family:var(--font);border:none;transition:all var(--t
 .welcome-icon{font-size:64px;margin-bottom:var(--s-5);opacity:.9;filter:drop-shadow(0 12px 32px rgba(var(--accent-rgb),.25));position:relative;z-index:1;animation:welcome-icon-in .6s ease}
 @keyframes welcome-icon-in{from{opacity:0;transform:translateY(12px)}to{opacity:.9;transform:translateY(0)}}
 .welcome-sub{font:600 var(--t-xs)/1 var(--font);color:var(--a2);letter-spacing:.16em;text-transform:uppercase;margin-bottom:var(--s-3);opacity:.9;position:relative;z-index:1}
-.welcome-title{font:800 clamp(28px,5vw,var(--t-display))/1.05 var(--font-display);letter-spacing:-.04em;margin-bottom:var(--s-3);background:linear-gradient(135deg,var(--n0) 20%,var(--a2) 80%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;position:relative;z-index:1;animation:welcome-title-in .7s ease}
+.welcome-title{text-wrap:balance;font:800 clamp(28px,5vw,var(--t-display))/1.05 var(--font-display);letter-spacing:-.04em;margin-bottom:var(--s-3);background:linear-gradient(135deg,var(--n0) 20%,var(--a2) 80%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;position:relative;z-index:1;animation:welcome-title-in .7s ease}
 @keyframes welcome-title-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .welcome-hint{font:400 var(--t-base)/1.7 var(--font);color:var(--text3);margin-bottom:var(--s-8);max-width:460px;margin-left:auto;margin-right:auto;position:relative;z-index:1;animation:welcome-hint-in .8s ease}
 @keyframes welcome-hint-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
