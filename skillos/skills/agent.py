@@ -238,6 +238,11 @@ class SkillExtractionAgent:
         self._draft_content = ""
         self._team_context: dict[str, str] = {}
         self._asked_probes: set[str] = set()  # track asked questions to avoid repeats
+        # Skill directory enrichment tracking
+        self._knowledge_items: int = 0       # concepts/facts/heuristics recorded
+        self._scripts_found: int = 0         # executable scripts identified
+        self._references_found: int = 0      # reference materials/templates
+        self._examples_mentioned: int = 0     # real-world examples mentioned
         # New fields for progressive exploration
         self._probes_completed: set[str] = set()
         self._refinement_rounds: int = 0
@@ -1176,58 +1181,55 @@ class SkillExtractionAgent:
         return reply, None
 
     def _assess_draft_quality(self) -> dict:
-        """Assess draft completeness as a percentage (0-100).
-
-        Weighted across 5 dimensions:
-        - Steps (30%): count of numbered/bulleted steps
-        - Branches (20%): conditional logic present
-        - Trigger (20%): activation context
-        - Detail (15%): step description depth
-        - Gotchas (15%): pitfalls documented
-
-        Returns percentage and list of improvement suggestions.
-        """
-        import re
+        """Assess skill completeness (0-100) across MD content + directory enrichment.
+        A skill is NOT just SKILL.md — it has knowledge/, scripts/, references/, assets/."""
+        import re, os
         draft = self._draft_content or ""
-        if not draft or len(draft) < 80:
-            return {"pct": 0, "gaps": ["内容太少"], "details": []}
+        skill_dir = getattr(self, '_skill_dir', None)
 
-        # 1. Steps (30% weight)
-        steps = re.findall(r'(?m)^\s*(\d+[.\)]|[-*])\s+\S+', draft)
-        step_score = min(len(steps) / 5.0, 1.0) * 30
+        # MD Content (60%)
+        md_score = 0
+        steps = []
+        if draft and len(draft) >= 80:
+            steps = re.findall(r'(?m)^\s*(\d+[.\)]|[-*])\s+\S+', draft)
+            step_score = min(len(steps) / 5.0, 1.0) * 18
+            has_branch = bool(re.search(r'(\|.+\|)|(if.*then)|(when.*do)|(case)|(分支)|(条件)|(情况)|(场景)|(route)', draft, re.I))
+            branch_score = 12 if has_branch else 0
+            has_trigger = bool(re.search(r'(trigger|keyword|activate|when to use|适用|场景|触发|何时|启动)', draft, re.I))
+            trigger_score = 12 if has_trigger else 0
+            step_texts = [s[0] + s[1] if isinstance(s, tuple) else s for s in steps]
+            avg_len = sum(len(t) for t in step_texts) / max(len(step_texts), 1)
+            detail_score = min(avg_len / 40.0, 1.0) * 9
+            has_gotchas = bool(re.search(r'(pitfall|gotcha|edge.?case|坑|易错|陷阱|注意)', draft, re.I))
+            gotcha_score = 9 if has_gotchas else 0
+            md_score = int(step_score + branch_score + trigger_score + detail_score + gotcha_score)
 
-        # 2. Branches (20% weight) — route table, if-then, or conditional mentions
-        has_branch = bool(re.search(r'(\|.+\|)|(if.*then)|(when.*do)|(case)|(分支)|(条件)|(情况)|(场景)|(route)', draft, re.I))
-        branch_score = 20 if has_branch else 0
+        # Directory Enrichment (40%)
+        dir_score = 0
+        if skill_dir and os.path.isdir(skill_dir):
+            for subdir, w in [('knowledge',12),('scripts',10),('references',8),('examples',5),('assets',5)]:
+                p = os.path.join(skill_dir, subdir)
+                if os.path.isdir(p) and os.listdir(p):
+                    dir_score += w
+            for f in ['cheatsheet.md','glossary.md','patterns.md','overview.md']:
+                if os.path.isfile(os.path.join(skill_dir, f)):
+                    dir_score += 4
 
-        # 3. Trigger (20% weight)
-        has_trigger = bool(re.search(r'(trigger|keyword|activate|when to use|适用|场景|触发|何时|启动|条件)', draft, re.I))
-        trigger_score = 20 if has_trigger else 0
-
-        # 4. Detail (15% weight) — avg step description length
-        step_texts = [s[0] + s[1] if isinstance(s, tuple) else s for s in steps]
-        avg_len = sum(len(t) for t in step_texts) / max(len(step_texts), 1)
-        detail_score = min(avg_len / 40.0, 1.0) * 15
-
-        # 5. Gotchas (15% weight)
-        has_gotchas = bool(re.search(r'(pitfall|gotcha|edge.?case|坑|易错|陷阱|注意)', draft, re.I))
-        gotcha_score = 15 if has_gotchas else 0
-
-        pct = int(step_score + branch_score + trigger_score + detail_score + gotcha_score)
+        pct = min(md_score + min(dir_score, 40), 100)
         gaps = []
-        if step_score < 15: gaps.append("步骤(建议>=3步)")
-        if branch_score == 0: gaps.append("分支条件")
-        if trigger_score == 0: gaps.append("触发条件")
-        if detail_score < 8: gaps.append("步骤描述")
-        if gotcha_score == 0: gaps.append("易错点")
+        if not draft or len(draft) < 80: gaps.append("SKILL.md")
+        else:
+            if len(steps) < 3: gaps.append("步骤")
+            if not has_branch: gaps.append("分支条件")
+            if not has_trigger: gaps.append("触发条件")
+            if not has_gotchas: gaps.append("易错点")
+        if dir_score < 20: gaps.append("目录(知识/脚本/参考)")
 
         return {
-            "pct": pct,
-            "gaps": gaps,
+            "pct": pct, "gaps": gaps, "md_pct": md_score, "dir_pct": min(dir_score,40),
             "details": [
-                f"Steps:{min(len(steps),5)}/5", f"Branch:{'Y' if has_branch else 'N'}",
-                f"Trigger:{'Y' if has_trigger else 'N'}", f"Detail:{int(avg_len)}c",
-                f"Gotchas:{'Y' if has_gotchas else 'N'}"
+                f"MD:{md_score}%", f"Dir:{min(dir_score,40)}%",
+                f"Steps:{min(len(steps),5)}", f"Know:{self._knowledge_items}",
             ],
         }
 
