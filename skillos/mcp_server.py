@@ -32,11 +32,61 @@ Tools exposed:
 import json
 import logging
 import re
+import time
+from collections import defaultdict
+from functools import wraps
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
 _log = logging.getLogger(__name__)
+
+# ── Rate limiter for MCP tools ──────────────────────
+# Prevents runaway LLM tool calls from consuming all API credits.
+# Per-tool limits: max calls per window, tracked in-memory.
+
+_rate_limits: dict[str, list[float]] = defaultdict(list)
+_RATE_WINDOW = 300  # 5 minutes
+_RATE_MAX: dict[str, int] = {
+    "extract_skill": 10,
+    "search_knowledge": 30,
+    "digest_document": 5,
+    "evolve_skill": 5,
+    "fetch_url": 10,
+    "ingest_file": 10,
+    "confirm_pending_claims": 20,
+    "export_for_skillopt": 5,
+}
+
+
+def _check_rate(tool_name: str) -> bool:
+    """Return True if within rate limit, False if exceeded."""
+    max_calls = _RATE_MAX.get(tool_name, 30)
+    now = time.time()
+    window = now - _RATE_WINDOW
+    calls = _rate_limits[tool_name]
+    # Purge old entries
+    while calls and calls[0] < window:
+        calls.pop(0)
+    if len(calls) >= max_calls:
+        return False
+    calls.append(now)
+    return True
+
+
+def rate_limited(func):
+    """Decorator to apply per-tool rate limiting."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        name = func.__name__
+        if not _check_rate(name):
+            return json.dumps({
+                "error": f"Rate limit exceeded for {name} (max {_RATE_MAX.get(name, 30)} per {_RATE_WINDOW}s)",
+                "retry_after": int(_RATE_WINDOW - (time.time() - _rate_limits[name][0])) if _rate_limits[name] else _RATE_WINDOW,
+            }, ensure_ascii=False)
+        return func(*args, **kwargs)
+    return wrapper
+
 
 # Create MCP server
 mcp = FastMCP("SkillOS")
