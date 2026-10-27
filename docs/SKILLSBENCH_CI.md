@@ -58,6 +58,8 @@ python scripts/trigger_official_bench_ci.py --skill 电商客服退款处理
 | 自建 Quick8 | 日常快检、域内 Δ、CI 门禁、ablation | [`BENCHMARK_LOCAL.md`](BENCHMARK_LOCAL.md) |
 | 官方 BenchFlow | 权威 pass rate，需 Linux CI | 本文 |
 
+**产品 UI**：技能详情 →「评测」Tab 为左右分栏（左本地 Quick8 / 右官方 SkillsBench），避免把本地 Δ 当成官方 pass rate。
+
 ## 本地回归 / 泛化 / Ablation（2026-06-18 起）
 
 | 脚本 | 用途 | 需 `DEEPSEEK_API_KEY` |

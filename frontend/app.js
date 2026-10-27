@@ -50,7 +50,7 @@ document.addEventListener('drop', function(e) {
 function _highlightMatch(text, query) {
   if (!query || query.length < 2) return escHtml(text);
   var safe = escHtml(text);
-  var qe = escHtml(query).replace(/[.*+?^${}()|[]\/g, "\$&");
+  var qe = escHtml(query).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return safe.replace(new RegExp("(" + qe + ")", "gi"), "<mark class=gs-highlight>$1</mark>");
 }
 var _searchTimer = null, _searchSeq = 0;

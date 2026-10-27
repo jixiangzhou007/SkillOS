@@ -127,7 +127,7 @@ async function loadDashboard(container) {
     var metrics = results[0]&&results[0].ok ? await results[0].json() : {};
     var journal = results[1]&&results[1].ok ? await results[1].json() : {};
     var clusters = results[2]&&results[2].ok ? await results[2].json() : {};
-    var events = journal.events || [];
+    var events = journal['events'] || journal['entries'] || [];
     var h = '<div class="knowledge-kpi-grid">'+
       _kpiCard('总节点',clusters.total_nodes||'—','var(--accent)','知识图谱节点')+
       _kpiCard('总边',clusters.total_edges||'—','var(--info)','关系连接数')+
@@ -154,32 +154,69 @@ async function loadDashboard(container) {
 
 // Graph
 
+var _graphTab = 'clusters';
+function switchGraphTab(tab) {
+  _graphTab = tab;
+  var el = document.getElementById('knowledge-tab-content');
+  if (el) loadGraphView(el);
+}
+
 async function loadGraphView(container) {
-  var el = container || document.getElementById("graph-content"); if (!el) return;
+  var el = container || document.getElementById('knowledge-tab-content'); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   try {
     var r = await api('/api/knowledge/graph/clusters'), d = await r.json();
-    var clusters = d.clusters || [];
-    var orphans = d.orphan_nodes || [];
+    var clusters = d.clusters || [], orphans = d.orphan_nodes || [];
+    var allNodes = d.all_nodes || [], allEdges = d.all_edges || [];
     var totalNodes = d.total_nodes || 0, totalEdges = d.total_edges || 0;
+
     var h = _viewHeader('知识图谱','概念与关系网络');
     h += '<div class="knowledge-kpi-grid">'+_kpiCard('节点',totalNodes,'var(--accent)')+_kpiCard('边',totalEdges,'var(--info)')+_kpiCard('簇',clusters.length,'var(--warn)')+'</div>';
-    if (clusters.length) {
-      h += '<div class="content-card"><div class="content-card-header">知识簇 ('+clusters.length+')</div>';
-      clusters.forEach(function(c) {
-        h += '<div class="content-row knowledge-cluster-row"><span class="knowledge-cluster-id">簇 '+c.id+'</span><span class="content-row-value">'+escHtml(c.label||'')+'</span><span class="content-row-meta">'+c.nodes+' 节点 · 凝聚度 '+Math.round((c.cohesion||0)*100)+'%</span></div>';
-      });
+
+    // Tab switcher
+    h += '<div class="kb-filter-row" style="margin-bottom:var(--s-4)">';
+    h += '<span class="kb-filter'+(_graphTab==='clusters'?' active-kb-filter':'')+'" onclick="switchGraphTab(\'clusters\')">簇 ('+clusters.length+')</span>';
+    h += '<span class="kb-filter'+(_graphTab==='nodes'?' active-kb-filter':'')+'" onclick="switchGraphTab(\'nodes\')">节点 ('+allNodes.length+')</span>';
+    h += '<span class="kb-filter'+(_graphTab==='edges'?' active-kb-filter':'')+'" onclick="switchGraphTab(\'edges\')">边 ('+allEdges.length+')</span>';
+    h += '</div>';
+
+    if (_graphTab === 'clusters') {
+      if (clusters.length) {
+        h += '<div class="content-card"><div class="content-card-header">知识簇</div>';
+        clusters.forEach(function(c) {
+          h += '<div class="content-row knowledge-cluster-row"><span class="knowledge-cluster-id">簇 '+c.id+'</span><span class="content-row-value">'+escHtml(c.label||'')+'</span><span class="content-row-meta">'+c.nodes+' 节点 · 凝聚度 '+Math.round((c.cohesion||0)*100)+'%</span></div>';
+        });
+        h += '</div>';
+      }
+      if (orphans.length) {
+        h += '<div class="content-card"><div class="content-card-header">游离节点 ('+orphans.length+')</div>';
+        orphans.forEach(function(n) {
+          h += '<div class="content-row"><span class="content-row-label" style="font-family:var(--mono);font-size:var(--t-xs)">'+escHtml(n.id||'')+'</span><span class="content-row-value">'+escHtml(n.label||'')+'</span></div>';
+        });
+        h += '</div>';
+      }
+      if (!clusters.length && !orphans.length) h += '<div class="content-empty">暂无知识数据</div>';
+    } else if (_graphTab === 'nodes') {
+      h += '<div class="content-card"><div class="content-card-header">全部节点 ('+allNodes.length+')</div>';
+      if (allNodes.length) {
+        h += '<table class="knowledge-table"><thead><tr><th>名称</th><th>类型</th><th>置信度</th></tr></thead><tbody>';
+        allNodes.forEach(function(n) {
+          h += '<tr><td>'+escHtml(n.name||n.id)+'</td><td>'+escHtml(n.type||'')+'</td><td>'+Math.round((n.confidence||0)*100)+'%</td></tr>';
+        });
+        h += '</tbody></table>';
+      } else { h += '<div class="content-empty">暂无节点</div>'; }
+      h += '</div>';
+    } else if (_graphTab === 'edges') {
+      h += '<div class="content-card"><div class="content-card-header">全部边 ('+allEdges.length+')</div>';
+      if (allEdges.length) {
+        h += '<table class="knowledge-table"><thead><tr><th>源节点</th><th>关系</th><th>目标节点</th><th>权重</th></tr></thead><tbody>';
+        allEdges.forEach(function(e) {
+          h += '<tr><td style="font-family:var(--mono);font-size:var(--t-xs)">'+escHtml(e.source||'')+'</td><td><span class="knowledge-td-type">'+escHtml(e.type||'')+'</span></td><td style="font-family:var(--mono);font-size:var(--t-xs)">'+escHtml(e.target||'')+'</td><td>'+Math.round((e.weight||0)*100)+'%</td></tr>';
+        });
+        h += '</tbody></table>';
+      } else { h += '<div class="content-empty">暂无边</div>'; }
       h += '</div>';
     }
-    if (orphans.length) {
-      h += '<div class="content-card"><div class="content-card-header">知识节点 ('+orphans.length+')</div>';
-      h += '<table class="knowledge-table"><thead><tr><th>ID</th><th>标签</th></tr></thead><tbody>';
-      orphans.forEach(function(n) {
-        h += '<tr><td>'+escHtml(n.id||'')+'</td><td>'+escHtml(n.label||'')+'</td></tr>';
-      });
-      h += '</tbody></table></div>';
-    }
-    if (!clusters.length && !orphans.length) h += '<div class="content-empty">暂无知识数据<br><small>摄入知识后系统会自动构建知识图谱</small></div>';
     el.innerHTML = h;
   } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('graph')+'<div class="title">加载失败</div><button class="btn-primary" onclick="loadGraphView()">重试</button></div>'; }
 }
@@ -190,7 +227,7 @@ async function loadJournalView(container) {
   var el = container || document.getElementById("journal-content"); if (!el) return;
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-line w60"></div><div class="skeleton skeleton-card"></div></div>';
   try {
-    var r = await api('/api/knowledge/journal?limit=50'), d = await r.json(), events = d.events||[];
+    var r = await api('/api/knowledge/journal?limit=50'), d = await r.json(), events = d.events||d.entries||[];
     var h = _viewHeader('事件日志','知识库变更记录')+'<div class="content-card">';
     h += events.length ? '<table class="knowledge-table"><thead><tr><th>时间</th><th>类型</th><th>内容</th></tr></thead><tbody>' + events.map(function(e){
       return '<tr><td class="knowledge-td-time">'+(e.timestamp||'').slice(0,16)+'</td><td class="knowledge-td-type">'+_eventLabel(e.type)+'</td><td>'+escHtml((e.summary||e.content||'').slice(0,80))+'</td></tr>';
@@ -236,26 +273,44 @@ async function loadLineageView(container) {
   el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
   try {
     var r = await api('/api/knowledge/lineage'), d = await r.json();
+    var sessions = d.sessions || [];
     var h = _viewHeader('数据血缘','从源头到知识的完整链路');
-    if (d.mermaid) {
-      h += '<div class="content-card lineage-card"><pre class="mermaid" id="lineage-mermaid">'+escHtml(d.mermaid)+'</pre></div><div class="lineage-actions"><button type="button" class="nav-sm lineage-zoom-btn" onclick="handleLineageZoom(this)"><span class="nav-icon" data-icon="zoom"></span>全屏</button></div>';
-      el.innerHTML = h;
-      if (typeof hydrateIcons === 'function') hydrateIcons(el);
-      setTimeout(function(){renderMermaidInto('lineage-mermaid',d.mermaid);},50);
+
+    if (sessions.length) {
+      h += '<div class="content-card"><div class="content-card-header">血缘会话 ('+sessions.length+')</div><div style="margin-top:var(--s-2)">';
+      sessions.slice(0, 20).forEach(function(s) {
+        var src = escHtml((s.source_url||s.session_id||'').slice(0,60));
+        var items = s.item_count || s.total_items || 0;
+        var time = s.created_at ? String(s.created_at).slice(0,16) : '';
+        h += '<div class="admin-dept-card" style="cursor:pointer;margin-bottom:var(--s-2)" onclick="loadLineageGraph(\''+escHtml(s.session_id)+'\',document.getElementById(\'knowledge-tab-content\'))">';
+        h += '<div class="admin-dept-avatar" style="background:rgba(var(--info-blue-rgb,59,130,246),.12);color:var(--info)">🔗</div>';
+        h += '<div class="admin-dept-info"><div class="admin-dept-name" style="font-size:var(--t-sm)">'+src+'</div><div class="admin-dept-meta">'+items+' 条目 · '+time+'</div></div>';
+        h += '<span class="admin-dept-quota-badge">查看</span></div>';
+      });
+      h += '</div></div>';
     } else {
-      el.innerHTML = h + '<div class="content-empty">暂无血缘数据</div>';
+      h += '<div class="content-empty"><div style="font-size:32px;margin-bottom:var(--s-2);opacity:.3">🔗</div>暂无血缘数据<br><small>萃取技能或摄入知识后会自动记录数据血缘</small></div>';
     }
+    el.innerHTML = h;
   } catch(e) { el.innerHTML = '<div class="empty-state">'+_emptyIcon('link')+'<div class="title">加载失败</div></div>'; }
 }
 
-function loadLineageGraph(sessionId) {
-  var el = container || document.getElementById("lineage-content"); if (!el) return;
-  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div>';
-  api('/api/knowledge/lineage?session_id='+encodeURIComponent(sessionId)).then(function(r){return r.json()}).then(function(d){
+function loadLineageGraph(sessionId, containerEl) {
+  var el = containerEl || document.getElementById('lineage-content');
+  if (!el) return;
+  el.innerHTML = '<div class="knowledge-skeleton"><div class="skeleton skeleton-block"></div></div><div style="text-align:center;padding:var(--s-3)"><button class="nav-sm" onclick="loadLineageView(document.getElementById(\'knowledge-tab-content\'))">← 返回列表</button></div>';
+  api('/api/knowledge/lineage/'+encodeURIComponent(sessionId)+'/graph').then(function(r){return r.json()}).then(function(d){
     if (d.mermaid) {
-      el.innerHTML = _viewHeader('数据血缘','会话: '+sessionId)+'<div class="content-card lineage-card"><pre class="mermaid" id="lineage-mermaid">'+escHtml(d.mermaid)+'</pre></div>';
+      var h = _viewHeader('数据血缘','会话: '+sessionId.slice(0,16));
+      h += '<div class="content-card lineage-card"><pre class="mermaid" id="lineage-mermaid">'+escHtml(d.mermaid)+'</pre></div>';
+      h += '<div class="lineage-actions"><button type="button" class="nav-sm lineage-zoom-btn" onclick="handleLineageZoom(this)">🔍 全屏</button></div>';
+      el.innerHTML = h;
       setTimeout(function(){renderMermaidInto('lineage-mermaid',d.mermaid);},50);
+    } else {
+      el.innerHTML = _viewHeader('数据血缘','会话: '+sessionId)+'<div class="content-empty">暂无详细血缘数据</div>';
     }
+  }).catch(function(){
+    el.innerHTML = _viewHeader('数据血缘','')+'<div class="content-empty">加载失败</div>';
   });
 }
 

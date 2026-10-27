@@ -69,23 +69,35 @@ def test_latest_post_extract_regression_optional():
 
 
 def test_sync_reference_packs():
-    from scripts.repair_reference_packs import REFERENCE_TEMPLATES, sync_reference_packs
+    from scripts.repair_reference_packs import (
+        GENERALIZE_TEMPLATES,
+        REFERENCE_TEMPLATES,
+        sync_all_packs,
+        sync_reference_packs,
+    )
 
     rows = sync_reference_packs(dry_run=True)
     assert len(rows) == len(REFERENCE_TEMPLATES)
     assert all(r.get("ok") for r in rows)
+    all_rows = sync_all_packs(dry_run=True)
+    assert len(all_rows) == len(REFERENCE_TEMPLATES) + len(GENERALIZE_TEMPLATES)
+    assert all(r.get("ok") for r in all_rows)
 
 
 def test_select_domain_tasks_refund():
-    from skillos.skillsbench_tasks import SKILLSBENCH_TASKS
     from skillos.knowledge.skill_routing import load_skill_routing_info
+    from skillos.skillsbench_tasks import SKILLSBENCH_TASKS
 
     md = Path(__file__).resolve().parents[1] / "skills" / "电商客服退款处理" / "SKILL.md"
     if not md.exists():
         return
     info = load_skill_routing_info(str(md))
     tasks = _select_quick8_tasks(
-        info["name"], info["content"], info["bench_categories"], SKILLSBENCH_TASKS, domain_only=True,
+        info["name"],
+        info["content"],
+        info["bench_categories"],
+        SKILLSBENCH_TASKS,
+        domain_only=True,
     )
     ids = [t.task_id for t in tasks]
     assert "workflow-064" in ids

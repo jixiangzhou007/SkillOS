@@ -30,9 +30,11 @@ from skillos.api.skills_extract import (  # noqa: E402, F401
 
 # ── Request/Response models ─────────────────────────────────
 
+
 class ConfirmClaimsRequest(BaseModel):
     claim_ids: list[str] = []
     confirm_all: bool = False
+
 
 class CopyToOrgRequest(BaseModel):
     org_id: str
@@ -44,22 +46,28 @@ class MetaSkillRunRequest(BaseModel):
     user_input: str = ""
     dry_run: bool = True
 
+
 class SkillResponse(BaseModel):
     name: str
+    description: str = ""
     version: int = 1
     runs: int = 0
     avg_score: float = 0.0
     failure_rate: float = 0.0
     kb_items: int = 0
 
+
 # ── Shared impl ─────────────────────────────────────────────
+
 
 def _kb_items_count(name: str) -> int:
     try:
         from skillos.knowledge.skill_kb import load_kb
+
         return load_kb(name).total_items
     except Exception:
         return 0
+
 
 def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[SkillResponse]:
     """List all skills with trace stats from the evolver."""
@@ -69,6 +77,7 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
     meta_by_slug: dict[str, dict] = {}
     if tenant and tenant.tenant_id.startswith("org:"):
         from skillos.identity.models import list_skill_metadata
+
         for row in list_skill_metadata(tenant.tenant_id):
             meta_by_slug[row["skill_slug"]] = row
 
@@ -77,14 +86,24 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
             continue
         if dept_id and tenant and tenant.tenant_id.startswith("org:"):
             from skillos.skills.skill_store import _slugify
+
             slug = _slugify(name)
             skill_meta = meta_by_slug.get(slug)
             skill_dept = (skill_meta or {}).get("dept_id", "")
             if skill_dept != dept_id:
                 continue
+        # Load description from frontmatter
+        desc = ""
+        try:
+            raw_skill = skill_store.load_skill_raw(name, tenant=tenant)
+            desc = (raw_skill.get("meta", {}) or {}).get("description", "")
+        except Exception:
+            pass
+
         stats = {"version": 1, "runs": 0, "avg_score": 0.0, "failure_rate": 0.0}
         try:
             from skillos.evolution.evolver import get_skill_stats
+
             raw = get_skill_stats(name)
             stats = {
                 "version": raw.get("version", 1),
@@ -94,10 +113,12 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
             }
         except Exception:
             pass
-        result.append(SkillResponse(name=name, kb_items=_kb_items_count(name), **stats))
+        result.append(SkillResponse(name=name, description=desc, kb_items=_kb_items_count(name), **stats))
     return result
 
+
 # ── Endpoints ───────────────────────────────────────────────
+
 
 @router.get("/domain-templates")
 async def list_domain_skill_templates():
@@ -110,11 +131,13 @@ async def list_domain_skill_templates():
     for t in list_domain_templates():
         tid = t["template_id"]
         rec = get_template_record(tid)
-        templates.append({
-            **t,
-            "version": versions.get(tid, "1.0.0"),
-            "derived_from_skills": rec.get("derived_from_skills", 0),
-        })
+        templates.append(
+            {
+                **t,
+                "version": versions.get(tid, "1.0.0"),
+                "derived_from_skills": rec.get("derived_from_skills", 0),
+            }
+        )
     return {"templates": templates}
 
 
@@ -191,10 +214,7 @@ async def get_skill_dna_lineage(name: str, auth: AuthContext | None = Depends(ge
             row = dict(entry)
             row["current_version"] = current_ver
             row["title"] = tmpl.title if tmpl else tid
-            row["is_stale"] = (
-                bool(tid)
-                and is_stale_version(str(entry.get("version") or "1.0.0"), current_ver)
-            )
+            row["is_stale"] = bool(tid) and is_stale_version(str(entry.get("version") or "1.0.0"), current_ver)
             domain_rows.append(row)
 
         lineage_out = {**lineage, "domain": domain_rows}
@@ -205,16 +225,21 @@ async def get_skill_dna_lineage(name: str, auth: AuthContext | None = Depends(ge
             "meta": {
                 k: meta[k]
                 for k in (
-                    "domain", "domain_label", "philosophical_dna",
-                    "philosophical_dna_label", "methodology", "bench_categories",
-                    "bench_quality", "domain_template",
+                    "domain",
+                    "domain_label",
+                    "philosophical_dna",
+                    "philosophical_dna_label",
+                    "methodology",
+                    "bench_categories",
+                    "bench_quality",
+                    "domain_template",
                 )
                 if k in meta
             },
             "philosophical_stats": load_philosophical_stats().get("methods", {}),
         }
     except FileNotFoundError:
-        raise HTTPException(404, f"Skill not found: {name}")
+        raise HTTPException(404, f"Skill not found: {name}") from None
 
 
 @router.get("/", response_model=list[SkillResponse])
@@ -233,8 +258,10 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
     """Get a skill by name (tenant-scoped when authenticated)."""
     tenant = auth.tenant_context() if auth else None
     try:
+        from skillos.evaluation.trust_tier import enrich_epistemic_with_trust
         from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
         from skillos.skills.skill_store import get_skill_body, load_skill, load_skill_raw
+
         doc = load_skill(name, tenant=tenant)
         body = get_skill_body(doc)
         raw = load_skill_raw(name, tenant=tenant)
@@ -244,6 +271,7 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
         stats = {"version": meta.get("version", 1), "runs": 0, "avg_score": 0.0}
         try:
             from skillos.evolution.evolver import get_skill_stats
+
             raw_stats = get_skill_stats(name)
             stats = {
                 "version": raw_stats.get("version", meta.get("version", 1)),
@@ -253,20 +281,32 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
         except Exception:
             pass
         from skillos.skills.skill_store import get_skill_versions
+
         versions = get_skill_versions(name, tenant=tenant)
         # Directory enrichment stats
         dir_stats = {}
         try:
             from pathlib import Path as _Path
+
             from skillos.skills.portable_skill import tool_slug
+
             skill_dir = _Path(__file__).parent.parent.parent / "skills" / tool_slug(name)
             if skill_dir.is_dir():
-                for sub in ['knowledge', 'scripts', 'references', 'examples', 'assets']:
+                for sub in ["knowledge", "scripts", "references", "examples", "assets"]:
                     sp = skill_dir / sub
                     dir_stats[sub] = len(list(sp.iterdir())) if sp.is_dir() else 0
-                for f in ['cheatsheet.md', 'glossary.md', 'patterns.md', 'overview.md']:
+                for f in ["cheatsheet.md", "glossary.md", "patterns.md", "overview.md"]:
                     if (skill_dir / f).is_file():
-                        dir_stats[f.replace('.md', '')] = 1
+                        dir_stats[f.replace(".md", "")] = 1
+        except Exception:
+            pass
+        ep = enrich_epistemic_with_trust(format_epistemic_api_payload(meta), meta)
+        evidence = None
+        try:
+            from skillos.evaluation.evidence import build_evidence_card
+
+            evidence = build_evidence_card(name, meta=meta, body=body)
+            ep["evidence"] = evidence
         except Exception:
             pass
         return {
@@ -280,11 +320,19 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
             "avg_score": stats["avg_score"],
             "kb_items": _kb_items_count(name),
             "versions": versions,
-            "epistemic_summary": format_epistemic_api_payload(meta),
+            "epistemic_summary": ep,
+            "trust_tier": ep.get("trust_tier"),
+            "gates": ep.get("gates"),
+            "evidence": evidence,
+            "meta": {
+                "trust_tier": meta.get("trust_tier"),
+                "gates": meta.get("gates"),
+                "bench_quality": meta.get("bench_quality"),
+            },
             "dir_stats": dir_stats,
         }
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found")
+        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found") from None
 
 
 @router.delete("/{name}")
@@ -303,10 +351,12 @@ async def get_skill_kb(name: str, auth: AuthContext | None = Depends(get_optiona
     """Skill knowledge base summary (facts, templates, heuristics counts)."""
     tenant = auth.tenant_context() if auth else None
     from skillos.skills.skill_store import skill_exists
+
     if not skill_exists(name, tenant=tenant):
         raise HTTPException(status_code=404, detail=f"Skill '{name}' not found")
     try:
         from skillos.knowledge.skill_kb import load_kb
+
         kb = load_kb(name)
     except Exception:
         return {"facts": 0, "cases": 0, "heuristics": 0, "constraints": 0, "templates": 0, "total": 0}
@@ -362,7 +412,7 @@ async def import_and_adapt(req: ImportAdaptRequest, auth: AuthContext = Depends(
     try:
         raw = base64.b64decode(req.zip)
     except Exception:
-        raise HTTPException(status_code=400, detail="invalid base64 zip")
+        raise HTTPException(status_code=400, detail="invalid base64 zip") from None
 
     imported: list[str] = []
     from skillos.skills.skill_store import save_skill
@@ -394,9 +444,24 @@ async def import_and_adapt(req: ImportAdaptRequest, auth: AuthContext = Depends(
     }
 
 
+@router.get("/{name}/evidence")
+async def get_skill_evidence(name: str, auth: AuthContext | None = Depends(get_optional_auth)):
+    """Dual Gate evidence card — claims + smoke rows + trust_tier."""
+    from skillos.evaluation.evidence import build_evidence_card
+    from skillos.skills.skill_store import load_skill_raw
+
+    tenant = auth.tenant_context() if auth else None
+    try:
+        raw = load_skill_raw(name, tenant=tenant)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found") from None
+    return build_evidence_card(name, meta=raw.get("meta") or {}, body=raw.get("body") or "")
+
+
 @router.get("/{name}/epistemic/pending")
 async def list_epistemic_pending(name: str, auth: AuthContext | None = Depends(get_optional_auth)):
     """List pending Experience/Evidence claims for a skill (Sprint 4 UI)."""
+    from skillos.evaluation.trust_tier import enrich_epistemic_with_trust
     from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload, list_pending_claims_detail
     from skillos.skills.skill_store import load_skill_raw
 
@@ -404,12 +469,13 @@ async def list_epistemic_pending(name: str, auth: AuthContext | None = Depends(g
     try:
         raw = load_skill_raw(name, tenant=tenant)
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found")
+        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found") from None
 
     pending = list_pending_claims_detail(name)
+    meta = raw.get("meta", {})
     return {
         "skill": name,
-        "epistemic_summary": format_epistemic_api_payload(raw.get("meta", {})),
+        "epistemic_summary": enrich_epistemic_with_trust(format_epistemic_api_payload(meta), meta),
         "pending_claims": pending,
     }
 
@@ -454,7 +520,7 @@ async def similar_skills(name: str, auth: AuthContext | None = Depends(get_optio
         raw = load_skill_raw(name, tenant=tenant)
         body = raw.get("body") or get_skill_body(raw.get("content", ""))
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found")
+        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found") from None
 
     similar = find_similar_skills(name, body, tenant=tenant)
     return {"skill": name, "similar": similar}
@@ -470,7 +536,7 @@ async def get_metaskill_pipeline(name: str, auth: AuthContext = Depends(require_
     try:
         raw = load_skill_raw(name, tenant=tenant)
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found")
+        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found") from None
 
     content = raw.get("body") or ""
     meta = raw.get("meta") or {}
@@ -519,7 +585,7 @@ async def run_metaskill_pipeline(
         raw = load_skill_raw(name, tenant=auth.tenant_context())
     except FileNotFoundError:
         _reset_tenant(token)
-        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found")
+        raise HTTPException(status_code=404, detail=f"Skill '{name}' not found") from None
 
     content = raw.get("body") or ""
     meta = raw.get("meta") or {}
@@ -535,6 +601,7 @@ async def run_metaskill_pipeline(
     llm_args = None
     if not req.dry_run:
         from skillos.config import get_config
+
         llm_args = get_config().to_llm_args()
 
     try:
@@ -585,6 +652,7 @@ async def copy_skill_to_org_api(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     try:
         from skillos.analytics.funnel import track_funnel
+
         track_funnel("copy_to_org", tenant_id=f"org:{oid}", user_id=auth.platform_user_id, detail=saved)
     except Exception:
         pass
@@ -607,7 +675,7 @@ async def run_skill(name: str, task: dict):
         skill_raw = load_skill_raw(name)
         skill_doc = skill_raw["body"]
     except FileNotFoundError:
-        raise HTTPException(404, f"Skill not found: {name}")
+        raise HTTPException(404, f"Skill not found: {name}") from None
 
     # Execute
     agent = create_agent(skill_doc, task_text)
@@ -658,7 +726,7 @@ async def export_skill(
     try:
         skill = load_skill_raw(name, tenant=tenant)
     except FileNotFoundError:
-        raise HTTPException(404, f"Skill not found: {name}")
+        raise HTTPException(404, f"Skill not found: {name}") from None
 
     meta = skill["meta"]
     body = skill["body"]
@@ -676,7 +744,7 @@ async def export_skill(
                 "source_url": meta.get("source_url", ""),
                 "content": body,
                 "available_versions": versions,
-            }
+            },
         }
     else:
         # Raw markdown — portable install bundle (AgentSkills.io / Cursor / Claude Code)
@@ -689,6 +757,11 @@ async def export_skill(
             "name": slug,
             "description": description,
         }
+        # AgentSkills-compatible private metadata (consumers may ignore)
+        if meta.get("trust_tier"):
+            portable_meta["metadata"] = {
+                "skillos_trust_tier": str(meta.get("trust_tier")),
+            }
         portable_content = _compose(portable_meta, body)
         return {
             "format": "markdown",
@@ -698,6 +771,8 @@ async def export_skill(
             "content": body,
             "portable_content": portable_content,
             "meta": meta,
+            "trust_tier": meta.get("trust_tier"),
+            "gates": meta.get("gates"),
         }
 
 
@@ -726,6 +801,7 @@ async def scan_skill(name: str):
     """Scan a skill for security issues."""
     try:
         from skillos.api.middleware import scan_skill_file
+
         findings = scan_skill_file(name)
         return {"skill": name, "findings": findings, "safe": len(findings) == 0}
     except Exception:
@@ -737,6 +813,7 @@ async def get_traces(name: str):
     """Get execution traces for a skill."""
     try:
         from skillos.evolution.evolver import get_recent_traces
+
         return get_recent_traces(name, 20)
     except Exception:
         return []
@@ -747,6 +824,7 @@ async def get_decisions(name: str):
     """Get decision history (WHY chain) for a skill."""
     try:
         from skillos.evolution.skillhone import load_decisions
+
         records = load_decisions(name, 30)
         return {"skill": name, "decisions": records, "count": len(records)}
     except Exception:
@@ -755,11 +833,13 @@ async def get_decisions(name: str):
 
 # ── Skill DNA ───────────────────────────────────────────────
 
+
 @router.get("/dna/view")
 async def view_skill_dna():
     """View the current Skill DNA — principles distilled from all skills."""
     try:
         from skillos.skills.pattern_miner import get_skill_dna
+
         dna = get_skill_dna()
         if not dna or not dna.get("dna"):
             return {"dna": None, "message": "尚未生成 Skill DNA。创建更多技能后会自动提炼。"}
@@ -782,6 +862,7 @@ async def remine_dna():
     try:
         from skillos.config import get_config
         from skillos.skills.pattern_miner import run_cross_skill_optimization
+
         cfg = get_config()
         result = run_cross_skill_optimization(cfg.to_llm_args())
         return {"success": True, "dna": result}
@@ -794,6 +875,7 @@ async def view_dna_stability():
     """View philosophical DNA stability stats — how many skills contributed to each methodology."""
     try:
         from skillos.knowledge.dna_context import get_dna_stability_report
+
         report = get_dna_stability_report()
         return {"dna_stability": report}
     except Exception as e:
@@ -806,17 +888,19 @@ async def check_skill_dna(name: str):
     try:
         from skillos.skills.pattern_miner import check_dna_compliance
         from skillos.skills.skill_store import get_skill_body, load_skill
+
         doc = load_skill(name)
         body = get_skill_body(doc)
         result = check_dna_compliance(body)
         return {"skill": name, "dna_compliance": result}
     except FileNotFoundError:
-        raise HTTPException(404, f"Skill not found: {name}")
+        raise HTTPException(404, f"Skill not found: {name}") from None
     except Exception as e:
         return {"error": str(e)}
 
 
 # ── MoE Evaluation ───────────────────────────────────────────
+
 
 @router.get("/{name}/evaluate")
 async def evaluate_skill_moe(
@@ -843,7 +927,9 @@ async def evaluate_skill_moe(
         llm_args = cfg.to_llm_args()
 
         report = evaluate_skill(
-            body, name, llm_args,
+            body,
+            name,
+            llm_args,
             cross_model=cross_model or fast_model,
         )
         report_dict = report.to_dict()
@@ -854,6 +940,7 @@ async def evaluate_skill_moe(
             "dimensions": report.dimensions,
         }
         from skillos.evaluation.quality import build_quality_payload, evaluate_heuristic
+
         report_dict["quality"] = build_quality_payload(
             skill_name=name,
             body=body,
@@ -862,7 +949,7 @@ async def evaluate_skill_moe(
         )
         return report_dict
     except FileNotFoundError:
-        raise HTTPException(404, f"Skill not found: {name}")
+        raise HTTPException(404, f"Skill not found: {name}") from None
     except Exception as e:
         return {"error": str(e)}
 
@@ -883,18 +970,20 @@ async def evaluate_skill_moe_markdown(name: str, cross_model: str = ""):
         report = evaluate_skill(body, name, llm_args, cross_model=cross_model)
         return {"skill": name, "markdown": report.to_markdown(), "report": report.to_dict()}
     except FileNotFoundError:
-        raise HTTPException(404, f"Skill not found: {name}")
+        raise HTTPException(404, f"Skill not found: {name}") from None
     except Exception as e:
         return {"error": str(e)}
 
 
 # ── Skill Variants (多态) ────────────────────────────────────
 
+
 @router.get("/{name}/variants")
 async def list_variants(name: str):
     """List all variants of a skill archetype."""
     try:
         from skillos.skills.variants import compare_variants, format_variant_comparison
+
         comparison = compare_variants(name)
         formatted = format_variant_comparison(name)
         return {"skill": name, "comparison": comparison, "formatted": formatted}
@@ -904,10 +993,12 @@ async def list_variants(name: str):
 
 @router.post("/{name}/variants")
 async def register_variant(name: str, req: dict | None = None):
-    if req is None: req = {}
+    if req is None:
+        req = {}
     """Register a new variant of a skill archetype."""
     try:
         from skillos.skills.variants import VariantRegistry
+
         reg = VariantRegistry()
         variant = reg.register_variant(
             archetype=name,
@@ -928,6 +1019,7 @@ async def detect_variants():
     """Auto-detect potential variant families across all skills."""
     try:
         from skillos.skills.variants import auto_detect_variants
+
         groups = auto_detect_variants()
         return {"groups": groups, "count": len(groups)}
     except Exception as e:

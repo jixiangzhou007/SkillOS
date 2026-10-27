@@ -4,7 +4,7 @@
 
 ## 项目是什么
 
-SkillOS 是 Agent Skills 的「技能 IDE」：在对话（飞书 / 微信 / Cursor 等）中沉淀经验，输出 AgentSkills.io 标准的 `SKILL.md`。架构见 [`DESIGN.md`](DESIGN.md)。
+SkillOS 是 Agent Skills 的「学徒 IDE」：在对话（飞书 / 微信 / Cursor 等）中向人学习，经双门禁沉淀为可验证的 AgentSkills.io `SKILL.md`。架构与叙事见 [`DESIGN.md`](DESIGN.md)；冲刺计划见 [`docs/ARCH_OPTIMIZATION_PLAN.md`](docs/ARCH_OPTIMIZATION_PLAN.md)。
 
 ## 强制协作协议（不可跳过）
 

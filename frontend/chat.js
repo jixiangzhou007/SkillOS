@@ -236,6 +236,20 @@ function _sendTextLegacy(text) {
 
       refreshSkillList();
 
+      var skillName = d.draft_saved || '';
+      if (skillName && !d.draft_content) {
+        fetch((window.API || '') + '/api/skills/' + encodeURIComponent(skillName))
+          .then(function(r) { return r.json(); })
+          .then(function(sd) {
+            d.draft_content = sd.body || sd.content || '';
+            var draftEl = document.getElementById('ws-draft-content');
+            if (draftEl && typeof renderDraftPanel === 'function') {
+              draftEl.innerHTML = renderDraftPanel(d, d.draft_content);
+            }
+          })
+          .catch(function() {});
+      }
+
     } else if (d.draft_saved) {
 
       setStatus('draft: ' + d.draft_saved);
@@ -474,11 +488,14 @@ function addMsg(role, text) {
 }
 
 function scrollMsgs() {
-
-  let m = document.getElementById('msgs');
-
-  m.scrollTop = m.scrollHeight;
-
+  var m = document.getElementById('msgs');
+  if (!m) return;
+  var last = m.querySelector('.msg-row:last-child');
+  if (last) {
+    last.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  } else {
+    m.scrollTop = m.scrollHeight;
+  }
 }
 
 function setDot(c) { var d = document.getElementById('conn-dot'); if (d) d.className = 'header-dot ' + c; }

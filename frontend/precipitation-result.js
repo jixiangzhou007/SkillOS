@@ -1,4 +1,4 @@
-/* precipitation-result.js — M1 Verified Skill 完成态卡片（三路径共用） */
+/* precipitation-result.js — Verified Skill 完成态卡片 + Trust Tier（三路径共用） */
 
 function _escAttr(s) {
   return String(s == null ? '' : s)
@@ -9,6 +9,25 @@ function _escAttr(s) {
 
 function _epFromPayload(opts) {
   return opts.epistemic_summary || opts.epistemic || {};
+}
+
+function _resolveTrustTier(opts, ep) {
+  var tier = opts.trust_tier || ep.trust_tier || '';
+  var gates = opts.gates || ep.gates || null;
+  if (!tier && gates) {
+    var epOk = gates.epistemic && gates.epistemic.passed;
+    var outOk = gates.outcome && gates.outcome.passed;
+    tier = (epOk && outOk) ? 'verified' : 'provisional';
+  }
+  if (!tier) {
+    // Legacy fallback: never claim verified without outcome signal
+    var sg = ep.save_gate || (ep.bench_quality && ep.bench_quality.save_gate) || {};
+    var smokeOk = sg.smoke_pass === true;
+    var hasVerified = (ep.verified || 0) >= 1;
+    if (smokeOk && hasVerified) tier = 'verified';
+    else tier = 'provisional';
+  }
+  return { trust_tier: tier, gates: gates };
 }
 
 function _sourceLabel(kind, source) {
@@ -38,6 +57,9 @@ function normalizePrecipitationPayload(opts) {
   var moeObj = ep.moe_evaluation || opts.moe_evaluation || (ep.bench_quality && ep.bench_quality.moe);
   if (moeObj && moeObj.overall_score != null) moe = moeObj.overall_score;
 
+  var trust = _resolveTrustTier(opts, ep);
+  var evidence = opts.evidence || ep.evidence || null;
+  var outG = (trust.gates && trust.gates.outcome) || {};
   return {
     skill_name: name,
     source: opts.source || ep.source || '',
@@ -45,12 +67,19 @@ function normalizePrecipitationPayload(opts) {
     verified: ep.verified != null ? ep.verified : 0,
     pending: ep.pending != null ? ep.pending : 0,
     total_claims: ep.total_claims != null ? ep.total_claims : 0,
+    errors: ep.errors != null ? ep.errors : 0,
     moe: moe,
     slug: slug,
     cursor_path: cursorPath,
     zip_url: opts.export_zip_url || (name ? '/api/skills/' + encodeURIComponent(name) + '/export/zip' : ''),
     variant: opts.variant || 'skill',
     digest_title: opts.digest_title || opts.title || '',
+    trust_tier: trust.trust_tier,
+    gates: trust.gates,
+    trust_reasons: opts.trust_reasons || ep.trust_reasons || [],
+    evidence: evidence,
+    smoke_tasks: (evidence && evidence.outcome && evidence.outcome.tasks) || outG.tasks || [],
+    min_with_score: outG.min_with_score,
   };
 }
 
@@ -65,17 +94,81 @@ function _prActionBtn(label, action, extra, cls) {
   return html;
 }
 
+function _tierTitle(tier) {
+  if (tier === 'verified') return 'Verified Skill 已出师';
+  if (tier === 'draft') return 'Draft · 萃取中';
+  return 'Provisional Skill 已沉淀';
+}
+
+function _tierBadgeClass(tier) {
+  if (tier === 'verified') return 'trust-tier trust-tier-verified';
+  if (tier === 'draft') return 'trust-tier trust-tier-draft';
+  return 'trust-tier trust-tier-provisional';
+}
+
+function _tierBadgeLabel(tier) {
+  if (tier === 'verified') return 'Verified';
+  if (tier === 'draft') return 'Draft';
+  return 'Provisional';
+}
+
 function renderTrustLine(payload) {
   var v = payload.verified || 0;
   var p = payload.pending || 0;
+  var tier = payload.trust_tier || 'provisional';
+  var gates = payload.gates || {};
   var html = '<div class="pr-trust">';
-  html += '<span class="trust-badge trust-verified">已验证 ' + v + '</span>';
+  html += '<span class="' + _tierBadgeClass(tier) + '">' + _tierBadgeLabel(tier) + '</span>';
+  html += '<span class="trust-badge trust-verified">声明已验证 ' + v + '</span>';
   if (p > 0) {
     html += '<span class="trust-badge trust-pending">待审 ' + p + '</span>';
-    html += '<span class="pr-trust-hint">待确认项不影响安装，可在详情页审核</span>';
-  } else if (payload.total_claims > 0) {
-    html += '<span class="trust-badge trust-ok">可安装使用</span>';
   }
+  var epG = gates.epistemic || {};
+  var outG = gates.outcome || {};
+  if (gates.epistemic || gates.outcome) {
+    html += '<span class="trust-badge ' + (epG.passed ? 'trust-ok' : 'trust-pending') + '">Gate A 认识论 ' + (epG.passed ? '过' : '未过') + '</span>';
+    html += '<span class="trust-badge ' + (outG.passed ? 'trust-ok' : 'trust-pending') + '">Gate B 烟测 ' + (outG.passed ? '过' : '未过') + '</span>';
+  }
+  if (tier === 'provisional') {
+    html += '<span class="pr-trust-hint">学徒态：可安装试用，双门禁未齐则不标 Verified。本地 Quick8 ≠ 官方 SkillsBench。</span>';
+  } else if (tier === 'verified') {
+    html += '<span class="pr-trust-hint">出师态：声明级 + 任务级门禁均已通过，可导出安装。</span>';
+  } else if (p > 0) {
+    html += '<span class="pr-trust-hint">待确认项可在详情页审核</span>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderEvidenceBlock(payload) {
+  var v = payload.verified || 0;
+  var pend = payload.pending || 0;
+  var err = payload.errors || 0;
+  var total = payload.total_claims || (v + pend + err);
+  var tasks = payload.smoke_tasks || [];
+  var minScore = payload.min_with_score;
+  var html = '<div class="pr-evidence">';
+  html += '<div class="pr-evidence-title">证据（Evidence）</div>';
+  html += '<div class="pr-evidence-claims">声明：已验证 ' + v + ' · 待审 ' + pend;
+  if (err) html += ' · 错误 ' + err;
+  html += ' · 合计 ' + total + '</div>';
+  if (minScore != null && minScore !== '') {
+    html += '<div class="pr-evidence-smoke">Gate B 最低分：' + escHtml(String(minScore));
+    html += '（门槛 80）</div>';
+  }
+  if (tasks && tasks.length) {
+    html += '<ul class="pr-evidence-tasks">';
+    for (var i = 0; i < tasks.length; i++) {
+      var t = tasks[i];
+      var tid = typeof t === 'string' ? t : (t.task_id || t);
+      var score = (typeof t === 'object' && t.with_score != null) ? (' · ' + t.with_score) : '';
+      html += '<li><code>' + escHtml(String(tid)) + '</code>' + escHtml(score) + '</li>';
+    }
+    html += '</ul>';
+  } else {
+    html += '<div class="pr-evidence-smoke pr-evidence-muted">尚无域内烟测明细（可能未跑 Gate B 或无 domain pack）</div>';
+  }
+  html += '<div class="pr-evidence-muted">口径：本地 smoke/Quick8，非官方 SkillsBench。</div>';
   html += '</div>';
   return html;
 }
@@ -85,12 +178,14 @@ function renderPrecipitationResultCard(payload) {
   if (p.variant === 'digest') return renderDigestResultCard(p);
   if (!p.skill_name) return '';
 
-  var html = '<div class="precipitation-result">';
+  var tier = p.trust_tier || 'provisional';
+  var html = '<div class="precipitation-result precipitation-result-' + _escAttr(tier) + '">';
   html += '<div class="pr-header"><span class="pr-icon pr-icon-ok" aria-hidden="true">'+(typeof Icons !== 'undefined' ? Icons.svg('check') : '✓')+'</span>';
-  html += '<div><div class="pr-title">Verified Skill 已沉淀</div>';
+  html += '<div><div class="pr-title">' + escHtml(_tierTitle(tier)) + '</div>';
   html += '<div class="pr-skill-name">' + escHtml(p.skill_name) + '</div></div></div>';
   html += '<div class="pr-meta"><span class="pr-meta-label">来源</span>' + escHtml(_sourceLabel(p.source_kind, p.source)) + '</div>';
   html += renderTrustLine(p);
+  html += renderEvidenceBlock(p);
   if (p.moe != null) {
     html += '<div class="pr-meta pr-meta-fold"><span class="pr-meta-label">质量</span>MoE ' + escHtml(String(p.moe)) + ' · ';
     html += _prActionBtn('展开详情', 'detail', { skill: p.skill_name, tab: 'quality' }, 'pr-link-btn');
@@ -178,7 +273,13 @@ function showPrecipitationResult(opts) {
       });
     }
     if (typeof refreshSkillList === 'function') refreshSkillList();
-    if (typeof toast === 'function') toast('技能「' + ep.skill_name + '」已沉淀', 'success');
+    if (typeof toast === 'function') {
+      var t = ep.trust_tier || 'provisional';
+      var msg = t === 'verified'
+        ? '技能「' + ep.skill_name + '」已出师（Verified）'
+        : '技能「' + ep.skill_name + '」已沉淀（Provisional）';
+      toast(msg, t === 'verified' ? 'success' : 'info');
+    }
   }
 
   if (!p.cursor_path) {
@@ -198,15 +299,19 @@ function showPrecipitationResult(opts) {
 function precipitateFromResponse(d, sourceKind) {
   if (!d) return;
   if (d.skill_saved) {
+    var epSum = d.epistemic_summary || {};
     showPrecipitationResult({
       skill_name: d.skill_saved,
-      epistemic_summary: d.epistemic_summary,
+      epistemic_summary: epSum,
       moe_evaluation: d.moe_evaluation,
       export_zip_url: d.export_zip_url,
       portable_slug: d.portable_slug,
       install_paths: d.install_paths,
-      source_kind: sourceKind || (d.epistemic_summary && d.epistemic_summary.source_type) || 'conversation',
-      source: (d.epistemic_summary && d.epistemic_summary.source) || '',
+      trust_tier: d.trust_tier || epSum.trust_tier,
+      gates: d.gates || epSum.gates,
+      trust_reasons: d.trust_reasons || epSum.trust_reasons,
+      source_kind: sourceKind || epSum.source_type || 'conversation',
+      source: epSum.source || '',
     });
     return;
   }
@@ -260,17 +365,46 @@ function downloadPrecipitationZip(url, name) {
 
 function renderOverviewTrustCard(skill) {
   var ep = skill.epistemic_summary || {};
+  var meta = skill.meta || {};
+  var tier = skill.trust_tier || ep.trust_tier || meta.trust_tier || 'provisional';
+  var gates = skill.gates || ep.gates || meta.gates || {};
   var v = ep.verified || 0;
   var p = ep.pending || 0;
   var inner = '<div class="overview-trust-row">';
-  inner += '<span class="trust-badge trust-verified">已验证 ' + v + '</span>';
+  inner += '<span class="' + _tierBadgeClass(tier) + '">' + _tierBadgeLabel(tier) + '</span>';
+  inner += '<span class="trust-badge trust-verified">声明已验证 ' + v + '</span>';
   if (p > 0) inner += '<span class="trust-badge trust-pending">待审 ' + p + '</span>';
+  if (gates.epistemic || gates.outcome) {
+    var epG = gates.epistemic || {};
+    var outG = gates.outcome || {};
+    inner += '<span class="trust-badge ' + (epG.passed ? 'trust-ok' : 'trust-pending') + '">Gate A ' + (epG.passed ? '过' : '未过') + '</span>';
+    inner += '<span class="trust-badge ' + (outG.passed ? 'trust-ok' : 'trust-pending') + '">Gate B ' + (outG.passed ? '过' : '未过') + '</span>';
+  }
   inner += '</div>';
+  if (tier === 'provisional') {
+    inner += '<p class="detail-muted">Provisional：可安装试用；Verified 需认识论与域内烟测双过。</p>';
+  }
+  var outG = gates.outcome || {};
+  if (outG.min_with_score != null) {
+    inner += '<p class="detail-muted">Gate B 最低分 ' + escHtml(String(outG.min_with_score)) + '（门槛 80）</p>';
+  }
+  if (outG.tasks && outG.tasks.length) {
+    inner += '<ul class="pr-evidence-tasks overview-smoke-tasks">';
+    for (var i = 0; i < outG.tasks.length; i++) {
+      var t = outG.tasks[i];
+      var tid = typeof t === 'string' ? t : (t.task_id || t);
+      inner += '<li><code>' + escHtml(String(tid)) + '</code></li>';
+    }
+    inner += '</ul>';
+  }
   if (p > 0) {
-    inner += '<p class="detail-muted">有 ' + p + ' 条声明待确认，不影响安装与使用。</p>';
+    inner += '<p class="detail-muted">有 ' + p + ' 条声明待确认。</p>';
     inner += _prActionBtn('去审核', 'switch-tab', { tab: 'epistemic' });
   }
-  return '<div class="content-card detail-panel overview-trust-card"><div class="content-card-header">认识论状态</div>' + inner + '</div>';
+  if (skill.name) {
+    inner += ' ' + _prActionBtn('证据 API', 'evidence', { skill: skill.name }, 'btn-secondary btn-sm');
+  }
+  return '<div class="content-card detail-panel overview-trust-card"><div class="content-card-header">Trust Tier · 认识论 · 证据</div>' + inner + '</div>';
 }
 
 function _parsePortableSlugFromContent(content) {
@@ -332,5 +466,21 @@ document.addEventListener('click', function(e) {
   } else if (action === 'export-zip') {
     e.preventDefault();
     if (typeof exportSkill === 'function') exportSkill();
+  } else if (action === 'evidence') {
+    e.preventDefault();
+    var sk = btn.getAttribute('data-pr-skill');
+    var base = typeof API !== 'undefined' ? API : '';
+    var headers = typeof authHeaders === 'function' ? authHeaders() : {};
+    fetch(base + '/api/skills/' + encodeURIComponent(sk) + '/evidence', { headers: headers })
+      .then(function(r) { return r.json(); })
+      .then(function(card) {
+        if (typeof toast === 'function') {
+          toast(sk + ' · ' + (card.trust_tier || '?') + ' · claims ' + ((card.claims && card.claims.verified) || 0), 'info');
+        }
+        console.info('[SkillOS evidence]', card);
+      })
+      .catch(function(err) {
+        if (typeof toast === 'function') toast('证据加载失败：' + err.message, 'error');
+      });
   }
 });

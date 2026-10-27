@@ -21,7 +21,7 @@ if _env.is_file():
         if val and key not in os.environ:
             os.environ[key] = val
 
-from skillos.skills.bench_cohorts import (
+from skillos.skills.bench_cohorts import (  # noqa: E402 — after .env load
     GENERALIZE_SKILLS,
     REFERENCE_MIN_DELTA_PP,
     REFERENCE_PRESETS,
@@ -51,28 +51,32 @@ def run_generalize_domain_quick8() -> list[dict]:
         try:
             q8 = run_quick8_for_skill(name, domain_only=True)
         except Exception as exc:
-            rows.append({
-                "skill": name,
-                "domain_template": spec.get("domain_template"),
-                "cohort": "generalize",
-                "error": str(exc),
-                "regression_pass": False,
-            })
+            rows.append(
+                {
+                    "skill": name,
+                    "domain_template": spec.get("domain_template"),
+                    "cohort": "generalize",
+                    "error": str(exc),
+                    "regression_pass": False,
+                }
+            )
             continue
         delta = float(q8.get("domain_delta") or (q8["with_skill_score"] - q8["without_skill_score"]))
         min_delta = float(spec.get("min_domain_delta") or 0)
-        rows.append({
-            "skill": name,
-            "domain_template": spec.get("domain_template"),
-            "cohort": "generalize",
-            "domain_delta": delta,
-            "min_domain_delta": min_delta,
-            "skills_injected": q8.get("skills_injected"),
-            "tasks": q8.get("tasks"),
-            "task_ids": q8.get("task_ids"),
-            "per_task": q8.get("per_task"),
-            "regression_pass": delta >= min_delta,
-        })
+        rows.append(
+            {
+                "skill": name,
+                "domain_template": spec.get("domain_template"),
+                "cohort": "generalize",
+                "domain_delta": delta,
+                "min_domain_delta": min_delta,
+                "skills_injected": q8.get("skills_injected"),
+                "tasks": q8.get("tasks"),
+                "task_ids": q8.get("task_ids"),
+                "per_task": q8.get("per_task"),
+                "regression_pass": delta >= min_delta,
+            }
+        )
     return rows
 
 
@@ -83,7 +87,10 @@ def run_smoke_gates() -> list[dict]:
     out = []
     all_specs = [
         *({"preset": pid, "skill": name, "cohort": "reference"} for pid, name in REFERENCE_PRESETS.items()),
-        *({"skill": s["name"], "cohort": "generalize", "domain_template": s.get("domain_template")} for s in GENERALIZE_SKILLS),
+        *(
+            {"skill": s["name"], "cohort": "generalize", "domain_template": s.get("domain_template")}
+            for s in GENERALIZE_SKILLS
+        ),
     ]
     for spec in all_specs:
         skill_name = spec["skill"]
@@ -94,16 +101,20 @@ def run_smoke_gates() -> list[dict]:
             skill_name,
             body,
             bench_categories=meta.get("bench_categories"),
-            domain_template=meta.get("domain_template") or meta.get("domain_template_id") or spec.get("domain_template"),
+            domain_template=meta.get("domain_template")
+            or meta.get("domain_template_id")
+            or spec.get("domain_template"),
         )
         min_score = min((r["with_score"] for r in suite), default=0)
-        out.append({
-            **spec,
-            "domain_template": meta.get("domain_template") or spec.get("domain_template"),
-            "suite": suite,
-            "min_with_score": min_score,
-            "smoke_pass": min_score >= 80,
-        })
+        out.append(
+            {
+                **spec,
+                "domain_template": meta.get("domain_template") or spec.get("domain_template"),
+                "suite": suite,
+                "min_with_score": min_score,
+                "smoke_pass": min_score >= 80,
+            }
+        )
     return out
 
 
@@ -112,9 +123,9 @@ def main() -> int:
         print("ERROR: DEEPSEEK_API_KEY required")
         return 1
 
-    from scripts.repair_reference_packs import sync_reference_packs
+    from scripts.repair_reference_packs import sync_all_packs
 
-    sync_reference_packs()
+    sync_all_packs()
 
     ts = int(time.time())
     quick8 = run_quick8_regression()

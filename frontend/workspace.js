@@ -82,8 +82,14 @@ function updateWorkspace(meta) {
       phaseBar.style.display = 'none';
       phaseBar.className = 'workspace-phase';
     }
-    if (divider) divider.style.display = 'none';
-    if (draftPanel) draftPanel.style.display = 'none';
+    if (divider) divider.style.display = '';
+    if (draftPanel) {
+      draftPanel.style.display = '';
+      var draftEl = document.getElementById('ws-draft-content');
+      if (draftEl && (!draftEl.innerHTML || draftEl.innerHTML.indexOf('skillos-idle') < 0)) {
+        draftEl.innerHTML = '<div class="ws-draft-empty skillos-idle"><div style="font-size:32px;margin-bottom:var(--s-3);opacity:.3">📝</div>开始对话萃取新技能<br><small>右侧面板将实时显示萃取进度和草稿结构</small></div>';
+      }
+    }
     syncFinalizeButton(null);
     _syncChatStripChrome();
     return;
@@ -157,10 +163,40 @@ function updateWorkspace(meta) {
   _syncChatStripChrome();
 }
 
+function renderOptimizePanel(meta, name) {
+  var skillName = name || meta.draft_preview || meta.skill_saved || '技能';
+  var html = '<div class="draft-sections">';
+  html += '<div class="draft-section"><div class="draft-section-title">⚡ 优化模式</div>';
+  html += '<div class="draft-section-body"><p class="draft-goal-text">' + _wsEsc(skillName) + '</p></div></div>';
+  if (meta.draft_content) {
+    html += '<div class="draft-section"><div class="draft-section-title">当前技能内容</div>';
+    var preview = meta.draft_content.slice(0, 800);
+    html += '<pre style="white-space:pre-wrap;font-size:var(--t-xs);color:var(--text2);line-height:1.5;padding:var(--s-2);background:var(--surface);border-radius:var(--r-sm)">' + _wsEsc(preview) + '</pre>';
+    var totalLines = meta.draft_content.split('\n').length;
+    html += '<div style="font-size:var(--t-xs);color:var(--text3);margin-top:var(--s-1)">共 ' + totalLines + ' 行 · 对话中逐步优化</div>';
+    html += '</div>';
+  }
+  html += '<div class="draft-section"><div class="draft-section-title">状态</div>';
+  var status = meta.optimize_result || '优化中…';
+  html += '<div style="padding:var(--s-2) 0;font-size:var(--t-sm);color:var(--a3)">' + _wsEsc(status) + '</div></div>';
+  if (meta.optimize_log && meta.optimize_log.length) {
+    html += '<div class="draft-section"><div class="draft-section-title">优化日志</div><div style="font-size:var(--t-xs);color:var(--text3)">';
+    meta.optimize_log.forEach(function(l) { html += '<div style="padding:2px 0">' + _wsEsc(l) + '</div>'; });
+    html += '</div></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
 function renderDraftPanel(meta, draftContent) {
   var phase = meta.extraction_phase || '';
   var progress = meta.draft_progress || {};
   var name = meta.draft_preview || meta.skill_saved || '';
+  var isOptimizing = meta.optimize_active || phase === 'OPTIMIZING';
+
+  if (isOptimizing) {
+    return renderOptimizePanel(meta, name);
+  }
 
   if (!draftContent && !progress.probes_done && phase !== 'DONE' && !progress.goal) {
     return '<div class="ws-draft-empty">对话开始后，草稿将按<strong>目标 → 结构 → 预览</strong>分区生长</div>';
@@ -319,8 +355,12 @@ function resetWorkspace() {
   var draftPanel = document.getElementById('ws-draft-panel');
   var fb = document.getElementById('wp-finalize');
   if (phaseBar) { phaseBar.style.display = 'none'; phaseBar.className = 'workspace-phase'; }
-  if (divider) divider.style.display = 'none';
-  if (draftPanel) draftPanel.style.display = 'none';
+  if (divider) divider.style.display = '';
+  if (draftPanel) {
+    draftPanel.style.display = '';
+    var dc = document.getElementById('ws-draft-content');
+    if (dc) dc.innerHTML = '<div class="ws-draft-empty skillos-idle"><div style="font-size:32px;margin-bottom:var(--s-3);opacity:.3">📝</div>开始对话萃取新技能<br><small>右侧面板将实时显示萃取进度和草稿结构</small></div>';
+  }
   if (fb) {
     fb.style.display = 'none';
     fb.textContent = '⚡ 生成技能';

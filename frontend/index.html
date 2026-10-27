@@ -7,9 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:ital,wght@0,400;0,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=18">
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.x/dist/cdn.min.js"
-    onerror="this.onerror=null;var s=document.createElement('script');s.src='/alpine.min.js';s.defer=true;this.parentNode.insertBefore(s,this.nextSibling)"></script>
+  <link rel="stylesheet" href="style.css">
+  <script>document.addEventListener('alpine:init',function(){Alpine.store('nav',{currentView:'chat-view',primaryNav:'extract',knowledgeTab:'dashboard',barVisible:true,dot:'',status:'就绪',currentSkill:null,currentTab:'overview',settingsTab:'model',skillListTab:'mine',
+  navigate:function(id){this.currentView=id;this.barVisible=id==='chat-view';if(id==='chat-view')this.primaryNav='extract';else if(id==='hub-view')this.primaryNav='market';else if(id==='knowledge-unified-view')this.primaryNav='knowledge';},
+  goTo:function(id){this.navigate(id);document.querySelectorAll('.main-view').forEach(function(v){v.classList.remove('active')});var e=document.getElementById(id);if(e)e.classList.add('active');var b=document.getElementById('bar');if(b)b.style.display=id==='chat-view'?'flex':'none';},
+  setPrimaryNav:function(id){this.primaryNav=id;},showChat:function(){this.goTo('chat-view');this.currentSkill=null;},setDot:function(c){this.dot=c;},setStatus:function(s){this.status=s;}});
+  var L=localStorage;Alpine.store('chat',{mode:L.getItem('sd_mode')||'create',selectedModel:L.getItem('sd_model')||'deepseek-v4-flash',autoMode:L.getItem('sd_auto')==='true',sessionId:L.getItem('sd_session')||'',ttsEnabled:true,messages:[],
+  addMessage:function(role,text){var m={role:role,text:text,ts:Date.now()};this.messages.push(m);return m;},setMode:function(m){this.mode=m;L.setItem('sd_mode',m);},setModel:function(m){this.selectedModel=m;L.setItem('sd_model',m);},setSessionId:function(id){this.sessionId=id;id?L.setItem('sd_session',id):L.removeItem('sd_session');},toggleAuto:function(){this.autoMode=!this.autoMode;L.setItem('sd_auto',String(this.autoMode));}});
+  var u=L.getItem('sd_user')||'',t=L.getItem('sd_auth_token')||'';
+  Alpine.store('auth',{user:u,token:t,workspace:null,initialized:false,
+  isLoggedIn:function(){return!!this.token&&this.user!=='';},authHeaders:function(){return this.token?{Authorization:'Bearer '+this.token}:{};},avatarLetter:function(){return(this.user||'?').charAt(0).toUpperCase();},workspaceLabel:function(){return this.workspace?this.workspace.label||this.workspace.tenant_type||'':'';},
+  saveSession:function(d){if(d.token){this.token=d.token;L.setItem('sd_auth_token',d.token);}if(d.user){var n=d.user.username||d.user;this.user=typeof n==='string'?n:(d.user.username||'');L.setItem('sd_user',this.user);}if(d.workspace){this.workspace=d.workspace;L.setItem('sd_workspace',JSON.stringify(d.workspace));}},
+  init:function(){if(window.location.pathname.indexOf('login')>=0)return;if(!this.token){window.location.href='/login.html';return;}var s=this;fetch((window.API||'')+'/api/auth/me',{headers:{Authorization:'Bearer '+this.token}}).then(function(r){return r.json();}).then(function(d){if(!d.user||d.user.error||d.user.username==='anonymous'){['sd_auth_token','sd_user','sd_workspace','sd_session'].forEach(function(k){L.removeItem(k);});window.location.href='/login.html';return;}s.user=d.user.username;if(d.workspace)s.workspace=d.workspace;s.initialized=true;if(typeof refreshSkillList==='function')refreshSkillList();if(typeof updateAdminNavVisibility==='function')updateAdminNavVisibility();if(typeof setDot==='function')setDot('on');}).catch(function(e){console.warn('initAuth failed',e);if(typeof setDot==='function')setDot('');});},});
+  Alpine.store('skill',{allSkillsCache:[],filteredSkills:[],setCache:function(s){this.allSkillsCache=s;this.filteredSkills=s;},filter:function(q,t){var l=this.allSkillsCache;if(q){var ql=q.toLowerCase();l=l.filter(function(s){return s.name.toLowerCase().includes(ql);});}this.filteredSkills=l;return l;}});window.__alpineReady=true;});</script>
   <script async src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" onerror="window._mermaidFailed=1"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"
     onerror="this.onerror=null;var s=document.createElement('script');s.src='/marked.min.js';s.defer=true;this.parentNode.insertBefore(s,this.nextSibling)"></script>
@@ -183,7 +193,7 @@
       <div class="ws-divider" id="ws-divider" style="display:none"></div>
 
       <!-- Draft preview panel (visible when workspace active) -->
-      <div class="ws-panel ws-draft" id="ws-draft-panel" style="display:none">
+      <div class="ws-panel ws-draft" id="ws-draft-panel">
         <div class="ws-draft-header">
           <span class="ws-draft-label"><span class="chip-ico" data-icon="edit"></span>草稿 · 苏格拉底分区</span>
           <button class="ws-draft-toggle" id="ws-draft-toggle" onclick="toggleDraftPanel()" title="折叠草稿">◀</button>
@@ -710,16 +720,31 @@
             <span x-text="section === 'guide' ? '← 快速开始' : '← 返回'"></span>
           </button>
           <h2 class="page-title docs-page-title">帮助文档</h2>
-          <p class="page-subtitle" x-text="section === 'guide' ? '话术与沉淀协议' : '注册、萃取、认识论与 MCP'"></p>
         </div>
       </header>
 
+      <!-- Section tabs -->
+      <div class="docs-tabs">
+        <button type="button" class="docs-tab" :class="{ active: section === 'quickstart' }" @click="loadSection('quickstart')">📖 快速开始</button>
+        <button type="button" class="docs-tab" :class="{ active: section === 'guide' }" @click="loadSection('guide')">📗 用户指南</button>
+      </div>
+
       <template x-if="loading">
         <div class="docs-loading">
-          <div class="typing-dots"><span></span><span></span><span></span></div>
-          <div class="docs-loading-text">加载文档…</div>
+          <div class="docs-loading-skeleton">
+            <div class="skeleton skeleton-line w80"></div>
+            <div class="skeleton skeleton-line w60"></div>
+            <div class="skeleton skeleton-line w90"></div>
+            <div class="skeleton skeleton-line w40"></div>
+            <div class="skeleton skeleton-card" style="height:120px;margin-top:var(--s-4)"></div>
+            <div class="skeleton skeleton-line w70" style="margin-top:var(--s-4)"></div>
+            <div class="skeleton skeleton-line w50"></div>
+            <div class="skeleton skeleton-line w85"></div>
+          </div>
+          <div style="font:400 var(--t-sm)/1 var(--font);color:var(--text3)">加载文档…</div>
         </div>
       </template>
+
       <template x-if="error">
         <div class="docs-error">
           <div class="empty-state">
@@ -730,9 +755,14 @@
           </div>
         </div>
       </template>
+
       <template x-if="!loading && !error && content">
-        <article class="doc-content" x-ref="docBody" x-html="content"></article>
-        <div class="docs-offline-badge" x-show="source === 'static'">离线文档副本</div>
+        <div class="docs-body">
+          <div class="docs-content-wrap">
+            <article class="doc-content" x-ref="docBody" x-html="content"></article>
+          </div>
+          <div class="docs-offline-badge" x-show="source === 'static'">📡 离线文档副本</div>
+        </div>
       </template>
     </div>
   </div>
@@ -779,10 +809,10 @@
           </div>
 
           <div class="admin-kpi-grid">
-            <div class="dash-card"><div class="value" x-text="overview.members_count"></div><div class="label">成员</div></div>
-            <div class="dash-card"><div class="value" x-text="overview.departments_count"></div><div class="label">部门</div></div>
-            <div class="dash-card"><div class="value" x-text="overview.skills_count"></div><div class="label">技能</div></div>
-            <div class="dash-card"><div class="value" x-text="(overview.usage.llm_calls.used || 0) + '/' + (overview.usage.llm_calls.limit || '∞')"></div><div class="label">LLM 本月</div></div>
+            <div class="admin-kpi-card accent-members"><div class="admin-kpi-icon">👥</div><div class="admin-kpi-value" x-text="overview.members_count"></div><div class="admin-kpi-label">成员</div><div class="admin-kpi-bar"><div class="admin-kpi-bar-fill" style="width:100%"></div></div></div>
+            <div class="admin-kpi-card accent-depts"><div class="admin-kpi-icon">🏢</div><div class="admin-kpi-value" x-text="overview.departments_count"></div><div class="admin-kpi-label">部门</div><div class="admin-kpi-bar"><div class="admin-kpi-bar-fill" style="width:100%"></div></div></div>
+            <div class="admin-kpi-card accent-skills"><div class="admin-kpi-icon">📋</div><div class="admin-kpi-value" x-text="overview.skills_count"></div><div class="admin-kpi-label">技能</div><div class="admin-kpi-bar"><div class="admin-kpi-bar-fill" style="width:100%"></div></div></div>
+            <div class="admin-kpi-card accent-llm"><div class="admin-kpi-icon">🤖</div><div class="admin-kpi-value" x-text="(overview.usage.llm_calls.used || 0) + '/' + (overview.usage.llm_calls.limit || '∞')"></div><div class="admin-kpi-label">LLM 本月</div><div class="admin-kpi-bar"><div class="admin-kpi-bar-fill" :style="'width:' + Math.min(100, ((overview.usage.llm_calls.used || 0) / (overview.usage.llm_calls.limit || 1) * 100)) + '%'"></div></div></div>
           </div>
 
           <div class="admin-grid">
@@ -790,7 +820,7 @@
             <div class="admin-grid-col">
               <template x-if="governance">
                 <div class="admin-card">
-                  <div class="section-heading admin-card-title">治理合规</div>
+                  <div class="admin-card-title"><span>📊</span>治理合规</div>
                   <template x-for="c in complianceRates" :key="c.label">
                     <div class="admin-progress-row">
                       <div class="admin-progress-label"><span x-text="c.label"></span><span x-text="c.pct + '%'"></span></div>
@@ -801,13 +831,23 @@
               </template>
 
               <div class="admin-card">
-                <div class="section-heading admin-card-title">部门列表</div>
+                <div class="admin-card-title"><span>📁</span>部门列表</div>
                 <template x-for="d in departments" :key="d.id">
-                  <div class="admin-dept-row"><span class="admin-dept-name" x-text="d.name"></span><span class="admin-dept-quota" x-show="d.quota" x-text="d.quota.skills + '技能 / ' + d.quota.llm_calls + 'LLM'"></span></div>
+                  <div class="admin-dept-card">
+                    <div class="admin-dept-avatar" x-text="d.name.charAt(0)"></div>
+                    <div class="admin-dept-info">
+                      <div class="admin-dept-name" x-text="d.name"></div>
+                      <div class="admin-dept-meta" x-show="d.quota" x-text="'技能 ' + d.quota.skills + ' · LLM ' + d.quota.llm_calls"></div>
+                    </div>
+                    <span class="admin-dept-quota-badge" x-show="d.quota" x-text="'配额'"></span>
+                    <span class="admin-dept-quota-badge" x-show="!d.quota" style="border-color:transparent;background:transparent;color:var(--text3)">无限</span>
+                  </div>
                 </template>
-                <div class="admin-form-row admin-form-row-top">
+                <div class="admin-form-row" style="margin-top:var(--s-3);padding-top:var(--s-3);border-top:1px solid var(--border)">
                   <input x-model="newDeptName" placeholder="新部门名称" class="form-input admin-dept-input">
                   <button type="button" class="btn-primary btn-sm" @click="addDepartment()">添加</button>
+                </div>
+              </div>
                 </div>
               </div>
             </div>
@@ -815,7 +855,7 @@
             <!-- 右栏：配额 + 技能管理 -->
             <div class="admin-grid-col">
               <div class="admin-card">
-                <div class="section-heading admin-card-title">部门配额</div>
+                <div class="admin-card-title"><span>⚙️</span>部门配额</div>
                 <div class="admin-form-row">
                   <select x-model="quotaDept" class="form-select"><option value="">选择部门</option><template x-for="d in departments" :key="d.id"><option :value="d.id" x-text="d.name"></option></template></select>
                 </div>
@@ -827,7 +867,7 @@
               </div>
 
               <div class="admin-card">
-                <div class="section-heading admin-card-title">技能治理</div>
+                <div class="admin-card-title"><span>🔍</span>技能治理</div>
                 <div class="admin-form-row">
                   <input x-model="skillSearch" placeholder="搜索技能名称" @keydown.enter="searchOrgSkills()" class="form-input admin-search-input">
                   <button type="button" class="btn-primary btn-sm" @click="searchOrgSkills()">搜索</button>
@@ -1116,24 +1156,25 @@
 <script defer src="/voice.js?v=1"></script>
 <script defer src="/auth.js?v=1"></script>
 <script defer src="/export-channel.js?v=1"></script>
-<script defer src="/precipitation-result.js?v=4"></script>
+<script defer src="/precipitation-result.js?v=6"></script>
 <script defer src="/source_material.js?v=3"></script>
 <script defer src="/socratic-ui.js?v=1"></script>
-<script defer src="/chat.js?v=10"></script>
+<script defer src="/chat.js?v=11"></script>
 <script defer src="/skills_io.js?v=1"></script>
-<script defer src="/skills.js?v=6"></script>
+<script defer src="/skills.js?v=7"></script>
 <script defer src="/quality.js?v=4"></script>
 <script defer src="/workspace.js?v=7"></script>
 <script defer src="/error-boundary.js?v=2"></script>
-<script defer src="/knowledge.js?v=9"></script>
+<script defer src="/knowledge.js?v=10"></script>
 <script defer src="/account_watcher.js?v=1"></script>
 <script defer src="/intelligence.js?v=2"></script>
 <script defer src="/hub.js?v=1"></script>
 <script defer src="/settings.js?v=3"></script>
 <script defer src="/admin.js?v=2"></script>
 <script defer src="/docs.js?v=1"></script>
-<script defer src="/alpine-bridge.js?v=1"></script>
+<script defer src="/b.js"></script>
 <script defer src="/onboarding.js?v=3"></script>
-<script defer src="/app.js?v=8"></script>
+<script defer src="/c.js"></script>
+<script defer src="/a.js"></script>
 </body>
 </html>

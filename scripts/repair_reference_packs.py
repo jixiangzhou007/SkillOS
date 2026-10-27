@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync reference domain packs from configs/ into data/domain_packs/."""
+"""Sync domain packs from configs/ into data/domain_packs/ (reference + generalize)."""
 
 import json
 import sys
@@ -10,20 +10,27 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 REFERENCE_PACKS_DIR = ROOT / "configs" / "reference_domain_packs"
+GENERALIZE_PACKS_DIR = ROOT / "configs" / "generalize_domain_packs"
+
 REFERENCE_TEMPLATES = (
     "workflow-refund",
     "code-review-pr",
     "data-csv-clean",
 )
 
+GENERALIZE_TEMPLATES = (
+    "finance-expense-audit",
+    "law-contract-review",
+    "security-audit",
+)
 
-def sync_reference_packs(*, dry_run: bool = False) -> list[dict]:
-    """Copy tracked reference pack JSON into runtime data/domain_packs/."""
+
+def _sync_dir(src_dir: Path, template_ids: tuple[str, ...], *, dry_run: bool = False) -> list[dict]:
     from skillos.skills.domain_pack import save_domain_pack
 
     rows: list[dict] = []
-    for template_id in REFERENCE_TEMPLATES:
-        src = REFERENCE_PACKS_DIR / f"{template_id}.json"
+    for template_id in template_ids:
+        src = src_dir / f"{template_id}.json"
         if not src.is_file():
             rows.append({"domain_template": template_id, "ok": False, "error": "missing config"})
             continue
@@ -37,14 +44,36 @@ def sync_reference_packs(*, dry_run: bool = False) -> list[dict]:
     return rows
 
 
+def sync_reference_packs(*, dry_run: bool = False) -> list[dict]:
+    """Copy tracked reference pack JSON into runtime data/domain_packs/."""
+    return _sync_dir(REFERENCE_PACKS_DIR, REFERENCE_TEMPLATES, dry_run=dry_run)
+
+
+def sync_generalize_packs(*, dry_run: bool = False) -> list[dict]:
+    """Copy tracked generalize pack JSON into runtime data/domain_packs/."""
+    return _sync_dir(GENERALIZE_PACKS_DIR, GENERALIZE_TEMPLATES, dry_run=dry_run)
+
+
+def sync_all_packs(*, dry_run: bool = False) -> list[dict]:
+    return sync_reference_packs(dry_run=dry_run) + sync_generalize_packs(dry_run=dry_run)
+
+
 def main() -> int:
     import argparse
 
-    p = argparse.ArgumentParser(description="Sync reference domain packs to data/domain_packs/")
+    p = argparse.ArgumentParser(description="Sync domain packs to data/domain_packs/")
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--all", action="store_true", help="Reference + generalize packs")
+    p.add_argument("--generalize", action="store_true", help="Only generalize packs")
     args = p.parse_args()
 
-    rows = sync_reference_packs(dry_run=args.dry_run)
+    if args.generalize:
+        rows = sync_generalize_packs(dry_run=args.dry_run)
+    elif args.all:
+        rows = sync_all_packs(dry_run=args.dry_run)
+    else:
+        rows = sync_reference_packs(dry_run=args.dry_run)
+
     for row in rows:
         flag = "OK" if row.get("ok") else "FAIL"
         print(f"[{flag}] {row.get('domain_template')}: {row.get('path') or row.get('error', '')}")

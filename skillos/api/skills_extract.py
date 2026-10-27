@@ -14,7 +14,6 @@ from fastapi.responses import StreamingResponse
 from skillos.api._skills_shared import (
     CreateSkillRequest,
     DispatchRequest,
-    _reset_tenant,
     _skills_list,
     _tenant_context_from_auth,
     _tenant_from_context,
@@ -93,8 +92,11 @@ def _persist_created_skill(
     boost_rounds: list[dict] = []
     try:
         from skillos.evaluation.moe_boost import evaluate_and_boost
+
         body_out, moe_report, boost_rounds = evaluate_and_boost(
-            body_out, finalized["name"], llm_args,
+            body_out,
+            finalized["name"],
+            llm_args,
         )
         moe_dict = moe_report.to_dict()
         ep_moe = {
@@ -107,13 +109,17 @@ def _persist_created_skill(
             ep_moe["boost_rounds"] = boost_rounds
         _log.info(
             "MoE evaluation: %s score=%d confidence=%.2f passed=%s boosts=%d",
-            finalized["name"], moe_report.overall_score, moe_report.confidence,
-            moe_report.passed, len(boost_rounds),
+            finalized["name"],
+            moe_report.overall_score,
+            moe_report.confidence,
+            moe_report.passed,
+            len(boost_rounds),
         )
     except Exception as exc:
         _log.warning("MoE boost skipped for '%s': %s", finalized["name"], exc)
         try:
             from skillos.evaluation import evaluate_skill
+
             moe_report = evaluate_skill(body_out, finalized["name"], llm_args)
             moe_dict = moe_report.to_dict()
             ep_moe = {
@@ -164,6 +170,7 @@ def _persist_created_skill(
         _log.warning("Cold start skipped for '%s': %s", finalized["name"], exc)
 
     from skillos.knowledge.dna_context import build_skill_dna_meta
+
     save_meta: dict = {
         "description": finalized["description"],
         "portable_slug": finalized["slug"],
@@ -181,6 +188,7 @@ def _persist_created_skill(
         save_meta["bench_categories"] = cold_start_meta["bench_categories"]
     elif "bench_categories" not in save_meta:
         from skillos.knowledge.skill_routing import infer_bench_categories
+
         save_meta["bench_categories"] = infer_bench_categories(finalized["name"], body_out)
     try:
         from skillos.skills.bench_quality import build_bench_quality_meta
@@ -196,12 +204,31 @@ def _persist_created_skill(
     except Exception as exc:
         _log.debug("bench_quality meta skipped for '%s': %s", finalized["name"], exc)
 
+    # Trust Tier placeholder — authoritative recompute after epistemic save
+    trust_snapshot: dict = {}
+    try:
+        from skillos.evaluation.trust_tier import compute_trust_tier
+
+        ep_preview = agent_meta.get("epistemic") if isinstance(agent_meta.get("epistemic"), dict) else {}
+        trust_snapshot = compute_trust_tier(
+            epistemic=ep_preview or {},
+            gate_meta=gate_meta or None,
+            draft=False,
+        )
+        save_meta["trust_tier"] = trust_snapshot["trust_tier"]
+        save_meta["gates"] = trust_snapshot["gates"]
+    except Exception as exc:
+        _log.debug("trust_tier pre-save skipped for '%s': %s", finalized["name"], exc)
+
     # ── Philosophical DNA stability tracking ──
     try:
         moe_score_for_tracking = (ep_moe or {}).get("overall_score", 0)
         from skillos.knowledge.dna_context import track_philosophical_dna_contribution
+
         dna_tracked = track_philosophical_dna_contribution(
-            finalized["name"], body_out, moe_score=moe_score_for_tracking,
+            finalized["name"],
+            body_out,
+            moe_score=moe_score_for_tracking,
         )
         if dna_tracked.get("tracked"):
             _log.info("Philosophical DNA updated: %s", dna_tracked.get("updated"))
@@ -215,7 +242,9 @@ def _persist_created_skill(
             save_meta[key] = val
 
     save_skill(
-        finalized["name"], body_out, meta=save_meta,
+        finalized["name"],
+        body_out,
+        meta=save_meta,
         source=source or name,
         source_type=source_type,
         llm_args=llm_args,
@@ -235,6 +264,46 @@ def _persist_created_skill(
         ep["dna_compliance"] = dna_compliance_meta
     ep["portable_slug"] = finalized["slug"]
     ep["install_paths"] = finalized["install_paths"]
+
+    # Authoritative Trust Tier from persisted epistemic counts (no version bump)
+    try:
+        from skillos.evaluation.trust_tier import compute_trust_tier
+        from skillos.skills.skill_store import _compose, _skill_path
+
+        trust_snapshot = compute_trust_tier(
+            epistemic=ep,
+            gate_meta=gate_meta or None,
+            draft=False,
+        )
+        ep["trust_tier"] = trust_snapshot["trust_tier"]
+        ep["gates"] = trust_snapshot["gates"]
+        ep["trust_reasons"] = trust_snapshot.get("reasons") or []
+        meta_now = dict(raw.get("meta") or {})
+        if (
+            meta_now.get("trust_tier") != trust_snapshot["trust_tier"]
+            or meta_now.get("gates") != trust_snapshot["gates"]
+        ):
+            meta_now["trust_tier"] = trust_snapshot["trust_tier"]
+            meta_now["gates"] = trust_snapshot["gates"]
+            _skill_path(finalized["name"], root=resolve_skills_root(tenant)).write_text(
+                _compose(meta_now, raw.get("body") or body_out),
+                encoding="utf-8",
+            )
+        try:
+            from skillos.evaluation.evidence import build_evidence_card
+
+            ep["evidence"] = build_evidence_card(
+                finalized["name"],
+                meta={**(raw.get("meta") or {}), **meta_now, "bench_quality": save_meta.get("bench_quality")},
+                body=raw.get("body") or body_out,
+            )
+        except Exception as exc2:
+            _log.debug("evidence card skipped for '%s': %s", finalized["name"], exc2)
+    except Exception as exc:
+        _log.debug("trust_tier post-save skipped for '%s': %s", finalized["name"], exc)
+        if trust_snapshot:
+            ep.setdefault("trust_tier", trust_snapshot.get("trust_tier", "provisional"))
+            ep.setdefault("gates", trust_snapshot.get("gates") or {})
     try:
         ep["skill_path"] = str(_skill_path(finalized["name"], root=resolve_skills_root(tenant)))
     except Exception:
@@ -251,6 +320,7 @@ def _persist_created_skill(
     )
     try:
         from skillos.knowledge.ingest_pipeline import finalize_ingest
+
         ep = finalize_ingest(
             finalized["body"],
             source or f"skill://{finalized['name']}",
@@ -264,6 +334,7 @@ def _persist_created_skill(
     except Exception as exc:
         _log.warning("Lineage finalize_ingest failed for skill %s: %s", finalized["name"], exc)
         from skillos.knowledge.ingest_pipeline import enrich_with_lineage
+
         enrich_with_lineage(ep, {"lineage_applied": False, "reason": str(exc)})
     variant_hint = register_precipitation_variant(
         finalized["name"],
@@ -277,6 +348,7 @@ def _persist_created_skill(
     try:
         from skillos.skills.dedup import find_similar_skills
         from skillos.skills.skill_store import get_skill_body
+
         tenant = _tenant_from_context(ctx)
         similar = find_similar_skills(finalized["name"], get_skill_body(body_out), tenant=tenant)
         if similar:
@@ -297,18 +369,27 @@ def _persist_created_skill(
             from skillos.skills.domain_templates import evolve_domain_template
 
             record_dna_contribution(finalized["name"], lineage, moe_score=moe_score)
-            primary_domain = next(
-                (d.get("id") for d in lineage.get("domain", []) if d.get("primary")),
-                None,
-            ) or (lineage.get("domain") or [{}])[0].get("id") if lineage.get("domain") else None
+            primary_domain = (
+                next(
+                    (d.get("id") for d in lineage.get("domain", []) if d.get("primary")),
+                    None,
+                )
+                or (lineage.get("domain") or [{}])[0].get("id")
+                if lineage.get("domain")
+                else None
+            )
             if primary_domain:
                 evolved = evolve_domain_template(
-                    primary_domain, body_out, moe_score, skill_name=finalized["name"],
+                    primary_domain,
+                    body_out,
+                    moe_score,
+                    skill_name=finalized["name"],
                 )
                 if evolved:
                     try:
                         from skillos.knowledge.dna_store import backfill_skill_lineage
                         from skillos.skills.skill_store import resolve_skills_root
+
                         skill_path = _skill_path(finalized["name"], root=resolve_skills_root(tenant))
                         row = backfill_skill_lineage(skill_path)
                         if row.get("changed"):
@@ -320,6 +401,7 @@ def _persist_created_skill(
 
     try:
         from skillos.evaluation.quality import build_quality_payload, evaluate_heuristic
+
         heuristic = evaluate_heuristic(body_out, finalized["name"])
         ep["quality"] = build_quality_payload(
             skill_name=finalized["name"],
@@ -332,6 +414,7 @@ def _persist_created_skill(
 
     try:
         from skillos.skills.pattern_miner import auto_mine_if_needed, ensure_bootstrap_skill_dna
+
         ensure_bootstrap_skill_dna()
         auto_mine_if_needed(llm_args)
     except Exception as exc:
@@ -350,6 +433,7 @@ def _persist_created_skill(
     if ctx is not None:
         try:
             from skillos.identity.audit import log_skill_action
+
             log_skill_action(
                 user_id=ctx.get("user_id", ""),
                 action="create",
@@ -418,21 +502,6 @@ def _team_context_from_auth(
     }
 
 
-def _tenant_context_from_auth(auth: AuthContext | None):  # type: ignore[no-redef]
-    """Set thread-local tenant for quota / path resolution within request."""
-    if not auth:
-        return None
-    from skillos.identity.context import set_tenant_context
-    return set_tenant_context(auth.tenant_context())
-
-
-def _reset_tenant(token) -> None:  # type: ignore[no-redef]
-    if token is None:
-        return
-    from skillos.identity.context import reset_tenant_context
-    reset_tenant_context(token)
-
-
 def _dispatch_identity(req: DispatchRequest, auth: AuthContext | None) -> tuple[str, str, str, str]:
     """Resolve tenant/org/user/dept for dispatch; JWT overrides body when authenticated."""
     ctx = _team_context_from_auth(
@@ -447,22 +516,12 @@ def _dispatch_identity(req: DispatchRequest, auth: AuthContext | None) -> tuple[
     return ctx["tenant_id"], ctx["org_id"], ctx["user_id"], ctx["dept_id"]
 
 
-def _skills_list(auth: AuthContext | None = None):  # type: ignore[no-redef]
-    from skillos.skills.skill_store import list_skills
-    tenant = auth.tenant_context() if auth else None
-    return list_skills(tenant=tenant)
-
-
 def _create_mode_skills_list(auth: AuthContext | None = None) -> list[str]:
     """Create mode context: user skills + skill-creator reference (SD-compatible)."""
     from skillos.skills.system_skills import create_mode_skills
 
     return create_mode_skills(_skills_list(auth))
 
-
-def _tenant_from_context(ctx: dict):  # type: ignore[no-redef]
-    from skillos.identity.resolver import tenant_from_context
-    return tenant_from_context(ctx)
 
 def _epistemic_reply_suffix(epistemic: dict) -> str:
     if not epistemic or epistemic.get("total_claims", 0) == 0:
@@ -486,10 +545,13 @@ def _epistemic_reply_suffix(epistemic: dict) -> str:
 
 def _lineage_reply_suffix(lineage: dict | None) -> str:
     from skillos.knowledge.ingest_pipeline import format_lineage_notice
+
     notice = format_lineage_notice(lineage)
     if not notice:
         return ""
     return f"\n\n🔗 {notice}"
+
+
 def _finalize_extraction_response(
     session,
     reply: str,
@@ -500,14 +562,21 @@ def _finalize_extraction_response(
     extra: dict | None = None,
 ) -> dict:
     """Build dispatch JSON and attach clickable [选项] buttons when present."""
-    from skillos.skills.extraction_helpers import attach_extraction_actions
     from skillos.skills.agent import Phase
+    from skillos.skills.extraction_helpers import attach_extraction_actions
 
-    phase = agent._phase.name if isinstance(getattr(agent, "_phase", None), Phase) else str(getattr(agent, "_phase", ""))
-    q = agent._assess_draft_quality() if hasattr(agent, '_assess_draft_quality') else {}
-    result: dict = {"reply": reply, "session_id": session.id, **(extra or {}),
-                     "extraction_phase": phase, "extraction_turn": agent._turn,
-                     "completion_pct": q.get("pct", 0)}
+    phase = (
+        agent._phase.name if isinstance(getattr(agent, "_phase", None), Phase) else str(getattr(agent, "_phase", ""))
+    )
+    q = agent._assess_draft_quality() if hasattr(agent, "_assess_draft_quality") else {}
+    result: dict = {
+        "reply": reply,
+        "session_id": session.id,
+        **(extra or {}),
+        "extraction_phase": phase,
+        "extraction_turn": agent._turn,
+        "completion_pct": q.get("pct", 0),
+    }
     if doc:
         result["skill_saved"] = doc["name"]
         result["draft_saved"] = doc["name"]
@@ -529,6 +598,7 @@ def _finalize_extraction_response(
             if ep.get("post_bench"):
                 result["post_bench"] = ep["post_bench"]
             from skillos.skills.portable_skill import format_install_guide
+
             slug = doc.get("slug") or ep.get("portable_slug", "")
             path = ep.get("skill_path", "")
             if slug:
@@ -541,7 +611,7 @@ def _finalize_extraction_response(
             result["draft_in_session"] = True
             result["draft_saved"] = agent.draft_name
         # Expose growing draft and progress for workspace preview panel
-        dc = getattr(agent, '_draft_content', '') or ''
+        dc = getattr(agent, "_draft_content", "") or ""
         if dc:
             result["draft_content"] = dc[:3000]
         result["draft_progress"] = agent.to_progress_dict()
@@ -563,10 +633,7 @@ def _run_extraction_dispatch(session, msg: str, auth, llm_args, req: DispatchReq
             session.add_turn("user", msg)
             session.add_turn("assistant", reply)
             return _finalize_extraction_response(session, reply, agent, extra={"skill_active": True})
-        reply = (
-            "我们还没开始具体的技能沉淀。"
-            "你可以直接说想沉淀什么流程，比如「合同审核」或「退款处理」。"
-        )
+        reply = "我们还没开始具体的技能沉淀。你可以直接说想沉淀什么流程，比如「合同审核」或「退款处理」。"
         session.add_turn("user", msg)
         session.add_turn("assistant", reply)
         return {"reply": reply, "session_id": session.id}
@@ -601,13 +668,17 @@ def _run_extraction_dispatch(session, msg: str, auth, llm_args, req: DispatchReq
     if doc:
         try:
             ep = _persist_created_skill(
-                doc["name"], doc["content"], llm_args,
-                source=f"session:{session.id}", source_type="conversation",
+                doc["name"],
+                doc["content"],
+                llm_args,
+                source=f"session:{session.id}",
+                source_type="conversation",
                 meta=_persist_meta_from_agent(agent),
                 team_context=_team_context_from_session(session),
             )
         except Exception as exc:
             from skillos.billing.usage import QuotaExceededError
+
             if isinstance(exc, QuotaExceededError):
                 raise HTTPException(status_code=402, detail=str(exc)) from exc
             raise
@@ -659,6 +730,7 @@ async def dispatch_message(
 
     agent = session.agent
     from skillos.skills.agent import Phase
+
     if not agent.is_active and session.history and agent._phase != Phase.DONE:
         agent.restore_from_history(session.history)
 
@@ -670,36 +742,50 @@ async def dispatch_message(
 
     if msg.startswith("__metaskill__") or req.mode == "meta":
         from skillos.skills.agent import Phase
+
         existing = _skills_list(auth)
         if not agent.is_active or agent._phase != Phase.METASKILL:
             reply = agent.start_metaskill(existing)
             session.add_turn("user", msg)
             session.add_turn("assistant", reply)
             return _finalize_extraction_response(
-                session, reply, agent, extra={"skill_active": True, "metaskill_active": True},
+                session,
+                reply,
+                agent,
+                extra={"skill_active": True, "metaskill_active": True},
             )
         reply, doc = agent.handle(msg, existing, llm_args)
         session.add_turn("user", msg)
         session.add_turn("assistant", reply)
         if doc:
             from skillos.skills.skill_store import save_skill
+
             save_skill(doc["name"], doc["content"])
             return _finalize_extraction_response(
-                session, reply, agent, doc=doc, extra={"metaskill_active": True},
+                session,
+                reply,
+                agent,
+                doc=doc,
+                extra={"metaskill_active": True},
             )
         return _finalize_extraction_response(
-            session, reply, agent, extra={"skill_active": True, "metaskill_active": True},
+            session,
+            reply,
+            agent,
+            extra={"skill_active": True, "metaskill_active": True},
         )
 
     # ── Helper: classify content as actionable vs conceptual ──
     def _classify_content(text: str) -> str:
         """Quick LLM classification: actionable (methodology/how-to) or conceptual (reference)."""
         from skillos.knowledge.content_classify import classify_content
+
         return classify_content(text)
 
     # ── Helper: fetch URL content ──
     def _fetch_url(url: str) -> str | None:
         from skillos.utils.wechat_fetch import needs_cdp
+
         if needs_cdp(url):
             from skillos.utils.wechat_fetch import fetch
         else:
@@ -708,7 +794,7 @@ async def dispatch_message(
         return content if content and len(content) > 100 else None
 
     # ── 1. URL detection ──
-    urls = re.findall(r'https?://[^\s]+', msg)
+    urls = re.findall(r"https?://[^\s]+", msg)
     if urls:
         agent = session.agent
         from skillos.skills.skill_store import save_skill
@@ -731,6 +817,7 @@ async def dispatch_message(
             content_type = _classify_content(content)
             if content_type == "actionable":
                 from skillos.skills.agent import SkillExtractionAgent
+
                 agent2 = SkillExtractionAgent()
                 reply, doc = agent2.learn_from_url(url, content, _skills_list(auth), llm_args)
                 session.add_turn("user", msg)
@@ -739,12 +826,16 @@ async def dispatch_message(
                 if doc:
                     try:
                         ep = _persist_created_skill(
-                            doc["name"], doc["content"], llm_args,
-                            source=url, source_type="url_content",
+                            doc["name"],
+                            doc["content"],
+                            llm_args,
+                            source=url,
+                            source_type="url_content",
                             team_context=_team_context_from_session(session),
                         )
                     except Exception as exc:
                         from skillos.billing.usage import QuotaExceededError
+
                         if isinstance(exc, QuotaExceededError):
                             raise HTTPException(status_code=402, detail=str(exc)) from exc
                         raise
@@ -754,10 +845,12 @@ async def dispatch_message(
                 return result
             else:
                 from skillos.knowledge.deep_digest import deep_digest, save_digest
+
                 dd = deep_digest(content, url, llm_args=llm_args)
                 if dd.glossary or dd.patterns:
                     save_digest(dd)
                 from skillos.knowledge.ingest_pipeline import finalize_ingest
+
                 out_lineage = finalize_ingest(
                     content,
                     url,
@@ -838,6 +931,7 @@ async def dispatch_message(
             # Guiding the purpose definition
             try:
                 from skillos.llm_client import call
+
                 model = llm_args[2] if len(llm_args) > 2 else ""
                 prompt = f"""用户正在定义知识体系的目标(PURPOSE.md)。根据用户输入，生成接下来应该问的引导性问题。
 
@@ -899,8 +993,19 @@ PURPOSE.md 定义了这个知识体系要解决什么核心问题、为谁服务
         if len(msg) > 100 and any(
             kw in msg
             for kw in (
-                "步骤", "流程", "方法", "规则", "原则", "指南", "框架", "结构",
-                "SKILL", "Skill", "skill", "怎么做", "如何使用",
+                "步骤",
+                "流程",
+                "方法",
+                "规则",
+                "原则",
+                "指南",
+                "框架",
+                "结构",
+                "SKILL",
+                "Skill",
+                "skill",
+                "怎么做",
+                "如何使用",
             )
         ):
             system_extra = methodology_paste_instruction()
@@ -932,8 +1037,11 @@ PURPOSE.md 定义了这个知识体系要解决什么核心问题、为谁服务
     # ── 3. Default: conversational response ──
     try:
         from skillos.llm_client import call
+
         history_text = "\n".join(f"{h['role']}: {h['content'][:200]}" for h in req.history[-5:])
-        prompt = f"Previous conversation:\n{history_text}\n\nUser: {msg}\n\nRespond helpfully in Chinese (1-3 sentences)."
+        prompt = (
+            f"Previous conversation:\n{history_text}\n\nUser: {msg}\n\nRespond helpfully in Chinese (1-3 sentences)."
+        )
         reply = call(prompt, max_tokens=200, temperature=0.7)
         session.add_turn("user", msg)
         session.add_turn("assistant", reply)
@@ -968,9 +1076,15 @@ async def dispatch_message_stream(
     llm_args = cfg.to_llm_args()
 
     sm = get_session_manager()
-    session = sm.get_or_create(req.session_id, tenant_id=tenant_id, org_id=org_id,
-                               user_id=user_id, dept_id=dept_id, channel=req.channel,
-                               chat_id=req.chat_id)
+    session = sm.get_or_create(
+        req.session_id,
+        tenant_id=tenant_id,
+        org_id=org_id,
+        user_id=user_id,
+        dept_id=dept_id,
+        channel=req.channel,
+        chat_id=req.chat_id,
+    )
 
     async def generate():
         try:
@@ -991,12 +1105,15 @@ async def dispatch_message_stream(
                 yield _sse_event("token", char)
                 await asyncio.sleep(0.015)  # ~60 chars/sec, natural reading speed
 
-            qm = session.agent._assess_draft_quality() if hasattr(session.agent, '_assess_draft_quality') else {}
-            meta = {"session_id": session.id, "skill_active": session.agent.is_active,
-                    "extraction_phase": session.agent._phase.name,
-                    "extraction_turn": session.agent._turn,
-                    "completion_pct": qm.get("pct", 0)}
-            dc = getattr(session.agent, '_draft_content', '') or ''
+            qm = session.agent._assess_draft_quality() if hasattr(session.agent, "_assess_draft_quality") else {}
+            meta = {
+                "session_id": session.id,
+                "skill_active": session.agent.is_active,
+                "extraction_phase": session.agent._phase.name,
+                "extraction_turn": session.agent._turn,
+                "completion_pct": qm.get("pct", 0),
+            }
+            dc = getattr(session.agent, "_draft_content", "") or ""
             if dc:
                 meta["draft_content"] = dc[:3000]
             meta["draft_progress"] = session.agent.to_progress_dict()
@@ -1032,6 +1149,7 @@ async def create_skill(
     from skillos.config import get_config
     from skillos.skills.agent import SkillExtractionAgent
     from skillos.skills.skill_store import list_skills
+
     cfg = get_config()
     tenant = auth.tenant_context() if auth else None
     team_ctx = _team_context_from_auth(auth)
@@ -1044,12 +1162,16 @@ async def create_skill(
     if doc:
         try:
             ep = _persist_created_skill(
-                doc["name"], doc["content"], cfg.to_llm_args(),
-                source="api/create", source_type="conversation",
+                doc["name"],
+                doc["content"],
+                cfg.to_llm_args(),
+                source="api/create",
+                source_type="conversation",
                 team_context=team_ctx,
             )
         except Exception as exc:
             from skillos.billing.usage import QuotaExceededError
+
             if isinstance(exc, QuotaExceededError):
                 raise HTTPException(status_code=402, detail=str(exc)) from exc
             raise
@@ -1110,21 +1232,22 @@ async def extraction_status(session_id: str = ""):
     if not session_id:
         return {"active": False, "reason": "no session_id"}
     from skillos.skills.session_manager import get_session_manager
+
     mgr = get_session_manager()
     session = mgr.get(session_id)
     if not session or not session.agent:
         return {"active": False, "reason": "session not found"}
     agent = session.agent
-    q = agent._assess_draft_quality() if hasattr(agent, '_assess_draft_quality') else {}
+    q = agent._assess_draft_quality() if hasattr(agent, "_assess_draft_quality") else {}
     return {
         "active": agent.is_active,
         "skill_name": agent.draft_name or agent.locked_name or "",
-        "turn": agent._turn if hasattr(agent, '_turn') else 0,
-        "phase": agent._phase.name if hasattr(agent, '_phase') else "unknown",
+        "turn": agent._turn if hasattr(agent, "_turn") else 0,
+        "phase": agent._phase.name if hasattr(agent, "_phase") else "unknown",
         "completion_pct": q.get("pct", 0),
-        "context_turns": len(agent._context) if hasattr(agent, '_context') else 0,
-        "draft_length": len(agent._draft_content) if hasattr(agent, '_draft_content') and agent._draft_content else 0,
-        "can_resume": bool(agent._context) if hasattr(agent, '_context') else False,
+        "context_turns": len(agent._context) if hasattr(agent, "_context") else 0,
+        "draft_length": len(agent._draft_content) if hasattr(agent, "_draft_content") and agent._draft_content else 0,
+        "can_resume": bool(agent._context) if hasattr(agent, "_context") else False,
     }
 
 
@@ -1153,8 +1276,9 @@ async def resume_extraction(session_id: str = "", message: str = ""):
     if not agent.is_active and agent._context:
         # Agent has context but is not active — rehydrate from draft
         from skillos.skills.agent import Phase
+
         agent._phase = Phase.REFINING
-        agent._refinement_rounds = max(0, getattr(agent, '_refinement_rounds', 1) - 1)
+        agent._refinement_rounds = max(0, getattr(agent, "_refinement_rounds", 1) - 1)
         agent._turn = len(agent._context)
 
     name = agent.draft_name or agent.locked_name or "你的技能"
@@ -1173,6 +1297,7 @@ async def resume_extraction(session_id: str = "", message: str = ""):
     result = {"reply": reply, "resumed": True, "session_id": session.id, "skill_name": name}
     if doc:
         from skillos.skills.skill_store import save_skill
+
         save_skill(doc["name"], doc["content"])
         result["skill_saved"] = doc["name"]
     else:
@@ -1201,7 +1326,10 @@ async def ingest_file(
         raise HTTPException(400, "No file provided")
     if not is_supported(file.filename):
         ext = Path(file.filename).suffix.lower()
-        raise HTTPException(400, f"Unsupported format: {ext}. Supported: PDF, Word, Excel, PPT, images, txt, md, csv, json, html, epub, audio")
+        raise HTTPException(
+            400,
+            f"Unsupported format: {ext}. Supported: PDF, Word, Excel, PPT, images, txt, md, csv, json, html, epub, audio",
+        )
 
     suffix = Path(file.filename).suffix or ".tmp"
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -1215,8 +1343,12 @@ async def ingest_file(
             return {"error": md_text, "filename": file.filename, "conversion": conv_meta}
 
         if len(md_text) < 200:
-            return {"note": "内容太短，跳过处理", "filename": file.filename,
-                    "markdown_length": len(md_text), "conversion": conv_meta}
+            return {
+                "note": "内容太短，跳过处理",
+                "filename": file.filename,
+                "markdown_length": len(md_text),
+                "conversion": conv_meta,
+            }
 
         # Check if in extraction conversation → inject
         if session_id:
@@ -1225,15 +1357,19 @@ async def ingest_file(
             if session and session.agent.is_active:
                 reply = session.agent.inject_external_knowledge(md_text, file.filename)
                 return {
-                    "filename": file.filename, "file_category": get_file_category(file.filename),
-                    "markdown_length": len(md_text), "conversion": conv_meta,
-                    "reply": reply, "injected_into_extraction": True,
+                    "filename": file.filename,
+                    "file_category": get_file_category(file.filename),
+                    "markdown_length": len(md_text),
+                    "conversion": conv_meta,
+                    "reply": reply,
+                    "injected_into_extraction": True,
                 }
 
         # Auto-classify: actionable → skill, conceptual → digest,
         #                template/reference → resource directory
         try:
             from skillos.llm_client import call
+
             model = llm_args[2] if len(llm_args) > 2 else ""
             classify_prompt = f"""判断以下内容是"actionable"(含可执行步骤/方法论/流程)、"conceptual"(概念/背景/参考)还是"template"(模板/配置/话术/检查清单)?
 
@@ -1258,12 +1394,15 @@ async def ingest_file(
                     from pathlib import Path as _Path
 
                     from skillos.skills.portable_skill import tool_slug
+
                     slug = tool_slug(session.agent._draft_name or "skill")
                     skills_root = _Path(__file__).parent.parent.parent / "skills"
                     skill_dir = skills_root / slug
                     from skillos.skills.skill_store import _ensure_standard_dirs
+
                     _ensure_standard_dirs(skill_dir)
                     from skillos.skills.resource_capture import extract_asset, extract_reference
+
                     asset_file = extract_asset(md_text, skill_dir, filename=file.filename)
                     if asset_file:
                         reply = f"📎 已保存为资源文件: {asset_file.name}"
@@ -1279,34 +1418,44 @@ async def ingest_file(
 
         if is_actionable:
             from skillos.skills.agent import SkillExtractionAgent
+
             agent = SkillExtractionAgent()
             reply, doc = agent.learn_from_url(f"file://{file.filename}", md_text, _skills_list(auth), llm_args)
             ep = None
             if doc:
                 try:
                     ep = _persist_created_skill(
-                        doc["name"], doc["content"], llm_args,
-                        source=f"file://{file.filename}", source_type="url_content",
+                        doc["name"],
+                        doc["content"],
+                        llm_args,
+                        source=f"file://{file.filename}",
+                        source_type="url_content",
                         team_context=_team_context_from_auth(auth),
                     )
                 except Exception as exc:
                     from skillos.billing.usage import QuotaExceededError
+
                     if isinstance(exc, QuotaExceededError):
                         raise HTTPException(status_code=402, detail=str(exc)) from exc
                     raise
             return {
-                "routed_to": "skill", "filename": file.filename, "file_category": category,
-                "markdown_length": len(md_text), "conversion": conv_meta,
+                "routed_to": "skill",
+                "filename": file.filename,
+                "file_category": category,
+                "markdown_length": len(md_text),
+                "conversion": conv_meta,
                 "reply": (reply + _epistemic_reply_suffix(ep)) if doc else reply,
                 "skill_saved": doc["name"] if doc else None,
                 "epistemic_summary": ep if doc else None,
             }
         else:
             from skillos.knowledge.deep_digest import deep_digest, save_digest
+
             dd = deep_digest(md_text, f"file://{file.filename}", llm_args=llm_args)
             if dd.glossary or dd.patterns:
                 save_digest(dd)
             from skillos.knowledge.ingest_pipeline import finalize_ingest
+
             out = finalize_ingest(
                 md_text,
                 f"file://{file.filename}",
@@ -1314,10 +1463,15 @@ async def ingest_file(
                 digest_result=dd if (dd.glossary or dd.patterns or dd.sections) else None,
                 channel="file_upload_conceptual",
                 payload={
-                    "routed_to": "digest", "filename": file.filename, "file_category": category,
-                    "markdown_length": len(md_text), "conversion": conv_meta,
-                    "title": dd.title, "doc_type": dd.doc_type,
-                    "glossary_terms": len(dd.glossary), "patterns": len(dd.patterns),
+                    "routed_to": "digest",
+                    "filename": file.filename,
+                    "file_category": category,
+                    "markdown_length": len(md_text),
+                    "conversion": conv_meta,
+                    "title": dd.title,
+                    "doc_type": dd.doc_type,
+                    "glossary_terms": len(dd.glossary),
+                    "patterns": len(dd.patterns),
                     "sections": len(dd.sections),
                 },
             )

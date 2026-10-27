@@ -3,7 +3,9 @@ repos:
     rev: v0.11.0
     hooks:
       - id: ruff
-        args: [--fix, --select, E,F,B]
+        # Rely on pyproject [tool.ruff.lint] select/extend-ignore (E501/B904 ignored).
+        # Do not pass bare --select E,F,B — it re-enables ignored codes and blocks commits.
+        args: [--fix]
       - id: ruff-format
         args: [--check]
 

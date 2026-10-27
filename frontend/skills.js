@@ -320,16 +320,13 @@ function _detailQuick8HistoryTable(hist) {
   return h + '</tbody></table>';
 }
 
-function _renderQuick8Section(q8) {
+function _renderQuick8Body(q8) {
   if (!q8) {
-    return '<div class="dna-layer"><div class="dna-layer-title"><span>本地 Quick8</span></div>' +
-      _detailInfoBox(
-        '<div class="detail-decision-sub">尚未运行自建 8 题评测。</div>' +
-        '<div class="detail-btn-row">' +
-        '<button type="button" class="btn-primary btn-sm" onclick="runLocalQuick8()">运行 Quick8</button>' +
-        '<button type="button" class="btn-secondary btn-sm" onclick="runLocalQuick8(true)">域内</button>' +
-        '<span id="local-quick8-status" class="detail-inline-status"></span></div>'
-      ) + '</div>';
+    return '<div class="detail-decision-sub">尚未运行自建 8 题评测（日常快检 / Gate B 代理）。</div>' +
+      '<div class="detail-btn-row">' +
+      '<button type="button" class="btn-primary btn-sm" onclick="runLocalQuick8()">运行 Quick8</button>' +
+      '<button type="button" class="btn-secondary btn-sm" onclick="runLocalQuick8(true)">域内</button>' +
+      '<span id="local-quick8-status" class="detail-inline-status"></span></div>';
   }
   var inner = '<div class="detail-file-meta">' + escHtml(q8.file || '') + '</div>';
   inner += '<div class="detail-decision-sub">有技能 <b>' + escHtml(String(q8.with_skill_score)) + '/' + escHtml(String(q8.max_score || q8.domain_max_score || (q8.tasks || 8) * 100)) + '</b> [' + escHtml(q8.with_skill_grade || '') + ']';
@@ -344,12 +341,74 @@ function _renderQuick8Section(q8) {
     inner += '<div class="detail-decision-meta">题目: ' + q8.task_ids.map(function (id) { return '<code>' + escHtml(id) + '</code>'; }).join(' ') + '</div>';
   }
   if (q8.per_task && q8.per_task.length) inner += _detailQuick8PerTaskTable(q8.per_task);
-  inner += '<pre class="detail-code-block">python scripts/run_new3skills_bench_quick8.py</pre>';
+  inner += '<pre class="detail-code-block">python scripts/run_bench_regression.py</pre>';
   inner += '<div class="detail-btn-row">' +
-    '<button type="button" class="btn-primary btn-sm" onclick="runLocalQuick8()">运行 Quick8 评测</button>' +
+    '<button type="button" class="btn-primary btn-sm" onclick="runLocalQuick8()">运行 Quick8</button>' +
     '<button type="button" class="btn-secondary btn-sm" onclick="runLocalQuick8(true)">域内 Quick8</button>' +
     '<span id="local-quick8-status" class="detail-inline-status"></span></div>';
-  return '<div class="dna-layer"><div class="dna-layer-title"><span>最近本地 Quick8</span></div>' + _detailInfoBox(inner) + '</div>';
+  return inner;
+}
+
+function _renderQuick8Section(q8) {
+  return '<div class="dna-layer"><div class="dna-layer-title"><span>最近本地 Quick8</span></div>' +
+    _detailInfoBox(_renderQuick8Body(q8)) + '</div>';
+}
+
+function _renderOfficialTrack(plan, latest) {
+  var h = '';
+  if (plan.windows_note) {
+    h += '<div class="bench-track-warn">' + escHtml(plan.windows_note) + '</div>';
+  }
+  if (plan.suggested_official_tasks && plan.suggested_official_tasks.length) {
+    h += '<div class="detail-decision-meta">推荐 task</div><ul class="detail-task-list">';
+    plan.suggested_official_tasks.forEach(function (tid) {
+      h += '<li><code>' + escHtml(tid) + '</code></li>';
+    });
+    h += '</ul>';
+  } else {
+    h += '<div class="detail-decision-sub">暂无匹配的官方 task 映射。</div>';
+  }
+  if (plan.matching_presets && plan.matching_presets.length) {
+    plan.matching_presets.forEach(function (p) {
+      h += '<div class="dna-domain-card"><div class="detail-variant-title">' + escHtml(p.id) + '</div>';
+      h += '<div class="detail-variant-meta">' + escHtml(p.description || '') + '</div>';
+      h += '<div class="detail-decision-meta">task: <code>' + escHtml(p.task) + '</code></div>';
+      h += '<pre class="detail-code-block">python scripts/run_official_skill_compare.py --preset ' + escHtml(p.id) + '</pre></div>';
+    });
+  }
+  h += '<div class="detail-btn-row">' +
+    '<button type="button" class="btn-secondary btn-sm" onclick="triggerOfficialCi()">请求 GitHub CI</button>' +
+    '<span id="official-ci-status" class="detail-inline-status"></span></div>';
+  if (plan.commands) {
+    Object.keys(plan.commands).forEach(function (k) {
+      if (!plan.commands[k]) return;
+      h += '<div class="detail-file-meta">' + escHtml(k) + '</div>';
+      h += '<pre class="detail-code-block">' + escHtml(plan.commands[k]) + '</pre>';
+    });
+  }
+  latest = latest || {};
+  var latestCompare = (latest.compare || []).slice(0, 2);
+  var latestSmoke = (latest.smoke || []).slice(0, 1);
+  if (latestCompare.length || latestSmoke.length) {
+    h += '<div class="detail-decision-meta" style="margin-top:10px">最近官方 CI</div>';
+    latestCompare.forEach(function (item) {
+      var cmp = item.comparison || {};
+      h += _detailInfoBox(
+        '<div class="detail-file-meta">' + escHtml(item._file || '') + '</div>' +
+        (cmp.improvement ? 'Agent 对比 Δ: <b>' + escHtml(cmp.improvement) + '</b>' : '') +
+        (item.preset ? ' · preset: <code>' + escHtml(item.preset) + '</code>' : '')
+      );
+    });
+    latestSmoke.forEach(function (item) {
+      h += _detailInfoBox(
+        '<div class="detail-file-meta">' + escHtml(item._file || '') + ' · oracle smoke</div>' +
+        (item.reward != null ? 'reward: <b>' + escHtml(String(item.reward)) + '</b>' : '')
+      );
+    });
+  } else {
+    h += '<div class="detail-muted" style="margin-top:8px">尚无官方 CI 产物。需 Linux + Docker Actions（见 docs/SKILLSBENCH_CI.md）。</div>';
+  }
+  return h;
 }
 
 async function loadOverview() {
@@ -763,97 +822,54 @@ async function refreshDnaLineage() {
 async function loadOfficialBench() {
   var el = _detailStage();
   if (!el) return;
-  el.innerHTML = _detailMuted('加载官方 SkillsBench…');
+  el.innerHTML = _detailMuted('加载评测双轨…');
   try {
     var r = await api('/api/bench/official/skills/' + encodeURIComponent(_currentSkill));
     if (!r.ok) throw new Error('HTTP ' + r.status);
     var d = await r.json();
     var plan = d.plan || {};
-    var h = _detailIntro(
-      '对接 <a href="https://github.com/benchflow-ai/skillsbench" target="_blank" rel="noopener">官方 SkillsBench</a>（BenchFlow + Docker）。' +
-      ' 本地快速分为自建 88 题；此处为<strong>官方沙箱 pass rate</strong>评测计划。'
-    );
+    var q8 = d.latest_quick8;
+    var latest = d.latest_official || {};
+
+    var h = '<div class="bench-dual-legend">' +
+      '<b>两条评测轨，勿混为一谈。</b> 左栏本地 Quick8 / 域内 smoke 用于日常门禁与 Trust Tier Gate B；' +
+      '右栏 <a href="https://github.com/benchflow-ai/skillsbench" target="_blank" rel="noopener">官方 SkillsBench</a>（BenchFlow + Docker）是权威 pass rate，需 Linux CI。' +
+      ' 详见 <code>docs/SKILLSBENCH_CI.md</code>。' +
+      '</div>';
 
     h += '<div class="dash-grid detail-kpi-grid">';
-    h += _detailKpi('推荐 task', String((plan.suggested_official_tasks || []).length), 'muted', '官方任务');
-    h += _detailKpi('预设', String((plan.matching_presets || []).length), 'good', '一键对比');
-    var q8 = d.latest_quick8;
     if (q8 && q8.improvement_pct) {
-      h += _detailKpi('Quick8 Δ', escHtml(q8.improvement_pct), _detailPctTone(q8.improvement_pct), '自建8题');
+      h += _detailKpi('本地 Quick8 Δ', escHtml(q8.improvement_pct), _detailPctTone(q8.improvement_pct), '自建快检');
+    } else {
+      h += _detailKpi('本地 Quick8 Δ', '—', 'muted', '尚未运行');
     }
     if (q8 && q8.domain_improvement_pct) {
       var dlabel = q8.domain_only || q8.mode === 'skill_domain_quick8' ? (q8.tasks || 1) + '题域内' : (q8.skills_injected || 0) + '题注入';
       h += _detailKpi('域内 Δ', escHtml(q8.domain_improvement_pct), _detailPctTone(q8.domain_improvement_pct), dlabel);
     }
+    h += _detailKpi('官方 task', String((plan.suggested_official_tasks || []).length), 'muted', 'BenchFlow 映射');
+    h += _detailKpi('官方预设', String((plan.matching_presets || []).length), 'good', 'CI 对比');
     h += '</div>';
 
-    h += _renderQuick8Section(q8);
-
+    h += '<div class="bench-tracks">';
+    h += '<section class="bench-track bench-track-local" aria-label="本地 Quick8">';
+    h += '<div class="bench-track-head"><span class="bench-track-title">本地 Quick8</span>';
+    h += '<span class="bench-track-badge">日常 / Gate B</span></div>';
+    h += '<p class="bench-track-note">自建题集 · 可本机跑 · 不等于官方 pass rate</p>';
+    h += _renderQuick8Body(q8);
     var hist = d.quick8_history || [];
     if (hist.length > 1) {
-      h += '<div class="dna-layer"><div class="dna-layer-title"><span>Quick8 历史趋势</span></div>';
+      h += '<div class="detail-decision-meta" style="margin-top:12px">历史趋势</div>';
       h += _detailQuick8HistoryTable(hist);
-      h += '</div>';
     }
+    h += '</section>';
 
-    if (plan.windows_note) {
-      h += '<div class="dna-conflict detail-panel">' + escHtml(plan.windows_note) + '</div>';
-    }
-
-    if (plan.suggested_official_tasks && plan.suggested_official_tasks.length) {
-      var tasksInner = '<ul class="detail-task-list">';
-      plan.suggested_official_tasks.forEach(function (tid) {
-        tasksInner += '<li><code>' + escHtml(tid) + '</code></li>';
-      });
-      tasksInner += '</ul>';
-      h += _detailCard('推荐官方 Task', tasksInner);
-    }
-
-    if (plan.matching_presets && plan.matching_presets.length) {
-      var presetsInner = '';
-      plan.matching_presets.forEach(function (p) {
-        presetsInner += '<div class="dna-domain-card"><div class="detail-variant-title">' + escHtml(p.id) + '</div>';
-        presetsInner += '<div class="detail-variant-meta">' + escHtml(p.description || '') + '</div>';
-        presetsInner += '<div class="detail-decision-meta">task: <code>' + escHtml(p.task) + '</code></div>';
-        presetsInner += '<pre class="detail-code-block">python scripts/run_official_skill_compare.py --preset ' + escHtml(p.id) + '</pre></div>';
-      });
-      presetsInner += '<div class="detail-btn-row">' +
-        '<button type="button" class="btn-secondary btn-sm" onclick="triggerOfficialCi()">请求 GitHub CI 评测</button>' +
-        '<span id="official-ci-status" class="detail-inline-status"></span></div>';
-      h += _detailCard('Agent 对比预设', presetsInner);
-    }
-
-    if (plan.commands) {
-      var cmdInner = '';
-      Object.keys(plan.commands).forEach(function (k) {
-        if (!plan.commands[k]) return;
-        cmdInner += '<div class="detail-file-meta">' + escHtml(k) + '</div>';
-        cmdInner += '<pre class="detail-code-block">' + escHtml(plan.commands[k]) + '</pre>';
-      });
-      h += _detailCard('CLI 命令（Linux / CI）', cmdInner);
-    }
-
-    var latest = d.latest_official || {};
-    var latestCompare = (latest.compare || []).slice(0, 2);
-    var latestSmoke = (latest.smoke || []).slice(0, 1);
-    if (latestCompare.length || latestSmoke.length) {
-      var ciInner = '';
-      latestCompare.forEach(function (item) {
-        var cmp = item.comparison || {};
-        ciInner += _detailInfoBox(
-          '<div class="detail-file-meta">' + escHtml(item._file || '') + '</div>' +
-          (cmp.improvement ? 'Agent 对比 Δ: <b>' + escHtml(cmp.improvement) + '</b>' : '') +
-          (item.preset ? ' · preset: <code>' + escHtml(item.preset) + '</code>' : '')
-        );
-      });
-      latestSmoke.forEach(function (item) {
-        ciInner += _detailInfoBox(
-          '<div class="detail-file-meta">' + escHtml(item._file || '') + ' · oracle smoke</div>' +
-          (item.reward != null ? 'reward: <b>' + escHtml(String(item.reward)) + '</b>' : '')
-        );
-      });
-      h += _detailCard('最近官方 CI 结果', ciInner);
-    }
+    h += '<section class="bench-track bench-track-official" aria-label="官方 SkillsBench">';
+    h += '<div class="bench-track-head"><span class="bench-track-title">官方 SkillsBench</span>';
+    h += '<span class="bench-track-badge">权威 / CI</span></div>';
+    h += '<p class="bench-track-note">BenchFlow 沙箱 · GitHub Actions · Windows 本机不可跑 oracle</p>';
+    h += _renderOfficialTrack(plan, latest);
+    h += '</section></div>';
 
     var related = d.related_benchmarks || [];
     if (related.length) {
@@ -878,9 +894,7 @@ async function loadOfficialBench() {
         }
         relInner += _detailInfoBox(block);
       });
-      h += _detailCard('本地历史评测', relInner);
-    } else {
-      h += _detailMuted('暂无本地官方/快速评测记录。配置 GitHub DEEPSEEK_API_KEY 后可在 Actions 运行 Official SkillsBench。');
+      h += _detailCard('相关历史快照', relInner);
     }
 
     el.innerHTML = h;
@@ -1452,6 +1466,9 @@ function renderSkillCards(skills) {
         var scoreColor = score >= 4 ? 'var(--a2)' : score >= 2 ? 'var(--amber)' : 'var(--text3)';
         var metaLine = 'v' + s.version + ' · ' + s.runs + ' exec';
 
+        var desc = s.description || '';
+        var descHtml = desc ? '<div class="tree-desc">' + escHtml(desc.slice(0, 60)) + (desc.length > 60 ? '…' : '') + '</div>' : '';
+
         return '<div class="skill-tree-node">' +
 
         '<div class="tree-row" data-tree="' + treeId + '" data-skill="' + s.name + '" onclick="toggleTreeNode(this.dataset.tree)">' +
@@ -1467,6 +1484,7 @@ function renderSkillCards(skills) {
         (_skillListTab === 'mine' ? '<button class="opt-btn" style="margin-left:auto" onclick="event.stopPropagation();optimizeSkill(this.dataset.skill)" data-skill="' + escHtml(s.name) + '">⚡</button>' : '') +
 
         '</div>' +
+        descHtml +
 
         '<div class="tree-children" id="' + treeId + '">' +
 

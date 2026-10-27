@@ -1,6 +1,5 @@
 """Bench quality snapshot for skill frontmatter (save gate, DNA compliance, smoke)."""
 
-
 import time
 from typing import Any
 
@@ -33,6 +32,8 @@ def build_bench_quality_meta(
             "all_passed": report.get("all_passed"),
         }
 
+    from skillos.evaluation.trust_tier import normalize_outcome_from_gate
+
     gate = gate_meta
     if gate is None:
         suite = run_domain_smoke_suite(
@@ -46,12 +47,27 @@ def build_bench_quality_meta(
             "smoke_pass": min_score >= 80,
             "min_with_score": min_score,
             "tasks": [r["task_id"] for r in suite],
+            "domain_smoke_suite": suite,
+        }
+    else:
+        norm = normalize_outcome_from_gate(gate)
+        gate = {
+            **gate,
+            "smoke_pass": norm["smoke_pass"],
+            "min_with_score": norm["min_with_score"],
+            "tasks": norm.get("tasks") or gate.get("tasks") or [],
         }
 
     out: dict[str, Any] = {
         "checked_at": int(time.time()),
         "dna_compliance": dna,
-        "save_gate": gate,
+        "save_gate": {
+            "smoke_pass": gate.get("smoke_pass"),
+            "min_with_score": gate.get("min_with_score"),
+            "tasks": gate.get("tasks") or [],
+            "warning": gate.get("warning"),
+            "skipped": gate.get("skipped"),
+        },
     }
     if moe:
         moe_block: dict[str, Any] = {}

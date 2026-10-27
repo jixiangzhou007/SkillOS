@@ -5,7 +5,6 @@ record_claim(), optionally runs Popper-style falsification, and writes
 epistemic metadata back into skill frontmatter + body annotations.
 """
 
-
 import logging
 import re
 import time
@@ -222,9 +221,7 @@ def _inject_epistemic_section(
         elif refreshed.level == EpistemicLevel.EXPERIENCE:
             pending_lines.append(f"- ⏳ [待验证] {snippet} (`{refreshed.claim_id}`)")
         elif refreshed.level in (EpistemicLevel.EVIDENCE, EpistemicLevel.PREFERENCE):
-            pending_lines.append(
-                f"- 📋 [{refreshed.level.value}] {snippet} (`{refreshed.claim_id}`)"
-            )
+            pending_lines.append(f"- 📋 [{refreshed.level.value}] {snippet} (`{refreshed.claim_id}`)")
 
     if not verified_lines and not pending_lines:
         return body
@@ -248,6 +245,7 @@ def format_epistemic_api_payload(meta: dict) -> dict:
     return {
         "verified": ep.get("verified", 0),
         "pending": ep.get("pending", 0),
+        "errors": ep.get("errors", 0),
         "total_claims": ep.get("total_claims", 0),
         "pending_ids": ep.get("pending_ids", []),
         "source_type": ep.get("source_type", ""),
@@ -266,14 +264,16 @@ def list_pending_claims_detail(skill_name: str = "") -> list[dict]:
             continue
         if skill_name and claim.skill_name != skill_name:
             continue
-        rows.append({
-            "claim_id": claim.claim_id,
-            "content": claim.content,
-            "skill_name": claim.skill_name,
-            "section": getattr(claim, "section", ""),
-            "level": claim.level.value if hasattr(claim.level, "value") else str(claim.level),
-            "confidence": claim.confidence,
-        })
+        rows.append(
+            {
+                "claim_id": claim.claim_id,
+                "content": claim.content,
+                "skill_name": claim.skill_name,
+                "section": getattr(claim, "section", ""),
+                "level": claim.level.value if hasattr(claim.level, "value") else str(claim.level),
+                "confidence": claim.confidence,
+            }
+        )
     return rows
 
 
@@ -356,11 +356,7 @@ def refresh_skill_epistemic_state(skill_name: str) -> bool:
 
     store = get_store()
     if not claim_ids:
-        claim_ids = [
-            c.claim_id
-            for c in store.claims.values()
-            if c.skill_name == skill_name
-        ]
+        claim_ids = [c.claim_id for c in store.claims.values() if c.skill_name == skill_name]
 
     claims = [store.claims[cid] for cid in claim_ids if cid in store.claims]
     if not claims:

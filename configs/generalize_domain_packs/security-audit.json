@@ -1,0 +1,53 @@
+{
+  "domain_template": "security-audit",
+  "source_skill": "安全合规审计助手",
+  "anchor_tasks": [
+    "workflow-076",
+    "workflow-079"
+  ],
+  "smoke_tasks": [
+    "workflow-076",
+    "workflow-079"
+  ],
+  "quick8_tasks": [
+    "workflow-076",
+    "workflow-079",
+    "documentation-063"
+  ],
+  "bench_categories": [
+    "workflow",
+    "documentation"
+  ],
+  "heritage_heading": "应答速查（单条回复、可执行）",
+  "heritage_body": "收到与 **安全合规审计助手** 相关的请求时，**在同一条回复中**给出完整可执行方案，不要只追问。\n\n**硬性规则**\n\n**季度权限审计**\n- 过度授权须**回收/撤销（revoke）**并落实最小权限\n- 须覆盖**权限审计**：账号清单、最小权限、离职清理\n- 须输出可审计的**报告/记录**\n- 须对照**合规标准**（如 SOC2/等保）给出结论\n- **本条必含词**：SOC2, access, audit, compliance, report, revoke, 合规, 审计, 报告, 最小权限\n\n**安全演练流程**\n- 演练前须明确**授权范围与 ROE**\n- 演练后须**复盘**并列出改进项\n- 安全**演练**须含范围、授权与 ROE\n- 高危项须**通知/升级（escalation）**相关责任人\n- **本条必含词**：ROE, drill, escalation, postmortem, scope, 升级, 复盘, 对抗, 授权, 改进\n\n**事故应急响应runbook**\n- 回复须覆盖：诊断\n- 回复须覆盖：告警 / alert / 监控\n- 回复须覆盖：恢复\n- 回复须覆盖：触发\n- 回复须覆盖：回滚 / rollback\n- **本条必含词**：alert, rollback, 告警, 回滚, 复盘, 恢复, 监控, 触发, 诊断\n\n**标准应答结构**\n1. **核实/范围**：确认输入完整性与适用政策/标准\n2. **判定**：逐项标注合规/风险/超标/缺失（使用上述必含词）\n3. **动作**：给出通过、**拒绝/退回**、整改或升级路径\n4. **输出**：同步报告/通知/凭证（如适用）",
+  "routing_keywords": [
+    "季度权限审计",
+    "权限",
+    "access",
+    "audit",
+    "审计",
+    "清理",
+    "revoke",
+    "最小权限",
+    "合规",
+    "compliance",
+    "SOC2",
+    "报告",
+    "report",
+    "记录",
+    "安全演练流程",
+    "演练",
+    "drill",
+    "红蓝",
+    "对抗",
+    "授权",
+    "规则",
+    "scope",
+    "ROE",
+    "复盘"
+  ],
+  "cold_start_rounds": 2,
+  "min_with_score": 100,
+  "passed": true,
+  "updated_at": 1781758030
+}

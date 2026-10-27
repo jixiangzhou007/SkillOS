@@ -1,25 +1,27 @@
 # SkillOS 三篇论文规划
 
 > 作者：一位不懂代码的普通人。用常识、哲学和产品直觉推动 AI 技能工程的发展。
-> 2026年6月
+> 2026年6月起草 · **2026年10月叙事对齐**（学徒 / Dual Gate / 类比继承）
 
 ---
 
 ## 总览
 
-SkillOS 的三个核心创新可以拆成三篇独立论文，覆盖技能全生命周期：
+SkillOS 研究「学徒如何向人学习并出师」，工程上拆成三条主线（非并列功能清单）：
 
 ```
-创建 ────────────→ 验证 ────────────→ 进化
-(论文2)           (论文1)            (论文3)
-苏格拉底萃取       认识论引擎          MoE + 扩散
+苏格拉底萃取 ──→ Dual Gate 验证 ──→ 门禁约束的进化与类比继承
+（求助 / 默会）     Gate A 认识论          （越学越快、不脏遗传）
+                    Gate B 任务结果
 ```
 
-三篇论文共享同一套代码库（SkillOS 开源项目），但每篇解决一个独立的学术问题。可以分别投稿，也可以先发一篇再陆续发另外两篇。
+产品完成态：`Draft → Provisional → Verified`。权威设计见 [`DESIGN.md`](../DESIGN.md)。
+
+三篇论文共享同一套代码库，可分别投稿。Related Work 须正面对比 EVISKILL / CoEvoSkills / OpenSkill / SoK: Agentic Skills（2026），**勿再写「全球唯一」**。
 
 ---
 
-## 论文 1：认识论引擎（最核心、最独特）
+## 论文 1：认识论引擎 + Dual Gate（最核心）
 
 ### 标题
 
@@ -27,14 +29,15 @@ SkillOS 的三个核心创新可以拆成三篇独立论文，覆盖技能全生
 
 ### 解决的问题
 
-目前所有 AI 技能系统（SkillOpt、EXIF、Anything2Skill、Dify、Coze）都假设"AI 提取的内容可以直接用"。没有一个系统会问："这段内容是知识还是幻觉？"
+多数技能系统假设"抽取即可用"。2026 年结果级验证已成共识；仍缺 **claim 级分层** 与 **出师契约（Trust Tier）** 的工程化组合。
 
 ### 核心贡献
 
-1. **六级认知分层**：将 Plato/Popper/Kant/Polanyi 哲学工程化为可运行的代码（Evidence→Experience→Knowledge→Preference→Error→Superseded）
-2. **晋升机制**：Experience→Knowledge 的四条件验证（多源交叉、无矛盾、证伪存活、时间稳定）
-3. **Popper 证伪测试**：让 LLM 扮演攻击者主动反驳每条声明
-4. **Graphiti 时序模型**：双时间轴跟踪每段知识的有效期
+1. **六级认知分层**：Evidence→Experience→Knowledge→Preference→Error→Superseded
+2. **晋升机制**：交叉验证、无矛盾、证伪存活、时间稳定
+3. **Popper 证伪测试**：对抗性反驳
+4. **Dual Gate**：Claim 认识论 × Outcome smoke/Quick8 → Trust Tier
+5. **Layer 1**：HERITAGE × pack 路由（类比继承的域载体）
 
 ### 实验设计
 
@@ -43,9 +46,9 @@ SkillOS 的三个核心创新可以拆成三篇独立论文，覆盖技能全生
 - 数据：100 条标注集 — [`epistemic_results.md`](paper/experiments/epistemic_results.md)
 - **Layer 1 补充（2026-06-18）**：领域 HERITAGE×pack 路由 2×2 ablation — 泛化 cohort median Quick8 Δ +45 — [`layer1_ablation_results.md`](paper/experiments/layer1_ablation_results.md)
 
-### 创新性
+### 创新性（诚实表述）
 
-⭐⭐⭐⭐⭐ | 全球唯一。没有任何学术论文或工业系统实现过认识论驱动的技能质量验证。
+⭐⭐⭐⭐ | **Claim 级认识论 × 任务门禁 × HITL 学徒获取** 的组合差异化；验证本身非独家（见 EVISKILL / CoEvoSkills）。
 
 ### 适合投哪里
 

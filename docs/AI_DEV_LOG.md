@@ -4,6 +4,134 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-27] Phase T — 评测双轨分栏 UI — Cursor Agent
+
+**背景 / 触发**：用户「继续」；ARCH Phase T 项「官方 SkillsBench CI 与本地 Quick8 分栏产品化」。
+
+**修改思路**：技能详情「评测」Tab 改为左右双栏 + 图例，显式拆开日常 Gate B 与官方权威轨，避免口径混淆。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/skills.js` | `_renderQuick8Body` / `_renderOfficialTrack`；`loadOfficialBench` 双轨布局 |
+| `frontend/style.css` | `.bench-tracks` / `.bench-track-*` |
+| `frontend/index.html` | `skills.js?v=7` |
+| `docs/DEMO_VERIFIED_SPINE.md` | 分栏验收步骤 |
+| `docs/SKILLSBENCH_CI.md` / `ARCH_OPTIMIZATION_PLAN.md` | 勾选 Phase T #2 |
+
+**未修改 / 刻意不做**：未 commit/push（需授权）；未拍 Demo 录像；未改后端 API
+
+**验证**：浏览器走查技能详情「评测」Tab（若服务在跑）；静态改动无 pytest
+
+**开放问题 / 下一步**：授权后 commit + push；Demo 录像
+
+---
+
+## [2026-10-27] Phase V 全量完成 — Evidence + 泛化 pack + 回归 ALL PASS — Cursor Agent
+
+**背景 / 触发**：用户「完全全部开发」——按 ARCH Phase V 收尾并交付 Phase T 最小 Evidence。
+
+**修改思路**：证据卡挂 UI/API；泛化 pack 版本化；全库 trust_tier 回填；bench 回归固化；论文规划去「全球唯一」。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/evaluation/evidence.py` | Evidence Card |
+| `skillos/api/skills.py` | `/evidence`；export trust metadata；详情透出 |
+| `scripts/repair_reference_packs.py` | `--all` / generalize |
+| `scripts/backfill_trust_tier.py` | 批量回填 |
+| `configs/generalize_domain_packs/*` | 3 泛化 pack |
+| `frontend/precipitation-result.js` v6 | 证据块 |
+| `docs/PAPERS.md` / `DEMO_VERIFIED_SPINE.md` / `ARCH_OPTIMIZATION_PLAN.md` | 对齐 |
+
+**未修改 / 刻意不做**：git push（无 origin）；官方 CI 分栏 UI；Demo 录像
+
+**验证**：
+- pytest trust/evidence/sync/save_gate — passed
+- `run_bench_regression.py` — **ALL PASS**（`bench_regression_1793072689.json`）
+- API evidence GitHub Pull → verified；浏览器注册登录 OK
+
+**开放问题 / 下一步**：配置 remote 后 push；可选 v0.3.5 tag；官方 SkillsBench 分栏
+
+---
+
+## [2026-10-27] Phase V Day1–2 — Trust Tier 双门禁原型接线 — Cursor Agent
+
+**背景 / 触发**：用户「继续做原型」；按 `ARCH_OPTIMIZATION_PLAN` Phase V 执行 Trust Tier 契约。
+
+**修改思路**：
+- 新增 `compute_trust_tier`：Verified = Gate A（verified≥1 且无 errors）∧ Gate B（smoke≥80）
+- 沉淀保存后写入 frontmatter + API `epistemic_summary`
+- 结果卡禁止烟测失败仍称 Verified；Provisional = 学徒态文案
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/evaluation/trust_tier.py` | 新建 Dual Gate 计算 |
+| `skillos/api/skills_extract.py` | 持久化后挂 trust_tier/gates |
+| `skillos/skills/bench_quality.py` | save_gate 规范化 smoke_pass |
+| `skillos/knowledge/epistemic_bridge.py` | payload 含 errors |
+| `frontend/precipitation-result.js` v5 | 三态标题 + Gate 徽章 |
+| `frontend/style.css` | trust-tier / provisional 边框 |
+| `tests/test_trust_tier.py` | 5 用例 |
+| `docs/DEMO_VERIFIED_SPINE.md` | Demo 剧本 |
+| `docs/ARCH_OPTIMIZATION_PLAN.md` | V-A/V-B 勾选 |
+
+**未修改 / 刻意不做**：全量 bench 回归（需 API key 长跑）；泛化 pack 入库；git push；浏览器 E2E 待用户环境
+
+**验证**：`pytest tests/test_trust_tier.py tests/test_save_gate.py` — 10 passed
+
+**开放问题 / 下一步**：浏览器走查 DEMO；`run_bench_regression.py`；Overview 从 skill meta 读 trust_tier 若详情 API 未透出则补字段
+
+---
+
+## [2026-10-27] DESIGN.md 叙事重订 — 学徒 / 探索 / 类比继承 / Dual Gate — Cursor Agent
+
+**背景 / 触发**：用户确认学徒隐喻、陌生环境探索、跨域类比继承（Skill Inheritance）、scale 负累，要求结合近期讨论重写设计文档。
+
+**修改思路**：
+- 主叙事从「兵工厂 + 三创新并列 + 全球唯一」改为「学徒出师 + Dual Gate + Analogical Inheritance」
+- 保留模块/API/工程约束供实现；进化改称「门禁约束的进化」；Related Work 对齐 2026
+- 与 `ARCH_OPTIMIZATION_PLAN.md` 互链
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `DESIGN.md` | 全文叙事重订（§1–3、§8 重写；§4–7 工程清单保留并校准） |
+| `docs/ARCH_OPTIMIZATION_PLAN.md` | 产品一句话对齐学徒隐喻 + 链到 DESIGN.md |
+
+**未修改 / 刻意不做**：未改运行时代码；未改 `docs/PAPERS.md` / `paper.tex`（须另开 Related Work 改写）
+
+**验证**：文档审阅；与 ARCH 计划一致
+
+**开放问题 / 下一步**：Phase V Trust Tier 接线；PAPERS.md 随新叙事改写；用户确认 Verified=A∧B
+
+---
+
+## [2026-10-27] 架构优化计划 — Dual Gate + Phase V 原型冲刺 — Cursor Agent
+
+**背景 / 触发**：用户要求基于最新学术/技术环境，以产品总规划·架构师视角提出架构/思维优化，并尽快完成原型更新与验证。
+
+**修改思路**：对齐 EVISKILL/CoEvoSkills/SoK/Agent Skills 供给链现实；把「三创新并列」收束为「双门禁黄金路径」；先 Phase V 可演示闭环，再 Phase T 信任与可复现。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `docs/ARCH_OPTIMIZATION_PLAN.md` | 新建：思维重构、架构 ADR、Phase V/T、冲刺 DoD |
+
+**未修改 / 刻意不做**：未改运行时代码；未开 MoE/通道新功能
+
+**验证**：文档落盘；待用户确认 Trust Tier 强制规则与 Demo 主技能后开工 Day 1
+
+**开放问题 / 下一步**：确认 Verified=A∧B；Demo 主技能；启动 Trust Tier 契约接线
+
+---
+
 ## [2026-06-28] 三管齐下：大文件拆分 + 前端UI增强 + 部署自动化 — Claude Code
 
 **背景 / 触发**：项目综合评审后锁定的三个可改进项：超大文件拆分（agent.py 1985行、skillopt.py 1755行、lineage.py 1134行）、前端UI视觉打磨、发布部署自动化。
