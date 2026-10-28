@@ -4,6 +4,34 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] W1 Alpha 可用性 — B1/B2/B3/B4 — Cursor Agent
+
+**背景 / 触发**：用户「继续」；W0 已冻结且 push/`v0.3.6` 成功；进入 W1 陌生人第一天体验。
+
+**修改思路**：无 Key/额度给出可行动入口；Overview 解释「为何非 Verified」；Draft 装本机确认；欢迎页一键打开参考技能。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/api/server.py` | `/health` 增加 `llm.provider_ready` / mode，版本 0.3.6 |
+| `frontend/chat.js` | 402/Key 文案 + `openUsageSettings` / `notifyLlmActionError` |
+| `frontend/app.js` | 欢迎横幅 `checkLlmReady` |
+| `frontend/index.html` | llm banner +「参考：GitHub Pull」芯片 |
+| `frontend/precipitation-result.js` | Overview「为什么还不是 Verified？」 |
+| `frontend/export-channel.js` | Draft 安装 confirm；按钮带 tier |
+| `frontend/style.css` | banner / details 样式 |
+| `tests/test_api_integration.py` | health.llm 断言 |
+| `docs/RELEASE_ROADMAP.md` | W1 勾选 |
+
+**未修改 / 刻意不做**：未代发 Alpha 邀请；未录 Demo 视频；未改配额数值
+
+**验证**：`pytest TestHealth + productization + discovery` → **12 passed**；`git push` main + tag 已在本轮初完成
+
+**开放问题 / 下一步**：维护者录像 + 填名单发邀；按 Alpha 反馈只修 P0；可选 W2 启 Stream C 安全检查单
+
+---
+
 ## [2026-10-28] W0 Ship Freeze 执行 — Cursor Agent
 
 **背景 / 触发**：用户「按计划执行」；执行 `RELEASE_ROADMAP` W0（冻结 / Known Issues / Alpha 模板 / 提交准备）。

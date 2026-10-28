@@ -42,13 +42,21 @@ function _ecBtn(label, action, extra, cls) {
   if (extra.slug) html += ' data-ec-slug="' + _escAttr(extra.slug) + '"';
   if (extra.target) html += ' data-ec-target="' + _escAttr(extra.target) + '"';
   if (extra.project) html += ' data-ec-project="1"';
+  if (extra.tier) html += ' data-ec-tier="' + _escAttr(extra.tier) + '"';
   html += '>' + (typeof escHtml === 'function' ? escHtml(label) : label) + '</button>';
   return html;
 }
 
-function installSkillLocal(skillName, target, project) {
+function installSkillLocal(skillName, target, project, trustTier) {
   if (!skillName) return Promise.reject(new Error('no skill'));
   target = target || 'cursor';
+  var tier = String(trustTier || '').toLowerCase();
+  if (tier === 'draft') {
+    var ok = window.confirm(
+      '当前是 Draft：默认可安装给人查看，但不会进入模型可调用 catalog（model_invocable=false）。\n\n仍要装到本机 ' + target + ' 吗？'
+    );
+    if (!ok) return Promise.resolve({ cancelled: true });
+  }
   var headers = Object.assign(
     { 'Content-Type': 'application/json' },
     typeof authHeaders === 'function' ? authHeaders() : {}
@@ -112,9 +120,9 @@ function renderExportChannelPanel(opts) {
 
   html += '<div class="export-channel-actions">';
   if (name) {
-    html += _ecBtn('装到 Cursor', 'install-local', { skill: name, target: 'cursor' }, 'btn-primary btn-sm export-channel-primary');
-    html += _ecBtn('装到 dsh', 'install-local', { skill: name, target: 'dsh' }, 'btn-secondary btn-sm');
-    html += _ecBtn('装到 .agents', 'install-local', { skill: name, target: 'agents', project: true }, 'btn-secondary btn-sm');
+    html += _ecBtn('装到 Cursor', 'install-local', { skill: name, target: 'cursor', tier: tier }, 'btn-primary btn-sm export-channel-primary');
+    html += _ecBtn('装到 dsh', 'install-local', { skill: name, target: 'dsh', tier: tier }, 'btn-secondary btn-sm');
+    html += _ecBtn('装到 .agents', 'install-local', { skill: name, target: 'agents', project: true, tier: tier }, 'btn-secondary btn-sm');
   }
   if (cursorPath) {
     html += _ecBtn('复制 Cursor 路径', 'copy-path', { path: cursorPath }, 'btn-secondary btn-sm');
@@ -227,7 +235,8 @@ document.addEventListener('click', function(e) {
     installSkillLocal(
       btn.getAttribute('data-ec-skill'),
       btn.getAttribute('data-ec-target') || 'cursor',
-      btn.getAttribute('data-ec-project') === '1'
+      btn.getAttribute('data-ec-project') === '1',
+      btn.getAttribute('data-ec-tier') || ''
     );
   } else if (action === 'zip') {
     downloadExportZip(btn.getAttribute('data-ec-skill'));

@@ -189,7 +189,9 @@
               <span class="welcome-chip" onclick="resetWorkspace();newSession();showChat();document.getElementById('input').focus()"><span class="chip-ico" data-icon="edit"></span>对话萃取</span>
               <span class="welcome-chip" onclick="startFromLink()"><span class="chip-ico" data-icon="link"></span>从链接沉淀</span>
               <span class="welcome-chip" onclick="startFromFile()"><span class="chip-ico" data-icon="paperclip"></span>上传资料</span>
+              <span class="welcome-chip" onclick="showDetail('GitHub Pull')"><span class="chip-ico" data-icon="book"></span>参考：GitHub Pull</span>
             </div>
+            <div id="llm-ready-banner" class="llm-ready-banner" style="display:none" role="status"></div>
             <div class="welcome-hint welcome-hint-drag">支持拖拽 PDF / Word / 图片到窗口 · 或粘贴网页链接</div>
             <div id="welcome-recent-skills" class="welcome-recent"></div>
           </div>

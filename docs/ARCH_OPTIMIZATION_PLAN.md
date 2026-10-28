@@ -241,4 +241,4 @@ Day 5–7   Demo 脚本 + 录像素材；remote/push；可选 v0.3.5 tag
 
 **Harness 借鉴（2026-10-28）**：发现层 source + `model_invocable`；`GET /api/skills/catalog`；导出 Cursor / `.agents` / `.dsh`；MCP 默认隐藏 Draft；文案 Skill≠Plugin。不重做 dsh 运行时。
 
-**下一步（发布主轴）**：见 [`RELEASE_ROADMAP.md`](RELEASE_ROADMAP.md)。**W0 文档/pytest 已执行**；待：`v0.3.6` tag/push、人工 Demo 录像、Alpha 邀约。功能只服务晋级条件。
+**下一步（发布主轴）**：见 [`RELEASE_ROADMAP.md`](RELEASE_ROADMAP.md)。**W0 已 push/`v0.3.6`**；**W1 B1–B4 已落地**；待：人工 Demo 录像、Alpha 邀约与反馈。功能只服务晋级条件。

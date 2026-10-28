@@ -405,6 +405,23 @@ function renderOverviewTrustCard(skill, evidenceCard) {
   } else if (tier === 'draft') {
     inner += '<p class="detail-muted">Draft：草稿未完成或双门禁未评估。</p>';
   }
+  if (String(tier).toLowerCase() !== 'verified') {
+    var epG2 = gates.epistemic || {};
+    var outWhy = gates.outcome || {};
+    var whyBits = [];
+    if (!epG2.passed) whyBits.push('Gate A 未过：需至少 1 条「已验证」认识论声明（去「认识论」Tab 确认待审）');
+    else whyBits.push('Gate A 已过');
+    if (!outWhy.passed) {
+      if (outWhy.min_with_score == null) whyBits.push('Gate B 未跑或无域内 smoke 分数（评测 Tab 可跑本地 Quick8 / 域内烟测）');
+      else whyBits.push('Gate B 未过：最低分 ' + outWhy.min_with_score + ' &lt; 80');
+    } else whyBits.push('Gate B 已过');
+    whyBits.push('Verified ≠ 官方 SkillsBench 排行榜；本地 smoke/Quick8 只作 Gate B 参考');
+    inner += '<details class="why-not-verified"><summary>为什么还不是 Verified？</summary><ul class="why-not-verified-list">';
+    for (var wi = 0; wi < whyBits.length; wi++) {
+      inner += '<li>' + whyBits[wi] + '</li>';
+    }
+    inner += '</ul></details>';
+  }
   var outG2 = gates.outcome || {};
   if (outG2.min_with_score != null) {
     inner += '<p class="detail-muted">Gate B 最低分 ' + escHtml(String(outG2.min_with_score)) + '（门槛 80）</p>';

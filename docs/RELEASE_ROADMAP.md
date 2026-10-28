@@ -115,8 +115,8 @@ W6+     Public（可选）        安全评审 + 多租户硬验收 + 诚实 Hub
 
 ### 下周（W1）— Alpha 开门
 
-1. 发邀请 + 视频 + Known Issues
-2. 修 B1/B2 类「第一天必撞」体验
+1. [ ] 发邀请 + 视频 + Known Issues（名单私密填写；录像仍待）
+2. [x] 修 B1/B2/B4 + B3 参考技能入口（无 Key 横幅、为何非 Verified、Draft 安装确认、GitHub Pull 芯片）
 3. 每日收集卡点，只修 P0
 
 ### W2–W3 — Alpha 收敛

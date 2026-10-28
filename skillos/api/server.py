@@ -213,7 +213,29 @@ async def health():
         record_health_ping()
     except Exception:
         pass
-    return {"status": "ok", "version": "0.2.1", "agent_opening": "domain-v2"}
+    llm: dict = {"provider_ready": False, "mode": "unknown"}
+    try:
+        from skillos.config import get_config
+
+        cfg = get_config()
+        key = (cfg.api_key or "").strip()
+        if key and key != "ollama":
+            llm = {"provider_ready": True, "mode": "cloud"}
+        else:
+            llm = {
+                "provider_ready": False,
+                "mode": "ollama" if key == "ollama" else "missing",
+                "hint": "Set DEEPSEEK_API_KEY in .env or enable BYOK in Settings → Usage",
+            }
+    except Exception as exc:
+        _log.debug("health llm probe failed: %s", exc)
+        llm = {"provider_ready": False, "mode": "error", "hint": str(exc)[:120]}
+    return {
+        "status": "ok",
+        "version": "0.3.6",
+        "agent_opening": "domain-v2",
+        "llm": llm,
+    }
 
 
 if FRONTEND_DIR.exists():

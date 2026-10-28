@@ -9,6 +9,17 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 
+@pytest.mark.asyncio
+async def test_health_reports_llm_readiness():
+    from skillos.api.server import health
+
+    body = await health()
+    assert body["status"] == "ok"
+    assert "llm" in body
+    assert "provider_ready" in body["llm"]
+    assert body["llm"]["mode"] in ("cloud", "ollama", "missing", "error", "unknown")
+
+
 @pytest.fixture
 def client():
     from skillos.api.skills import router as skills_router

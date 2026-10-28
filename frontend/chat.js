@@ -43,11 +43,41 @@ function loadRecentSkills() {
 
 function apiErrorMessage(r, body) {
   body = body || {};
-  if (r.status === 402) return body.detail || '额度已用尽，请启用 BYOK 或升级 Pro';
+  if (r.status === 402) {
+    return (body.detail || '额度已用尽') + ' → 设置 · 用量启用 BYOK，或配置 .env 的 DEEPSEEK_API_KEY';
+  }
+  if (r.status === 503 || r.status === 502) {
+    return (typeof body.detail === 'string' ? body.detail : '模型服务不可用') +
+      ' → 检查 DEEPSEEK_API_KEY / 设置 · 用量 BYOK';
+  }
   if (r.status === 403) return body.detail || '无权限执行此操作';
   if (r.status === 401) return '请先登录';
-  if (typeof body.detail === 'string') return body.detail;
+  if (typeof body.detail === 'string') {
+    var d = body.detail;
+    if (/api[_ ]?key|DEEPSEEK|未配置|no key|authentication|401/i.test(d)) {
+      return d + ' → 设置 · 用量启用 BYOK，或在 .env 配置 DEEPSEEK_API_KEY';
+    }
+    return d;
+  }
   return '请求失败 (' + r.status + ')';
+}
+
+function openUsageSettings() {
+  if (typeof showSettings === 'function') showSettings();
+  if (typeof switchSettings === 'function') switchSettings('usage');
+}
+
+function notifyLlmActionError(err) {
+  var msg = (err && err.message) ? String(err.message) : String(err || '请求失败');
+  if (typeof toast === 'function') toast(msg, 'error');
+  if (/BYOK|额度|API[_ ]?KEY|DEEPSEEK|模型服务/i.test(msg)) {
+    setTimeout(function() {
+      if (typeof addMsg === 'function') {
+        addMsg('sys', '需要可用的 LLM Key。' +
+          '<button type="button" class="nav-sm" style="font-size:11px;margin-left:6px;border-color:var(--accent);color:var(--accent)" onclick="openUsageSettings()">打开设置 · 用量</button>');
+      }
+    }, 50);
+  }
 }
 
 function finalizeSkill() {
@@ -58,7 +88,11 @@ function finalizeSkill() {
     method: 'POST',
     headers: typeof authHeaders === 'function' ? authHeaders() : {}
   })
-    .then(function(r) { return r.json(); })
+    .then(async function(r) {
+      var body = await r.json().catch(function() { return {}; });
+      if (!r.ok) throw new Error(apiErrorMessage(r, body));
+      return body;
+    })
     .then(function(d) {
       if (d.reply) addMsg('ai', d.reply);
       if (d.skill_saved) {
@@ -70,7 +104,11 @@ function finalizeSkill() {
       updateWorkspace(d || {});
       // finalize button now handled by workspace phase bar
     })
-    .catch(function(e) { addMsg('sys', '生成失败: ' + e.message); setStatus('error'); setDot(''); });
+    .catch(function(e) {
+      if (typeof notifyLlmActionError === 'function') notifyLlmActionError(e);
+      else addMsg('sys', '生成失败: ' + e.message);
+      setStatus('error'); setDot('');
+    });
 }
 
 var _useStreaming = false;  // 默认走 /dispatch 一次性返回，避免 SSE+Alpine 不刷新
@@ -299,6 +337,9 @@ function _sendTextLegacy(text) {
 
     var errMsg = e.message || '请求失败';
     var errHtml = '<span>' + escHtml(errMsg) + '</span> <button type="button" class="nav-sm" style="font-size:11px;margin-left:4px;border-color:var(--warn);color:var(--warn)" onclick="sendText()">重试</button>';
+    if (/BYOK|额度|API[_ ]?KEY|DEEPSEEK|模型服务/i.test(errMsg)) {
+      errHtml += ' <button type="button" class="nav-sm" style="font-size:11px;margin-left:4px;border-color:var(--accent);color:var(--accent)" onclick="openUsageSettings()">设置 · 用量</button>';
+    }
     if (msgEl._msg) patchChatMsg(msgEl._msg, errHtml);
     else if (msgEl.innerHTML !== undefined) msgEl.innerHTML = errHtml;
     toast(errMsg, 'error');

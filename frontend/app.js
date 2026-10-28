@@ -277,6 +277,44 @@ document.addEventListener('keydown', function(e) {
 // Load recent skills for welcome screen and sidebar
 if (typeof loadRecentSkills === 'function') { setTimeout(loadRecentSkills, 500); }
 
+function renderLlmReadyBanner(payload) {
+  var el = document.getElementById('llm-ready-banner');
+  if (!el) return;
+  var parts = [];
+  var llm = (payload && payload.health && payload.health.llm) || {};
+  var usage = payload && payload.usage;
+  if (llm.provider_ready === false) {
+    parts.push('未检测到云端 API Key（当前模式：' + (llm.mode || 'unknown') + '）。对话沉淀前请配置 <code>.env</code> 的 <code>DEEPSEEK_API_KEY</code>，或');
+    parts.push('<button type="button" class="nav-sm llm-banner-btn" onclick="openUsageSettings()">设置 · 用量启用 BYOK</button>');
+  }
+  if (usage && !usage.byok && usage.llm_calls && usage.llm_calls.limit > 0 &&
+      usage.llm_calls.used >= usage.llm_calls.limit) {
+    if (parts.length) parts.push('<br>');
+    parts.push('本月平台 LLM 额度已用尽。');
+    parts.push('<button type="button" class="nav-sm llm-banner-btn" onclick="openUsageSettings()">启用 BYOK</button>');
+  }
+  if (!parts.length) {
+    el.style.display = 'none';
+    el.innerHTML = '';
+    return;
+  }
+  el.innerHTML = parts.join(' ');
+  el.style.display = 'block';
+}
+
+function checkLlmReady() {
+  var healthP = fetch((typeof API !== 'undefined' ? API : '') + '/health')
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .catch(function() { return null; });
+  var usageP = (typeof api === 'function')
+    ? api('/api/usage/me').then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; })
+    : Promise.resolve(null);
+  Promise.all([healthP, usageP]).then(function(pair) {
+    renderLlmReadyBanner({ health: pair[0], usage: pair[1] });
+  });
+}
+setTimeout(checkLlmReady, 600);
+
 // 预加载市场只读模式，隐藏发布按钮
 api('/api/marketplace/catalog?limit=1').then(function(r) {
   return r.ok ? r.json() : null;
