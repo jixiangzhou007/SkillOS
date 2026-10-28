@@ -1,5 +1,26 @@
 # SkillOS Changelog
 
+## v0.3.6 (2026-10-28) — Dual Gate 产品表面 + Trust Tier
+
+> Phase V/T 产品化收口：Trust Tier 全链路可见；评测双轨；Demo 剧本与一页纸短文。
+
+### Trust Tier / Dual Gate
+- **契约**：`draft` | `provisional` | `verified`（Gate A 认识论 ∧ Gate B smoke≥80）
+- **API**：技能列表 / Evidence Card / 导出 `metadata.skillos_trust_tier`；市场目录透出 `trust_tier`
+- **UI**：侧栏筛选与徽章、质量条、沉淀完成卡、Hub 目录/详情、欢迎区最近技能
+
+### 评测与文档
+- **双轨 UI**：技能详情「评测」Tab — 本地 Quick8 | 官方 SkillsBench 分栏
+- **Demo**：`docs/DEMO_VERIFIED_SPINE.md` 含 6 镜录像分镜
+- **短文**：`docs/paper/DUAL_GATE_NOTE.md`（Phase T 一页纸）
+- **Alpine 修复**：恢复 CDN + `app.js`；vendoring `alpine.min.js` / `marked.min.js`
+
+### 发布说明
+- 勿将本版误标为已有历史条目 `v0.3.5`；tag 建议 `v0.3.6`
+- Demo Day 录像仍为人工项
+
+---
+
 ## v0.3.5 (2026-06-26) — 基础设施清理与质量门禁
 
 > P0–P3 全阶段优化：120→0 脏文件、mypy 13→2 禁用码、Claude Code 自动化、pre-commit、Quick8 ALL PASS

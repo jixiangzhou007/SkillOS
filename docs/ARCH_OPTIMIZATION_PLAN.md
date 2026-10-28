@@ -207,7 +207,8 @@ Day 5–7   Demo 脚本 + 录像素材；remote/push；可选 v0.3.5 tag
 2. [x] 官方 SkillsBench CI 与本地 Quick8 分栏产品化（技能详情「评测」Tab）
 3. [x] Related Work 改写起步：`docs/PAPERS.md` 去掉「全球唯一」、对齐 Dual Gate
 4. [x] `trust_tier` → export `metadata.skillos_trust_tier`
-5. [ ] 短文 / Demo Day 录像
+5. [x] 短文一页纸：`docs/paper/DUAL_GATE_NOTE.md`（2026-10-28）
+6. [ ] Demo Day 录像（分镜见 `DEMO_VERIFIED_SPINE.md`；人工录制）
 
 ---
 
@@ -232,6 +233,8 @@ Day 5–7   Demo 脚本 + 录像素材；remote/push；可选 v0.3.5 tag
 
 **产品化续（2026-10-28）**：侧栏 Trust Tier 筛选；质量条 Tier；Cursor 安装文案；修复 Alpine/`app.js` 脚本引用；市场目录/详情露出 `trust_tier`。
 
-**已提交** `109a653`（产品表面）；筛选空态 / 欢迎 Tier / Demo 分镜续作中。
+**已提交** `109a653`（产品表面）· `7928349`（筛选空态 + Demo 分镜）。
 
-**下一步**：push `109a653`+；按 `DEMO_VERIFIED_SPINE.md` 分镜录像；勿复用已有 CHANGELOG `v0.3.5` 条目作新 tag（可另开 `v0.3.6`）。
+**Phase T 短文已交付**（`DUAL_GATE_NOTE.md`）；CHANGELOG 已起草 **v0.3.6**。
+
+**下一步**：网络恢复后 `git push`；按分镜人工录像；确认后打 `v0.3.6` tag；完整 `paper.tex` PDF / arXiv 仍可选。

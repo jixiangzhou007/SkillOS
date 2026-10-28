@@ -54,6 +54,10 @@ SkillOS 研究「学徒如何向人学习并出师」，工程上拆成三条主
 
 arXiv（AI > Agents）+ ACL / EMNLP 短文（AI + Philosophy）
 
+### Phase T 一页纸（2026-10）
+
+对外 Demo / 预印本预热用短叙事（非完整论文）：[`paper/DUAL_GATE_NOTE.md`](paper/DUAL_GATE_NOTE.md)。完整章节仍以 `paper.tex` 为准。
+
 ### 论文章节
 
 1. Introduction — 技能生态爆炸，质量问题被忽视

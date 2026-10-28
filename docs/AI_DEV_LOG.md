@@ -4,6 +4,30 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] Phase T — Dual Gate 一页纸短文 + v0.3.6 草稿 — Cursor Agent
+
+**背景 / 触发**：用户「继续下一阶段」；产品表面已收口，进入 Phase T 余项（短文 / 发布叙事）。
+
+**修改思路**：用可对外讲的 1–2 页 Dual Gate 短文承接 Demo Day 与预印本预热；CHANGELOG 开 `v0.3.6`（不复用历史 v0.3.5）；勾选 Phase T 短文、保留录像为人工项。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `docs/paper/DUAL_GATE_NOTE.md` | EN/中摘要 + Dual Gate 契约 + 证据指针 |
+| `docs/PAPERS.md` | 链到一页纸 |
+| `CHANGELOG.md` | **v0.3.6** 条目草稿 |
+| `docs/ARCH_OPTIMIZATION_PLAN.md` | Phase T #5 短文 [x]；录像仍 open |
+| （上轮已提交 `7928349`）筛选空态 / Demo 分镜 / AGENTS 端口 | — |
+
+**未修改 / 刻意不做**：未打 git tag；未改 `paper.tex` 正文；未拍 Demo 录像；push 因 GitHub 443 连接失败未完成
+
+**验证**：文档静态；`git push` ×2 → connection reset / could not connect
+
+**开放问题 / 下一步**：网络恢复后 push `7928349`+本提交；人工录像；确认后 `git tag v0.3.6`
+
+---
+
 ## [2026-10-28] 产品化续 — 筛选空态 + Demo 分镜 — Cursor Agent
 
 **背景 / 触发**：用户「继续」；`109a653` 已提交，补列表筛选体验与 Demo Day 可执行分镜。
