@@ -132,6 +132,7 @@
         <button type="button" class="sb-tier-chip" data-tier="verified" onclick="switchTrustTierFilter('verified')">Verified</button>
         <button type="button" class="sb-tier-chip" data-tier="provisional" onclick="switchTrustTierFilter('provisional')">学徒</button>
         <button type="button" class="sb-tier-chip" data-tier="draft" onclick="switchTrustTierFilter('draft')">Draft</button>
+        <button type="button" class="sb-tier-chip" data-tier="model" onclick="switchTrustTierFilter('model')" title="仅模型可调用（排除 Draft）">可调用</button>
       </div>
       <div id="skill-list"><div class="skeleton skeleton-card" style="margin:2px 0"></div><div class="skeleton skeleton-card" style="margin:2px 0"></div><div class="skeleton skeleton-card" style="margin:2px 0"></div></div>
       <button class="sb-action" onclick="importSkill()"><span class="nav-icon" data-icon="download"></span>导入技能</button>
@@ -183,7 +184,7 @@
             <div class="welcome-icon" id="welcome-logo"><span data-icon="hammer"></span></div>
             <div class="welcome-sub">SkillOS</div>
             <div class="welcome-title">学徒出师 · Verified Spine</div>
-            <div class="welcome-hint">对话、链接或文件向人学习；Gate A 认识论 ∧ Gate B 烟测通过后出师。导出 AgentSkills.io 标准 SKILL.md，Cursor / Claude 可装。</div>
+            <div class="welcome-hint">对话、链接或文件向人学习；Gate A ∧ Gate B 出师。导出 AgentSkills.io 标准 SKILL.md，装进 Cursor / .agents / DeepSeek Harness。Skill ≠ Plugin。</div>
             <div class="welcome-chips">
               <span class="welcome-chip" onclick="resetWorkspace();newSession();showChat();document.getElementById('input').focus()"><span class="chip-ico" data-icon="edit"></span>对话萃取</span>
               <span class="welcome-chip" onclick="startFromLink()"><span class="chip-ico" data-icon="link"></span>从链接沉淀</span>
@@ -472,7 +473,7 @@
             共 <span x-text="totalCount"></span> 个技能 · 显示 <span x-text="skills.length"></span> 个
           </p>
           <template x-if="!skills.length">
-            <div class="empty-state"><div class="icon">🏪</div><div class="title">暂无技能</div><div class="hint">试试调整搜索或分类筛选</div></div>
+            <div class="empty-state"><div class="icon">🏪</div><div class="title">暂无技能</div><div class="hint">本地可运行 <code>python scripts/seed_hub_catalog.py</code> 注入 cohort 目录；或重启服务（默认自动 seed）</div></div>
           </template>
           <template x-for="(s, si) in skills" :key="si">
             <div class="skill-card hub-list-card" @click="showDetail(s.skill_id||s.name)">
@@ -921,6 +922,7 @@
         <button class="sn-item" :class="{ active: tab === 'model' }" @click="switchTab('model')">模型</button>
         <button class="sn-item" :class="{ active: tab === 'usage' }" @click="switchTab('usage')">用量</button>
         <button class="sn-item" :class="{ active: tab === 'skills' }" @click="switchTab('skills')">技能</button>
+        <button class="sn-item" :class="{ active: tab === 'harness' }" @click="switchTab('harness')">Harness</button>
         <button class="sn-item" :class="{ active: tab === 'voice' }" @click="switchTab('voice')">语音</button>
       </div>
 
@@ -1001,6 +1003,28 @@
             </div>
           </template>
           <p class="settings-hint">关闭的技能在 Agent 对话中不会被自动调用；萃取流程不受影响。</p>
+        </div>
+      </template>
+
+      <!-- Harness tab -->
+      <template x-if="tab === 'harness'">
+        <div>
+          <div class="settings-section-title">装进 Harness</div>
+          <p class="settings-hint">SkillOS 产出可验证 Skill；Cursor / DeepSeek Harness 负责执行。Skill ≠ Plugin。</p>
+          <div class="settings-section-title" style="margin-top:var(--s-3)">本机目录</div>
+          <ul class="settings-hint" style="padding-left:18px;line-height:1.7">
+            <li>Cursor：<code>~/.cursor/skills/&lt;slug&gt;/</code></li>
+            <li>项目 Agents：<code>.agents/skills/&lt;slug&gt;/</code></li>
+            <li>DeepSeek Harness：<code>~/.dsh/skills/&lt;slug&gt;/</code></li>
+          </ul>
+          <div class="settings-section-title" style="margin-top:var(--s-3)">模型可调用目录</div>
+          <p class="settings-hint">Draft 默认不对模型暴露。API：<code>GET /api/skills/catalog?model_only=true</code></p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--s-3)">
+            <button type="button" class="btn-secondary btn-sm" @click="copyHarnessCmd('npx @deepseek-ai/dsh web')">复制 dsh 命令</button>
+            <button type="button" class="btn-secondary btn-sm" @click="copyInstallCli()">复制安装 CLI</button>
+            <button type="button" class="btn-secondary btn-sm" @click="openCatalogJson()">打开 catalog JSON</button>
+          </div>
+          <p class="settings-hint" style="margin-top:var(--s-3)">技能详情「输出与安装」可一键装到 Cursor / dsh / .agents。</p>
         </div>
       </template>
 
@@ -1168,25 +1192,25 @@
 <script defer src="/audio.js?v=1"></script>
 <script defer src="/voice.js?v=1"></script>
 <script defer src="/auth.js?v=1"></script>
-<script defer src="/export-channel.js?v=3"></script>
-<script defer src="/precipitation-result.js?v=6"></script>
+<script defer src="/export-channel.js?v=6"></script>
+<script defer src="/precipitation-result.js?v=8"></script>
 <script defer src="/source_material.js?v=3"></script>
 <script defer src="/socratic-ui.js?v=1"></script>
 <script defer src="/chat.js?v=13"></script>
 <script defer src="/skills_io.js?v=1"></script>
-<script defer src="/skills.js?v=10"></script>
+<script defer src="/skills.js?v=12"></script>
 <script defer src="/quality.js?v=4"></script>
 <script defer src="/workspace.js?v=7"></script>
 <script defer src="/error-boundary.js?v=2"></script>
 <script defer src="/knowledge.js?v=10"></script>
 <script defer src="/account_watcher.js?v=1"></script>
 <script defer src="/intelligence.js?v=2"></script>
-<script defer src="/hub.js?v=2"></script>
-<script defer src="/settings.js?v=3"></script>
+<script defer src="/hub.js?v=3"></script>
+<script defer src="/settings.js?v=4"></script>
 <script defer src="/admin.js?v=2"></script>
 <script defer src="/docs.js?v=1"></script>
 <script defer src="/alpine-bridge.js?v=1"></script>
-<script defer src="/onboarding.js?v=4"></script>
+<script defer src="/onboarding.js?v=5"></script>
 <script defer src="/app.js?v=8"></script>
 </body>
 </html>

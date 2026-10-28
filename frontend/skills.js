@@ -429,22 +429,35 @@ async function loadOverview() {
       .catch(function() { return { json: function() { return Promise.resolve({ passed: 0, total: 6, checks: [], score: '0/6' }); } }; });
     let exportR = await api('/api/skills/' + encodeURIComponent(_currentSkill) + '/export?format=markdown')
       .catch(function() { return { json: function() { return Promise.resolve({}); } }; });
+    let evidenceR = await api('/api/skills/' + encodeURIComponent(_currentSkill) + '/evidence')
+      .catch(function() { return { ok: false, json: function() { return Promise.resolve(null); } }; });
     let skill = await skillR.json();
     let dna = await dnaR.json();
     let exportMeta = await exportR.json();
+    let evidenceCard = evidenceR.ok ? await evidenceR.json() : null;
     if (typeof buildInstallPaths === 'function' && exportMeta.portable_slug) {
       exportMeta.install_paths = buildInstallPaths(exportMeta.portable_slug);
+    }
+    if (evidenceCard && evidenceCard.trust_tier && !skill.trust_tier) {
+      skill.trust_tier = evidenceCard.trust_tier;
+    }
+    if (evidenceCard && evidenceCard.gates && !skill.gates) {
+      skill.gates = evidenceCard.gates;
     }
 
     var qsContainer = document.getElementById('quality-strip-container');
     if (qsContainer && typeof renderQualityStrip === 'function') {
-      qsContainer.innerHTML = renderQualityStrip(skill.epistemic_summary || {}) ||
+      var epStrip = skill.epistemic_summary || {};
+      if (evidenceCard && evidenceCard.trust_tier && !epStrip.trust_tier) {
+        epStrip = Object.assign({}, epStrip, { trust_tier: evidenceCard.trust_tier });
+      }
+      qsContainer.innerHTML = renderQualityStrip(epStrip) ||
         (dna.passed != null ? '<div class="quality-strip">' + renderQualityBadge('dna', (dna.passed || 0) + '/' + (dna.total || 6), 'lg') + '</div>' : '');
     }
 
     var dnaP = dna.passed || 0;
     var h = '';
-    if (typeof renderOverviewTrustCard === 'function') h += renderOverviewTrustCard(skill);
+    if (typeof renderOverviewTrustCard === 'function') h += renderOverviewTrustCard(skill, evidenceCard);
     if (typeof renderOverviewSourceCard === 'function') h += renderOverviewSourceCard(skill, exportMeta);
     h += '<div class="dash-grid detail-kpi-grid">';
     h += _detailKpi('DNA 合规', dna.score || '0/6', _detailDnaTone(dnaP), '设计规范遵循度');
@@ -1429,6 +1442,7 @@ function _isKnowledgePackage(s) {
 function _skillMatchesTrustTier(s) {
   var f = (typeof _trustTierFilter !== 'undefined' && _trustTierFilter) ? _trustTierFilter : 'all';
   if (!f || f === 'all') return true;
+  if (f === 'model') return !!s.model_invocable;
   return String(s.trust_tier || 'draft').toLowerCase() === f;
 }
 
@@ -1495,6 +1509,13 @@ function renderSkillCards(skills) {
         var tier = (s.trust_tier || 'draft').toLowerCase();
         var tierLabel = tier === 'verified' ? 'Verified' : tier === 'provisional' ? '学徒' : 'Draft';
         var tierCls = 'trust-tier trust-tier-' + (tier === 'verified' || tier === 'provisional' || tier === 'draft' ? tier : 'draft');
+        var srcLabel = s.source_label || '';
+        var srcHtml = srcLabel
+          ? '<span class="sb-source-tag" title="发现层 · ' + escHtml(s.source || '') + '">' + escHtml(srcLabel) + '</span>'
+          : '';
+        var invHtml = (s.model_invocable === false)
+          ? '<span class="sb-inv-tag" title="Draft：不对模型 catalog 暴露">人</span>'
+          : '<span class="sb-inv-tag sb-inv-model" title="可进模型调用目录">模</span>';
 
         var desc = s.description || '';
         var descHtml = desc ? '<div class="tree-desc">' + escHtml(desc.slice(0, 60)) + (desc.length > 60 ? '…' : '') + '</div>' : '';
@@ -1509,6 +1530,7 @@ function renderSkillCards(skills) {
 
         '<span class="tree-name">' + icon + s.name.replace('[Meta] ', '') + '</span>' +
         '<span class="' + tierCls + '" title="Trust Tier">' + tierLabel + '</span>' +
+        srcHtml + invHtml +
         '<span class="tree-score" style="color:' + scoreColor + '">' + (s.avg_score ? s.avg_score.toFixed(1) : '—') + '</span>' +
         '<span class="tree-meta">' + metaLine + '</span>' +
         (qualityBadges ? '<span class="tree-qbadges">' + qualityBadges + '</span>' : '') +

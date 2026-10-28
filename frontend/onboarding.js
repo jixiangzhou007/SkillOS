@@ -18,7 +18,13 @@ var _ONBOARDING_STEPS = [
   },
   {
     title: 'Trust Tier 看得见',
-    body: '列表与详情展示 Trust Tier；本地 Quick8 是日常门禁，官方 SkillsBench 是权威轨——两者分栏，勿混为一谈。在 Cursor 里装上 Verified Skill 即用。',
+    body: '列表展示 Trust Tier、来源层（工作区/系统/市场）与「可调用」筛选。Draft 不进模型 catalog；学徒可试用；Verified 才出师。',
+    action: function() {},
+    actionLabel: '继续'
+  },
+  {
+    title: '装进 Harness，不是又一个 Plugin',
+    body: 'Skill = 可验证说明书；Plugin/Harness = 运行时。导出 Zip 含 INSTALL/TRUST；可复制到 Cursor、.agents/skills 或 .dsh/skills，再用 npx @deepseek-ai/dsh web 试用。',
     action: function() {
       closeOnboarding(true);
       if (typeof toast === 'function') toast('开始萃取你的第一个 Verified Skill', 'success');

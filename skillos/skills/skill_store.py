@@ -8,7 +8,6 @@ Ported from Skill Distiller's skill_store.py. Cleaned up for SkillOS:
   - Multi-tenant paths via ``skillos.identity`` (Sprint 0)
 """
 
-
 import os
 import re
 import shutil
@@ -129,7 +128,7 @@ def _split_front_matter(content: str) -> tuple[dict[str, Any], str]:
     if not match:
         return {}, content.lstrip()
     meta = yaml.safe_load(match.group(1)) or {}
-    body = content[match.end():]
+    body = content[match.end() :]
     return meta, body
 
 
@@ -144,14 +143,14 @@ def _ensure_standard_dirs(skill_dir: Path) -> None:
     Standard: scripts/, references/, assets/
     SkillOS private: .skillos/, .skillos/versions/
     """
-    for subdir in ("scripts", "references", "assets",
-                   ".skillos", ".skillos/versions"):
+    for subdir in ("scripts", "references", "assets", ".skillos", ".skillos/versions"):
         (skill_dir / subdir).mkdir(parents=True, exist_ok=True)
 
 
 # ═══════════════════════════════════════════════════════════════
 # CRUD
 # ═══════════════════════════════════════════════════════════════
+
 
 def save_skill(
     name: str,
@@ -192,25 +191,34 @@ def save_skill(
     if is_new and ctx is not None:
         try:
             from skillos.billing.usage import check_skill_quota
+
             check_skill_quota(ctx, is_new=True)
         except Exception as exc:
             from skillos.billing.usage import QuotaExceededError
+
             if isinstance(exc, QuotaExceededError):
                 raise
             pass
 
     if meta:
         front.update(meta)
+    # Persist origin for discovery layers (workspace / hub / system)
+    if source_type and not front.get("source_type"):
+        front["source_type"] = source_type
+    if source and not front.get("precip_source"):
+        front["precip_source"] = source
 
     is_draft = bool(front.get("draft"))
 
     if not is_draft and not front.get("dna_lineage"):
         try:
             from skillos.knowledge.dna_context import build_skill_dna_meta
+
             tpl = front.get("domain_template") or front.get("domain_template_id")
             tids = front.get("domain_template_ids")
             dna_meta = build_skill_dna_meta(
-                name, body,
+                name,
+                body,
                 domain_template_id=tpl,
                 domain_template_ids=tids if isinstance(tids, list) else None,
             )
@@ -222,8 +230,10 @@ def save_skill(
     if epistemic and not is_draft:
         try:
             from skillos.knowledge.epistemic_bridge import apply_epistemics_to_skill
+
             body, summary = apply_epistemics_to_skill(
-                body, name,
+                body,
+                name,
                 source=source or name,
                 source_type=source_type,
                 llm_args=llm_args,
@@ -232,8 +242,11 @@ def save_skill(
             front.update(summary.to_meta())
         except Exception as exc:
             import logging
+
             logging.getLogger(__name__).warning(
-                "Epistemic processing skipped for '%s': %s", name, exc,
+                "Epistemic processing skipped for '%s': %s",
+                name,
+                exc,
             )
 
     if path.exists():
@@ -250,34 +263,44 @@ def save_skill(
 
     # Security scan (non-blocking warning)
     import logging
+
     _log = logging.getLogger(__name__)
     try:
         from skillos.api.middleware import scan_skill_security
+
         findings = scan_skill_security(body)
         if findings:
-            _log.warning("Skill '%s' has %d security concern(s): %s",
-                        name, len(findings),
-                        "; ".join(f["description"][:60] for f in findings[:3]))
+            _log.warning(
+                "Skill '%s' has %d security concern(s): %s",
+                name,
+                len(findings),
+                "; ".join(f["description"][:60] for f in findings[:3]),
+            )
     except Exception:
         pass
 
     # Auto-detect variant archetype and register
     try:
         from skillos.skills.variants import VariantRegistry, auto_detect_variants
+
         groups = auto_detect_variants()
         reg = VariantRegistry()
         for group in groups:
             if group["skill_a"] == name and group["similarity"] == "same_structure":
                 reg.register_variant(
                     archetype=group["skill_b"],
-                    creator=name, content=body,
-                    source="auto-detected", epistemic_level="experience",
+                    creator=name,
+                    content=body,
+                    source="auto-detected",
+                    epistemic_level="experience",
                 )
             elif group["skill_b"] == name and group["similarity"] == "same_structure":
                 reg.register_variant(
                     archetype=group["skill_a"],
-                    creator=name, content=body,
-                    source="auto-detected", epistemic_level="experience",
+                    creator=name,
+                    content=body,
+                    source="auto-detected",
+                    epistemic_level="experience",
                 )
     except Exception:
         pass
@@ -288,6 +311,7 @@ def save_skill(
     if ctx is not None:
         try:
             from skillos.identity.models import register_skill_metadata
+
             register_skill_metadata(
                 tenant_id=ctx.tenant_id,
                 skill_slug=_slugify(name),
@@ -304,6 +328,7 @@ def save_skill(
         try:
             from skillos.analytics.funnel import track_funnel
             from skillos.billing.usage import count_skills
+
             if count_skills(ctx) == 1:
                 track_funnel(
                     "first_skill",
@@ -320,6 +345,7 @@ def save_skill(
 def _archive_version(name: str, src_path: Path, version: int, *, root: Path | None = None) -> None:
     """Copy current skill to skills/<name>/v<N>.md."""
     import shutil
+
     base = root if root is not None else resolve_skills_root()
     safe = re.sub(r'[<>:"/\\|?*]', "_", name)[:64]
     version_dir = base / safe
@@ -358,7 +384,7 @@ def list_skills(*, tenant: TenantContext | None = None) -> list[str]:
         # Fast path: use directory name (avoids reading every file)
         name = p.parent.name
         # Only read YAML if dir name looks like a slug (no CJK characters)
-        if not name or any('一' <= c <= '鿿' for c in name):
+        if not name or any("一" <= c <= "鿿" for c in name):
             try:
                 content = p.read_text(encoding="utf-8")
                 meta, _ = _split_front_matter(content)
@@ -373,6 +399,7 @@ def list_skills(*, tenant: TenantContext | None = None) -> list[str]:
 def delete_skill(name: str, *, tenant: TenantContext | None = None) -> bool:
     """Delete a skill and all associated files including standard subdirectories."""
     import shutil
+
     root = resolve_skills_root(tenant)
     path = _skill_path(name, root=root)
     # Delete the skill directory (kebab-case slug dir with all contents)

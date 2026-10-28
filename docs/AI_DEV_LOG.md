@@ -4,6 +4,155 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] W0 Ship Freeze 执行 — Cursor Agent
+
+**背景 / 触发**：用户「按计划执行」；执行 `RELEASE_ROADMAP` W0（冻结 / Known Issues / Alpha 模板 / 提交准备）。
+
+**修改思路**：文档与发行边界先行；产品化积压一并纳入 v0.3.6；实验 skills 进 gitignore；自动验收用 pytest，人工录像标待录。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `docs/KNOWN_ISSUES.md` | Alpha 预期管理 |
+| `docs/ALPHA_INVITE.md` | 邀请文案 + 三问 + 名单模板 |
+| `docs/RELEASE_ROADMAP.md` | （已有）主轴 |
+| `docs/DEMO_VERIFIED_SPINE.md` | 镜 6 + 录像状态 |
+| `CHANGELOG.md` | v0.3.6 补本地产品化/Harness |
+| `.gitignore` | 隔离本机试炼 skills |
+| 产品化积压 | discovery/harness_install/install-local/Hub seed/前端等 |
+| `tests/test_local_productization.py` 等 | 硬链路单测 |
+
+**未修改 / 刻意不做**：未人工录 Demo 视频（标待录）；未改默认口令实现；`graph.json` 运行时抖动已还原不提交
+
+**验证**：`pytest tests/test_local_productization.py tests/test_skill_discovery.py -v` → **11 passed**
+
+**开放问题 / 下一步**：tag `v0.3.6` + push；维护者录 6 镜；填 Alpha 名单并发邀请；W1 修 B1/B2
+
+---
+
+## [2026-10-28] 后续发布路线图 RELEASE_ROADMAP — Cursor Agent
+
+**背景 / 触发**：用户「你规划一下后续」；承接 PM 缺口评估（Closed Alpha 可用、公开未就绪）。
+
+**修改思路**：把后续主轴从「继续堆功能」改成发布阶梯；写清 Go/No-Go、Stream 优先级与刻意延后项。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `docs/RELEASE_ROADMAP.md` | 新建：北极星、Alpha→Beta→Public、Stream A–E、周计划、成功标准 |
+| `docs/ARCH_OPTIMIZATION_PLAN.md` | §7 下一步改为指向发布路线图 |
+
+**未修改 / 刻意不做**：未改业务代码；未 commit / tag；未写 `KNOWN_ISSUES.md`（列为 W0 动作）
+
+**验证**：文档审阅；未跑 pytest（无代码变更）
+
+**开放问题 / 下一步**：按路线图 W0 — 冻结提交/`v0.3.6`、干净机黄金路径录像、`KNOWN_ISSUES.md`、Alpha 邀约名单
+
+---
+
+## [2026-10-28] 本地产品化续 — UI 一键装本机 Harness — Cursor Agent
+
+**背景 / 触发**：用户「继续」；开放项「settings/详情一键安装」。
+
+**修改思路**：共享 `harness_install`；API `POST .../install-local`；导出卡三按钮；设置页 Harness 指引。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/harness_install.py` | 本机安装核心 |
+| `skillos/api/skills.py` | `POST /{name}/install-local` |
+| `scripts/install_skill_to_harness.py` | 改调共享模块 |
+| `frontend/export-channel.js` | 装到 Cursor/dsh/.agents |
+| `frontend/settings.js` / `index.html` | 设置 → Harness 页 |
+| `tests/test_skill_discovery.py` | 安装与 slug 校验 |
+
+**未修改 / 刻意不做**：未 commit；未做远程沙箱审批
+
+**验证**：`pytest tests/test_skill_discovery.py -v` → **8 passed**
+
+**开放问题 / 下一步**：浏览器点「装到 Cursor」验收；Draft 安装可加确认弹窗
+
+---
+
+## [2026-10-28] 本地产品化续 — Zip TRUST/INSTALL + harness 安装脚本 — Cursor Agent
+
+**背景 / 触发**：用户「继续」；补齐导出包与本机一键装进 Cursor/dsh，避免只停在文案。
+
+**修改思路**：Zip 带发现/调用元数据；CLI 复制到 harness 目录；引导与 quickstart 对齐 Dual Gate + Skill≠Plugin。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/portable_export.py` | Zip 含 INSTALL.txt / TRUST.txt + metadata |
+| `scripts/install_skill_to_harness.py` | 复制到 cursor/agents/dsh |
+| `frontend/onboarding.js` / `docs/quickstart.md` | Harness 引导 |
+| `skillos/api/skills_extract.py` | Hub 安装 meta.origin=hub |
+| `tests/test_skill_discovery.py` | Zip 内容断言 |
+
+**未修改 / 刻意不做**：未 commit；未接 Cordis 沙箱审批
+
+**验证**：`pytest tests/test_skill_discovery.py -v` → **6 passed**
+
+**开放问题 / 下一步**：本地跑 `install_skill_to_harness.py` 烟测；可选 settings 内嵌「一键安装」按钮
+
+---
+
+## [2026-10-28] 借鉴 DeepSeek Harness — 发现层 / 调用策略 / 多路径导出 — Cursor Agent
+
+**背景 / 触发**：用户「值得借鉴的都借鉴一下」；对照 dsh Skills 子系统，不重做 Cordis 运行时。
+
+**修改思路**：SkillOS 继续负责出师；借鉴 harness 的发现分层、modelInvocable、渐进披露 catalog、多安装根与 Skill≠Plugin 文案。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/discovery.py` | source 层 + invocation_policy + catalog_summary |
+| `skillos/skills/portable_skill.py` | install_paths 含 `.agents` / `.dsh` |
+| `skillos/skills/skill_store.py` | 持久化 `source_type` |
+| `skillos/api/skills.py` | 列表发现字段；`GET /catalog`；详情透出 |
+| `skillos/mcp_server.py` | list_skills 默认 model_only 渐进披露 |
+| `frontend/export-channel.js` 等 | 多 Harness 路径 + dsh 命令 + 筛选「可调用」 |
+| `tests/test_skill_discovery.py` | 单测 |
+
+**未修改 / 刻意不做**：未接入 Cordis；未做沙箱审批执行链；未 commit
+
+**验证**：`pytest tests/test_skill_discovery.py` + trust/local/market 相关 → **17 passed**
+
+**开放问题 / 下一步**：本地验收 catalog/model_only；可选把「在 dsh 打开」做成一键复制脚本包
+
+---
+
+## [2026-10-28] 本地产品化硬链路 — finalize/Hub 安装/证据/seed — Cursor Agent
+
+**背景 / 触发**：用户「先不管 git，先把本地化的产品化做好，不要只是个 demo」。审计发现 finalize 绕过 Dual Gate persist、Hub 安装误走 LLM create。
+
+**修改思路**：对齐日常链路与 dispatch 同一套 `_persist_created_skill`；Hub content 直装；列表 Trust reconcile；Overview 拉 Evidence；空 Hub 自动 seed。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/api/skills_extract.py` | `/finalize` + auth/tenant + persist；`/create` content 安装短路 |
+| `skillos/api/skills.py` | 列表 Trust Tier 始终 enrich |
+| `skillos/api/marketplace.py` | catalog `offset`；Hub tier enrich |
+| `skillos/marketplace/seed.py` + `scripts/seed_hub_catalog.py` | 本地 cohort seed |
+| `skillos/api/server.py` | `SKILLHUB_AUTO_SEED` 默认开 |
+| `frontend/hub.js` / `skills.js` / `precipitation-result.js` | 安装、证据面板、draft 默认 |
+| `tests/test_local_productization.py` | finalize/install/seed 单测 |
+
+**未修改 / 刻意不做**：未 commit/push；未拍 Demo；未改支付；实验 skills/ 未清理
+
+**验证**：`pytest tests/test_local_productization.py tests/test_marketplace.py::TestTrustTierEnrichment` → **5 passed**；`seed_hub_catalog.py --force` 可跑
+
+**开放问题 / 下一步**：本地起服务走通 登录→生成→Overview 证据→Hub 安装；可选 `SKILLHUB_AUTO_SEED=0` 关自动注入
+
+---
+
 ## [2026-10-28] Phase T — Dual Gate 一页纸短文 + v0.3.6 草稿 — Cursor Agent
 
 **背景 / 触发**：用户「继续下一阶段」；产品表面已收口，进入 Phase T 余项（短文 / 发布叙事）。

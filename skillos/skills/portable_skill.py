@@ -1,6 +1,5 @@
 """Normalize extracted skill_doc into installable SKILL.md for Cursor / Claude Code / Trae."""
 
-
 import hashlib
 import re
 from pathlib import Path
@@ -126,6 +125,7 @@ def ensure_skill_params(body: str) -> str:
 
     return body
 
+
 def build_description(display_name: str, body: str) -> str:
     """Third-person description for YAML frontmatter (AgentSkills / Cursor).
 
@@ -199,8 +199,10 @@ def normalize_body(display_name: str, body: str) -> str:
     if any(
         marker in body
         for marker in (
-            "## When to use", "## 何时使用",
-            "## Instructions", "## Decision routes",
+            "## When to use",
+            "## 何时使用",
+            "## Instructions",
+            "## Decision routes",
         )
     ):
         return body
@@ -231,8 +233,7 @@ def normalize_body(display_name: str, body: str) -> str:
     if s_body:
         sections.append(
             "\n## Instructions\n"
-            "Follow these steps in order. Ask the user if anything is marked [待确认].\n\n"
-            + s_body.strip()
+            "Follow these steps in order. Ask the user if anything is marked [待确认].\n\n" + s_body.strip()
         )
 
     if s_route:
@@ -258,7 +259,7 @@ def normalize_body(display_name: str, body: str) -> str:
 
 
 def install_paths(slug: str) -> dict[str, str]:
-    """AgentSkills.io standard install paths for 30+ platforms."""
+    """AgentSkills.io + common harness install paths (Cursor / agents / dsh)."""
     return {
         "claude_code": f"~/.claude/skills/{slug}/",
         "cursor": f"~/.cursor/skills/{slug}/",
@@ -266,6 +267,11 @@ def install_paths(slug: str) -> dict[str, str]:
         "gemini_cli": f"~/.gemini/skills/{slug}/",
         "trae": f"~/.trae/skills/{slug}/",
         "copilot": f"~/.github/copilot/skills/{slug}/",
+        # DeepSeek Harness / AgentSkills project layouts (discovery rank mirrors dsh)
+        "agents_user": f"~/.agents/skills/{slug}/",
+        "agents_project": f".agents/skills/{slug}/",
+        "dsh_user": f"~/.dsh/skills/{slug}/",
+        "dsh_project": f".dsh/skills/{slug}/",
     }
 
 
@@ -275,14 +281,16 @@ def format_install_guide(display_name: str, slug: str, saved_path: str = "") -> 
     lines = [
         "\n\n---\n",
         "### 安装技能",
-        f"技能包 `{slug}/` 是 **AgentSkills.io 标准格式**，兼容 30+ AI 编程平台。",
+        f"技能包 `{slug}/` 是 **AgentSkills.io 标准格式**，兼容 Cursor / Claude / Codex / DeepSeek Harness 等。",
         "",
         "**安装方法**：将整个文件夹复制到对应路径：",
-        f"- Claude Code：`{paths['claude_code']}`",
         f"- Cursor：`{paths['cursor']}`",
+        f"- Claude Code：`{paths['claude_code']}`",
         f"- Codex CLI：`{paths['codex']}`",
-        f"- Gemini CLI：`{paths['gemini_cli']}`",
-        f"- GitHub Copilot：`{paths['copilot']}`",
+        f"- 项目 `.agents/skills`：`{paths['agents_project']}`",
+        f"- DeepSeek Harness 用户目录：`{paths['dsh_user']}`（或项目 `{paths['dsh_project']}`）",
+        "",
+        "**Harness 试用**：安装后可 `npx @deepseek-ai/dsh web` 在运行时调用（Skill ≠ Plugin）。",
         "",
         "**目录结构**：",
         "```",
@@ -351,6 +359,7 @@ def to_agent_skills_format(
     meta["metadata"]["skillos_slug"] = slug
 
     import yaml
+
     header = yaml.safe_dump(meta, allow_unicode=True, sort_keys=False).strip()
     return f"---\n{header}\n---\n\n{normalized.lstrip()}"
 

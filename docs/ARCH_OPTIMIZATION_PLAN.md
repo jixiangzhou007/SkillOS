@@ -237,4 +237,8 @@ Day 5–7   Demo 脚本 + 录像素材；remote/push；可选 v0.3.5 tag
 
 **Phase T 短文已交付**（`DUAL_GATE_NOTE.md`）；CHANGELOG 已起草 **v0.3.6**。
 
-**下一步**：网络恢复后 `git push`；按分镜人工录像；确认后打 `v0.3.6` tag；完整 `paper.tex` PDF / arXiv 仍可选。
+**本地产品化硬链路（2026-10-28）**：finalize/create-install 走 `_persist_created_skill`；Hub seed + 安装直持久化；Overview Evidence；列表 Trust reconcile。目标是日常可用，不是 Demo 薄壳。
+
+**Harness 借鉴（2026-10-28）**：发现层 source + `model_invocable`；`GET /api/skills/catalog`；导出 Cursor / `.agents` / `.dsh`；MCP 默认隐藏 Draft；文案 Skill≠Plugin。不重做 dsh 运行时。
+
+**下一步（发布主轴）**：见 [`RELEASE_ROADMAP.md`](RELEASE_ROADMAP.md)。**W0 文档/pytest 已执行**；待：`v0.3.6` tag/push、人工 Demo 录像、Alpha 邀约。功能只服务晋级条件。

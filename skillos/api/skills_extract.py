@@ -14,6 +14,7 @@ from fastapi.responses import StreamingResponse
 from skillos.api._skills_shared import (
     CreateSkillRequest,
     DispatchRequest,
+    _reset_tenant,
     _skills_list,
     _tenant_context_from_auth,
     _tenant_from_context,
@@ -308,6 +309,7 @@ def _persist_created_skill(
         ep["skill_path"] = str(_skill_path(finalized["name"], root=resolve_skills_root(tenant)))
     except Exception:
         pass
+    ep["skill_name"] = finalized["name"]
 
     ctx = team_context or {}
     record_skill_precipitation(
@@ -1140,54 +1142,116 @@ def _sse_event(event: str, data: str) -> str:
     return f"event: {event}\ndata: {data}\n\n"
 
 
+def _install_name_from_request(req: CreateSkillRequest) -> str:
+    """Resolve display name for Hub/install when content is provided."""
+    text = (req.text or "").strip()
+    for prefix in ("保存技能:", "保存技能：", "安装:", "安装："):
+        if text.startswith(prefix):
+            text = text[len(prefix) :].strip()
+            break
+    if text and text not in ("保存技能", "安装"):
+        return text[:80]
+    try:
+        from skillos.skills.skill_store import _split_front_matter
+
+        meta, _ = _split_front_matter(req.content)
+        name = str(meta.get("name") or "").strip()
+        if name:
+            return name[:80]
+    except Exception as exc:
+        _log.debug("install name from frontmatter skipped: %s", exc)
+    return "installed-skill"
+
+
 @router.post("/create")
 async def create_skill(
     req: CreateSkillRequest,
     auth: AuthContext | None = Depends(get_optional_auth),
 ):
-    """Create a new skill from text description."""
+    """Create a new skill from text description, or install provided SKILL.md content."""
     from skillos.config import get_config
     from skillos.skills.agent import SkillExtractionAgent
     from skillos.skills.skill_store import list_skills
 
     cfg = get_config()
-    tenant = auth.tenant_context() if auth else None
-    team_ctx = _team_context_from_auth(auth)
-    agent = SkillExtractionAgent()
-    agent.start(req.text)
-    reply, doc = agent.handle(req.text, list_skills(tenant=tenant), cfg.to_llm_args())
-    if not doc:
-        reply2, doc = agent.handle("请直接生成最终技能文档。", list_skills(tenant=tenant), cfg.to_llm_args())
-        reply = reply2
-    if doc:
-        try:
-            ep = _persist_created_skill(
-                doc["name"],
-                doc["content"],
-                cfg.to_llm_args(),
-                source="api/create",
-                source_type="conversation",
-                team_context=team_ctx,
-            )
-        except Exception as exc:
-            from skillos.billing.usage import QuotaExceededError
+    tenant_token = _tenant_context_from_auth(auth)
+    try:
+        tenant = auth.tenant_context() if auth else None
+        team_ctx = _team_context_from_auth(auth)
+        llm_args = cfg.to_llm_args()
 
-            if isinstance(exc, QuotaExceededError):
-                raise HTTPException(status_code=402, detail=str(exc)) from exc
-            raise
-        return {
-            "reply": reply + _epistemic_reply_suffix(ep),
-            "skill_saved": doc["name"],
-            "epistemic_summary": ep,
-        }
-    return {"reply": reply, "active": agent.is_active}
+        # Hub / 本地安装：有 content 时直接走 Dual Gate persist，不调 LLM
+        if (req.content or "").strip():
+            name = _install_name_from_request(req)
+            try:
+                ep = _persist_created_skill(
+                    name,
+                    req.content,
+                    llm_args,
+                    source="api/create-install",
+                    source_type="marketplace",
+                    meta={"origin": "hub", "source_type": "marketplace"},
+                    team_context=team_ctx,
+                )
+            except Exception as exc:
+                from skillos.billing.usage import QuotaExceededError
+
+                if isinstance(exc, QuotaExceededError):
+                    raise HTTPException(status_code=402, detail=str(exc)) from exc
+                raise
+            saved = ep.get("skill_name") or name
+            return {
+                "reply": f"已安装技能「{saved}」" + _epistemic_reply_suffix(ep),
+                "skill_saved": saved,
+                "epistemic_summary": ep,
+                "trust_tier": ep.get("trust_tier"),
+                "gates": ep.get("gates"),
+                "export_zip_url": f"/api/skills/{saved}/export/zip",
+            }
+
+        agent = SkillExtractionAgent()
+        agent.start(req.text)
+        reply, doc = agent.handle(req.text, list_skills(tenant=tenant), llm_args)
+        if not doc:
+            reply2, doc = agent.handle("请直接生成最终技能文档。", list_skills(tenant=tenant), llm_args)
+            reply = reply2
+        if doc:
+            try:
+                ep = _persist_created_skill(
+                    doc["name"],
+                    doc["content"],
+                    llm_args,
+                    source="api/create",
+                    source_type="conversation",
+                    team_context=team_ctx,
+                )
+            except Exception as exc:
+                from skillos.billing.usage import QuotaExceededError
+
+                if isinstance(exc, QuotaExceededError):
+                    raise HTTPException(status_code=402, detail=str(exc)) from exc
+                raise
+            return {
+                "reply": reply + _epistemic_reply_suffix(ep),
+                "skill_saved": doc["name"],
+                "epistemic_summary": ep,
+                "trust_tier": ep.get("trust_tier"),
+                "gates": ep.get("gates"),
+                "export_zip_url": f"/api/skills/{doc['name']}/export/zip",
+            }
+        return {"reply": reply, "active": agent.is_active}
+    finally:
+        _reset_tenant(tenant_token)
 
 
 _FINALIZE_MARKER = "生成"
 
 
 @router.post("/finalize")
-async def finalize_extraction(session_id: str = ""):
+async def finalize_extraction(
+    session_id: str = "",
+    auth: AuthContext | None = Depends(get_optional_auth),
+):
     """Generate the final SKILL.md from the current extraction conversation.
 
     Frontend calls this when the user clicks the "生成技能" button.
@@ -1197,30 +1261,69 @@ async def finalize_extraction(session_id: str = ""):
         return {"reply": "请提供 session_id", "skill_active": False}
     from skillos.config import get_config
     from skillos.skills.session_manager import get_session_manager
-    from skillos.skills.skill_store import list_skills, save_skill
+    from skillos.skills.skill_store import list_skills
 
-    mgr = get_session_manager()
-    session = mgr.get(session_id)
-    if not session or not session.agent:
-        return {"reply": "会话已过期。请重新开始萃取。", "skill_active": False}
+    tenant_token = _tenant_context_from_auth(auth)
+    try:
+        mgr = get_session_manager()
+        session = mgr.get(session_id)
+        if not session or not session.agent:
+            return {"reply": "会话已过期。请重新开始萃取。", "skill_active": False}
 
-    agent = session.agent
-    if not agent.is_active:
-        return {"reply": "当前没有进行中的萃取。请先描述你的工作流程。", "skill_active": False}
-    if len(agent._context) < 2:
-        return {"reply": "聊的内容还不够，请再多说一些你的流程细节。", "skill_active": True}
+        agent = session.agent
+        if not agent.is_active:
+            return {"reply": "当前没有进行中的萃取。请先描述你的工作流程。", "skill_active": False}
+        if len(agent._context) < 2:
+            return {"reply": "聊的内容还不够，请再多说一些你的流程细节。", "skill_active": True}
 
-    cfg = get_config()
-    llm_args = cfg.to_llm_args()
-    reply, doc = agent.handle(_FINALIZE_MARKER, list_skills(), llm_args)
-    session.add_turn("user", "[生成技能]")
-    session.add_turn("assistant", reply)
+        cfg = get_config()
+        llm_args = cfg.to_llm_args()
+        tenant = auth.tenant_context() if auth else None
+        if tenant is None and getattr(session, "tenant_id", ""):
+            from skillos.identity.resolver import tenant_from_context
 
-    result = {"reply": reply, "session_id": session.id, "skill_active": agent.is_active}
-    if doc:
-        save_skill(doc["name"], doc["content"])
-        result["skill_saved"] = doc["name"]
-    return result
+            tenant = tenant_from_context(_team_context_from_session(session))
+
+        reply, doc = agent.handle(_FINALIZE_MARKER, list_skills(tenant=tenant), llm_args)
+        session.add_turn("user", "[生成技能]")
+        session.add_turn("assistant", reply)
+
+        if not doc:
+            return {
+                "reply": reply,
+                "session_id": session.id,
+                "skill_active": agent.is_active,
+            }
+
+        team_ctx = _team_context_from_auth(
+            auth,
+            tenant_id=getattr(session, "tenant_id", "") or "",
+            org_id=getattr(session, "org_id", "") or "",
+            dept_id=getattr(session, "dept_id", "") or "",
+            user_id=getattr(session, "user_id", "") or "",
+            session_id=session.id,
+            channel=getattr(session, "channel", "") or "",
+            chat_id=getattr(session, "chat_id", "") or "",
+        )
+        try:
+            ep = _persist_created_skill(
+                doc["name"],
+                doc["content"],
+                llm_args,
+                source=f"finalize:{session.id}",
+                source_type="conversation",
+                meta=_persist_meta_from_agent(agent),
+                team_context=team_ctx,
+            )
+        except Exception as exc:
+            from skillos.billing.usage import QuotaExceededError
+
+            if isinstance(exc, QuotaExceededError):
+                raise HTTPException(status_code=402, detail=str(exc)) from exc
+            raise
+        return _finalize_extraction_response(session, reply, agent, doc=doc, ep=ep)
+    finally:
+        _reset_tenant(tenant_token)
 
 
 @router.get("/status")

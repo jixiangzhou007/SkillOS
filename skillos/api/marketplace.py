@@ -37,9 +37,29 @@ def _trust_tier_from_content(content: str) -> str:
 
 
 def _enrich_hub_item(skill) -> dict:
-    """Catalog/detail payload with trust_tier (content stripped from to_dict)."""
+    """Catalog/detail payload with trust_tier (content stripped from to_dict).
+
+    Published Hub content is a snapshot: prefer explicit frontmatter ``trust_tier``.
+    If missing, fall back to Dual Gate reconcile from embedded meta/gates.
+    """
     d = skill.to_dict()
-    d["trust_tier"] = _trust_tier_from_content(getattr(skill, "content", "") or "")
+    content = getattr(skill, "content", "") or ""
+    fm_tier = _trust_tier_from_content(content)
+    if fm_tier in ("verified", "provisional"):
+        d["trust_tier"] = fm_tier
+        return d
+    try:
+        from skillos.evaluation.trust_tier import enrich_epistemic_with_trust
+        from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
+        from skillos.skills.skill_store import _split_front_matter
+
+        meta, _ = _split_front_matter(content)
+        ep = enrich_epistemic_with_trust(format_epistemic_api_payload(meta), meta)
+        tier = str(ep.get("trust_tier") or "").strip().lower()
+        d["trust_tier"] = tier if tier in ("verified", "provisional", "draft") else fm_tier
+    except Exception as exc:
+        _log.debug("hub trust enrich skipped: %s", exc)
+        d["trust_tier"] = fm_tier
     return d
 
 
@@ -61,7 +81,13 @@ async def marketplace_stats():
 
 
 @router.get("/catalog")
-async def public_catalog(q: str = "", category: str = "", sort: str = "score", limit: int = 50):
+async def public_catalog(
+    q: str = "",
+    category: str = "",
+    sort: str = "score",
+    offset: int = 0,
+    limit: int = 50,
+):
     """Read-only public skill catalog (no UGC publish in Sprint 9)."""
     from collections import Counter
 
@@ -74,8 +100,10 @@ async def public_catalog(q: str = "", category: str = "", sort: str = "score", l
         {"name": name, "count": count} for name, count in sorted(cat_counts.items(), key=lambda x: (-x[1], x[0]))
     ]
     skills = list_skills(status="approved", category=category, search=q, sort_by=sort)
+    start = max(0, int(offset or 0))
+    page = max(1, min(int(limit or 50), 100))
     items = []
-    for s in skills[: max(1, min(limit, 100))]:
+    for s in skills[start : start + page]:
         d = _enrich_hub_item(s)
         d["read_only"] = readonly
         items.append(d)
@@ -83,6 +111,8 @@ async def public_catalog(q: str = "", category: str = "", sort: str = "score", l
         "read_only": readonly,
         "ugc_publish": not readonly,
         "total": len(skills),
+        "offset": start,
+        "limit": page,
         "categories": categories,
         "skills": items,
     }

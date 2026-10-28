@@ -93,6 +93,20 @@ async def _lifespan(app):
         _log.info("Ingestion queue processor started")
     except Exception as exc:
         _log.warning("Ingestion queue processor failed to start: %s", exc)
+    # Local product: auto-seed empty Hub (SKILLHUB_AUTO_SEED=0 to disable)
+    try:
+        import os
+
+        if os.getenv("SKILLHUB_AUTO_SEED", "1").strip().lower() not in ("0", "false", "no"):
+            from skillos.marketplace.seed import seed_hub_from_local_skills
+
+            seeded = seed_hub_from_local_skills()
+            if seeded.get("seeded"):
+                _log.info("SkillHub auto-seeded %s skills", seeded.get("seeded"))
+            elif seeded.get("skipped"):
+                _log.debug("SkillHub seed skipped: %s", seeded.get("skipped"))
+    except Exception as exc:
+        _log.warning("SkillHub auto-seed failed: %s", exc)
     yield
     # Shutdown
     try:

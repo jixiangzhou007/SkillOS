@@ -97,6 +97,27 @@ function settingsView() {
       else if (t === 'voice') this.loadVoice();
     },
 
+    copyHarnessCmd(text) {
+      if (!text) return;
+      if (typeof copyTextToClipboard === 'function') {
+        copyTextToClipboard(text, '已复制');
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          if (typeof toast === 'function') toast('已复制', 'success');
+        });
+      }
+    },
+
+    copyInstallCli() {
+      this.copyHarnessCmd('python scripts/install_skill_to_harness.py "技能名" --target cursor');
+    },
+
+    openCatalogJson() {
+      window.open('/api/skills/catalog?model_only=true', '_blank');
+    },
+
     // ── Model CRUD ─────────────────────────────
 
     loadModels() {

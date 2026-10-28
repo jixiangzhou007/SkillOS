@@ -179,19 +179,33 @@ function hubView() {
         var sr = await api('/api/marketplace/skill/' + encodeURIComponent(skillId));
         if (!sr.ok) { toast('安装失败', 'error'); setStatus(''); return; }
         var s = await sr.json();
-        var name = (s.name || 'hub-skill').replace(/[^a-zA-Z0-9\u4e00-\u9fff-]/g, '-').substring(0, 50);
+        var name = s.name || 'hub-skill';
+        if (!s.content) { toast('该技能无内容，无法安装', 'error'); setStatus(''); return; }
         var cr = await api('/api/skills/create', {
           method: 'POST',
-          body: JSON.stringify({ text: '保存技能: ' + name, content: s.content }),
+          body: JSON.stringify({ text: name, content: s.content }),
         });
-        if (!cr.ok) { toast('安装失败', 'error'); setStatus(''); return; }
-        addMsg('sys', '已安装: ' + name);
-        refreshSkillList();
+        if (!cr.ok) {
+          var err = await cr.json().catch(function(){ return {}; });
+          toast(err.detail || '安装失败', 'error');
+          setStatus('');
+          return;
+        }
+        var saved = await cr.json();
+        var savedName = saved.skill_saved || name;
+        addMsg('sys', '已安装到工作区: ' + savedName +
+          (saved.trust_tier ? (' · ' + saved.trust_tier) : ''));
+        if (typeof refreshSkillList === 'function') refreshSkillList();
         var installed = JSON.parse(localStorage.getItem(StorageKeys.INSTALLED_SKILLS) || '{}');
-        installed[s.slug || skillId] = { skill_id: s.skill_id, name: s.name, version: s.version, installed_at: Date.now() / 1000 };
+        installed[s.slug || skillId] = {
+          skill_id: s.skill_id, name: savedName, version: s.version,
+          trust_tier: saved.trust_tier || s.trust_tier || '',
+          installed_at: Date.now() / 1000
+        };
         localStorage.setItem(StorageKeys.INSTALLED_SKILLS, JSON.stringify(installed));
         checkHubUpdates();
-        setStatus('已安装: ' + name);
+        setStatus('已安装: ' + savedName);
+        if (typeof showDetail === 'function') showDetail(savedName);
       } catch (e) {
         toast('安装失败: ' + e.message, 'error');
         setStatus('');

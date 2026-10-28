@@ -76,15 +76,22 @@ def _check_rate(tool_name: str) -> bool:
 
 def rate_limited(func):
     """Decorator to apply per-tool rate limiting."""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         name = func.__name__
         if not _check_rate(name):
-            return json.dumps({
-                "error": f"Rate limit exceeded for {name} (max {_RATE_MAX.get(name, 30)} per {_RATE_WINDOW}s)",
-                "retry_after": int(_RATE_WINDOW - (time.time() - _rate_limits[name][0])) if _rate_limits[name] else _RATE_WINDOW,
-            }, ensure_ascii=False)
+            return json.dumps(
+                {
+                    "error": f"Rate limit exceeded for {name} (max {_RATE_MAX.get(name, 30)} per {_RATE_WINDOW}s)",
+                    "retry_after": int(_RATE_WINDOW - (time.time() - _rate_limits[name][0]))
+                    if _rate_limits[name]
+                    else _RATE_WINDOW,
+                },
+                ensure_ascii=False,
+            )
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -95,6 +102,7 @@ mcp = FastMCP("SkillOS")
 # ═══════════════════════════════════════════════════════════════
 # Tools
 # ═══════════════════════════════════════════════════════════════
+
 
 @mcp.tool()
 def extract_skill(
@@ -141,15 +149,16 @@ def search_knowledge(
     """
     try:
         from skillos.knowledge.extractor import load_all_knowledge
+
         items = load_all_knowledge()
         if not items:
             return "No knowledge items found. Feed some content first."
 
         # Simple keyword scoring
-        qwords = set(re.findall(r'[\w一-鿿]{2,}', query.lower()))
+        qwords = set(re.findall(r"[\w一-鿿]{2,}", query.lower()))
         scored = []
         for item in items:
-            iwords = set(re.findall(r'[\w一-鿿]{2,}', item.content.lower()))
+            iwords = set(re.findall(r"[\w一-鿿]{2,}", item.content.lower()))
             score = len(qwords & iwords) / max(len(qwords), 1)
             if score > 0:
                 scored.append((score, item))
@@ -160,7 +169,7 @@ def search_knowledge(
             return "No matching knowledge found."
 
         lines = [f"Found {len(scored)} matches for '{query}':"]
-        for score, item in scored[:top_k]:
+        for _score, item in scored[:top_k]:
             conf = item.confidence
             valid = "✓" if item.invalid_at == 0 else "✗"
             lines.append(f"\n{valid} [{item.category}] (confidence: {conf:.0%})")
@@ -174,40 +183,45 @@ def search_knowledge(
 
 
 @mcp.tool()
-def list_skills(query: str = "") -> str:
-    """List all available skills.
+def list_skills(query: str = "", model_only: bool = True) -> str:
+    """List skills as a progressive-disclosure catalog (name + description).
+
+    By default only model-invocable skills (Verified / Provisional / system).
+    Draft skills are excluded so agents do not inherit unfinished work.
+    Use get_skill for full SKILL.md body.
 
     Args:
         query: Optional search term to filter skills
+        model_only: If true (default), hide Draft from the model catalog
 
     Returns:
-        List of skill names with basic metadata
+        Catalog lines with Trust Tier and source layer
     """
     try:
+        from skillos.api.skills import _list_skills_impl
         from skillos.identity.mcp_context import mcp_tenant_context
-        from skillos.skills.skill_store import get_skill_body, list_skills, load_skill
+        from skillos.skills.discovery import plugin_vs_skill_hint
 
         with mcp_tenant_context():
-            skills = list_skills()
-            if query:
-                skills = [s for s in skills if query.lower() in s.lower()]
+            items = _list_skills_impl(tenant=None, q=query or "")
+            if model_only:
+                items = [s for s in items if s.model_invocable]
+            if not items:
+                return "No invocable skills found." + (
+                    " (Draft skills are hidden from the model catalog.)" if model_only else ""
+                )
 
-            if not skills:
-                return "No skills found."
-
-            lines = [f"Skills ({len(skills)} total):"]
-            for name in sorted(skills)[:20]:
-                try:
-                    doc = load_skill(name)
-                    body = get_skill_body(doc)
-                    lines.append(f"\n## {name}")
-                    for line in body.split("\n"):
-                        line = line.strip()
-                        if line and not line.startswith("#"):
-                            lines.append(f"  {line[:120]}")
-                            break
-                except Exception:
-                    lines.append(f"\n## {name}")
+            lines = [
+                f"Skills catalog ({len(items)} · progressive disclosure — use get_skill for body)",
+                plugin_vs_skill_hint(),
+                "",
+            ]
+            for s in items[:40]:
+                inv = "model+user" if s.model_invocable else "user-only"
+                lines.append(
+                    f"- {s.name} [{s.trust_tier}/{s.source_label}/{inv}]"
+                    + (f": {s.description[:100]}" if s.description else "")
+                )
             return "\n".join(lines)
     except Exception as e:
         return f"List failed: {e}"
@@ -226,14 +240,14 @@ def get_skill(name: str) -> str:
     try:
         from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
         from skillos.skills.skill_store import load_skill, load_skill_raw
+
         content = load_skill(name)
         raw = load_skill_raw(name)
         ep = format_epistemic_api_payload(raw.get("meta", {}))
         footer = ""
         if ep.get("total_claims", 0):
             footer = (
-                f"\n\n---\n📊 Epistemic: verified={ep['verified']} "
-                f"pending={ep['pending']} total={ep['total_claims']}"
+                f"\n\n---\n📊 Epistemic: verified={ep['verified']} pending={ep['pending']} total={ep['total_claims']}"
             )
         return content[:5000] + footer
     except FileNotFoundError:
@@ -260,6 +274,7 @@ def query_lineage(question: str, skill_name: str = "") -> str:
     """
     try:
         from skillos.knowledge.epistemology import get_store
+
         store = get_store()
         knowledge = store.get_knowledge()
 
@@ -267,10 +282,10 @@ def query_lineage(question: str, skill_name: str = "") -> str:
             return "No verified knowledge in the system yet."
 
         # Find relevant claims
-        qwords = set(re.findall(r'[\w一-鿿]{2,}', question.lower()))
+        qwords = set(re.findall(r"[\w一-鿿]{2,}", question.lower()))
         relevant = []
         for claim in knowledge[:50]:
-            cwords = set(re.findall(r'[\w一-鿿]{2,}', claim.content.lower()))
+            cwords = set(re.findall(r"[\w一-鿿]{2,}", claim.content.lower()))
             if qwords & cwords:
                 relevant.append(claim)
 
@@ -351,6 +366,7 @@ def digest_document(content: str, source_url: str = "") -> str:
 
         # Save as knowledge package
         from skillos.skills.skill_store import save_skill
+
         nm = re.search(r"^#\s*Knowledge Package[：:]\s*(.+?)\s*$", result, re.MULTILINE)
         name = nm.group(1).strip() if nm else "digested-doc"
         save_skill(name, result)
@@ -396,6 +412,7 @@ def evolve_skill(name: str, feedback: str = "") -> str:
         session = OptimizationSession(skill_name=name, original_content=body, current_content=body)
 
         from skillos.evolution.skillopt import run_optimization_round
+
         result = run_optimization_round(session, llm_args, feedback)
 
         lines = [
@@ -422,6 +439,7 @@ def evolve_skill(name: str, feedback: str = "") -> str:
         return f"Skill '{name}' not found."
     except Exception as e:
         import traceback
+
         return f"Evolution failed: {e}\n{traceback.format_exc()}"
 
 
@@ -508,9 +526,7 @@ def export_for_skillopt(skill_name: str, output_dir: str = "") -> str:
         manifest = json.loads(result.manifest_path.read_text(encoding="utf-8"))
         ep = manifest.get("epistemic_summary", {})
         if ep.get("total_claims"):
-            lines.append(
-                f"Epistemic: verified={ep.get('verified', 0)} pending={ep.get('pending', 0)}"
-            )
+            lines.append(f"Epistemic: verified={ep.get('verified', 0)} pending={ep.get('pending', 0)}")
         return "\n".join(lines)
     except FileNotFoundError:
         return f"Skill '{skill_name}' not found."
@@ -527,6 +543,7 @@ def get_epistemic_context() -> str:
     """
     try:
         from skillos.knowledge.epistemology import get_store
+
         store = get_store()
         knowledge = store.get_knowledge()
 
@@ -556,23 +573,26 @@ def ingest_file(file_path: str) -> str:
         Digestion result with extracted knowledge
     """
     from pathlib import Path
+
     p = Path(file_path).resolve()
     if not p.exists():
         return f"File not found: {file_path}"
     # Basic path traversal check — must be under a common workspace dir
     cwd = Path.cwd().resolve()
     home = Path.home().resolve()
-    if not (str(p).startswith(str(cwd)) or str(p).startswith(str(home)) or str(p).startswith(str(Path.home() / "Downloads"))):
-        return json.dumps({"error": "File must be under workspace, home, or Downloads", "path": str(p)}, ensure_ascii=False)
+    if not (
+        str(p).startswith(str(cwd)) or str(p).startswith(str(home)) or str(p).startswith(str(Path.home() / "Downloads"))
+    ):
+        return json.dumps(
+            {"error": "File must be under workspace, home, or Downloads", "path": str(p)}, ensure_ascii=False
+        )
 
     try:
         from skillos.config import get_config
         from skillos.utils.file_ingest import ingest_and_learn
 
         cfg = get_config()
-        result = ingest_and_learn(
-            str(p), p.name, llm_args=cfg.to_llm_args()
-        )
+        result = ingest_and_learn(str(p), p.name, llm_args=cfg.to_llm_args())
 
         lines = [f"File: {p.name} ({result.get('file_category', '?')})"]
         if result.get("error"):
@@ -606,6 +626,7 @@ def fetch_url(url: str) -> str:
     """
     # Block internal/loopback URLs to prevent SSRF
     import urllib.parse
+
     host = urllib.parse.urlparse(url).hostname or ""
     if host in ("localhost", "127.0.0.1", "0.0.0.0", "::1") or host.startswith("192.168.") or host.startswith("10."):
         return json.dumps({"error": "Internal URLs are not allowed", "url": url}, ensure_ascii=False)
@@ -640,6 +661,7 @@ def fetch_url(url: str) -> str:
             extracted_items: list = []
             try:
                 from skillos.knowledge.extractor import extract_knowledge, save_knowledge
+
                 extracted_items = extract_knowledge(content, url)
                 if extracted_items:
                     saved = save_knowledge(extracted_items)
@@ -648,6 +670,7 @@ def fetch_url(url: str) -> str:
                 lines.append(f"  Knowledge extraction: skipped ({e})")
             try:
                 from skillos.knowledge.ingest_pipeline import finalize_ingest
+
                 fin = finalize_ingest(
                     content,
                     url,
@@ -658,7 +681,9 @@ def fetch_url(url: str) -> str:
                 )
                 lineage = fin.get("lineage") or {}
                 if lineage.get("lineage_applied"):
-                    lines.append(f"  Lineage: {lineage.get('edges_created', 0)} edges, session={lineage.get('session_id', '')[:16]}")
+                    lines.append(
+                        f"  Lineage: {lineage.get('edges_created', 0)} edges, session={lineage.get('session_id', '')[:16]}"
+                    )
             except Exception:
                 pass
         else:
@@ -707,6 +732,7 @@ def watch_account(account_name: str) -> str:
     """
     try:
         from skillos.utils.account_watcher import add_account
+
         result = add_account(account_name)
         return (
             f"Account: {result['account']}\n"
@@ -722,6 +748,7 @@ def watch_account(account_name: str) -> str:
 # ═══════════════════════════════════════════════════════════════
 # Entry point
 # ═══════════════════════════════════════════════════════════════
+
 
 def main():
     """Run the MCP server (stdio transport for Claude Code / Cursor)."""

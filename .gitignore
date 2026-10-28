@@ -86,5 +86,20 @@ skills/skill-*/
 
 # User-generated skill content (keep system skills in git)
 # skills/ is version-controlled for built-in system skills and test fixtures
+# Closed Alpha：本机试炼技能不进发行默认包（见 docs/KNOWN_ISSUES.md）
+skills/API 接口设计规范/
+skills/A_B 实验设计/
+skills/SEO 内容优化/
+skills/a-b/
+skills/api/
+skills/seo/
+skills/合同审核流程/
+skills/员工入职办理/
+skills/客户投诉处理/
+skills/故障应急响应/
+skills/数据产权登记基本概念与政策解读/
+skills/数据报表自动生成/
+skills/需求评审规范/
+skills/费用报销审批/knowledge/
 scripts/verify_*_output.txt
 .superpowers/

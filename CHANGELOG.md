@@ -1,23 +1,31 @@
 # SkillOS Changelog
 
-## v0.3.6 (2026-10-28) — Dual Gate 产品表面 + Trust Tier
+## v0.3.6 (2026-10-28) — Dual Gate 产品表面 + 本地产品化
 
-> Phase V/T 产品化收口：Trust Tier 全链路可见；评测双轨；Demo 剧本与一页纸短文。
+> Phase V/T 产品化收口 + 本机硬链路：Trust Tier 全可见；finalize/Hub 持久化；多 Harness 安装；发布阶梯文档。
 
 ### Trust Tier / Dual Gate
 - **契约**：`draft` | `provisional` | `verified`（Gate A 认识论 ∧ Gate B smoke≥80）
 - **API**：技能列表 / Evidence Card / 导出 `metadata.skillos_trust_tier`；市场目录透出 `trust_tier`
 - **UI**：侧栏筛选与徽章、质量条、沉淀完成卡、Hub 目录/详情、欢迎区最近技能
 
+### 本地产品化硬链路
+- **finalize / create-install**：走 `_persist_created_skill`，避免只出文案不落盘
+- **Hub**：seed 目录 + 安装直持久化；目录/详情露出 `trust_tier`
+- **列表**：Trust Tier 与 frontmatter reconcile
+- **发现层**：`source` + `model_invocable`；`GET /api/skills/catalog`；MCP 默认隐藏 Draft
+- **安装**：`POST /api/skills/{name}/install-local`；导出 Cursor / `.agents` / `.dsh`；Zip 含 TRUST/INSTALL
+
 ### 评测与文档
 - **双轨 UI**：技能详情「评测」Tab — 本地 Quick8 | 官方 SkillsBench 分栏
 - **Demo**：`docs/DEMO_VERIFIED_SPINE.md` 含 6 镜录像分镜
 - **短文**：`docs/paper/DUAL_GATE_NOTE.md`（Phase T 一页纸）
+- **发布**：`docs/RELEASE_ROADMAP.md` · `docs/KNOWN_ISSUES.md` · `docs/ALPHA_INVITE.md`
 - **Alpine 修复**：恢复 CDN + `app.js`；vendoring `alpine.min.js` / `marked.min.js`
 
 ### 发布说明
-- 勿将本版误标为已有历史条目 `v0.3.5`；tag 建议 `v0.3.6`
-- Demo Day 录像仍为人工项
+- 勿将本版误标为已有历史条目 `v0.3.5`；tag：`v0.3.6`
+- Demo Day 录像为人工项；发版以干净机走通 DEMO + 本仓库 pytest 为准
 
 ---
 

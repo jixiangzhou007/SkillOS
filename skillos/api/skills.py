@@ -56,6 +56,13 @@ class SkillResponse(BaseModel):
     failure_rate: float = 0.0
     kb_items: int = 0
     trust_tier: str = "draft"
+    # DeepSeek Harness–inspired discovery / invocation
+    source: str = "workspace"
+    source_label: str = "工作区"
+    source_rank: int = 200
+    model_invocable: bool = False
+    user_invocable: bool = True
+    portable_slug: str = ""
 
 
 # ── Shared impl ─────────────────────────────────────────────
@@ -93,24 +100,36 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
             skill_dept = (skill_meta or {}).get("dept_id", "")
             if skill_dept != dept_id:
                 continue
-        # Load description + trust_tier from frontmatter
+        # description + Trust Tier + discovery / invocation（始终 Dual Gate reconcile）
         desc = ""
         trust_tier = "draft"
+        meta: dict = {}
+        portable_slug = ""
         try:
+            from skillos.evaluation.trust_tier import enrich_epistemic_with_trust
+            from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
+            from skillos.skills.portable_skill import tool_slug
+
             raw_skill = skill_store.load_skill_raw(name, tenant=tenant)
             meta = raw_skill.get("meta", {}) or {}
             desc = meta.get("description", "")
-            tier = meta.get("trust_tier")
-            if isinstance(tier, str) and tier.strip():
-                trust_tier = tier.strip().lower()
-            else:
-                from skillos.evaluation.trust_tier import enrich_epistemic_with_trust
-                from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
-
-                ep = enrich_epistemic_with_trust(format_epistemic_api_payload(meta), meta)
-                trust_tier = str(ep.get("trust_tier") or "draft")
+            ep = enrich_epistemic_with_trust(format_epistemic_api_payload(meta), meta)
+            trust_tier = str(ep.get("trust_tier") or meta.get("trust_tier") or "draft").strip().lower()
+            if trust_tier not in ("verified", "provisional", "draft"):
+                trust_tier = "draft"
+            portable_slug = str(meta.get("portable_slug") or meta.get("name") or tool_slug(name) or "")
         except Exception:
             pass
+
+        from skillos.skills.discovery import catalog_summary
+
+        cat = catalog_summary(
+            name=name,
+            description=desc,
+            trust_tier=trust_tier,
+            meta=meta,
+            portable_slug=portable_slug,
+        )
 
         stats = {"version": 1, "runs": 0, "avg_score": 0.0, "failure_rate": 0.0}
         try:
@@ -131,9 +150,16 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
                 description=desc,
                 kb_items=_kb_items_count(name),
                 trust_tier=trust_tier,
+                source=cat["source"],
+                source_label=cat["source_label"],
+                source_rank=cat["source_rank"],
+                model_invocable=cat["model_invocable"],
+                user_invocable=cat["user_invocable"],
+                portable_slug=cat.get("portable_slug") or "",
                 **stats,
             )
         )
+    result.sort(key=lambda s: (s.source_rank, s.name.lower()))
     return result
 
 
@@ -273,6 +299,46 @@ async def list_skills(
     return _list_skills_impl(tenant=tenant, q=q, dept_id=dept_id)
 
 
+@router.get("/catalog")
+async def skills_catalog(
+    q: str = "",
+    model_only: bool = False,
+    auth: AuthContext | None = Depends(get_optional_auth),
+):
+    """Progressive disclosure catalog: name + description + Trust Tier + invocation.
+
+    Body is never included. ``model_only=true`` keeps Verified/Provisional/system
+    (Draft excluded) — mirrors harness modelInvocable catalogs.
+    """
+    tenant = auth.tenant_context() if auth else None
+    items = _list_skills_impl(tenant=tenant, q=q)
+    rows = []
+    for s in items:
+        if model_only and not s.model_invocable:
+            continue
+        rows.append(
+            {
+                "name": s.name,
+                "description": s.description,
+                "trust_tier": s.trust_tier,
+                "source": s.source,
+                "source_label": s.source_label,
+                "source_rank": s.source_rank,
+                "model_invocable": s.model_invocable,
+                "user_invocable": s.user_invocable,
+                "portable_slug": s.portable_slug,
+            }
+        )
+    from skillos.skills.discovery import plugin_vs_skill_hint
+
+    return {
+        "total": len(rows),
+        "model_only": model_only,
+        "hint": plugin_vs_skill_hint(),
+        "skills": rows,
+    }
+
+
 @router.get("/{name}")
 async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_auth)):
     """Get a skill by name (tenant-scoped when authenticated)."""
@@ -329,6 +395,17 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
             ep["evidence"] = evidence
         except Exception:
             pass
+        from skillos.skills.discovery import catalog_summary
+        from skillos.skills.portable_skill import tool_slug as _tool_slug
+
+        tier = str(ep.get("trust_tier") or meta.get("trust_tier") or "draft")
+        cat = catalog_summary(
+            name=name,
+            description=str(meta.get("description") or ""),
+            trust_tier=tier,
+            meta=meta,
+            portable_slug=str(meta.get("portable_slug") or _tool_slug(name)),
+        )
         return {
             "name": name,
             "content": doc,
@@ -344,10 +421,17 @@ async def get_skill(name: str, auth: AuthContext | None = Depends(get_optional_a
             "trust_tier": ep.get("trust_tier"),
             "gates": ep.get("gates"),
             "evidence": evidence,
+            "source": cat["source"],
+            "source_label": cat["source_label"],
+            "source_rank": cat["source_rank"],
+            "model_invocable": cat["model_invocable"],
+            "user_invocable": cat["user_invocable"],
+            "portable_slug": cat.get("portable_slug") or "",
             "meta": {
                 "trust_tier": meta.get("trust_tier"),
                 "gates": meta.get("gates"),
                 "bench_quality": meta.get("bench_quality"),
+                "source_type": meta.get("source_type"),
             },
             "dir_stats": dir_stats,
         }
@@ -814,6 +898,40 @@ async def export_skill_zip(
         media_type="application/zip",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+class InstallLocalRequest(BaseModel):
+    target: str = "cursor"  # cursor | agents | dsh
+    project: bool = False  # .agents / .dsh under cwd when true
+
+
+@router.post("/{name}/install-local")
+async def install_skill_local(
+    name: str,
+    req: InstallLocalRequest | None = None,
+    auth: AuthContext | None = Depends(get_optional_auth),
+):
+    """Write SKILL.md into a local harness folder on this machine (Cursor / agents / dsh)."""
+    from skillos.skills.harness_install import HARNESS_TARGETS, install_skill_to_harness
+
+    body = req or InstallLocalRequest()
+    target = (body.target or "cursor").strip().lower()
+    if target not in HARNESS_TARGETS:
+        raise HTTPException(400, f"target must be one of: {', '.join(sorted(HARNESS_TARGETS))}")
+    tenant = auth.tenant_context() if auth else None
+    try:
+        return install_skill_to_harness(
+            name,
+            target=target,
+            project=bool(body.project),
+            tenant=tenant,
+        )
+    except FileNotFoundError:
+        raise HTTPException(404, f"Skill not found: {name}") from None
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    except OSError as exc:
+        raise HTTPException(500, f"install failed: {exc}") from exc
 
 
 @router.get("/{name}/security")

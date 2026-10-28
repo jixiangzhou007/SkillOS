@@ -64,6 +64,14 @@ python scripts/backfill_trust_tier.py
 | 3 | 侧栏筛选 Verified → 打开 GitHub Pull | 列表 Trust Tier 芯片 |
 | 4 | Overview：Tier + Gate A/B + 证据 | 完成态不是口号 |
 | 5 | 评测 Tab 左右分栏 | 本地 Quick8 ≠ 官方 SkillsBench |
-| 6 | 导出「装进 Cursor」三步 | 出师后可装；复制路径 / Zip |
+| 6 | 导出「装进 Cursor」+ 一键装本机 | 出师后可装；复制路径 / Zip / 装到 Cursor·dsh·.agents |
 
 录制建议：1080p、暗色主题、勿遮挡 Trust Tier 徽章；口播避免「官方 SOTA」。
+
+### 录像状态（W0 Freeze）
+
+| 项 | 状态 |
+|----|------|
+| 自动验收（pytest 产品化/发现层） | 发版前必跑 |
+| 人工 6 镜录像（3–5 min） | **待维护者录制**；产出放私密盘或 `docs/assets/`（大文件勿强行入 git） |
+| 旁白底线 | 只承诺 Draft/学徒/Verified + 装进 Cursor；见 `KNOWN_ISSUES.md` |
