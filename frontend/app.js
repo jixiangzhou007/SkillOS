@@ -2,6 +2,29 @@
 
 const API = '';
 
+function getTheme() {
+  try {
+    var t = localStorage.getItem('skillos_theme');
+    return t === 'light' ? 'light' : 'dark';
+  } catch (e) {
+    return 'dark';
+  }
+}
+
+function applyTheme(theme) {
+  theme = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('skillos_theme', theme); } catch (e) {}
+  var btn = document.getElementById('theme-toggle');
+  if (btn) btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+}
+
+function toggleTheme() {
+  applyTheme(getTheme() === 'light' ? 'dark' : 'light');
+}
+
+applyTheme(getTheme());
+
 function api(path, opts) {
   opts = opts || {};
   opts.headers = Object.assign({}, typeof authHeaders === 'function' ? authHeaders() : {}, opts.headers || {});

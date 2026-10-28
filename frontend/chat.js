@@ -548,14 +548,16 @@ function setDot(c) { var d = document.getElementById('conn-dot'); if (d) d.class
 
 function setStatus(s) {
   s = s || '';
+  // Do not surface sticky "error" / raw codes in the bottom strip (strip is hidden).
+  var quiet = (s === 'error' || s === 'idle' || s === '就绪') ? '' : s;
   var statusEl = document.getElementById('status');
-  if (statusEl) statusEl.textContent = s;
+  if (statusEl) statusEl.textContent = quiet;
   var turnEl = document.getElementById('wp-turn');
   var bar = document.getElementById('workspace-phase');
   if (turnEl && bar && bar.style.display !== 'none') {
-    turnEl.textContent = _formatStatusHint(s);
+    turnEl.textContent = _formatStatusHint(quiet);
   }
-  try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').setStatus(s); } catch (e) {}
+  try { if (Alpine && Alpine.store('nav')) Alpine.store('nav').setStatus(quiet || '就绪'); } catch (e) {}
 }
 
 function _formatStatusHint(s) {

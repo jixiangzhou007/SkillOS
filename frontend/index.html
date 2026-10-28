@@ -7,7 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=12">
+  <script>
+  (function(){try{var t=localStorage.getItem('skillos_theme');if(t!=='light'&&t!=='dark')t='dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();
+  </script>
   <script>document.addEventListener('alpine:init',function(){Alpine.store('nav',{currentView:'chat-view',primaryNav:'extract',knowledgeTab:'dashboard',barVisible:true,dot:'',status:'就绪',currentSkill:null,currentTab:'overview',settingsTab:'model',skillListTab:'mine',
   navigate:function(id){this.currentView=id;this.barVisible=id==='chat-view';if(id==='chat-view')this.primaryNav='extract';else if(id==='hub-view')this.primaryNav='market';else if(id==='knowledge-unified-view')this.primaryNav='knowledge';},
   goTo:function(id){this.navigate(id);document.querySelectorAll('.main-view').forEach(function(v){v.classList.remove('active')});var e=document.getElementById(id);if(e)e.classList.add('active');var b=document.getElementById('bar');if(b)b.style.display=id==='chat-view'?'flex':'none';},
@@ -76,6 +79,11 @@
       onkeydown="if(event.key==='Escape'){event.preventDefault();clearGlobalSearch()}">
     <div id="global-search-panel" class="global-search-panel" style="display:none"></div>
   </div>
+
+  <button type="button" class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="切换明暗" aria-label="切换明暗">
+    <span class="theme-ico-dark" aria-hidden="true">☀</span>
+    <span class="theme-ico-light" aria-hidden="true">☾</span>
+  </button>
 
   <!-- User Menu -->
   <div class="user-menu" x-data>

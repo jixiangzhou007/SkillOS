@@ -4,6 +4,30 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] UI：统一全身色 + 明暗切换 + 隐藏底栏噪声 — Cursor Agent
+
+**背景 / 触发**：用户反馈底部错误态难看、中间灰画布违和；要求 Cursor 式同色或可切换浅色。
+
+**修改思路**：暗色 chrome=content=`#141414`；去掉 ws-chat 内嵌灰框；隐藏 `#status-bar`；`data-theme` + 右上角切换。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/style.css` | v9.1 同色暗底 + light tokens；status-bar 隐藏 |
+| `frontend/index.html` | 主题 bootstrap + ☀/☾ 按钮；css `?v=12` |
+| `frontend/app.js` | `toggleTheme` / `applyTheme` |
+| `frontend/chat.js` | setStatus 不留 sticky error |
+| `frontend/login.html` | 同步 theme bootstrap |
+
+**未修改 / 刻意不做**：未改业务 API；浅色下个别旧渐变按钮可能仍偏暗色装饰（可后续清）
+
+**验证**：目视强刷；未跑 pytest（无后端变更）
+
+**开放问题 / 下一步**：浅色全站扫一遍卡片对比度
+
+---
+
 ## [2026-10-28] UI v9 Toolbench（Cursor/WorkBuddy 语法）— Cursor Agent
 
 **背景 / 触发**：用户认可对标 Cursor / WorkBuddy / 豆包 / Codex，去掉 AI 营销味。
