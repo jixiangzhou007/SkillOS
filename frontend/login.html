@@ -14,40 +14,39 @@
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 
   <style>
 
-    body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:var(--bg-chrome)}
 
-    .login-wrap{width:100%;max-width:400px;position:relative;z-index:1}
+    .login-wrap{width:100%;max-width:360px;position:relative;z-index:1}
 
-    .login-card{padding:44px 36px 36px;background:rgba(var(--surface-rgb),.78);border:1px solid rgba(var(--accent-rgb),.14);border-radius:var(--r-lg);text-align:center;backdrop-filter:blur(20px);box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.04)}
+    .login-card{padding:32px 28px;background:var(--bg-content);border:1px solid var(--border);border-radius:var(--r-lg);text-align:left;box-shadow:none}
 
-    .login-logo{margin-bottom:14px;filter:drop-shadow(0 8px 20px rgba(var(--accent-rgb),.25))}
-    .login-logo .ico{width:40px;height:40px;color:var(--a3);margin:0 auto}
+    .login-logo{display:none}
 
-    .login-card .tag{font:600 var(--t-xs)/1 var(--font);color:var(--a2);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+    .login-card .tag{font:500 var(--t-xs)/1 var(--mono);color:var(--text3);letter-spacing:.04em;margin-bottom:8px;text-transform:none}
 
-    .login-card h1{font:800 clamp(28px,5vw,36px)/1.05 var(--font-display);letter-spacing:-.04em;margin-bottom:8px;background:linear-gradient(135deg,var(--n0),var(--a2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .login-card h1{font:600 var(--t-xl)/1.2 var(--font-display);letter-spacing:-.03em;margin-bottom:6px;color:var(--text);background:none;-webkit-text-fill-color:unset}
 
-    .login-card p{font:400 var(--t-sm)/1.55 var(--font);color:var(--text3);margin-bottom:28px;max-width:280px;margin-left:auto;margin-right:auto}
+    .login-card p{font:400 var(--t-sm)/1.5 var(--font);color:var(--text2);margin-bottom:24px;max-width:none}
 
-    .login-card input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 14px;color:var(--text);font-size:var(--t-base);outline:none;margin-bottom:10px;font-family:var(--font);transition:border-color var(--t)}
+    .login-card input{width:100%;background:rgba(var(--text-rgb),.04);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;color:var(--text);font-size:var(--t-sm);outline:none;margin-bottom:8px;font-family:var(--font)}
 
-    .login-card input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+    .login-card input:focus{border-color:rgba(var(--text-rgb),.22);box-shadow:none}
 
-    .login-card button{width:100%;padding:11px;font:600 var(--t-md)/1 var(--font);border:none;border-radius:var(--r-sm);cursor:pointer;margin-bottom:8px;font-family:var(--font);transition:all var(--t)}
+    .login-card button{width:100%;padding:10px;font:500 var(--t-sm)/1 var(--font);border:none;border-radius:var(--r-sm);cursor:pointer;margin-bottom:8px;font-family:var(--font)}
 
-    .login-card .btn-primary{background:linear-gradient(135deg,var(--a3),var(--a5));color:#fff;box-shadow:0 4px 16px rgba(var(--accent-rgb),.2)}
+    .login-card .btn-primary{background:var(--accent);color:var(--on-accent);box-shadow:none}
 
-    .login-card .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(var(--accent-rgb),.28)}.login-card .btn-primary:disabled{opacity:.5;cursor:wait;transform:none}
+    .login-card .btn-primary:hover{background:var(--accent-light);transform:none;box-shadow:none}.login-card .btn-primary:disabled{opacity:.5;cursor:wait}
 
     .login-card .btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border)}
 
-    .login-card .btn-secondary:hover{border-color:rgba(var(--accent-rgb),.3);color:var(--a2)}
+    .login-card .btn-secondary:hover{border-color:var(--border2);color:var(--text);background:rgba(var(--text-rgb),.07)}
 
     .login-card .error{font:400 var(--t-sm)/1.4 var(--font);color:var(--red);margin-top:8px;min-height:18px}
 
@@ -67,11 +66,11 @@
 
       <div class="login-logo"><span data-icon="hammer"></span></div>
 
-      <div class="tag">Apprentice IDE</div>
+      <div class="tag">SkillOS</div>
 
-      <h1>SkillOS</h1>
+      <h1>登录</h1>
 
-      <p>向人学习 · 双门禁出师 · Verified Skill</p>
+      <p>学徒 IDE · 双门禁出师 · 装进 Cursor</p>
 
       <input id="user" placeholder="用户名" autocomplete="username" autofocus>
 

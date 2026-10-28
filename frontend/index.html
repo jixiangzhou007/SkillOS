@@ -6,8 +6,8 @@
   <title>SkillOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:ital,wght@0,400;0,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=11">
   <script>document.addEventListener('alpine:init',function(){Alpine.store('nav',{currentView:'chat-view',primaryNav:'extract',knowledgeTab:'dashboard',barVisible:true,dot:'',status:'就绪',currentSkill:null,currentTab:'overview',settingsTab:'model',skillListTab:'mine',
   navigate:function(id){this.currentView=id;this.barVisible=id==='chat-view';if(id==='chat-view')this.primaryNav='extract';else if(id==='hub-view')this.primaryNav='market';else if(id==='knowledge-unified-view')this.primaryNav='knowledge';},
   goTo:function(id){this.navigate(id);document.querySelectorAll('.main-view').forEach(function(v){v.classList.remove('active')});var e=document.getElementById(id);if(e)e.classList.add('active');var b=document.getElementById('bar');if(b)b.style.display=id==='chat-view'?'flex':'none';},
@@ -181,21 +181,21 @@
       <div class="ws-panel ws-chat" id="ws-chat-panel">
         <div id="msgs">
           <div class="welcome" id="chat-welcome">
-            <div class="welcome-icon" id="welcome-logo"><span data-icon="hammer"></span></div>
-            <div class="welcome-brand">SkillOS</div>
-            <div class="welcome-title">学徒出师 · Verified Spine</div>
-            <div class="welcome-hint">把经验炼成 Draft / 学徒 / Verified 技能，装进 Cursor。Skill ≠ Plugin。</div>
-            <div class="welcome-chips">
-              <span class="welcome-chip welcome-chip-primary" onclick="resetWorkspace();newSession();showChat();document.getElementById('input').focus()"><span class="chip-ico" data-icon="edit"></span>对话萃取</span>
-              <span class="welcome-chip" onclick="startFromLink()"><span class="chip-ico" data-icon="link"></span>从链接沉淀</span>
-              <span class="welcome-chip" onclick="startFromFile()"><span class="chip-ico" data-icon="paperclip"></span>上传资料</span>
+            <div class="welcome-kicker">SkillOS</div>
+            <div class="welcome-title">描述工作流程，炼成可验证技能</div>
+            <div class="welcome-hint">Draft → 学徒 → Verified，再装进 Cursor。下方输入开始；也可从链接或文件沉淀。</div>
+            <div class="welcome-actions">
+              <button type="button" class="welcome-action" onclick="resetWorkspace();newSession();showChat();document.getElementById('input').focus()">开始对话</button>
+              <button type="button" class="welcome-action ghost" onclick="startFromLink()">从链接</button>
+              <button type="button" class="welcome-action ghost" onclick="startFromFile()">上传资料</button>
             </div>
-            <div class="welcome-secondary-row">
-              <button type="button" class="welcome-link-chip" onclick="showDetail('GitHub Pull')"><span class="chip-ico" data-icon="book"></span>参考技能 GitHub Pull</button>
+            <div class="welcome-meta">
+              <button type="button" class="welcome-link-chip" onclick="showDetail('GitHub Pull')">参考 · GitHub Pull</button>
+              <span class="sep">·</span>
               <button type="button" class="welcome-link-chip" onclick="openKnownIssuesDoc()">Alpha 须知</button>
             </div>
             <div id="llm-ready-banner" class="llm-ready-banner" style="display:none" role="status"></div>
-            <div class="welcome-hint welcome-hint-drag">拖拽 PDF / Word / 图片 · 或粘贴网页链接</div>
+            <div class="welcome-hint-drag">拖拽 PDF / Word / 图片到窗口</div>
             <div id="welcome-recent-skills" class="welcome-recent"></div>
           </div>
           <div id="chat-msgs-list"></div>

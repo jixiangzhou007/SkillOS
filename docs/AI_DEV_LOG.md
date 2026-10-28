@@ -4,6 +4,28 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] UI v9 Toolbench（Cursor/WorkBuddy 语法）— Cursor Agent
+
+**背景 / 触发**：用户认可对标 Cursor / WorkBuddy / 豆包 / Codex，去掉 AI 营销味。
+
+**修改思路**：安静外壳 + 响亮内容；`#141414` chrome / `#181818` canvas；ink `#E4E4E4`@alpha；蓝灰强调色仅作信号；欢迎页改工具空态；登录去 hero。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/style.css` | Design System v9 Toolbench tokens + chrome/welcome/trust/btn |
+| `frontend/index.html` | 字体 IBM Plex；欢迎空态结构 |
+| `frontend/login.html` | 工具台登录卡（脚本逻辑不变） |
+
+**未修改 / 刻意不做**：未改 Dual Gate/API；未重排整站 DOM 为硬三栏（视觉先对齐）；Hub/设置细页未逐页精修
+
+**验证**：静态改动；建议浏览器强刷 `?v=11`；未跑全量 pytest（无 Python 行为变更）
+
+**开放问题 / 下一步**：目视登录/欢迎/对话/详情；按需收紧详情 Trust meta 行；可选真三栏布局
+
+---
+
 ## [2026-10-28] Stream C 安全/支持底线 — Cursor Agent
 
 **背景 / 触发**：用户「继续」；W1 UX 已齐，启动 Beta 门槛材料（Stream C）。
