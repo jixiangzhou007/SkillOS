@@ -100,6 +100,18 @@ def test_resolve_harness_dest_rejects_bad_slug():
 
     with pytest.raises(ValueError):
         resolve_harness_dest("cursor", "../evil")
+    with pytest.raises(ValueError):
+        resolve_harness_dest("cursor", "evil/../../tmp")
+    with pytest.raises(ValueError):
+        resolve_harness_dest("nope", "ok-slug")
+
+
+def test_resolve_harness_dest_stays_under_root(tmp_path):
+    from skillos.skills.harness_install import resolve_harness_dest
+
+    dest = resolve_harness_dest("agents", "safe-slug", project=True, cwd=tmp_path)
+    assert dest == (tmp_path / ".agents" / "skills" / "safe-slug").resolve()
+    assert str(tmp_path.resolve()) in str(dest)
 
 
 def test_install_zip_includes_trust_and_harness_paths(monkeypatch):

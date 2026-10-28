@@ -108,8 +108,8 @@ W6+     Public（可选）        安全评审 + 多租户硬验收 + 诚实 Hub
 
 ### 本周（W0）— Freeze
 
-1. [x] Commit `1a37940` + 本地 annotated tag **`v0.3.6`**；[ ] **push 失败**（GitHub `Connection was reset`）— 网络恢复后执行 `git push origin main` 与 `git push origin v0.3.6`
-2. [x] 自动黄金路径：`test_local_productization` + `test_skill_discovery`（11 passed）；[ ] 人工 6 镜录像仍待录
+1. [x] Commit + 本地 annotated tag **`v0.3.6`**；[x] `main` / tag 已 push
+2. [x] 自动黄金路径 pytest；[ ] 人工 6 镜录像仍待录
 3. [x] 起草 `KNOWN_ISSUES.md`
 4. [x] Alpha 邀请/反馈模板 `ALPHA_INVITE.md`（名单私密填写）
 
@@ -120,10 +120,10 @@ W6+     Public（可选）        安全评审 + 多租户硬验收 + 诚实 Hub
 2b. [x] UI 打磨（欢迎品牌层级、导出降噪、Alpha 须知抽屉）；`GET /api/docs/known-issues`
 3. 每日收集卡点，只修 P0
 
-### W2–W3 — Alpha 收敛
+### W2–W3 — Alpha 收敛 / Stream C
 
 1. 达成 §5 Alpha 指标或写明未达标原因
-2. 启动 Stream C 安全/支持
+2. [x] Stream C 材料落地：`SECURITY_CHECKLIST` / Issue 模板 / `BACKUP_AND_RESET` / README 回滚 / Hub 非商店叙事 / install-local 路径加固（签字与冒烟仍待人工）
 3. 决定：延长 Alpha / 进 Private Beta / 缩 scope
 
 ### W4–W6 — Private Beta（若 Go）

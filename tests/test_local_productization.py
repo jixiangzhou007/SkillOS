@@ -30,6 +30,15 @@ async def test_known_issues_doc():
     assert body["title"]
 
 
+@pytest.mark.asyncio
+async def test_backup_doc():
+    from skillos.api.docs_api import backup_and_reset
+
+    body = await backup_and_reset()
+    assert body["format"] == "markdown"
+    assert "skills" in body["content"].lower()
+
+
 @pytest.fixture
 def client():
     from skillos.api.skills import router as skills_router

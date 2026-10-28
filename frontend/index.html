@@ -61,8 +61,8 @@
   <nav class="header-nav" x-data>
     <button type="button" class="hn-item" :class="{ active: $store.nav.primaryNav === 'extract' }" @click="showChat(); setMode('create')" aria-label="萃取技能">萃取</button>
     <button type="button" class="hn-item" :class="{ active: $store.nav.primaryNav === 'knowledge' }" @click="showUnifiedKnowledge('dashboard')" aria-label="知识工作台">知识</button>
-    <button type="button" class="hn-item" :class="{ active: $store.nav.primaryNav === 'market' }" @click="showHub()" style="position:relative" aria-label="技能市场">
-      市场<span id="hub-badge" style="display:none;position:absolute;top:2px;right:-12px;width:8px;height:8px;border-radius:50%;background:var(--red)"></span>
+    <button type="button" class="hn-item" :class="{ active: $store.nav.primaryNav === 'market' }" @click="showHub()" style="position:relative" aria-label="技能目录 Hub">
+      Hub<span id="hub-badge" style="display:none;position:absolute;top:2px;right:-12px;width:8px;height:8px;border-radius:50%;background:var(--red)"></span>
     </button>
   </nav>
 
@@ -400,15 +400,15 @@
     <div class="view-scroll"><div id="journal-content"></div></div>
   </div>
 
-  <!-- Hub View (技能交易平台) -->
+  <!-- Hub View（本地目录 / seed，非应用商店） -->
   <div id="hub-view" class="main-view page-shell"
        x-data="hubView()" x-init="init()"
        :class="{ active: $store.nav.currentView === 'hub-view' }">
     <div class="page-body">
       <header class="page-header hub-header">
         <div class="page-header-text">
-          <h2 class="page-title">技能市场</h2>
-          <p class="page-subtitle">发现、安装与发布 Agent Skills</p>
+          <h2 class="page-title">技能目录 · Hub</h2>
+          <p class="page-subtitle">本地 seed / 工作区目录 · 不是应用商店</p>
         </div>
         <div class="page-toolbar hub-toolbar">
           <input class="hub-search-input" placeholder="搜索技能…" x-model="searchQuery" @input="search()">
@@ -428,8 +428,8 @@
       <!-- Catalog mode -->
       <template x-if="mode === 'catalog' && !loading">
         <div class="hub-catalog">
-          <div class="hub-readonly-banner" x-show="readOnly">
-            公共市场为只读目录，暂不支持发布与定价修改。
+          <div class="hub-readonly-banner">
+            Hub = 本地目录 + seed，<strong>不是</strong>付费应用商店。当前以只读安装为主；无支付、无公开 UGC 审核流。
           </div>
           <template x-if="stats">
             <div class="dash-grid hub-stats-grid">
@@ -1187,7 +1187,7 @@
   </button>
   <button type="button" class="mobile-nav-item" :class="{ active: $store.nav.primaryNav === 'market' }" @click="showHub()">
     <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-    <span>市场</span>
+    <span>Hub</span>
   </button>
 </nav>
 

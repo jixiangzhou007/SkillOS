@@ -1,0 +1,51 @@
+name: Alpha 反馈
+description: Closed Alpha 三问 + 卡点（优先使用）
+title: "[Alpha] "
+labels: ["alpha", "feedback"]
+body:
+  - type: dropdown
+    id: step
+    attributes:
+      label: 卡在哪一步？
+      options:
+        - 登录 / 注册
+        - API Key / BYOK / 额度
+        - 列表 Trust Tier
+        - 对话沉淀 / 生成技能
+        - 导出 / 装到 Cursor
+        - Hub / 其他
+        - 未卡住（顺利走完）
+    validations:
+      required: true
+  - type: textarea
+    id: tier
+    attributes:
+      label: Trust Tier
+      description: 用一句话说明你是否理解 Verified ≠ 官方 SkillsBench。
+      placeholder: 例如：Verified 是双门禁，不是官方排行榜…
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: 是否装进 Cursor / .agents / .dsh？
+      options:
+        - 是
+        - 否
+        - 未尝试
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: 详情 / 报错原文
+      description: 可附截图说明；勿粘贴 API Key。
+    validations:
+      required: false
+  - type: input
+    id: os
+    attributes:
+      label: 系统
+      placeholder: Windows 11 / macOS / Linux
+    validations:
+      required: false

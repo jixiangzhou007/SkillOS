@@ -1,0 +1,35 @@
+name: Bug 报告
+description: 功能异常、崩溃、错误安装路径等
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        开 Bug 前请扫一眼 [Known Issues](https://github.com/jixiangzhou007/SkillOS/blob/main/docs/KNOWN_ISSUES.md)。**不要粘贴 API Key。**
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      placeholder: 1. … 2. … 3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望 vs 实际
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本 / commit
+      placeholder: v0.3.6 或 git rev-parse --short HEAD
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志摘录（可打码）
+    validations:
+      required: false

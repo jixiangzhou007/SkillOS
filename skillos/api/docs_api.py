@@ -64,3 +64,10 @@ async def known_issues():
     """Closed Alpha limitations and expected behaviour."""
     content = _read_doc("KNOWN_ISSUES.md", "known-issues.md")
     return {"title": "Alpha 须知 / Known Issues", "format": "markdown", "content": content}
+
+
+@router.get("/backup")
+async def backup_and_reset():
+    """How to backup / clear local skill data."""
+    content = _read_doc("BACKUP_AND_RESET.md", "backup.md")
+    return {"title": "备份与清空", "format": "markdown", "content": content}

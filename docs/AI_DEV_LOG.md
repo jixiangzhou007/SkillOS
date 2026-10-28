@@ -4,6 +4,34 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] Stream C 安全/支持底线 — Cursor Agent
+
+**背景 / 触发**：用户「继续」；W1 UX 已齐，启动 Beta 门槛材料（Stream C）。
+
+**修改思路**：加固 install-local 路径边界；补齐检查单/Issue 模板/备份半页/README 回滚；Hub 叙事改为「目录非商店」。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `skillos/skills/harness_install.py` | resolve 后必须落在 harness 根下 |
+| `docs/SECURITY_CHECKLIST.md` | C1 签字检查单 |
+| `docs/BACKUP_AND_RESET.md` | C2 备份/清空 |
+| `.github/ISSUE_TEMPLATE/*` | Alpha 反馈 + Bug 模板 |
+| `README.md` | 端口 8765、发布与回滚、文档链 |
+| `frontend/index.html` / `style.css` | Hub 非商店文案与横幅 |
+| `docs/KNOWN_ISSUES.md` | 配额非无限 |
+| `skillos/api/docs_api.py` | `/api/docs/backup` |
+| `tests/test_skill_discovery.py` | 路径逃逸/根目录断言 |
+
+**未修改 / 刻意不做**：未代签安全检查单；未跑完整多租户人工冒烟；未录 Demo
+
+**验证**：`pytest tests/test_skill_discovery.py tests/test_local_productization.py -v`（见提交前）
+
+**开放问题 / 下一步**：人工勾选 SECURITY_CHECKLIST；发 Alpha 邀约；录像
+
+---
+
 ## [2026-10-28] W1+ UI 打磨 + Alpha 须知入口 — Cursor Agent
 
 **背景 / 触发**：用户「继续推进」并要求优化页面 UI；沿用 Atelier 设计体系，不做换肤重做。

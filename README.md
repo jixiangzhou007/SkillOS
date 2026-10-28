@@ -13,12 +13,12 @@ cd SkillOS && pip install -e .
 
 # 启动（三选一）
 skillos                          # 桌面应用
-skillos --server-only            # API 服务 (http://127.0.0.1:9876)
+skillos --server-only            # API 服务 (http://127.0.0.1:8765)
 skillos-mcp                      # MCP 服务器 (Claude Code / Cursor)
 
 # 验证
-curl http://127.0.0.1:9876/health
-# → {"status": "ok", "version": "0.3.0"}
+curl http://127.0.0.1:8765/health
+# → {"status": "ok", "version": "0.3.6", "llm": {...}}
 ```
 
 ## 配置
@@ -105,8 +105,22 @@ pip install -e ".[dev]"
 pytest tests/ --ignore=tests/test_feasibility_eval.py -v   # 501 collected；478 pass / 21 fail（2026-06-18）
 python scripts/run_bench_regression.py          # 本地回归（需 DEEPSEEK_API_KEY）
 python -m skillos.api.server                  # 启动 API
-open http://127.0.0.1:9876/docs               # OpenAPI 文档
+open http://127.0.0.1:8765/docs               # OpenAPI 文档
 ```
+
+### 发布与回滚（Closed Alpha）
+
+当前发布线：**`v0.3.6`**（Dual Gate 产品表面 + 本地产品化）。已知限制见 [`docs/KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md)；备份数据见 [`docs/BACKUP_AND_RESET.md`](docs/BACKUP_AND_RESET.md)。
+
+```bash
+# 回到某一 tag 并重装
+git fetch --tags
+git checkout v0.3.6          # 或上一个可用 tag
+pip install -e .
+skillos --server-only        # http://127.0.0.1:8765
+```
+
+回退前请先备份 `skills/`（及本地 DB）。Hub 是**本地目录 + seed**，不是应用商店。
 
 ### 本地 SkillsBench
 
@@ -127,4 +141,4 @@ open http://127.0.0.1:9876/docs               # OpenAPI 文档
 
 Cursor 自动加载 `.cursor/rules/`；Claude Code 读 `CLAUDE.md`。
 
-**改进路线图**：[`docs/IMPROVEMENT_PLAN.md`](docs/IMPROVEMENT_PLAN.md) · **本地 Bench**：[`docs/BENCHMARK_LOCAL.md`](docs/BENCHMARK_LOCAL.md) · **用户话术**：[`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) · **论文**：[`docs/paper/paper.tex`](docs/paper/paper.tex)
+**发布路线图**：[`docs/RELEASE_ROADMAP.md`](docs/RELEASE_ROADMAP.md) · **安全检查单**：[`docs/SECURITY_CHECKLIST.md`](docs/SECURITY_CHECKLIST.md) · **改进计划**：[`docs/IMPROVEMENT_PLAN.md`](docs/IMPROVEMENT_PLAN.md) · **本地 Bench**：[`docs/BENCHMARK_LOCAL.md`](docs/BENCHMARK_LOCAL.md) · **用户话术**：[`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)

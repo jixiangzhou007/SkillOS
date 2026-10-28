@@ -13,7 +13,8 @@
 | **端口** | 默认 API/UI：`http://127.0.0.1:8765`。 |
 | **Trust Tier** | `Verified` = 双门禁（认识论 ∧ 域内 smoke≥80）。**≠** 官方 SkillsBench 排行榜 SOTA。 |
 | **本地 Quick8** | 日常快检 / Gate B 参考；与官方 Bench pass rate **不是同一指标**。 |
-| **Hub** | 本地目录 + seed 目录，**不是**应用商店；无支付、无公开 UGC 审核流。 |
+| **Hub** | 本地目录 + seed 目录，**不是**应用商店；无支付、无公开 UGC 审核流。UI 亦称「技能目录」。 |
+| **配额** | Personal Free：技能数与每月 LLM 次数有上限（见设置 · 用量）。**不是无限**；启用 BYOK 后平台 LLM 额度可不扣减。 |
 | **install-local** | 会把技能复制到本机 Cursor / `.agents` / `.dsh` 技能目录。Draft 默认可装但不宜直接当「已出师」交给模型；请先看 Tier。 |
 | **实验技能** | 工作区 `skills/` 下若出现个人试炼目录，不属于发行默认包；Alpha 应以系统参考技能（如 GitHub Pull）为准。 |
 
