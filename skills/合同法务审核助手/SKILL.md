@@ -115,6 +115,18 @@ epistemic:
   - ec_1781744670_0b1445
   processed_at: 1781744691.5759478
 version: 2
+trust_tier: verified
+gates:
+  epistemic:
+    passed: true
+    detail: verified=37
+  outcome:
+    passed: true
+    detail: min_score=100
+    smoke_pass: true
+    min_with_score: 100
+    tasks:
+    - workflow-084
 ---
 
 # 合同法务审核助手

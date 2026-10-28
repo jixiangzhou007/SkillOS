@@ -4,6 +4,82 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] 产品化续 — Alpine 修复 + Hub Trust Tier — Cursor Agent
+
+**背景 / 触发**：用户「继续推进产品化」；发现 `index.html` 仍引用已删除的 `/a.js` `/b.js` `/c.js`，Alpine/app 无法加载。
+
+**修改思路**：恢复 Alpine CDN + `alpine-bridge`/`app.js`；离线 vendoring `alpine.min.js`；市场目录从 SKILL.md frontmatter 透出 `trust_tier` 并在 Hub 列表/详情/推荐展示。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/index.html` | Alpine CDN；去掉 a/b/c.js；Hub 卡片 Trust Tier |
+| `frontend/alpine.min.js` | 离线 fallback（CDN onerror） |
+| `frontend/hub.js` | `tierLabel()` |
+| `skillos/api/marketplace.py` | `_trust_tier_from_content` / `_enrich_hub_item` |
+| `tests/test_marketplace.py` | Trust Tier enrichment 单测 |
+| `docs/ARCH_OPTIMIZATION_PLAN.md` | 产品化续状态 |
+| （同轮已改）skills/quality/export-channel/tier filters 等 | 见下条 |
+
+**未修改 / 刻意不做**：未 commit/push（待授权）；未拍 Demo；未改支付；未打新 tag
+
+**验证**：`pytest tests/test_trust_tier.py tests/test_evidence_card.py tests/test_marketplace.py -v` → **16 passed, 1 skipped**
+
+**开放问题 / 下一步**：授权后 commit/push；Demo 录像；可选 v0.3.5 tag
+
+---
+
+## [2026-10-28] 产品化续 — Trust Tier 筛选 + 质量条 + Cursor 安装文案 — Cursor Agent
+
+**背景 / 触发**：用户「继续推进产品化」。
+
+**修改思路**：列表可按 Trust Tier 筛选；质量条首项展示 Tier；导出通道文案对齐出师安装；合入上轮产品表面并准备提交。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/index.html` | `#sb-tier-filters` 芯片 |
+| `frontend/skills.js` / `app.js` | `_trustTierFilter` + `applySkillListFilters` |
+| `frontend/quality.js` | 质量条 Trust Tier |
+| `frontend/export-channel.js` / `style.css` | Cursor 安装步骤 + tip |
+| （上轮未提交）login/onboarding/list API/server cache/agent fallback/cohort SKILL | 一并纳入 |
+
+**未修改 / 刻意不做**：marketplace 定价；全库 skill 回填；Demo 录像；新 semver tag（CHANGELOG 已有 v0.3.5 历史条目）
+
+**验证**：`pytest tests/test_trust_tier.py tests/test_evidence_card.py`（提交前再跑）
+
+**开放问题 / 下一步**：Demo 录像；可选清理未跟踪实验 skills/
+
+---
+
+## [2026-10-27] 产品表面 — 学徒文案 + 列表 Trust Tier — Cursor Agent
+
+**背景 / 触发**：用户「继续按照产品级去落地」；Phase V/T 已 push，补用户可见完成态。
+
+**修改思路**：叙事对齐 DESIGN 学徒隐喻；列表 API 透出 `trust_tier`；侧栏/卡片徽章；落地 HTML 禁缓存与苏格拉底降级；仅回填参考+泛化 cohort。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/login.html` / `index.html` / `onboarding.js` | 学徒·Verified Spine 文案 |
+| `frontend/skills.js` / `chat.js` / `style.css` | 列表/侧栏 Trust Tier 徽章 |
+| `skillos/api/skills.py` | `SkillResponse.trust_tier` + list 填充 |
+| `skillos/api/server.py` | HTML no-cache |
+| `skillos/skills/agent.py` | `_fallback_explore` 苏格拉底降级 |
+| `skills/{GitHub Pull,CSV…,电商…,财务…,合同…,安全…}/SKILL.md` | cohort trust_tier 回填 |
+| `docs/DEMO_*` / `ARCH_*` | 验收步骤更新 |
+
+**未修改 / 刻意不做**：未全库回填；未 commit（待授权）；未拍 Demo 录像；未改 marketplace
+
+**验证**：`pytest tests/test_trust_tier.py tests/test_evidence_card.py` — 8 passed
+
+**开放问题 / 下一步**：授权后 commit/push；可选 v0.3.5；Demo 录像
+
+---
+
 ## [2026-10-27] Phase T — 评测双轨分栏 UI — Cursor Agent
 
 **背景 / 触发**：用户「继续」；ARCH Phase T 项「官方 SkillsBench CI 与本地 Quick8 分栏产品化」。

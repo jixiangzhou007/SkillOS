@@ -133,6 +133,19 @@ epistemic:
 version: 2
 domain_template: security-audit
 domain_template_id: security-audit
+trust_tier: verified
+gates:
+  epistemic:
+    passed: true
+    detail: verified=34
+  outcome:
+    passed: true
+    detail: min_score=100
+    smoke_pass: true
+    min_with_score: 100
+    tasks:
+    - workflow-076
+    - workflow-079
 ---
 
 # 安全合规审计助手

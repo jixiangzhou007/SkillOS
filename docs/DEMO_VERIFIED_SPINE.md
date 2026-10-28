@@ -14,13 +14,12 @@ skillos --server-only
 
 ## 三步
 
-1. **登录** → 进入对话 / 技能列表
-2. **打开参考技能** `GitHub Pull`（或新沉淀一项）
+1. **登录**（文案：学徒 / 双门禁出师）→ 欢迎页「学徒出师 · Verified Spine」
+2. **技能库**：Trust Tier 徽章 + 筛选芯片（全部 / Verified / 学徒 / Draft）；打开 `GitHub Pull`
 3. **验收完成态**
-   - Overview：**Trust Tier**（Verified / Provisional）
-   - **Gate A / Gate B** 徽章
-   - **证据**：声明计数 + 烟测任务 id / 最低分
-   - 导出：Cursor 路径或 Zip
+   - Overview：**Trust Tier** + Gate A/B + 证据；质量条含 Tier
+   - 「评测」Tab：本地 Quick8 | 官方 SkillsBench 分栏
+   - 导出：「装进 Cursor」三步 + 复制路径 / Zip
    - 可选：`GET /api/skills/GitHub%20Pull/evidence`
 
 ## 预期

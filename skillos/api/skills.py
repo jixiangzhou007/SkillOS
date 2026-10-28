@@ -55,6 +55,7 @@ class SkillResponse(BaseModel):
     avg_score: float = 0.0
     failure_rate: float = 0.0
     kb_items: int = 0
+    trust_tier: str = "draft"
 
 
 # ── Shared impl ─────────────────────────────────────────────
@@ -92,11 +93,22 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
             skill_dept = (skill_meta or {}).get("dept_id", "")
             if skill_dept != dept_id:
                 continue
-        # Load description from frontmatter
+        # Load description + trust_tier from frontmatter
         desc = ""
+        trust_tier = "draft"
         try:
             raw_skill = skill_store.load_skill_raw(name, tenant=tenant)
-            desc = (raw_skill.get("meta", {}) or {}).get("description", "")
+            meta = raw_skill.get("meta", {}) or {}
+            desc = meta.get("description", "")
+            tier = meta.get("trust_tier")
+            if isinstance(tier, str) and tier.strip():
+                trust_tier = tier.strip().lower()
+            else:
+                from skillos.evaluation.trust_tier import enrich_epistemic_with_trust
+                from skillos.knowledge.epistemic_bridge import format_epistemic_api_payload
+
+                ep = enrich_epistemic_with_trust(format_epistemic_api_payload(meta), meta)
+                trust_tier = str(ep.get("trust_tier") or "draft")
         except Exception:
             pass
 
@@ -113,7 +125,15 @@ def _list_skills_impl(*, tenant=None, q: str = "", dept_id: str = "") -> list[Sk
             }
         except Exception:
             pass
-        result.append(SkillResponse(name=name, description=desc, kb_items=_kb_items_count(name), **stats))
+        result.append(
+            SkillResponse(
+                name=name,
+                description=desc,
+                kb_items=_kb_items_count(name),
+                trust_tier=trust_tier,
+                **stats,
+            )
+        )
     return result
 
 

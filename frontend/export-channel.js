@@ -49,13 +49,14 @@ function renderExportChannelPanel(opts) {
   var html = '<div class="export-channel' + (compact ? ' export-channel-compact' : '') + '">';
   html += '<div class="export-channel-head"><span class="export-channel-icon" aria-hidden="true">⬡</span>';
   html += '<div><div class="export-channel-title">装进 Cursor</div>';
-  html += '<div class="export-channel-sub">AgentSkills.io 标准 · 在 Cursor 验货，在这里导出</div></div></div>';
+  html += '<div class="export-channel-sub">出师后安装 · AgentSkills.io 标准 SKILL.md</div></div></div>';
 
   html += '<ol class="export-channel-steps">';
-  html += '<li>下载 Zip 或复制安装路径</li>';
-  html += '<li>将 <code>' + escHtml(slug || name) + '/</code> 放入 Cursor skills 目录</li>';
-  html += '<li>在 Cursor 对话中 <code>@' + escHtml(slug || name) + '</code> 验证</li>';
+  html += '<li>复制路径或下载 Zip（优先 Verified）</li>';
+  html += '<li>解压到 <code>~/.cursor/skills/' + escHtml(slug || name) + '/</code></li>';
+  html += '<li>新开 Cursor 对话，用 <code>@' + escHtml(slug || name) + '</code> 点名调用</li>';
   html += '</ol>';
+  html += '<p class="export-channel-tip">学徒态（Provisional）可试用；双门禁齐才标 Verified。</p>';
 
   if (cursorPath) {
     html += '<div class="export-channel-path"><code class="pr-path-code">' + escHtml(cursorPath) + '</code></div>';

@@ -11,7 +11,7 @@ function api(path, opts) {
 }
 
 var _mode = 'create', _currentSkill = null, _currentTab = 'overview';
-var _settingsTab = 'model', _skillListTab = 'mine';
+var _settingsTab = 'model', _skillListTab = 'mine', _trustTierFilter = 'all';
 var _selectedModel = lsGet(StorageKeys.MODEL, 'deepseek-v4-flash');
 var _autoMode = localStorage.getItem(StorageKeys.AUTO) === 'true';
 var _sessionId = '';  // Start fresh each page load; resume only via explicit user action

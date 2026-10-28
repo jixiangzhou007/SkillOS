@@ -80,3 +80,11 @@ def test_enrich_from_stored_meta():
         {"trust_tier": "verified", "gates": {"epistemic": {"passed": True}, "outcome": {"passed": True}}},
     )
     assert ep["trust_tier"] == "verified"
+
+
+def test_skill_response_includes_trust_tier():
+    from skillos.api.skills import SkillResponse
+
+    s = SkillResponse(name="x", trust_tier="verified")
+    assert s.model_dump()["trust_tier"] == "verified"
+    assert SkillResponse(name="y").trust_tier == "draft"

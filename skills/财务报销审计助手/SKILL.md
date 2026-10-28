@@ -138,6 +138,19 @@ epistemic:
   - ec_1781744537_bd01f9
   processed_at: 1781744544.3968441
 version: 3
+trust_tier: verified
+gates:
+  epistemic:
+    passed: true
+    detail: verified=30
+  outcome:
+    passed: true
+    detail: min_score=100
+    smoke_pass: true
+    min_with_score: 100
+    tasks:
+    - workflow-082
+    - workflow-083
 ---
 
 # 财务报销审计助手

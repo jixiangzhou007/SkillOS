@@ -108,6 +108,18 @@ bench_quality:
     min_with_score: 100
     tasks:
     - workflow-064
+trust_tier: verified
+gates:
+  epistemic:
+    passed: true
+    detail: verified=32
+  outcome:
+    passed: true
+    detail: min_score=100
+    smoke_pass: true
+    min_with_score: 100
+    tasks:
+    - workflow-064
 ---
 
 # 电商客服退款处理

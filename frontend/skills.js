@@ -1422,6 +1422,44 @@ async function loadBenchDashboard() {
   }
 }
 
+function _isKnowledgePackage(s) {
+  return s.kb_items > 0 && s.avg_score === 0 && s.runs === 0;
+}
+
+function _skillMatchesTrustTier(s) {
+  var f = (typeof _trustTierFilter !== 'undefined' && _trustTierFilter) ? _trustTierFilter : 'all';
+  if (!f || f === 'all') return true;
+  return String(s.trust_tier || 'draft').toLowerCase() === f;
+}
+
+function _baseSkillListPool(skills) {
+  skills = skills || _allSkillsCache || [];
+  if (_skillListTab === 'system') {
+    return skills.filter(function(s) { return SYSTEM_SKILLS.includes(s.name) && !_isKnowledgePackage(s); });
+  }
+  if (_skillListTab === 'packages') {
+    return skills.filter(_isKnowledgePackage);
+  }
+  return skills.filter(function(s) { return !SYSTEM_SKILLS.includes(s.name) && !_isKnowledgePackage(s); });
+}
+
+function applySkillListFilters() {
+  var q = ((document.getElementById('skill-search') || {}).value || '').toLowerCase().trim();
+  var filtered = _baseSkillListPool().filter(_skillMatchesTrustTier);
+  if (q) {
+    filtered = filtered.filter(function(s) { return (s.name || '').toLowerCase().indexOf(q) >= 0; });
+  }
+  renderSkillCards(filtered);
+}
+
+function switchTrustTierFilter(tier) {
+  _trustTierFilter = tier || 'all';
+  document.querySelectorAll('#sb-tier-filters .sb-tier-chip').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-tier') === _trustTierFilter);
+  });
+  applySkillListFilters();
+}
+
 function refreshSkillList() {
 
   api('/api/skills/').then(r => r.json()).then(skills => {
@@ -1429,22 +1467,11 @@ function refreshSkillList() {
     _allSkillsCache = skills;
     if (typeof renderSidebarWorkspace === 'function') renderSidebarWorkspace(skills);
 
-    // Separate knowledge packages from regular skills
-    var isKP = function(s) { return s.kb_items > 0 && s.avg_score === 0 && s.runs === 0; };
-    var kpCount = skills.filter(isKP).length;
-    document.getElementById('kp-count').textContent = kpCount;
+    var kpCount = skills.filter(_isKnowledgePackage).length;
+    var kpEl = document.getElementById('kp-count');
+    if (kpEl) kpEl.textContent = kpCount;
 
-    var filtered;
-    if (_skillListTab === 'system') {
-      filtered = skills.filter(function(s) { return SYSTEM_SKILLS.includes(s.name) && !isKP(s); });
-    } else if (_skillListTab === 'packages') {
-      filtered = skills.filter(isKP);
-    } else {
-      // 'mine' — exclude system skills AND knowledge packages
-      filtered = skills.filter(function(s) { return !SYSTEM_SKILLS.includes(s.name) && !isKP(s); });
-    }
-
-    renderSkillCards(filtered);
+    applySkillListFilters();
 
   });
 
@@ -1465,6 +1492,9 @@ function renderSkillCards(skills) {
         var score = s.avg_score || 0;
         var scoreColor = score >= 4 ? 'var(--a2)' : score >= 2 ? 'var(--amber)' : 'var(--text3)';
         var metaLine = 'v' + s.version + ' · ' + s.runs + ' exec';
+        var tier = (s.trust_tier || 'draft').toLowerCase();
+        var tierLabel = tier === 'verified' ? 'Verified' : tier === 'provisional' ? '学徒' : 'Draft';
+        var tierCls = 'trust-tier trust-tier-' + (tier === 'verified' || tier === 'provisional' || tier === 'draft' ? tier : 'draft');
 
         var desc = s.description || '';
         var descHtml = desc ? '<div class="tree-desc">' + escHtml(desc.slice(0, 60)) + (desc.length > 60 ? '…' : '') + '</div>' : '';
@@ -1478,8 +1508,10 @@ function renderSkillCards(skills) {
         '<span class="health ' + health + '"></span>' +
 
         '<span class="tree-name">' + icon + s.name.replace('[Meta] ', '') + '</span>' +
+        '<span class="' + tierCls + '" title="Trust Tier">' + tierLabel + '</span>' +
         '<span class="tree-score" style="color:' + scoreColor + '">' + (s.avg_score ? s.avg_score.toFixed(1) : '—') + '</span>' +
         '<span class="tree-meta">' + metaLine + '</span>' +
+        (qualityBadges ? '<span class="tree-qbadges">' + qualityBadges + '</span>' : '') +
 
         (_skillListTab === 'mine' ? '<button class="opt-btn" style="margin-left:auto" onclick="event.stopPropagation();optimizeSkill(this.dataset.skill)" data-skill="' + escHtml(s.name) + '">⚡</button>' : '') +
 
@@ -1572,25 +1604,7 @@ function focusKnowledgeSection(h) {
 }
 
 function filterSkillList() {
-
-  let q = (document.getElementById('skill-search')||{}).value || '';
-
-  if (!q) { refreshSkillList(); return; }
-
-  q = q.toLowerCase();
-
-  let filtered = _allSkillsCache.filter(s => {
-
-    if (_skillListTab === 'system') return SYSTEM_SKILLS.includes(s.name) && s.name.toLowerCase().includes(q);
-
-    if (_skillListTab === 'mine') return !SYSTEM_SKILLS.includes(s.name) && s.name.toLowerCase().includes(q);
-
-    return s.name.toLowerCase().includes(q);
-
-  });
-
-  renderSkillCards(filtered);
-
+  applySkillListFilters();
 }
 
 function switchSkillTab(tab) {

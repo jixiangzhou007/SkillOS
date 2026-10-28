@@ -899,44 +899,51 @@ class SkillExtractionAgent:
         return reply, None
 
     def _fallback_explore(self) -> str:
-        """Static fallback when LLM is unavailable."""
-        next_probe = next((p for p in _PROBE_ORDER if p not in self._probes_completed), None)
+        """苏格拉底式自然提问 — LLM 不可用时的降级方案。"""
+        name = self._draft_name or self._goal or "这个流程"
+        if not hasattr(self, "_fallback_probes"):
+            self._fallback_probes = set()
 
-        fallback_questions = {
-            "trigger": (
-                "这个流程通常在什么情况下触发？\n\n"
-                "[选项] 收到特定请求时触发 | trigger_on_request\n"
-                "[选项] 定期执行（每天/每周） | trigger_scheduled\n"
-                "[选项] 某个条件满足时触发 | trigger_conditional"
+        questions = [
+            (
+                "trigger",
+                f"哦，那你先给我说说，一般什么情况下会启动{name}？\n\n"
+                f"比如是别人来找你的时候才做，还是你定期就要跑一遍，还是某些条件满足了你才会动手？",
             ),
-            "input": (
-                "流程开始前需要什么输入或前置条件？\n\n"
-                "1. 需要用户提交数据/表单\n"
-                "2. 需要前置审批\n"
-                "3. 需要外部系统数据\n"
-                "4. 我自己描述"
+            (
+                "input",
+                "明白了。那开始跑这个流程之前，你需要拿到什么东西才能开始？\n\n"
+                "是别人要给你一些资料？还是需要你先去查点什么数据？",
             ),
-            "steps": (
-                "这个流程大概分几步？每步做什么？\n\n"
-                "1. 3步以内的简单流程\n"
-                "2. 4-6步的常规流程\n"
-                "3. 7步以上的复杂流程\n"
-                "4. 我自己描述"
+            (
+                "steps",
+                "好。那你从头到尾理一遍，大概分几步走？不用太细，先说说大步骤。\n\n第一步做什么，然后呢？",
             ),
-            "output": ("流程结束后产出什么？\n\n1. 文字报告/文档\n2. 结构化数据/表格\n3. 代码/配置文件\n4. 我自己描述"),
-            "edge_cases": (
-                "有没有需要特别注意的边界情况？\n\n"
-                "1. 数据异常或缺失怎么处理\n"
-                "2. 超时或失败需要重试\n"
-                "3. 权限不足的兜底方案\n"
-                "4. 我自己描述"
+            (
+                "output",
+                "流程走完之后，最终你给出去的是什么？\n\n是一份报告？一个决策？还是一个什么东西交付给下一个人？",
             ),
-        }
+            (
+                "edge",
+                "前面说的都是顺利的情况。有没有哪些时候事情没按预想的走？\n\n"
+                "比如数据不对了、中间卡住了、别人不配合了——这些情况你怎么处理？",
+            ),
+            (
+                "gotchas",
+                '最后一个问题——这个流程里有没有什么"坑"？\n\n'
+                "就是看起来好像很简单，但新手第一次做特别容易搞错的那种地方？",
+            ),
+        ]
 
-        if next_probe and next_probe in fallback_questions:
-            self._probes_completed.add(next_probe)
-            return fallback_questions[next_probe]
-        return "还有什么要补充的吗？\n\n1. 没有了，继续下一步\n2. 还有要补充的"
+        for probe_key, question in questions:
+            if probe_key not in self._fallback_probes:
+                self._fallback_probes.add(probe_key)
+                return question
+
+        return (
+            f"好，我大概理解{name}的全貌了。要不要我基于刚才聊的这些先生成一份技能草稿？\n\n"
+            f"你可以说「生成吧」或者继续补充细节。"
+        )
 
     # ── REFINING phase ──
 
@@ -1645,7 +1652,11 @@ class SkillExtractionAgent:
             if topic.endswith(suffix):
                 topic = topic[: -len(suffix)]
                 break
-        topic = topic.strip("的个一个一下。！？ ")
+        _edge = frozenset("的个一个一下。！？ ")
+        while topic and topic[0] in _edge:
+            topic = topic[1:]
+        while topic and topic[-1] in _edge:
+            topic = topic[:-1]
         if topic.startswith("一套"):
             topic = topic[2:].lstrip()
         return topic
@@ -1987,7 +1998,12 @@ step_name: skill_name  # depends_on: [dep] | output_key: key | tools: [tool]
         name = re.sub(r"\s+Skill\s*$", "", name, flags=re.IGNORECASE)
         name = re.sub(r"\s*[-—–]\s*$", "", name)
         name = re.sub(r"[-—–]{2,}", "", name)
-        name = name.strip().strip("。．.，, -—–-")
+        name = name.strip()
+        _trail = frozenset("。．.，, -—–-")
+        while name and name[-1] in _trail:
+            name = name[:-1]
+        while name and name[0] in _trail:
+            name = name[1:]
         if len(name) > max_len:
             cut = max_len
             for sep in ["——", "—", "，", "、", " ", "·"]:

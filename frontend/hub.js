@@ -154,6 +154,12 @@ function hubView() {
       var m = { approved: '已通过', pending: '待审核', rejected: '已拒绝' };
       return m[status] || status || '?';
     },
+    tierLabel(tier) {
+      var t = String(tier || 'draft').toLowerCase();
+      if (t === 'verified') return 'Verified';
+      if (t === 'provisional') return '学徒';
+      return 'Draft';
+    },
 
     async subscribe(skillId) {
       var r = await api('/api/marketplace/subscribe?skill_id=' + encodeURIComponent(skillId) + '&auto_update=true', { method: 'POST' });

@@ -3,17 +3,44 @@
 Wired to real marketplace modules from Phase 3.
 """
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from skillos.identity.middleware import AuthContext, get_optional_auth
 
 router = APIRouter()
+_log = logging.getLogger("skillos.api.marketplace")
 
 
 def _marketplace_readonly() -> bool:
     import os
+
     return os.getenv("SKILLHUB_READONLY", "true").lower() in ("1", "true", "yes")
+
+
+def _trust_tier_from_content(content: str) -> str:
+    """Parse Dual Gate trust_tier from SKILL.md frontmatter; default draft."""
+    if not content:
+        return "draft"
+    try:
+        from skillos.skills.skill_store import _split_front_matter
+
+        meta, _ = _split_front_matter(content)
+        tier = str(meta.get("trust_tier") or "").strip().lower()
+        if tier in ("verified", "provisional", "draft"):
+            return tier
+    except Exception as exc:
+        _log.debug("trust_tier parse skipped: %s", exc)
+    return "draft"
+
+
+def _enrich_hub_item(skill) -> dict:
+    """Catalog/detail payload with trust_tier (content stripped from to_dict)."""
+    d = skill.to_dict()
+    d["trust_tier"] = _trust_tier_from_content(getattr(skill, "content", "") or "")
+    return d
 
 
 class PublishRequest(BaseModel):
@@ -29,6 +56,7 @@ class PublishRequest(BaseModel):
 async def marketplace_stats():
     """Get marketplace statistics."""
     from skillos.marketplace.registry import get_stats
+
     return get_stats()
 
 
@@ -43,14 +71,12 @@ async def public_catalog(q: str = "", category: str = "", sort: str = "score", l
     all_approved = list_skills(status="approved", sort_by=sort)
     cat_counts = Counter(s.category or "other" for s in all_approved)
     categories = [
-        {"name": name, "count": count}
-        for name, count in sorted(cat_counts.items(), key=lambda x: (-x[1], x[0]))
+        {"name": name, "count": count} for name, count in sorted(cat_counts.items(), key=lambda x: (-x[1], x[0]))
     ]
     skills = list_skills(status="approved", category=category, search=q, sort_by=sort)
     items = []
     for s in skills[: max(1, min(limit, 100))]:
-        d = s.to_dict()
-        d.pop("content", None)
+        d = _enrich_hub_item(s)
         d["read_only"] = readonly
         items.append(d)
     return {
@@ -66,8 +92,9 @@ async def public_catalog(q: str = "", category: str = "", sort: str = "score", l
 async def search_skills(q: str = "", category: str = "", sort: str = "score", author: str = ""):
     """Search published skills."""
     from skillos.marketplace.registry import list_skills
+
     skills = list_skills(status="approved", category=category, search=q, sort_by=sort, author=author)
-    return {"total": len(skills), "skills": [s.to_dict() for s in skills]}
+    return {"total": len(skills), "skills": [_enrich_hub_item(s) for s in skills]}
 
 
 @router.post("/publish")
@@ -87,9 +114,13 @@ async def publish_skill(req: PublishRequest, auth: AuthContext | None = Depends(
 
     try:
         result = publish_and_score(
-            name=req.name, content=req.content, llm_args=llm_args,
-            author=req.author, description=req.description,
-            tags=req.tags, category=req.category,
+            name=req.name,
+            content=req.content,
+            llm_args=llm_args,
+            author=req.author,
+            description=req.description,
+            tags=req.tags,
+            category=req.category,
         )
         return {"published": True, **result}
     except Exception as e:
@@ -100,16 +131,18 @@ async def publish_skill(req: PublishRequest, auth: AuthContext | None = Depends(
 async def get_skill(skill_id: str):
     """Get a published skill by ID or slug."""
     from skillos.marketplace.registry import get_skill, get_skill_by_slug
+
     skill = get_skill(skill_id) or get_skill_by_slug(skill_id)
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
-    return {**skill.to_dict(), "content": skill.content}
+    return {**_enrich_hub_item(skill), "content": skill.content}
 
 
 @router.post("/subscribe")
 async def subscribe(skill_id: str, user_id: str = "anonymous", auto_update: bool = True):
     """Subscribe to a skill."""
     from skillos.marketplace.registry import subscribe
+
     new_sub = subscribe(user_id, skill_id, auto_update)
     return {"subscribed": True, "new": new_sub, "skill_id": skill_id}
 
@@ -118,6 +151,7 @@ async def subscribe(skill_id: str, user_id: str = "anonymous", auto_update: bool
 async def unsubscribe(skill_id: str, user_id: str = "anonymous"):
     """Unsubscribe from a skill."""
     from skillos.marketplace.registry import unsubscribe
+
     unsubscribe(user_id, skill_id)
     return {"unsubscribed": True}
 
@@ -126,6 +160,7 @@ async def unsubscribe(skill_id: str, user_id: str = "anonymous"):
 async def pending_reviews():
     """Get skills awaiting manual review (score 50-69)."""
     from skillos.marketplace.registry import get_pending_reviews
+
     pending = get_pending_reviews()
     return {"pending": [s.to_dict() for s in pending], "count": len(pending)}
 
@@ -134,6 +169,7 @@ async def pending_reviews():
 async def review_skill(skill_id: str, approved: bool, notes: str = ""):
     """Approve or reject a pending skill."""
     from skillos.marketplace.registry import review_skill
+
     skill = review_skill(skill_id, approved, notes)
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
@@ -146,14 +182,21 @@ async def check_updates(skills: str = "[]"):
     import json
 
     from skillos.marketplace.registry import get_skill
+
     try:
         client_skills = json.loads(skills)
         updates = []
         for cs in client_skills:
             s = get_skill(cs.get("skill_id", ""))
             if s and s.version > cs.get("version", 0):
-                updates.append({"skill_id": cs["skill_id"], "name": s.name,
-                               "current_version": cs["version"], "latest_version": s.version})
+                updates.append(
+                    {
+                        "skill_id": cs["skill_id"],
+                        "name": s.name,
+                        "current_version": cs["version"],
+                        "latest_version": s.version,
+                    }
+                )
         return {"updates_available": len(updates), "updates": updates}
     except json.JSONDecodeError:
         return {"updates_available": 0, "updates": []}
@@ -163,6 +206,7 @@ async def check_updates(skills: str = "[]"):
 async def author_revenue(author_id: str):
     """Get revenue dashboard for an author."""
     from skillos.marketplace.payments import get_author_revenue
+
     return get_author_revenue(author_id)
 
 
@@ -170,6 +214,7 @@ async def author_revenue(author_id: str):
 async def pricing_get(skill_id: str):
     """Get pricing tier for a marketplace skill."""
     from skillos.marketplace.payments import format_price, get_price
+
     tier = get_price(skill_id)
     return {
         "skill_id": skill_id,
@@ -196,6 +241,7 @@ async def pricing_set(req: PricingSetRequest, auth: AuthContext | None = Depends
             detail="只读市场暂不支持修改定价",
         )
     from skillos.marketplace.payments import format_price, set_price
+
     tier = set_price(req.skill_id, req.model, req.price, req.trial_days)
     return {
         "pricing": {
@@ -229,8 +275,7 @@ async def recommend_skills(limit: int = 6, auth: AuthContext | None = Depends(ge
             continue
         if any(_name_similarity(skill.name, o) >= 0.55 for o in owned):
             continue
-        d = skill.to_dict()
-        d.pop("content", None)
+        d = _enrich_hub_item(skill)
         if skill.score >= 70:
             d["recommend_reason"] = "高分精选"
         elif skill.category and skill.category != "other":
@@ -248,4 +293,5 @@ async def recommend_skills(limit: int = 6, auth: AuthContext | None = Depends(ge
 async def platform_revenue():
     """Get platform-wide revenue dashboard (admin)."""
     from skillos.marketplace.payments import get_platform_revenue
+
     return get_platform_revenue()

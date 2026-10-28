@@ -226,7 +226,10 @@ Day 5–7   Demo 脚本 + 录像素材；remote/push；可选 v0.3.5 tag
 
 **Phase V 已交付**；**Phase T 分栏 UI 已交付**（2026-10-27）。
 
-**下一步**：
+**已 push** `c163925`（含 v0.3.3 / v0.3.4 tags）。
 
-1. 提交并 `git push origin main`（含 `v0.3.4`；可选打 `v0.3.5`）——需你明确授权
-2. Demo Day 录像（主技能：**GitHub Pull**）
+**产品表面续作（2026-10-27）**：登录/欢迎/引导学徒文案；列表+侧栏 Trust Tier；HTML 禁缓存；苏格拉底降级提问；参考+泛化 cohort frontmatter 回填。
+
+**产品化续（2026-10-28）**：侧栏 Trust Tier 筛选；质量条 Tier；Cursor 安装文案；修复 Alpine/`app.js` 脚本引用；市场目录/详情露出 `trust_tier`。
+
+**下一步**：授权后 commit/push 产品表面；Demo Day 录像；可选 `v0.3.5` tag。

@@ -108,6 +108,19 @@ bench_quality:
     tasks:
     - software-dependency-audit
     - code-review-002
+trust_tier: verified
+gates:
+  epistemic:
+    passed: true
+    detail: verified=33
+  outcome:
+    passed: true
+    detail: min_score=100
+    smoke_pass: true
+    min_with_score: 100
+    tasks:
+    - software-dependency-audit
+    - code-review-002
 ---
 
 # GitHub Pull

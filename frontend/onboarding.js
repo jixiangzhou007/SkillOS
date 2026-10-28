@@ -3,22 +3,22 @@
 var ONBOARDING_KEY = typeof StorageKeys !== 'undefined' ? StorageKeys.ONBOARDING_DONE : 'skillos_onboarding_done';
 var _ONBOARDING_STEPS = [
   {
-    title: '可验证的技能工厂',
-    body: 'SkillOS 不是又一个 AI 工具。它帮你把工作经验萃取成 Verified Skill——经过认识论验证、可以持续进化的技能文档。输出 AgentSkills.io 标准，Claude Code / Cursor 直接加载。',
+    title: 'AI 是学徒，不是点云执行器',
+    body: 'SkillOS 把你的工作经验炼成可验证的 Agent Skills。学徒先问清楚再动手；出师要过双门禁：Gate A 认识论声明 + Gate B 域内烟测。',
     action: function() {},
     actionLabel: '开始了解'
   },
   {
-    title: '三种输入，一种输出',
-    body: '在对话中描述流程（苏格拉底式追问帮你理清思路）、粘贴网页链接自动学习、上传 PDF/Word 自动消化——最终都输出为标准 SKILL.md，附带验证数据和进化轨迹。',
+    title: '三种输入，一种出师态',
+    body: '对话（苏格拉底追问）、链接沉淀、上传资料——都走向同一完成态：Draft → Provisional → Verified，并导出 AgentSkills.io 标准 SKILL.md。',
     action: function() {
       if (typeof showChat === 'function') showChat();
     },
     actionLabel: '试一下'
   },
   {
-    title: '越用越好',
-    body: '每个 skill 都有版本历史、MoE 质量评分、SkillsBench 回归测试。改进了某个 skill，相关 skill 会自动受益。在 Cursor / Codex 里用得越多，SkillOS 后台进化得越好。',
+    title: 'Trust Tier 看得见',
+    body: '列表与详情展示 Trust Tier；本地 Quick8 是日常门禁，官方 SkillsBench 是权威轨——两者分栏，勿混为一谈。在 Cursor 里装上 Verified Skill 即用。',
     action: function() {
       closeOnboarding(true);
       if (typeof toast === 'function') toast('开始萃取你的第一个 Verified Skill', 'success');
@@ -69,7 +69,7 @@ function onboardingNext() {
   if (step && typeof step.action === 'function') step.action();
   if (_onboardingStep >= _ONBOARDING_STEPS.length - 1) {
     closeOnboarding(true);
-    if (typeof toast === 'function') toast('欢迎使用 SkillOS · 可验证的技能工厂', 'success');
+    if (typeof toast === 'function') toast('欢迎使用 SkillOS · 学徒出师', 'success');
     return;
   }
   _onboardingStep++;

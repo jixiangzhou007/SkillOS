@@ -10,16 +10,19 @@ function renderSidebarWorkspace(skills) {
   if (welcomeEl && recent.length) {
     welcomeEl.innerHTML = '<div style="font-size:var(--t-xs);color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">最近技能</div>' +
       recent.map(function(s) {
-        return '<span class="welcome-skill-chip" onclick="showDetail(' + JSON.stringify(s.name) + ')">' + escHtml(s.name) + '</span>';
+        var t = (s.trust_tier || '').toLowerCase();
+        var tip = t === 'verified' ? ' · Verified' : t === 'provisional' ? ' · 学徒' : '';
+        return '<span class="welcome-skill-chip" onclick="showDetail(' + JSON.stringify(s.name) + ')">' + escHtml(s.name) + tip + '</span>';
       }).join('');
   }
 
   var sbWs = document.getElementById('sb-workspace-content');
   if (sbWs) {
     sbWs.innerHTML = recent.length ? ('<div style="font-size:var(--t-xs);color:var(--text3);margin-bottom:var(--s-2)">最近技能</div>' + recent.map(function(s) {
-      var badge = s.avg_score >= 4 ? '<span style="color:var(--a3);font-size:9px">●</span>' :
-                  s.avg_score >= 2 ? '<span style="color:var(--amber);font-size:9px">●</span>' :
-                  '<span style="color:var(--text3);font-size:9px">●</span>';
+      var tier = (s.trust_tier || 'draft').toLowerCase();
+      var badge = tier === 'verified' ? '<span class="trust-tier trust-tier-verified" style="font-size:9px;padding:1px 5px">V</span>' :
+                  tier === 'provisional' ? '<span class="trust-tier trust-tier-provisional" style="font-size:9px;padding:1px 5px">学</span>' :
+                  '<span class="trust-tier trust-tier-draft" style="font-size:9px;padding:1px 5px">D</span>';
       return '<div class="sb-ws-item" onclick="showDetail(' + JSON.stringify(s.name) + ')" style="cursor:pointer;display:flex;align-items:center;gap:6px">' +
         badge + '<span style="font-size:var(--t-sm);color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(s.name) + '</span>' +
         '<span style="font-size:var(--t-xs);color:var(--text3)">v' + s.version + '</span>' +

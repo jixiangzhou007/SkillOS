@@ -20,6 +20,8 @@
   saveSession:function(d){if(d.token){this.token=d.token;L.setItem('sd_auth_token',d.token);}if(d.user){var n=d.user.username||d.user;this.user=typeof n==='string'?n:(d.user.username||'');L.setItem('sd_user',this.user);}if(d.workspace){this.workspace=d.workspace;L.setItem('sd_workspace',JSON.stringify(d.workspace));}},
   init:function(){if(window.location.pathname.indexOf('login')>=0)return;if(!this.token){window.location.href='/login.html';return;}var s=this;fetch((window.API||'')+'/api/auth/me',{headers:{Authorization:'Bearer '+this.token}}).then(function(r){return r.json();}).then(function(d){if(!d.user||d.user.error||d.user.username==='anonymous'){['sd_auth_token','sd_user','sd_workspace','sd_session'].forEach(function(k){L.removeItem(k);});window.location.href='/login.html';return;}s.user=d.user.username;if(d.workspace)s.workspace=d.workspace;s.initialized=true;if(typeof refreshSkillList==='function')refreshSkillList();if(typeof updateAdminNavVisibility==='function')updateAdminNavVisibility();if(typeof setDot==='function')setDot('on');}).catch(function(e){console.warn('initAuth failed',e);if(typeof setDot==='function')setDot('');});},});
   Alpine.store('skill',{allSkillsCache:[],filteredSkills:[],setCache:function(s){this.allSkillsCache=s;this.filteredSkills=s;},filter:function(q,t){var l=this.allSkillsCache;if(q){var ql=q.toLowerCase();l=l.filter(function(s){return s.name.toLowerCase().includes(ql);});}this.filteredSkills=l;return l;}});window.__alpineReady=true;});</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.x/dist/cdn.min.js"
+    onerror="this.onerror=null;var s=document.createElement('script');s.src='/alpine.min.js';s.defer=true;this.parentNode.insertBefore(s,this.nextSibling)"></script>
   <script async src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js" onerror="window._mermaidFailed=1"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"
     onerror="this.onerror=null;var s=document.createElement('script');s.src='/marked.min.js';s.defer=true;this.parentNode.insertBefore(s,this.nextSibling)"></script>
@@ -125,6 +127,12 @@
         <button class="sb-tab active" data-tab="mine" onclick="switchSkillTab('mine')">我的</button>
         <button class="sb-tab" data-tab="system" onclick="switchSkillTab('system')">系统</button>
       </div>
+      <div id="sb-tier-filters" class="sb-tier-filters" role="group" aria-label="Trust Tier 筛选">
+        <button type="button" class="sb-tier-chip active" data-tier="all" onclick="switchTrustTierFilter('all')">全部</button>
+        <button type="button" class="sb-tier-chip" data-tier="verified" onclick="switchTrustTierFilter('verified')">Verified</button>
+        <button type="button" class="sb-tier-chip" data-tier="provisional" onclick="switchTrustTierFilter('provisional')">学徒</button>
+        <button type="button" class="sb-tier-chip" data-tier="draft" onclick="switchTrustTierFilter('draft')">Draft</button>
+      </div>
       <div id="skill-list"><div class="skeleton skeleton-card" style="margin:2px 0"></div><div class="skeleton skeleton-card" style="margin:2px 0"></div><div class="skeleton skeleton-card" style="margin:2px 0"></div></div>
       <button class="sb-action" onclick="importSkill()"><span class="nav-icon" data-icon="download"></span>导入技能</button>
     </div>
@@ -174,8 +182,8 @@
           <div class="welcome" id="chat-welcome">
             <div class="welcome-icon" id="welcome-logo"><span data-icon="hammer"></span></div>
             <div class="welcome-sub">SkillOS</div>
-            <div class="welcome-title">可验证的技能工厂</div>
-            <div class="welcome-hint">在 Cursor 里沉淀 · 在这里验货导出。对话、链接或文件，输出 AgentSkills.io 标准 SKILL.md。</div>
+            <div class="welcome-title">学徒出师 · Verified Spine</div>
+            <div class="welcome-hint">对话、链接或文件向人学习；Gate A 认识论 ∧ Gate B 烟测通过后出师。导出 AgentSkills.io 标准 SKILL.md，Cursor / Claude 可装。</div>
             <div class="welcome-chips">
               <span class="welcome-chip" onclick="resetWorkspace();newSession();showChat();document.getElementById('input').focus()"><span class="chip-ico" data-icon="edit"></span>对话萃取</span>
               <span class="welcome-chip" onclick="startFromLink()"><span class="chip-ico" data-icon="link"></span>从链接沉淀</span>
@@ -215,7 +223,7 @@
       <div class="page-header-text">
         <button type="button" class="nav-sm detail-back-btn" @click="$store.nav.showChat()">← 返回</button>
         <h2 class="page-title" x-text="skillName || ''" id="d-name"></h2>
-        <p class="page-subtitle detail-page-sub">验货 · 认识论 · 导出</p>
+        <p class="page-subtitle detail-page-sub">Trust Tier · 双门禁 · 导出</p>
       </div>
       <div class="detail-actions-wrap" x-data="{ actionsOpen: false }" @click.outside="actionsOpen = false">
         <button type="button" class="nav-sm detail-actions-trigger" @click="actionsOpen = !actionsOpen">操作 ▾</button>
@@ -430,7 +438,10 @@
               <div class="hub-rec-grid">
                 <template x-for="rec in recommendations" :key="rec.skill_id">
                   <div class="skill-card skill-card-compact hub-rec-card" @click="showDetail(rec.skill_id)">
-                    <div class="name" x-text="rec.name||rec.skill_id"></div>
+                    <div class="hub-list-row">
+                      <div class="name" x-text="rec.name||rec.skill_id"></div>
+                      <span class="trust-tier" :class="'trust-tier-'+(rec.trust_tier||'draft')" x-text="tierLabel(rec.trust_tier)"></span>
+                    </div>
                     <div class="meta" x-text="rec.description||''"></div>
                   </div>
                 </template>
@@ -467,6 +478,7 @@
             <div class="skill-card hub-list-card" @click="showDetail(s.skill_id||s.name)">
               <div class="hub-list-row">
                 <span class="name hub-list-name" x-text="s.name"></span>
+                <span class="trust-tier" :class="'trust-tier-'+(s.trust_tier||'draft')" x-text="tierLabel(s.trust_tier)"></span>
                 <span class="hub-list-status" x-text="hubStatusLabel(s.status||'approved')"></span>
                 <span class="hub-list-score" :style="'color:'+scoreColor(s.score||0)" x-text="s.score||'?'"></span>
               </div>
@@ -486,6 +498,7 @@
           <button type="button" class="nav-sm" @click="backToCatalog()">← 返回目录</button>
           <h3 class="hub-detail-title" x-text="detailSkill.name"></h3>
           <div class="hub-detail-meta">
+            <span class="trust-tier" :class="'trust-tier-'+(detailSkill.trust_tier||'draft')" x-text="tierLabel(detailSkill.trust_tier)"></span>
             <span class="hub-list-score" :style="'color:'+scoreColor(detailSkill.score||0)" x-text="detailSkill.score||'?'"></span>
             <span class="hub-list-status" x-text="gateLabel(detailSkill.gate||detailSkill.status)"></span>
             <span class="hub-detail-author" x-show="detailSkill.author" x-text="'作者 · '+(detailSkill.author||'')"></span>
@@ -1155,26 +1168,25 @@
 <script defer src="/audio.js?v=1"></script>
 <script defer src="/voice.js?v=1"></script>
 <script defer src="/auth.js?v=1"></script>
-<script defer src="/export-channel.js?v=1"></script>
+<script defer src="/export-channel.js?v=3"></script>
 <script defer src="/precipitation-result.js?v=6"></script>
 <script defer src="/source_material.js?v=3"></script>
 <script defer src="/socratic-ui.js?v=1"></script>
-<script defer src="/chat.js?v=11"></script>
+<script defer src="/chat.js?v=12"></script>
 <script defer src="/skills_io.js?v=1"></script>
-<script defer src="/skills.js?v=7"></script>
+<script defer src="/skills.js?v=9"></script>
 <script defer src="/quality.js?v=4"></script>
 <script defer src="/workspace.js?v=7"></script>
 <script defer src="/error-boundary.js?v=2"></script>
 <script defer src="/knowledge.js?v=10"></script>
 <script defer src="/account_watcher.js?v=1"></script>
 <script defer src="/intelligence.js?v=2"></script>
-<script defer src="/hub.js?v=1"></script>
+<script defer src="/hub.js?v=2"></script>
 <script defer src="/settings.js?v=3"></script>
 <script defer src="/admin.js?v=2"></script>
 <script defer src="/docs.js?v=1"></script>
-<script defer src="/b.js"></script>
-<script defer src="/onboarding.js?v=3"></script>
-<script defer src="/c.js"></script>
-<script defer src="/a.js"></script>
+<script defer src="/alpine-bridge.js?v=1"></script>
+<script defer src="/onboarding.js?v=4"></script>
+<script defer src="/app.js?v=8"></script>
 </body>
 </html>

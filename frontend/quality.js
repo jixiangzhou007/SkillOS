@@ -55,6 +55,15 @@ function renderEvalFramework() {
 function renderQualityStrip(ep) {
   if (!ep) return '';
   var items = [];
+  var tier = String(ep.trust_tier || '').toLowerCase();
+  if (tier === 'verified' || tier === 'provisional' || tier === 'draft') {
+    items.push({
+      type: 'trust',
+      score: tier === 'verified' ? 1 : tier === 'provisional' ? 0.5 : 0,
+      label: tier === 'verified' ? 'Verified' : tier === 'provisional' ? '学徒' : 'Draft',
+      tab: 'overview',
+    });
+  }
   // DNA compliance
   var bq = ep.bench_quality || {};
   var dc = bq.dna_compliance || {};
@@ -64,7 +73,7 @@ function renderQualityStrip(ep) {
   if (moe.overall_score != null) items.push({ type: 'moe', score: moe.overall_score, label: 'MoE 评分', tab: 'official' });
   // Smoke test
   var sg = bq.save_gate || {};
-  if (sg.smoke_pass != null) items.push({ type: 'smoke', score: sg.smoke_pass, label: '保存门禁', tab: 'dna' });
+  if (sg.smoke_pass != null) items.push({ type: 'smoke', score: sg.smoke_pass, label: 'Gate B', tab: 'dna' });
   // Benchmark
   if (ep.post_bench && ep.post_bench.regression_scheduled !== undefined) {
     items.push({ type: 'bench', score: ep.post_bench.all_pass, label: '回归评测', tab: 'official' });
@@ -75,6 +84,11 @@ function renderQualityStrip(ep) {
   var h = '<div class="quality-strip">';
   h += '<span style="font-size:10px;color:var(--text3);margin-right:8px;text-transform:uppercase;letter-spacing:.06em">质量</span>';
   items.forEach(function(item) {
+    if (item.type === 'trust') {
+      var tcls = 'trust-tier trust-tier-' + (item.label === 'Verified' ? 'verified' : item.label === '学徒' ? 'provisional' : 'draft');
+      h += '<span class="quality-strip-item ' + tcls + '" onclick="switchDetailTab(' + JSON.stringify(item.tab) + ')" title="Trust Tier" style="cursor:pointer;margin-right:4px">' + item.label + '</span>';
+      return;
+    }
     var color = qualityColor(item.score, item.type);
     var label = qualityLabel(item.type, item.score);
     h += '<span class="quality-strip-item" onclick="switchDetailTab(' + JSON.stringify(item.tab) + ')" title="点击查看详情" style="cursor:pointer;font-size:11px;padding:3px 8px;border-radius:4px;color:' + color + ';background:' + color.replace(')', ',.1)').replace('rgb', 'rgba').replace('var(--a3)', 'rgba(52,211,153,.12)').replace('var(--amber)', 'rgba(245,158,11,.12)').replace('var(--red)', 'rgba(239,68,68,.12)').replace('var(--text3)', 'rgba(255,255,255,.06)') + ';white-space:nowrap;font-weight:600;margin-right:4px">' + label + '</span>';
