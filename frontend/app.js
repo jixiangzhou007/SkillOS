@@ -246,6 +246,7 @@ document.addEventListener('keydown', function(e) {
   }
   // Escape — close overlays
   if (e.key === 'Escape') {
+    if (document.getElementById('doc-sheet-overlay')) { closeDocSheet(); return; }
     var src = document.getElementById('source-material-modal');
     if (src && src.style.display !== 'none') { closeSourceMaterialModal(); return; }
     var model = document.getElementById('model-modal');
@@ -314,6 +315,39 @@ function checkLlmReady() {
   });
 }
 setTimeout(checkLlmReady, 600);
+
+function closeDocSheet() {
+  var el = document.getElementById('doc-sheet-overlay');
+  if (el) el.remove();
+}
+
+function openKnownIssuesDoc() {
+  var base = typeof API !== 'undefined' ? API : '';
+  fetch(base + '/api/docs/known-issues')
+    .then(function(r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+    .then(function(d) {
+      closeDocSheet();
+      var overlay = document.createElement('div');
+      overlay.id = 'doc-sheet-overlay';
+      overlay.className = 'doc-sheet-overlay';
+      overlay.onclick = function(e) { if (e.target === overlay) closeDocSheet(); };
+      var bodyHtml = '';
+      if (typeof marked !== 'undefined' && marked.parse) {
+        bodyHtml = marked.parse(d.content || '');
+      } else {
+        bodyHtml = '<pre class="doc-sheet-body">' + (typeof escHtml === 'function' ? escHtml(d.content || '') : (d.content || '')) + '</pre>';
+      }
+      overlay.innerHTML =
+        '<div class="doc-sheet" role="dialog" aria-modal="true">' +
+        '<div class="doc-sheet-head"><div class="doc-sheet-title">' + (d.title || 'Alpha 须知') + '</div>' +
+        '<button type="button" class="btn-ghost btn-sm" onclick="closeDocSheet()">关闭</button></div>' +
+        '<div class="doc-sheet-body">' + bodyHtml + '</div></div>';
+      document.body.appendChild(overlay);
+    })
+    .catch(function(err) {
+      if (typeof toast === 'function') toast('无法加载 Alpha 须知：' + err.message, 'error');
+    });
+}
 
 // 预加载市场只读模式，隐藏发布按钮
 api('/api/marketplace/catalog?limit=1').then(function(r) {

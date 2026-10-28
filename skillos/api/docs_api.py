@@ -1,6 +1,5 @@
 """Public documentation API (Sprint 7)."""
 
-
 import os
 from pathlib import Path
 
@@ -17,12 +16,14 @@ def _docs_roots() -> list[Path]:
     env = os.getenv("SKILLOS_DOCS_DIR", "").strip()
     if env:
         roots.append(Path(env).expanduser().resolve())
-    roots.extend([
-        _PROJECT_ROOT / "docs",
-        _PROJECT_ROOT / "frontend" / "docs",
-        Path.cwd().resolve() / "docs",
-        Path.cwd().resolve() / "frontend" / "docs",
-    ])
+    roots.extend(
+        [
+            _PROJECT_ROOT / "docs",
+            _PROJECT_ROOT / "frontend" / "docs",
+            Path.cwd().resolve() / "docs",
+            Path.cwd().resolve() / "frontend" / "docs",
+        ]
+    )
     seen: set[Path] = set()
     unique: list[Path] = []
     for p in roots:
@@ -56,3 +57,10 @@ async def quickstart():
     # In-app bundle first; sprint7 copy is legacy fallback.
     content = _read_doc("quickstart.md", "sprint7/QUICKSTART.md")
     return {"title": "快速开始", "format": "markdown", "content": content}
+
+
+@router.get("/known-issues")
+async def known_issues():
+    """Closed Alpha limitations and expected behaviour."""
+    content = _read_doc("KNOWN_ISSUES.md", "known-issues.md")
+    return {"title": "Alpha 须知 / Known Issues", "format": "markdown", "content": content}

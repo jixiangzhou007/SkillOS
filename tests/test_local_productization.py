@@ -20,6 +20,16 @@ async def test_health_reports_llm_readiness():
     assert body["llm"]["mode"] in ("cloud", "ollama", "missing", "error", "unknown")
 
 
+@pytest.mark.asyncio
+async def test_known_issues_doc():
+    from skillos.api.docs_api import known_issues
+
+    body = await known_issues()
+    assert body["format"] == "markdown"
+    assert "DEEPSEEK" in body["content"] or "Trust Tier" in body["content"]
+    assert body["title"]
+
+
 @pytest.fixture
 def client():
     from skillos.api.skills import router as skills_router

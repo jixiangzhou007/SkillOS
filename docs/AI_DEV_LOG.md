@@ -4,6 +4,32 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] W1+ UI 打磨 + Alpha 须知入口 — Cursor Agent
+
+**背景 / 触发**：用户「继续推进」并要求优化页面 UI；沿用 Atelier 设计体系，不做换肤重做。
+
+**修改思路**：品牌层级（SkillOS 主视觉）→ CTA 主次分离 → 导出区降噪 → Trust/Key 提示铜调统一；Known Issues 经 API + 抽屉露出。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/index.html` | 欢迎页品牌/主次芯片；设置 Harness「Alpha 须知」 |
+| `frontend/style.css` | welcome/export/banner/doc-sheet/overview 视觉 |
+| `frontend/export-channel.js` | 主操作行 + 折叠更多；Tier 徽章 |
+| `frontend/app.js` | `openKnownIssuesDoc` 文档抽屉 |
+| `frontend/login.html` | 品牌强化 + Alpha Key 提示 |
+| `skillos/api/docs_api.py` | `GET /api/docs/known-issues` |
+| `tests/test_local_productization.py` | known-issues 断言 |
+
+**未修改 / 刻意不做**：未换字体栈/未做浅色主题；未录 Demo；未改 Dual Gate 逻辑
+
+**验证**：`pytest tests/test_local_productization.py tests/test_skill_discovery.py` → **13 passed**；W1 提交已 push
+
+**开放问题 / 下一步**：浏览器目视欢迎/详情/登录；Alpha 邀约；按反馈继续只修 P0 视觉
+
+---
+
 ## [2026-10-28] W1 Alpha 可用性 — B1/B2/B3/B4 — Cursor Agent
 
 **背景 / 触发**：用户「继续」；W0 已冻结且 push/`v0.3.6` 成功；进入 W1 陌生人第一天体验。

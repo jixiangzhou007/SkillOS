@@ -100,50 +100,60 @@ function renderExportChannelPanel(opts) {
   if (!slug && !name) return '';
 
   var html = '<div class="export-channel' + (compact ? ' export-channel-compact' : '') + '">';
-  html += '<div class="export-channel-head"><span class="export-channel-icon" aria-hidden="true">⬡</span>';
+  html += '<div class="export-channel-head"><span class="export-channel-mark" aria-hidden="true"></span>';
   html += '<div><div class="export-channel-title">装进 Harness</div>';
-  html += '<div class="export-channel-sub">AgentSkills.io · Cursor / .agents / DeepSeek Harness</div></div></div>';
+  html += '<div class="export-channel-sub">AgentSkills.io · Cursor / .agents / DeepSeek Harness</div></div>';
+  if (tier) {
+    html += '<span class="trust-tier trust-tier-' + (tier === 'verified' || tier === 'provisional' ? tier : 'draft') + '">' +
+      (tier === 'verified' ? 'Verified' : tier === 'provisional' ? '学徒' : 'Draft') + '</span>';
+  }
+  html += '</div>';
 
-  html += '<ol class="export-channel-steps">';
-  html += '<li>复制路径或下载 Zip（优先 Verified；Draft 不对模型目录暴露）</li>';
-  html += '<li>解压到 Cursor <code>~/.cursor/skills/' + escHtml(slug || name) + '/</code>，或项目 <code>.agents/skills/</code> / <code>.dsh/skills/</code></li>';
-  html += '<li>新开对话用 <code>@' + escHtml(slug || name) + '</code>；或运行 <code>npx @deepseek-ai/dsh web</code> 试用</li>';
-  html += '</ol>';
-  html += '<p class="export-channel-tip">Skill（可验证说明书）≠ Plugin（运行时能力）。学徒态可试用；双门禁齐才标 Verified。</p>';
+  if (!compact) {
+    html += '<ol class="export-channel-steps">';
+    html += '<li>一键装到本机，或复制路径 / 下载 Zip</li>';
+    html += '<li>Cursor：<code>~/.cursor/skills/' + escHtml(slug || name) + '/</code></li>';
+    html += '<li>对话里用 <code>@' + escHtml(slug || name) + '</code>；Skill ≠ Plugin</li>';
+    html += '</ol>';
+  }
   if (!modelOk) {
-    html += '<p class="export-channel-tip export-channel-warn">当前 Draft：可安装给人看，默认不进模型可调用 catalog。</p>';
+    html += '<p class="export-channel-tip export-channel-warn">Draft：可装给人看，默认不进模型 catalog（model_invocable=false）。</p>';
   }
 
   if (cursorPath) {
     html += '<div class="export-channel-path"><code class="pr-path-code">' + escHtml(cursorPath) + '</code></div>';
   }
 
-  html += '<div class="export-channel-actions">';
+  html += '<div class="export-channel-actions export-channel-actions-primary">';
   if (name) {
     html += _ecBtn('装到 Cursor', 'install-local', { skill: name, target: 'cursor', tier: tier }, 'btn-primary btn-sm export-channel-primary');
     html += _ecBtn('装到 dsh', 'install-local', { skill: name, target: 'dsh', tier: tier }, 'btn-secondary btn-sm');
     html += _ecBtn('装到 .agents', 'install-local', { skill: name, target: 'agents', project: true, tier: tier }, 'btn-secondary btn-sm');
-  }
-  if (cursorPath) {
-    html += _ecBtn('复制 Cursor 路径', 'copy-path', { path: cursorPath }, 'btn-secondary btn-sm');
-  }
-  if (agentsPath) {
-    html += _ecBtn('复制 .agents 路径', 'copy-path', { path: agentsPath }, 'btn-secondary btn-sm');
-  }
-  if (dshPath) {
-    html += _ecBtn('复制 dsh 路径', 'copy-path', { path: dshPath }, 'btn-secondary btn-sm');
-  }
-  html += _ecBtn('复制 dsh 命令', 'copy-path', { path: 'npx @deepseek-ai/dsh web' }, 'btn-secondary btn-sm');
-  if (name) {
-    var cli = 'python scripts/install_skill_to_harness.py "' + name + '" --target cursor';
-    html += _ecBtn('复制安装 CLI', 'copy-path', { path: cli }, 'btn-secondary btn-sm');
-    html += _ecBtn('下载 Zip', 'zip', { skill: name });
-    html += _ecBtn('复制 SKILL.md', 'copy-md', { skill: name, slug: slug });
-  }
-  if (name && typeof showDetail === 'function') {
-    html += _ecBtn('查看详情', 'detail', { skill: name });
+    html += _ecBtn('下载 Zip', 'zip', { skill: name }, 'btn-secondary btn-sm');
   }
   html += '</div>';
+
+  html += '<details class="export-channel-more"><summary>更多路径与命令</summary>';
+  html += '<div class="export-channel-actions">';
+  if (cursorPath) {
+    html += _ecBtn('复制 Cursor 路径', 'copy-path', { path: cursorPath }, 'btn-ghost btn-xs');
+  }
+  if (agentsPath) {
+    html += _ecBtn('复制 .agents 路径', 'copy-path', { path: agentsPath }, 'btn-ghost btn-xs');
+  }
+  if (dshPath) {
+    html += _ecBtn('复制 dsh 路径', 'copy-path', { path: dshPath }, 'btn-ghost btn-xs');
+  }
+  html += _ecBtn('复制 dsh 命令', 'copy-path', { path: 'npx @deepseek-ai/dsh web' }, 'btn-ghost btn-xs');
+  if (name) {
+    var cli = 'python scripts/install_skill_to_harness.py "' + name + '" --target cursor';
+    html += _ecBtn('复制安装 CLI', 'copy-path', { path: cli }, 'btn-ghost btn-xs');
+    html += _ecBtn('复制 SKILL.md', 'copy-md', { skill: name, slug: slug }, 'btn-ghost btn-xs');
+  }
+  if (name && typeof showDetail === 'function' && !compact) {
+    html += _ecBtn('查看详情', 'detail', { skill: name }, 'btn-ghost btn-xs');
+  }
+  html += '</div></details>';
 
   if (slug && !compact) {
     var other = ['claude_code', 'codex', 'gemini_cli', 'copilot', 'agents_user', 'dsh_project'].filter(function(k) {
