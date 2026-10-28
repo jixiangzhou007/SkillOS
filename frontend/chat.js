@@ -8,11 +8,13 @@ function renderSidebarWorkspace(skills) {
 
   var welcomeEl = document.getElementById('welcome-recent-skills');
   if (welcomeEl && recent.length) {
-    welcomeEl.innerHTML = '<div style="font-size:var(--t-xs);color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">最近技能</div>' +
+    welcomeEl.innerHTML = '<div style="font-size:var(--t-xs);color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">最近技能 · Trust Tier</div>' +
       recent.map(function(s) {
-        var t = (s.trust_tier || '').toLowerCase();
-        var tip = t === 'verified' ? ' · Verified' : t === 'provisional' ? ' · 学徒' : '';
-        return '<span class="welcome-skill-chip" onclick="showDetail(' + JSON.stringify(s.name) + ')">' + escHtml(s.name) + tip + '</span>';
+        var t = (s.trust_tier || 'draft').toLowerCase();
+        var label = t === 'verified' ? 'Verified' : t === 'provisional' ? '学徒' : 'Draft';
+        var cls = 'trust-tier trust-tier-' + (t === 'verified' || t === 'provisional' ? t : 'draft');
+        return '<span class="welcome-skill-chip" onclick="showDetail(' + JSON.stringify(s.name) + ')">' +
+          escHtml(s.name) + ' <span class="' + cls + '" style="font-size:9px;padding:1px 5px;margin-left:4px">' + label + '</span></span>';
       }).join('');
   }
 

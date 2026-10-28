@@ -1538,19 +1538,41 @@ function renderSkillCards(skills) {
 
       }).join('')
 
-      || '<div class="empty-state"><div class="icon">📁</div><div class="title">' +
+      || _skillListEmptyHtml();
 
-        (_skillListTab === 'mine' ? '还没有技能' : '系统技能') +
+    var poolN = _baseSkillListPool().length;
+    var countEl = document.getElementById('skill-count');
+    if (countEl) {
+      var tier = (typeof _trustTierFilter !== 'undefined' && _trustTierFilter) ? _trustTierFilter : 'all';
+      countEl.textContent = (tier !== 'all' && skills.length !== poolN)
+        ? (skills.length + '/' + poolN)
+        : String(skills.length);
+    }
 
-        '</div><div class="hint">' +
+}
 
-        (_skillListTab === 'mine' ? '在下方输入框描述你的工作流程，AI 会边聊边写，帮你沉淀成标准技能文档' : 'Agent 技能将在此显示') +
-        (_skillListTab === 'mine' ? '<br><button class="action-btn" style="margin-top:12px;font-size:var(--t-sm);padding:6px 16px" onclick="showChat();document.getElementById(\'input\').focus()">开始创建</button>' : '') +
-
-        '</div></div>';
-
-    document.getElementById('skill-count').textContent = skills.length;
-
+function _skillListEmptyHtml() {
+  var tier = (typeof _trustTierFilter !== 'undefined' && _trustTierFilter) ? _trustTierFilter : 'all';
+  var q = ((document.getElementById('skill-search') || {}).value || '').trim();
+  if (tier !== 'all' || q) {
+    var tierName = tier === 'verified' ? 'Verified' : tier === 'provisional' ? '学徒' : tier === 'draft' ? 'Draft' : '';
+    var title = q ? '无匹配结果' : ('暂无 ' + (tierName || '该档') + ' 技能');
+    var hint = q
+      ? '试试清空搜索，或切换 Trust Tier 筛选'
+      : '切换「全部」查看其它档位，或对话沉淀新技能';
+    return '<div class="empty-state"><div class="icon">🔎</div><div class="title">' + title +
+      '</div><div class="hint">' + hint +
+      '<br><button class="action-btn" style="margin-top:12px;font-size:var(--t-sm);padding:6px 16px" onclick="switchTrustTierFilter(\'all\')">显示全部</button>' +
+      '</div></div>';
+  }
+  var isMine = _skillListTab === 'mine';
+  return '<div class="empty-state"><div class="icon">📁</div><div class="title">' +
+    (isMine ? '还没有技能' : '系统技能') +
+    '</div><div class="hint">' +
+    (isMine
+      ? '在下方输入框描述你的工作流程，AI 会边聊边写，帮你沉淀成标准技能文档<br><button class="action-btn" style="margin-top:12px;font-size:var(--t-sm);padding:6px 16px" onclick="showChat();document.getElementById(\'input\').focus()">开始创建</button>'
+      : 'Agent 技能将在此显示') +
+    '</div></div>';
 }
 
 function toggleTreeNode(id) {

@@ -54,3 +54,16 @@ python scripts/run_bench_regression.py
 ```bash
 python scripts/backfill_trust_tier.py
 ```
+
+## Demo Day 录像分镜（约 3–5 分钟）
+
+| # | 画面 | 旁白要点 |
+|---|------|----------|
+| 1 | 登录页 | 学徒 IDE · 双门禁出师 |
+| 2 | 欢迎页 + 最近技能徽章 | Verified Spine；Tier 一眼可见 |
+| 3 | 侧栏筛选 Verified → 打开 GitHub Pull | 列表 Trust Tier 芯片 |
+| 4 | Overview：Tier + Gate A/B + 证据 | 完成态不是口号 |
+| 5 | 评测 Tab 左右分栏 | 本地 Quick8 ≠ 官方 SkillsBench |
+| 6 | 导出「装进 Cursor」三步 | 出师后可装；复制路径 / Zip |
+
+录制建议：1080p、暗色主题、勿遮挡 Trust Tier 徽章；口播避免「官方 SOTA」。

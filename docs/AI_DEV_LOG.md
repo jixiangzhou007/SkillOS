@@ -4,6 +4,31 @@
 > **读者**：切换开发工具时的下一个 AI / 人类开发者。
 > **与 `CHANGELOG.md` 的区别**：`CHANGELOG.md` 面向**版本发布**；本文件面向**协作过程**（为什么改、改了什么、还没改什么、下一步是什么）。
 
+## [2026-10-28] 产品化续 — 筛选空态 + Demo 分镜 — Cursor Agent
+
+**背景 / 触发**：用户「继续」；`109a653` 已提交，补列表筛选体验与 Demo Day 可执行分镜。
+
+**修改思路**：Trust Tier / 搜索无结果时给诚实空态与「显示全部」；欢迎区最近技能用徽章；DEMO 文档加录像分镜表。
+
+**修改内容**：
+
+| 文件 | 说明 |
+|------|------|
+| `frontend/skills.js` | `_skillListEmptyHtml`；计数 `n/pool` |
+| `frontend/chat.js` | 欢迎最近技能 Trust Tier 徽章 |
+| `frontend/index.html` | `skills.js?v=10` / `chat.js?v=13` |
+| `docs/DEMO_VERIFIED_SPINE.md` | Demo Day 6 镜分镜表 |
+| `docs/ARCH_OPTIMIZATION_PLAN.md` | 已提交状态 + 勿复用 v0.3.5 tag |
+| `AGENTS.md` | 文档端口与 `server.start` 对齐为 `8765` |
+
+**未修改 / 刻意不做**：未 push（待明确授权）；未拍录像；未打 tag；未动实验 skills/
+
+**验证**：静态 UI；无新增 pytest（前端空态）
+
+**开放问题 / 下一步**：push；按分镜录像；可选 `v0.3.6`
+
+---
+
 ## [2026-10-28] 产品化续 — Alpine 修复 + Hub Trust Tier — Cursor Agent
 
 **背景 / 触发**：用户「继续推进产品化」；发现 `index.html` 仍引用已删除的 `/a.js` `/b.js` `/c.js`，Alpine/app 无法加载。

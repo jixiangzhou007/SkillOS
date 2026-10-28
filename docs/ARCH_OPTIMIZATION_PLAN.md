@@ -232,4 +232,6 @@ Day 5–7   Demo 脚本 + 录像素材；remote/push；可选 v0.3.5 tag
 
 **产品化续（2026-10-28）**：侧栏 Trust Tier 筛选；质量条 Tier；Cursor 安装文案；修复 Alpine/`app.js` 脚本引用；市场目录/详情露出 `trust_tier`。
 
-**下一步**：授权后 commit/push 产品表面；Demo Day 录像；可选 `v0.3.5` tag。
+**已提交** `109a653`（产品表面）；筛选空态 / 欢迎 Tier / Demo 分镜续作中。
+
+**下一步**：push `109a653`+；按 `DEMO_VERIFIED_SPINE.md` 分镜录像；勿复用已有 CHANGELOG `v0.3.5` 条目作新 tag（可另开 `v0.3.6`）。
